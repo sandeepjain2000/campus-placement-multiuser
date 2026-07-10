@@ -1,0 +1,44 @@
+{
+  "id": "communication-email-routing",
+  "title": "Communication email routing",
+  "oneLiner": "Voice-guided tour for use case: Communication email routing",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin opens Email logs",
+      "observe": "Compare original_to vs after_communication_to vs resolved_to.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Navigate to Email delivery logs",
+      "observe": "recipient_login_email always stores login address even when mail routes to communication_email.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Search known student login — manual",
+      "observe": "arjun.verma@iitm.edu or test user; trace three-step routing trail.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    }
+  ]
+}

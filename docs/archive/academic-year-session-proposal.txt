@@ -1,0 +1,232 @@
+PlacementHub — Academic Year / Session Mapping Proposal
+========================================================
+Status: REVIEW ONLY (no implementation yet)
+Date: 2026-05-16
+
+This document describes how the college admin SESSION selector (e.g. 2026-27)
+should drive the rest of the product, how semesters advance, and how events
+map to an academic year. Assumption: no student ever fails (cohorts advance
+together).
+
+
+1. CURRENT STATE (WHY SESSION FEELS BROKEN)
+-------------------------------------------
+
+What works today:
+  - Dropdown saves label to sessionStorage and tenants.settings.placementSeasonLabel
+  - Some pages listen for placementhub-academic-year (overview, reports)
+  - Options built from drive years + job_postings.batch_year + application years
+
+What does not:
+  - Student list, dashboard stats, drives, jobs, applications, offers APIs
+    ignore the selected year
+  - Students, drives, calendar, jobs, interviews pages do not refetch on change
+  - Student row "academicYear" is {batch_year}-{graduation_year} (cohort span),
+    not session label 2026-27
+
+Changing SESSION updates the label and a few screens; most data stays all-time.
+
+
+2. CORE CONCEPTS (KEEP SEPARATE)
+---------------------------------
+
+Concept                  Example              Proposed storage
+-----------------------  -------------------  ---------------------------------
+Academic year (session)  2026-27              UI selection + college/tenant settings
+Academic year bounds     Jul 2026–Jun 2027    Derived from config
+Student cohort           Admitted 2023,       student_profiles.batch_year,
+                         grad 2027            graduation_year (exist today)
+Program length           4 years              program_duration_years (new or default)
+Semester                 7 of 8               semester_number (new)
+Placement season         Hiring window        placement_season_start/end (exist)
+                         inside session       or default = full academic year
+
+Assumption: no student fails — everyone in a batch advances one academic year
+together; semester advances on a schedule, not per-student pass/fail.
+
+
+3. COLLEGE-LEVEL PARAMETERS (NOT HARD-CODED)
+--------------------------------------------
+
+Store on college_settings or tenants.settings (editable in Settings):
+
+Parameter                      Default (phase 1)   Purpose
+-----------------------------  ------------------  --------------------------------
+academic_year_start_month      7 (July)            When 2026-27 begins
+semesters_per_academic_year    2                   Later: 1, 2, or 3 per college
+default_program_duration_years 4                   B.Tech default
+placement_season_start/end     optional            If null, use full academic year
+
+Phase 1: only colleges with 2 semesters/year in production; schema still allows
+semesters_per_academic_year in {1, 2, 3}.
+
+Semester calendar within a year (2 semesters, start_month = 7):
+  Semester 1: Jul–Dec
+  Semester 2: Jan–Jun
+
+For 3 semesters/year: college defines month splits in config (not hard-coded).
+
+
+4. ACADEMIC YEAR FROM DATE (EVENTS, DRIVES, JOBS)
+-------------------------------------------------
+
+Single shared function:
+
+  academicYearFromDate(date, { startMonth }) -> "2026-27"
+
+Entity                    Primary date              Belongs to session when
+------------------------  ------------------------  --------------------------------
+Placement drive           placement_drives.         drive_date in AY bounds
+                          drive_date
+Drive round               drive_rounds.             scheduled_date in AY (or parent)
+                          scheduled_date
+Job posting                 application_deadline      Deadline (or publish) in AY
+                          or created_at
+Job target cohort         job_postings.batch_year   Target graduating batch (see §5)
+Application               applications.applied_at   Applied in AY
+Offer                     offers.created_at         Created in AY
+Interview                 scheduled_date            In AY
+Program application       program_applications.     Applied in AY
+(internship/project)      applied_at
+College calendar          college_calendar.         Overlaps AY
+                          start_date
+
+Rule: for drives/jobs/projects, date of the hiring process is sufficient;
+no separate session_id on every row required for v1.
+
+Optional later: denormalized academic_year_label on high-volume tables for indexing.
+
+
+5. ACADEMIC YEAR ↔ STUDENTS (COHORT + SEMESTER)
+-----------------------------------------------
+
+5.1 Who appears in session 2026-27?
+
+Placement-active students for that session (typical final / pre-final):
+
+  Final year (primary hiring):
+    graduation_year = endYear("2026-27")  -> 2027
+
+  Pre-final (internships / PPO pipeline):
+    graduation_year = endYear + 1         -> 2028
+
+  Optional extended pool:
+    graduation_year = endYear + 2         early outreach only, if college enables
+
+Everyone else: hidden from placement dashboards for that session (still in
+registry, excluded from season stats).
+
+endYear("2026-27") = 2027 (numeric end year of the label).
+
+
+5.2 Display fields (fix confusion)
+
+  Session (header)           Active placement year 2026-27     Selected session
+  Batch                      Admission year                      batch_year
+  Class / year of study      Final, Pre-final, etc.            Derived from
+                                                               graduation_year vs
+                                                               session end year
+  Student card academic span batch_year–graduation_year         Keep OR show
+                                                               "Year 4 of 4"
+
+Do NOT use batch_year–graduation_year as the SESSION dropdown value.
+
+
+5.3 Semester number (new fields)
+
+  student_profiles.semester_number (int, 1 .. duration * semesters_per_year)
+  student_profiles.program_duration_years (optional override)
+
+Derive semester (no failures):
+
+  ayStart = startYearOfSession("2026-27")     // 2026
+  yearsInProgram = ayStart - batch_year       // e.g. 2026 - 2023 = 3
+  semesterInYear = 1 or 2 from calendar + college boundaries
+  semester_number = min(
+    yearsInProgram * semesters_per_year + semesterInYear,
+    program_duration_years * semesters_per_year
+  )
+
+Example: batch 2023, 4-year, 2 sem/year, session 2026-27, January ->
+  entering 4th year, semester 2 -> semester_number = 8 (final).
+
+
+6. SEMESTER ADVANCE FUNCTION (TWICE A YEAR)
+-------------------------------------------
+
+Name: advanceStudentSemesters(tenantId, options)
+Trigger: admin/TPO action or scheduled job — NOT on every page load.
+
+Inputs:
+  asOfDate (default today)     -> compute semester_in_year from college calendar
+  academicYearLabel (optional) -> validate against computed AY
+  scope                      -> all_active | graduation_year >= X | by department
+
+Algorithm (no failures):
+  1. Load semesters_per_academic_year, academic_year_start_month, defaults.
+  2. For each student in scope with graduation_year >= current AY end year:
+     - Recompute semester_number from batch_year + asOfDate.
+     - Do NOT change batch_year / graduation_year on semester advance alone.
+  3. Academic year rollover (e.g. July 1): separate job if needed; if semester
+     is always derived from dates, rollover may only require cache refresh.
+
+When SESSION changes in UI: filter/display only — do NOT auto-mutate semesters
+unless user runs "Sync semesters for this session".
+
+For 2 semesters/year: two bulk runs per calendar year (sem 1 and sem 2 start),
+or one cron when semester_in_year flips.
+
+
+7. SESSION -> SCREEN FILTER MATRIX
+----------------------------------
+
+When SESSION = 2026-27, college views pass ?academicYear=2026-27 (or React
+context); APIs apply date bounds + cohort rules:
+
+  Overview / dashboard     Students: final + pre-final for AY; metrics from
+                           applications/offers/drives dated in AY
+  Students list            Same cohort; show semester_number, batch, class year
+  Drives                   drive_date in AY
+  Jobs                     deadline/publish in AY OR batch_year in target batches
+  Applications/interviews  applied_at / scheduled_date in AY
+  Offers                   offer activity in AY; placement % vs AY cohort
+  Reports / YoY              Same rules per selected years
+  Calendar                 Events overlapping AY
+  Settings                 Edit semesters_per_academic_year, season dates
+
+Student portal: current AY from date (no historical session picker).
+Employer: active campus + that campus's placement season from college settings.
+
+
+8. IMPLEMENTATION PHASES (SUGGESTED)
+------------------------------------
+
+  Phase A: Shared academicYear lib (parse label, bounds, dateToAcademicYear,
+           cohort filter); React context from layout; ?academicYear= on APIs
+
+  Phase B: DB semester_number + college params;
+           POST /api/college/students/advance-semesters
+
+  Phase C: Wire all college pages to filters
+
+  Phase D: Historical session read-only; YoY reports use same mapping
+
+
+9. OPEN DECISIONS FOR REVIEW
+----------------------------
+
+  1. Pre-final: always graduation_year = endYear+1 in session, or per-college toggle?
+  2. Job batch_year: confirm = eligible graduating batch (2027 jobs in 2026-27)?
+  3. Semester: computed on read vs stored + bulk refresh (stored better for snapshots)?
+  4. academic_year_start_month: per-tenant (IIT July vs others)?
+
+
+10. RELATED CODE (REFERENCE)
+----------------------------
+
+  src/lib/academicYear.js              getCurrentAcademicYear, getAcademicYearOptions
+  src/app/dashboard/layout.js          SESSION dropdown, sessionStorage, event
+  src/app/api/college/settings/route.js academicYearsWithData, placementSeasonLabel
+  student_profiles                     batch_year, graduation_year (no semester yet)
+  placement_drives.drive_date          event dating
+  job_postings.batch_year              target cohort on job

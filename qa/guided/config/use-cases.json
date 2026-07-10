@@ -1,0 +1,516 @@
+{
+  "version": 1,
+  "defaultBaseUrl": "http://127.0.0.1:3000",
+  "accounts": {
+    "student": "arjun.verma@iitm.edu",
+    "employer": "hr@techcorp.com",
+    "college_admin": "admin@iitm.edu",
+    "super_admin": "admin@placementhub.com"
+  },
+  "useCases": [
+    {
+      "id": "UC-INTERNSHIP-E2E",
+      "title": "End-to-end internship flow",
+      "oneLiner": "Employer publishes internship → college sees it → student applies → employer & college see application"
+    },
+    {
+      "id": "UC-001",
+      "title": "Employer onboarding and campus partnership",
+      "oneLiner": "Employer requests campus tie-up → college approves → employer sees active partnership"
+    },
+    {
+      "id": "UC-002",
+      "title": "Create and publish placement drive",
+      "oneLiner": "Employer creates drive → college approves → student sees approved drive"
+    },
+    {
+      "id": "UC-003",
+      "title": "Student application lifecycle",
+      "oneLiner": "Student applies → employer updates pipeline → college & student see status"
+    },
+    {
+      "id": "UC-004",
+      "title": "Interview scheduling and visibility",
+      "oneLiner": "Employer schedules interview → student & college see same slot"
+    },
+    {
+      "id": "UC-005",
+      "title": "Offer release and response",
+      "oneLiner": "Employer/college releases offer → student responds → all roles see final state"
+    },
+    {
+      "id": "UC-006",
+      "title": "Assessment upload to decision support",
+      "oneLiner": "Employer uploads assessment CSV → summary & college hiring view reflect rows"
+    },
+    {
+      "id": "UC-007",
+      "title": "College offers upload and student visibility",
+      "oneLiner": "College uploads offers CSV → student sees matching offer"
+    },
+    {
+      "id": "UC-008",
+      "title": "Clarification and discussion communication",
+      "oneLiner": "College posts clarification → student & employer see intended audience"
+    },
+    {
+      "id": "UC-009",
+      "title": "Profile completion and document handling",
+      "oneLiner": "Student edits profile & uploads CV → persists after refresh"
+    },
+    {
+      "id": "UC-010",
+      "title": "Admin governance and audit visibility",
+      "oneLiner": "Super admin reviews overview, tenants, and audit reports"
+    }
+  ],
+  "flows": {
+    "UC-INTERNSHIP-E2E": [
+      {
+        "actor": "employer",
+        "instruction": "Employer logs in",
+        "observe": "Employer dashboard hub loads without error",
+        "auto": [{ "type": "login", "account": "employer" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Open Internships (Post New Internship form at top)",
+        "observe": "Internship posting form and list area visible",
+        "auto": [{ "type": "goto", "path": "/dashboard/employer/internships" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Fill the form and click Publish Internship (use a unique title you can search later)",
+        "observe": "New row appears under published internships",
+        "manual": true
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College admin logs in",
+        "observe": "College dashboard hub loads",
+        "auto": [{ "type": "login", "account": "college_admin" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Open College → Internships",
+        "observe": "Employer's published internship visible with Campus = Pending review",
+        "auto": [{ "type": "goto", "path": "/dashboard/college/internships" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Approve the internship for campus (Pending review → Approved)",
+        "observe": "Campus column shows Approved; success toast. Students cannot browse until this step.",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student logs in",
+        "observe": "Student dashboard hub loads",
+        "auto": [{ "type": "login", "account": "student" }]
+      },
+      {
+        "actor": "student",
+        "instruction": "Open Browse Internships",
+        "observe": "Same internship visible; eligibility rules make sense",
+        "auto": [{ "type": "goto", "path": "/dashboard/student/internships" }]
+      },
+      {
+        "actor": "student",
+        "instruction": "Apply to the internship you published",
+        "observe": "Apply succeeds; status moves to applied/submitted",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Open My Applications (internships filter if present)",
+        "observe": "Application listed with correct internship title & status",
+        "auto": [{ "type": "goto", "path": "/dashboard/student/applications" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Employer logs in again",
+        "observe": "Employer hub loads",
+        "auto": [{ "type": "login", "account": "employer" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Open Applications — find the student application",
+        "observe": "Student name, internship, and status match what student sees",
+        "auto": [{ "type": "goto", "path": "/dashboard/employer/applications" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College admin logs in",
+        "observe": "College hub loads",
+        "auto": [{ "type": "login", "account": "college_admin" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Open Applications (campus view)",
+        "observe": "Same application visible; status consistent with student & employer",
+        "auto": [{ "type": "goto", "path": "/dashboard/college/applications" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Optional: Internship Results — check export CSV if rows exist",
+        "observe": "CSV export works; sampled row matches on-screen data",
+        "auto": [{ "type": "goto", "path": "/dashboard/college/internship-results" }],
+        "manual": true
+      }
+    ],
+    "UC-001": [
+      {
+        "actor": "employer",
+        "instruction": "Employer logs in",
+        "observe": "Employer hub loads",
+        "auto": [{ "type": "login", "account": "employer" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Open Campus Partnerships / Select campus",
+        "observe": "Campus list and request/connect actions visible",
+        "auto": [{ "type": "goto", "path": "/dashboard/employer/select-campus" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Send partnership request to target campus (if not already approved)",
+        "observe": "Request submitted; status shows pending/requested",
+        "manual": true
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College admin logs in",
+        "observe": "College hub loads",
+        "auto": [{ "type": "login", "account": "college_admin" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Open Employer Partnership Requests",
+        "observe": "Employer's request appears; approve action available",
+        "auto": [{ "type": "goto", "path": "/dashboard/college/employers/requests" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Approve the partnership request",
+        "observe": "Status becomes approved/active",
+        "manual": true
+      },
+      {
+        "actor": "employer",
+        "instruction": "Employer logs in — revisit campus partnerships",
+        "observe": "Campus shows approved/active on employer side",
+        "auto": [
+          { "type": "login", "account": "employer" },
+          { "type": "goto", "path": "/dashboard/employer/select-campus" }
+        ]
+      }
+    ],
+    "UC-002": [
+      {
+        "actor": "employer",
+        "instruction": "Employer logs in",
+        "observe": "Employer hub loads",
+        "auto": [{ "type": "login", "account": "employer" }]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Open Placement Drives — create a new drive request",
+        "observe": "Drive created; status requested/pending",
+        "auto": [{ "type": "goto", "path": "/dashboard/employer/drives" }],
+        "manual": true
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College admin logs in → Placement Drives",
+        "observe": "New drive in review list",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/drives" }
+        ]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Approve or schedule the drive",
+        "observe": "Drive status updated",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student logs in → Browse Drives",
+        "observe": "Approved drive visible with matching title/status",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/drives" }
+        ]
+      }
+    ],
+    "UC-003": [
+      {
+        "actor": "student",
+        "instruction": "Student logs in → Browse Jobs or Drives",
+        "observe": "Eligible opportunity visible",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/jobs" }
+        ]
+      },
+      {
+        "actor": "student",
+        "instruction": "Apply to one opportunity",
+        "observe": "Application submitted",
+        "manual": true
+      },
+      {
+        "actor": "employer",
+        "instruction": "Employer → Applications",
+        "observe": "New application in pipeline",
+        "auto": [
+          { "type": "login", "account": "employer" },
+          { "type": "goto", "path": "/dashboard/employer/applications" }
+        ]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Update application status (shortlist/reject/etc.)",
+        "observe": "Status saved",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student → Applications",
+        "observe": "Status matches employer update",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/applications" }
+        ]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College → Applications",
+        "observe": "Same status on college view",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/applications" }
+        ]
+      }
+    ],
+    "UC-004": [
+      {
+        "actor": "employer",
+        "instruction": "Employer logs in → Interview Scheduling",
+        "observe": "Schedule form/list visible",
+        "auto": [
+          { "type": "login", "account": "employer" },
+          { "type": "goto", "path": "/dashboard/employer/interviews" }
+        ]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Create interview slot for a candidate",
+        "observe": "Slot saved",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student → Interviews (or calendar)",
+        "observe": "Same slot visible",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/interviews" }
+        ]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College → Interview Scheduling",
+        "observe": "Same slot on college view",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/interviews" }
+        ]
+      }
+    ],
+    "UC-005": [
+      {
+        "actor": "employer",
+        "instruction": "Employer → Offers (bulk CSV via Offers page if needed)",
+        "observe": "Offer create/upload UI ready",
+        "auto": [
+          { "type": "login", "account": "employer" },
+          { "type": "goto", "path": "/dashboard/employer/offers" }
+        ]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Release offer (UI or CSV) for a student",
+        "observe": "Offer row created",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student → Offers",
+        "observe": "Offer visible with amount/status",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/offers" }
+        ]
+      },
+      {
+        "actor": "student",
+        "instruction": "Accept or decline the offer",
+        "observe": "Response saved",
+        "manual": true
+      },
+      {
+        "actor": "employer",
+        "instruction": "Employer → Offers",
+        "observe": "Final status matches student response",
+        "auto": [
+          { "type": "login", "account": "employer" },
+          { "type": "goto", "path": "/dashboard/employer/offers" }
+        ]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College → Offers",
+        "observe": "Same final status",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/offers" }
+        ]
+      }
+    ],
+    "UC-006": [
+      {
+        "actor": "employer",
+        "instruction": "Employer → Assessment uploads (CSV)",
+        "observe": "Tabbed Export CSV + CSV upload (no mapping dialog)",
+        "auto": [
+          { "type": "login", "account": "employer" },
+          { "type": "goto", "path": "/dashboard/employer/assessment-uploads" }
+        ]
+      },
+      {
+        "actor": "employer",
+        "instruction": "Export tab CSV, edit round columns, upload — or use Assessment Update Online",
+        "observe": "Upload or save succeeds; accepted/saved count shown",
+        "manual": true
+      },
+      {
+        "actor": "employer",
+        "instruction": "Open Assessment map (round labels) or Hiring Results Dashboard",
+        "observe": "Uploaded rows reflected",
+        "auto": [{ "type": "goto", "path": "/dashboard/employer/hiring-assessment" }]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "College → Hiring Assessment",
+        "observe": "Same outcomes visible on college view",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/hiring-assessment" }
+        ]
+      }
+    ],
+    "UC-007": [
+      {
+        "actor": "college_admin",
+        "instruction": "College → Offers — download starter CSV",
+        "observe": "CSV downloads with master-list students",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/offers" }
+        ]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Fill offers CSV and upload",
+        "observe": "Rows appear in college offers table",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student (matching roll) → Offers",
+        "observe": "Uploaded offer visible; fields match CSV",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/offers" }
+        ]
+      }
+    ],
+    "UC-008": [
+      {
+        "actor": "college_admin",
+        "instruction": "College → Clarifications",
+        "observe": "Create/publish clarification UI",
+        "auto": [
+          { "type": "login", "account": "college_admin" },
+          { "type": "goto", "path": "/dashboard/college/clarifications" }
+        ]
+      },
+      {
+        "actor": "college_admin",
+        "instruction": "Publish a clarification",
+        "observe": "Entry visible on college list",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Student → Clarifications",
+        "observe": "Same clarification visible to student",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/clarifications" }
+        ]
+      }
+    ],
+    "UC-009": [
+      {
+        "actor": "student",
+        "instruction": "Student logs in → Profile",
+        "observe": "Editable profile fields",
+        "auto": [
+          { "type": "login", "account": "student" },
+          { "type": "goto", "path": "/dashboard/student/profile" }
+        ]
+      },
+      {
+        "actor": "student",
+        "instruction": "Edit a field and save; upload résumé if available",
+        "observe": "Changes persist after refresh",
+        "manual": true
+      },
+      {
+        "actor": "student",
+        "instruction": "Refresh profile page",
+        "observe": "Saved values and document still present",
+        "auto": [{ "type": "reload" }]
+      }
+    ],
+    "UC-010": [
+      {
+        "actor": "super_admin",
+        "instruction": "Super admin logs in",
+        "observe": "Admin hub loads",
+        "auto": [{ "type": "login", "account": "super_admin" }]
+      },
+      {
+        "actor": "super_admin",
+        "instruction": "Platform overview",
+        "observe": "KPIs and export CSV",
+        "auto": [{ "type": "goto", "path": "/dashboard/admin/overview" }]
+      },
+      {
+        "actor": "super_admin",
+        "instruction": "Colleges list",
+        "observe": "Tenant rows load",
+        "auto": [{ "type": "goto", "path": "/dashboard/admin/colleges" }]
+      },
+      {
+        "actor": "super_admin",
+        "instruction": "Audit reports",
+        "observe": "Logs and export history accessible",
+        "auto": [{ "type": "goto", "path": "/dashboard/admin/audit-reports" }]
+      }
+    ]
+  }
+}

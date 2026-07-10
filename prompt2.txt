@@ -1,0 +1,198 @@
+SaaS Completeness Audit (Full Set)
+Golden Rule
+1
+Do NOT evaluate UI (colors, layout, aesthetics)
+2
+Focus ONLY on missing product capabilities
+3
+Assume real users at scale
+Prompt 1 — Data Table Completeness
+1
+Search, filters, sorting, pagination
+2
+Column toggle, export
+3
+Bulk actions
+4
+Default sorting
+5
+Empty states
+6
+Data refresh
+Prompt 2 — CRUD Completeness
+1
+Create (defaults, draft support)
+2
+Read (detail views)
+3
+Update (partial edits)
+4
+Delete (soft delete, undo, warnings)
+Prompt 3 — Filters, Sorting & Defaults
+1
+Filter coverage
+2
+Default states
+3
+Sorting logic
+4
+Saved views
+Prompt 4 — Export & Reporting
+1
+Export formats
+2
+Filtered export
+3
+Reports
+4
+Print views
+
+5
+Sharing
+Prompt 5 — Automation & Feedback Systems
+1
+Notifications
+2
+Reminders
+3
+Automation
+4
+Status transitions
+Prompt 6 — Multi-Tenancy & Roles
+1
+RBAC
+2
+Permissions
+3
+Audit logs
+4
+Tenant isolation
+Prompt 7 — Edge Cases & Failures
+1
+No data
+2
+Large datasets
+3
+API failures
+4
+Invalid actions
+5
+Retry handling
+Prompt 8 — Power User & Scale
+1
+Bulk actions
+2
+Shortcuts
+3
+Saved views
+4
+Efficiency tools
+Prompt 9 — Messaging & Feedback
+1
+Action feedback clarity
+2
+Error specificity
+3
+Destructive warnings
+4
+Severity calibration
+5
+Recovery options
+
+6
+Empty state guidance
+Prompt 10 — Onboarding
+1
+Guided setup
+2
+Empty-state onboarding
+3
+Feature discovery
+4
+Progress tracking
+5
+Skip/resume
+6
+Role-based onboarding
+Prompt 11 — Search & Real-Time Feedback
+1
+Debouncing
+2
+Min character threshold
+3
+No results handling
+4
+Typo tolerance
+5
+Recent searches
+6
+Keyboard navigation
+Prompt 12 — Collaboration & Locking
+1
+Simultaneous editing detection
+2
+Locking strategy
+3
+Conflict resolution
+4
+Typing indicators
+5
+Presence awareness
+Prompt 13 — Accessibility
+1
+ARIA labels
+2
+Keyboard navigation
+3
+Focus management
+4
+Screen reader announcements
+5
+Color-independent communication
+Prompt 14 — Compliance & Retention
+
+1
+Data retention policies
+2
+Export personal data
+3
+Account deletion flow
+4
+Audit logs
+5
+Consent/versioning
+Prompt 15 — Performance Feedback
+1
+Skeleton screens
+2
+Progress indicators
+3
+Timeout handling
+4
+Background notifications
+5
+Optimistic UI
+Prompt 16 — Progressive Disclosure
+1
+Simple vs advanced filters
+2
+Keyboard shortcuts
+3
+Bulk operation discoverability
+4
+Contextual help
+5
+Feature flags
+Prompt 17 — Session & Device Management
+1
+Concurrent session warnings
+2
+Session timeout alerts
+3
+Device tracking
+4
+Remote logout
+5
+Cross-device draft save
+Output Format
+| # | Area | Issue | Impact | Area of Action | Critical |

@@ -1,0 +1,260 @@
+Infrastructure Page Wireframe Analysis
+=====================================
+
+Scope
+-----
+This note analyzes the older wireframe / preview blocks still present on the College Infrastructure page.
+
+Files reviewed:
+
+  src/app/dashboard/college/infrastructure/page.js
+  src/app/api/college/infrastructure/route.js
+  src/app/globals.css
+
+
+Summary
+-------
+The Infrastructure page is partly real and partly still a prototype.
+
+Real data currently comes from:
+
+  - college_facilities
+  - college_calendar where event_type = 'placement_drive'
+  - /api/college/settings for the college website URL
+
+However, the calendar, website, and social sections still use wireframe/skeleton UI structures. Some visible text has been softened from "wireframe" or "dummy" to "preview", but the implementation is still based on wireframe classes and fake shell blocks.
+
+
+1. Calendar Block
+-----------------
+File:
+src/app/dashboard/college/infrastructure/page.js
+
+Relevant lines:
+
+  52: const [calYear, setCalYear] = useState(2026);
+  53: const [calMonth, setCalMonth] = useState(7);
+  338: <div className="wireframe-panel">
+  339: <div className="wireframe-panel-inner" style={{ padding: '0.75rem' }}>
+  363: className={`wireframe-calendar-cell ${day ? '' : 'wireframe-calendar-cell--muted'}`}
+  367: <span key={b.id} className="wireframe-calendar-chip" title={b.description}>
+
+Finding:
+The calendar does show saved bookings, but it is still implemented with wireframe CSS classes.
+
+Problems:
+
+  - The initial month/year is hard-coded to August 2026.
+  - It does not default to the current month.
+  - The CSS and class names still identify it as a wireframe.
+
+Expected behavior:
+This should be a real Infrastructure Calendar component that defaults to the current month and uses production class names.
+
+
+2. Website Preview Block
+------------------------
+File:
+src/app/dashboard/college/infrastructure/page.js
+
+Relevant lines:
+
+  379: {/* Website preview */}
+  382: College website (preview)
+  386: Layout preview using your saved website URL and bookings tagged for “Web”. This page does not load your live site.
+  388: <div className="wireframe-panel" style={{ overflow: 'hidden' }}>
+  389: <div className="wireframe-browser-chrome">
+  407: <div className="wireframe-block" style={{ height: '3rem', width: '40%', marginBottom: '1rem' }} />
+  408: <div className="wireframe-block" style={{ width: '85%' }} />
+  409: <div className="wireframe-block" style={{ width: '70%' }} />
+  410: <div className="wireframe-block" style={{ width: '90%' }} />
+
+Finding:
+The website section is still mostly a simulated browser preview.
+
+Problems:
+
+  - It renders fake browser chrome.
+  - It renders skeleton blocks instead of real content.
+  - It does not render live website data, CMS content, or real page structure.
+  - The only real content is a list of bookings tagged for Web.
+
+Expected behavior:
+Replace this with a real "Website Announcements" section that shows tagged bookings and the configured website URL, or hide the section until a real integration exists.
+
+
+3. Social Preview Block
+-----------------------
+File:
+src/app/dashboard/college/infrastructure/page.js
+
+Relevant lines:
+
+  16: const SOCIAL_PLATFORMS = [
+  429: {/* Social previews */}
+  432: Social channels (preview)
+  438: Tag bookings below to see how those events could be listed — PlacementHub does not post or stream feeds here.
+  442: {SOCIAL_PLATFORMS.map((p) => (
+  443: <div key={p.id} className="wireframe-panel">
+  447: <span className="badge badge-gray">Preview</span>
+  449: <div className="wireframe-social-post">
+  453: <div className="wireframe-block" style={{ width: '45%' }} />
+  454: <div className="wireframe-block" style={{ width: '30%', height: '0.35rem' }} />
+  457: <div className="wireframe-block" style={{ width: '100%' }} />
+  458: <div className="wireframe-block" style={{ width: '92%' }} />
+  459: <div className="wireframe-block" style={{ width: '60%' }} />
+
+Finding:
+The social section is still fake structurally.
+
+Problems:
+
+  - Social platforms are hard-coded in SOCIAL_PLATFORMS.
+  - The cards use skeleton blocks instead of real generated post text.
+  - It does not use saved social URLs except by linking users to College Settings.
+  - It does not render real social profile/account information.
+  - It does not represent actual publishing or feed integration.
+
+Expected behavior:
+Replace this with a real "Channel Distribution" or "Social Publishing Plan" section based on saved social URLs and tagged bookings. If no integration exists, show only a real data list, not fake social shells.
+
+
+4. Bookings List / Channel Toggles
+----------------------------------
+File:
+src/app/dashboard/college/infrastructure/page.js
+
+Relevant lines:
+
+  8: const CHANNELS = [
+  141: body: JSON.stringify({ id: bookingId, channels: next }),
+  483: choose which previews (website or social panels above) should list each booking.
+  514: Show in previews:
+  515: {CHANNELS.map((ch) => {
+
+Finding:
+The channel toggles persist to the backend and are real enough as internal metadata.
+
+Problem:
+The labels still frame the output as "previews". This makes the feature feel incomplete and connected to the fake shell UI above.
+
+Expected behavior:
+Rename this to a real production concept, such as:
+
+  - Communication channels
+  - Publish plan
+  - Visibility targets
+  - Announcement destinations
+
+
+5. CSS Confirms The Feature Is Still Dummy UI
+---------------------------------------------
+File:
+src/app/globals.css
+
+Relevant lines:
+
+  761: /* Wireframe panels (dummy UI — not live data) */
+  780: .wireframe-panel
+  793: .wireframe-panel-inner
+  801: .wireframe-calendar-cell
+  816: .wireframe-calendar-chip
+  831: .wireframe-browser-chrome
+  855: .wireframe-social-post
+  862: .wireframe-block
+
+Finding:
+The CSS explicitly calls these blocks dummy UI and not live data.
+
+Problem:
+These styles are still used by the production Infrastructure page.
+
+Expected behavior:
+Remove or replace wireframe-specific CSS for production pages. Use production component class names and real content states.
+
+
+6. API / Data Model Concern
+---------------------------
+File:
+src/app/api/college/infrastructure/route.js
+
+Relevant lines:
+
+  10: function parseMeta(description, title) {
+  23: const m = JSON.parse(description);
+  66: FROM college_calendar
+  68: WHERE tenant_id = $1 AND event_type = 'placement_drive'
+  129: const desc = JSON.stringify({
+  140: INSERT INTO college_calendar
+  194: const nextDesc = JSON.stringify({
+  205: UPDATE college_calendar SET description = $1
+
+Finding:
+Infrastructure booking metadata is stored as JSON inside college_calendar.description.
+
+Fields stored inside description include:
+
+  - roomId
+  - roomName
+  - startTime
+  - endTime
+  - company
+  - notes
+  - channels
+
+Problem:
+This is brittle and makes infrastructure bookings hard to query, validate, migrate, and report on.
+
+Expected behavior:
+Create a dedicated infrastructure booking table or add structured columns for booking metadata. If JSON must be used, store it in a jsonb metadata column instead of overloading a description text field.
+
+
+Recommended Remediation
+-----------------------
+1. Convert the calendar into a real Infrastructure Calendar:
+
+   - Default to the current month.
+   - Use real production class names.
+   - Keep showing saved bookings.
+   - Remove wireframe terminology and CSS from this section.
+
+2. Replace Website Preview with Website Announcements:
+
+   - Show configured website URL from College Settings.
+   - Show bookings tagged for Web as real announcement cards.
+   - Remove browser chrome and skeleton blocks.
+   - Hide the section or show an empty state when no website URL exists.
+
+3. Replace Social Preview with Channel Distribution:
+
+   - Load saved social URLs from College Settings.
+   - Show each configured channel as a real destination.
+   - Show tagged bookings/events per channel.
+   - Remove skeleton social-post shells.
+   - Do not imply posting or feed integration unless those integrations exist.
+
+4. Rename channel toggles:
+
+   Replace "Show in previews" with a production label such as "Announcement destinations" or "Communication channels".
+
+5. Clean CSS:
+
+   Remove or isolate:
+
+   - wireframe-panel
+   - wireframe-block
+   - wireframe-social-post
+   - wireframe-browser-chrome
+   - wireframe-calendar-cell
+   - sw-mock-* styles
+
+   Production screens should not depend on CSS comments or class names that describe dummy UI.
+
+6. Improve the data model:
+
+   Move infrastructure metadata out of college_calendar.description into structured columns or a dedicated booking table.
+
+
+Bottom Line
+-----------
+The Infrastructure page is no longer purely dummy because bookings and channel selections do persist. However, the calendar, website, and social sections are still presented through old wireframe/skeleton UI. They should be converted into real data-backed production sections or hidden until the required integrations exist.

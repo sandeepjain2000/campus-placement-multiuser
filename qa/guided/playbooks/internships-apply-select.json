@@ -1,0 +1,342 @@
+{
+  "id": "internships-apply-select",
+  "title": "Internship E2E — college view, student apply, employer select",
+  "oneLiner": "After a GT-* internship is published: college approves for campus, student applies, employer shortlists and selects.",
+  "useStoredMarker": true,
+  "sourceCases": [
+    "CI-01",
+    "SI-04",
+    "EI-15",
+    "EI-16",
+    "SI-09"
+  ],
+  "steps": [
+    {
+      "phase": "CI-01",
+      "label": "Log in as college admin",
+      "observe": "College hub loads. You are verifying the employer's published internship is visible to campus.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Open college Internships list",
+      "observe": "Partner listings appear as Pending review until you approve them for campus.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internships"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Search for the guided internship by marker",
+      "observe": "Table filters to {{marker}} in the title column.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search title, employer, or skills",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Filter campus status to Pending review",
+      "observe": "Only listings awaiting college approval remain visible.",
+      "action": {
+        "type": "select",
+        "id": "college-listing-approval-filter",
+        "value": "pending"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Switch to list view",
+      "observe": "Table rows with Actions column — approve icon is easier to target in list view.",
+      "action": {
+        "type": "click",
+        "role": "button",
+        "name": "List view"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Approve guided internship for campus",
+      "observe": "Row with {{marker}} — click Approve for campus (green check icon; skipped if already Approved).",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "{{marker}}",
+        "buttonName": "Approve for campus",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Confirm campus status is Approved",
+      "observe": "Filter Campus status → Approved; {{marker}} row shows Approved badge. College handoff to Student.",
+      "action": {
+        "type": "select",
+        "id": "college-listing-approval-filter",
+        "value": "approved"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Open college Applications (monitor pipeline)",
+      "observe": "Campus-wide application list. Student rows may appear after the student applies in the next phase.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/applications"
+      }
+    },
+    {
+      "phase": "SI-04",
+      "label": "Log in as student (Arjun Verma)",
+      "observe": "Student dashboard loads. Student must have a primary CV on profile to apply.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "SI-04",
+      "label": "Open Browse Internships",
+      "observe": "List of internships visible to IIT Madras. Guided posting should appear if publish step included your campus.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/internships"
+      }
+    },
+    {
+      "phase": "SI-04",
+      "label": "Search for the guided internship by marker",
+      "observe": "Table filters to rows matching the GT- session marker in the role/title column.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search company, role, or status",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "SI-04",
+      "label": "Click Apply on the guided internship row",
+      "observe": "Success toast; status badge changes from Open to Applied (or similar). If blocked, check CV on student profile.",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "{{marker}}",
+        "buttonName": "Apply"
+      }
+    },
+    {
+      "phase": "SI-04",
+      "label": "Confirm application status on list",
+      "observe": "Same row shows Applied (not Open). Note student name for employer step.",
+      "action": {
+        "type": "wait",
+        "ms": 800
+      }
+    },
+    {
+      "phase": "EI-15",
+      "label": "Log in as employer",
+      "observe": "Employer hub loads.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EI-15",
+      "label": "Open Applications — Internships tab",
+      "observe": "Internships tab selected; table shows program applications (not placement drives).",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/applications?tab=internships"
+      }
+    },
+    {
+      "phase": "EI-15",
+      "label": "Search applicants by guided internship marker",
+      "observe": "Filters to Arjun Verma (or the student who applied) for the GT- internship opening.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search by name, email, college, or opening",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "EI-15",
+      "label": "Shortlist the applicant",
+      "observe": "Status changes from Applied to Shortlisted; Shortlist button disappears.",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "Arjun",
+        "buttonName": "Shortlist"
+      }
+    },
+    {
+      "phase": "EI-16",
+      "label": "Select the shortlisted candidate",
+      "observe": "Status becomes Selected. Select / Reject buttons appear only when shortlisted.",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "Arjun",
+        "buttonName": "Select"
+      }
+    },
+    {
+      "phase": "EI-16",
+      "label": "Filter list to Selected and confirm",
+      "observe": "Applicant row shows Selected badge. Pipeline step complete.",
+      "action": {
+        "type": "click",
+        "role": "button",
+        "name": "Selected"
+      }
+    },
+    {
+      "phase": "SI-09",
+      "label": "Log in as student — view application status",
+      "observe": "Student sees updated status (Selected) on My Applications → Internships.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "SI-09",
+      "label": "Open My Applications — Internships",
+      "observe": "Application for the GT- internship shows Selected (or latest employer status).",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/applications/internships"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College assigns campus guide for the intern",
+      "observe": "Programs and Drives → Internship guides. Find the selected student for the GT- internship. Click Assign guide, enter faculty name, email, and notes, then save.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Internship guides",
+      "observe": "Cards list selected and in-progress interns on your campus.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internship-guides"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Assign campus guide — manual",
+      "observe": "Enter guide name, department, email, and notes for the student. Save updates the card.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer assigns company supervisor",
+      "observe": "Student Opportunities → Internship supervisors for selected or in-progress interns.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship supervisors",
+      "observe": "Intern cards for your company; Assign supervisor opens the contact form.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/internship-supervisors"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Assign company supervisor — manual",
+      "observe": "Enter supervisor name, team or role, email, phone, and notes for the intern.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship Progress Reviews",
+      "observe": "Table of selected interns; Add or Edit opens employer feedback form. Student feedback shows read-only when present.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/internship-feedback"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Submit employer internship progress review — manual",
+      "observe": "Optional star rating plus feedback text of at least ten characters.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens Internship Progress Reviews",
+      "observe": "Campus guide and company supervisor blocks appear when assigned. Submit student feedback on the same page.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to Internship Progress Reviews",
+      "observe": "Selected internship card with guide, supervisor, and feedback form.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/internship-feedback"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Submit student internship progress review — manual",
+      "observe": "Star rating optional; feedback text at least ten characters.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College reviews internship progress review (read-only)",
+      "observe": "Internship Outcomes → Internship Progress Reviews. Table shows student and employer submissions; Export CSV available.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Internship Progress Reviews",
+      "observe": "Rows appear after at least one side submits feedback.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internship-feedback"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Verify guide card shows company supervisor",
+      "observe": "On Internship guides, the same intern card shows campus guide you assigned and employer supervisor read-only.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internship-guides"
+      }
+    }
+  ]
+}

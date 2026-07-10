@@ -1,0 +1,93 @@
+{
+  "tool": "browser-use BrowserSession",
+  "base_url": "http://127.0.0.1:3000",
+  "source_xlsx": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa\\C-1-Role-Based-Screen-Access.xlsx",
+  "executed_at": "2026-05-12T00:07:27",
+  "results": [
+    {
+      "test_case_id": "C1-VISIT-001",
+      "role": "student",
+      "route": "/dashboard/alerts",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/alerts with headings=['Indian Institute of Technology, Madras']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-002",
+      "role": "student",
+      "route": "/dashboard/feedback",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/feedback with headings=['Indian Institute of Technology, Madras', '\ud83e\udded Product feedback']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-003",
+      "role": "student",
+      "route": "/dashboard/my-exports",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/my-exports with headings=['Indian Institute of Technology, Madras', '\ud83d\udce6 My data export']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-004",
+      "role": "student",
+      "route": "/dashboard/student/applications",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/applications with headings=['Indian Institute of Technology, Madras']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-005",
+      "role": "student",
+      "route": "/dashboard/student/calendar",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/calendar with headings=['Indian Institute of Technology, Madras', '\ud83d\udcc5 Placement calendar']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-006",
+      "role": "student",
+      "route": "/dashboard/student/clarifications",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/clarifications with headings=['Indian Institute of Technology, Madras', 'Clarifications']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-007",
+      "role": "student",
+      "route": "/dashboard/student/discussions",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/discussions with headings=['Indian Institute of Technology, Madras', '\ud83d\udcac Discussions']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-008",
+      "role": "student",
+      "route": "/dashboard/student/documents",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/documents with headings=['Indian Institute of Technology, Madras', '\ud83d\udcc4 My documents']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-009",
+      "role": "student",
+      "route": "/dashboard/student/drives",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/drives with headings=['Indian Institute of Technology, Madras', '\ud83c\udfaf Placement Drives']",
+      "status": "Pass"
+    },
+    {
+      "test_case_id": "C1-VISIT-010",
+      "role": "student",
+      "route": "/dashboard/student/internships",
+      "expected_result": "Target screen opens successfully\nNo runtime error banner/toast/modal is shown\nNo crash/blank screen is observed",
+      "actual_result": "Loaded /dashboard/student/internships with headings=['Indian Institute of Technology, Madras', 'Browse Internships']",
+      "status": "Pass"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  }
+}

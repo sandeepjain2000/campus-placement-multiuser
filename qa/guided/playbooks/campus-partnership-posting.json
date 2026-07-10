@@ -1,0 +1,152 @@
+{
+  "id": "campus-partnership-posting",
+  "title": "Campus partnership → visible posting",
+  "oneLiner": "Voice-guided tour for use case: Campus partnership → visible posting",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in",
+      "observe": "Employer hub loads",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Campus Partnerships / Select campus",
+      "observe": "Campus list and request/connect actions visible",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/select-campus"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Send partnership request to target campus (if not already approved) — manual step",
+      "observe": "Request submitted; status shows pending/requested Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "College hub loads",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Employer Partnership Requests",
+      "observe": "Employer's request appears; approve action available",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/employers/requests"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Approve the partnership request — manual step",
+      "observe": "Status becomes approved/active Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in — revisit campus partnerships",
+      "observe": "Campus shows approved/active on employer side",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in — revisit campus partnerships (continued)",
+      "observe": "Campus shows approved/active on employer side",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/select-campus"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship Programs to create a campus posting",
+      "observe": "Employer can publish internship visible after college approval.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Navigate to Internship Programs",
+      "observe": "Post Internship form and published list.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/internships"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College opens Internships and Programs — manual approve",
+      "observe": "Switch to List view; Approve for campus on pending GT- or new posting.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open college Internships list",
+      "observe": "Pending review row visible for employer posting.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internships"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Approve for campus — manual",
+      "observe": "Campus column shows Approved; students can browse after this.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student browses internships",
+      "observe": "Approved posting visible when eligibility matches.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open Browse Internships",
+      "observe": "Same posting title appears for eligible student.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/internships"
+      }
+    }
+  ]
+}

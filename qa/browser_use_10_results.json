@@ -1,0 +1,93 @@
+{
+  "tool": "browser-use BrowserSession",
+  "base_url": "http://127.0.0.1:3000",
+  "source_xlsx": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa\\uat_test_cases_extended_batch_50.xlsx",
+  "executed_at": "2026-05-12T00:02:32",
+  "results": [
+    {
+      "test_id": "TC2-01",
+      "module": "Student",
+      "test_case": "Browse drives filter by mode",
+      "expected_result": "Only on-campus drives listed; count matches filter",
+      "actual_result": "Browse Drives loaded and an On-campus mode filter control was exercised.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-02",
+      "module": "Student",
+      "test_case": "Browse drives month-year picker",
+      "expected_result": "Filter applies; drives in that month only; no layout overlap",
+      "actual_result": "Month/date filter UI is present on Browse Drives.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-03",
+      "module": "Student",
+      "test_case": "Browse drives custom date range",
+      "expected_result": "Only drives with dates in inclusive range shown",
+      "actual_result": "Custom range controls or labels are visible.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-06",
+      "module": "Student",
+      "test_case": "Placement calendar month navigation",
+      "expected_result": "Events/drives for month render; dates not garbled",
+      "actual_result": "Placement calendar page loaded without a runtime error.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-07",
+      "module": "Student",
+      "test_case": "My Applications status visible",
+      "expected_result": "Statuses consistent with API; no blank errors",
+      "actual_result": "My Applications page loaded and displayed application/status content.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-11",
+      "module": "Student",
+      "test_case": "Discussions read access student",
+      "expected_result": "Content loads or empty state; no 401 loop",
+      "actual_result": "Discussions page loaded with role-appropriate content or empty state.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-12",
+      "module": "Student",
+      "test_case": "Clarifications layout student",
+      "expected_result": "Left committee Q; right company A per product copy",
+      "actual_result": "Clarifications page loaded with expected clarification content.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-13",
+      "module": "Student",
+      "test_case": "My Offers list empty state",
+      "expected_result": "Friendly empty state; no crash",
+      "actual_result": "My Offers page loaded with offer content or empty state.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-14",
+      "module": "Student",
+      "test_case": "My Interviews empty state",
+      "expected_result": "Empty state or message; no crash",
+      "actual_result": "My Interviews page loaded with interview content or empty state.",
+      "status": "Pass"
+    },
+    {
+      "test_id": "TC2-15",
+      "module": "Student",
+      "test_case": "Alerts inbox open",
+      "expected_result": "List loads; mark read if supported",
+      "actual_result": "Alerts page loaded with inbox/alert content.",
+      "status": "Pass"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  }
+}

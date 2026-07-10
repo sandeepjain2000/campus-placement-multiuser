@@ -1,0 +1,552 @@
+[
+  {
+    "id": "C1-VISIT-151",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/college/reports"
+  },
+  {
+    "id": "C1-VISIT-152",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/rules\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-153",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/settings\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-154",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/sponsorships\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-155",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/college/students"
+  },
+  {
+    "id": "C1-VISIT-156",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/feedback"
+  },
+  {
+    "id": "C1-VISIT-157",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/my-exports"
+  },
+  {
+    "id": "C1-BLOCK-158",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/audit-reports"
+  },
+  {
+    "id": "C1-BLOCK-159",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/colleges"
+  },
+  {
+    "id": "C1-BLOCK-160",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/employers"
+  },
+  {
+    "id": "C1-BLOCK-161",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/feedback"
+  },
+  {
+    "id": "C1-BLOCK-162",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/admin/overview\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-163",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/pending-registrations"
+  },
+  {
+    "id": "C1-BLOCK-164",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/settings"
+  },
+  {
+    "id": "C1-BLOCK-165",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/admin/users"
+  },
+  {
+    "id": "C1-BLOCK-166",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/applications"
+  },
+  {
+    "id": "C1-BLOCK-167",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/assessment-summary"
+  },
+  {
+    "id": "C1-BLOCK-168",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/assessment-uploads"
+  },
+  {
+    "id": "C1-BLOCK-169",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/calendar"
+  },
+  {
+    "id": "C1-BLOCK-170",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/campus-guest-needs"
+  },
+  {
+    "id": "C1-BLOCK-171",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/discussions"
+  },
+  {
+    "id": "C1-BLOCK-172",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/drives"
+  },
+  {
+    "id": "C1-BLOCK-173",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/hiring-assessment"
+  },
+  {
+    "id": "C1-BLOCK-174",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/employer/internships\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-175",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/interviews"
+  },
+  {
+    "id": "C1-BLOCK-176",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/jobs"
+  },
+  {
+    "id": "C1-BLOCK-177",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/offers"
+  },
+  {
+    "id": "C1-BLOCK-178",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/offers-upload"
+  },
+  {
+    "id": "C1-BLOCK-179",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/overview"
+  },
+  {
+    "id": "C1-BLOCK-180",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/profile"
+  },
+  {
+    "id": "C1-BLOCK-181",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/projects"
+  },
+  {
+    "id": "C1-BLOCK-182",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/select-campus"
+  },
+  {
+    "id": "C1-BLOCK-183",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/sponsorships"
+  },
+  {
+    "id": "C1-BLOCK-184",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/applications"
+  },
+  {
+    "id": "C1-BLOCK-185",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/calendar"
+  },
+  {
+    "id": "C1-BLOCK-186",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/clarifications"
+  },
+  {
+    "id": "C1-BLOCK-187",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/discussions"
+  },
+  {
+    "id": "C1-BLOCK-188",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/documents"
+  },
+  {
+    "id": "C1-BLOCK-189",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/drives"
+  },
+  {
+    "id": "C1-BLOCK-190",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/internships"
+  },
+  {
+    "id": "C1-BLOCK-191",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/interviews"
+  },
+  {
+    "id": "C1-BLOCK-192",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/offers"
+  },
+  {
+    "id": "C1-BLOCK-193",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/overview"
+  },
+  {
+    "id": "C1-BLOCK-194",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/profile"
+  },
+  {
+    "id": "C1-BLOCK-195",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/projects"
+  },
+  {
+    "id": "C1-VISIT-196",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/audit-reports"
+  },
+  {
+    "id": "C1-VISIT-197",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/colleges"
+  },
+  {
+    "id": "C1-VISIT-198",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/employers"
+  },
+  {
+    "id": "C1-VISIT-199",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/feedback"
+  },
+  {
+    "id": "C1-VISIT-200",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/overview"
+  },
+  {
+    "id": "C1-VISIT-201",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/pending-registrations"
+  },
+  {
+    "id": "C1-VISIT-202",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/settings"
+  },
+  {
+    "id": "C1-VISIT-203",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/admin/users"
+  },
+  {
+    "id": "C1-VISIT-204",
+    "status": "Passed",
+    "notes": "Successfully loaded /dashboard/my-exports"
+  },
+  {
+    "id": "C1-BLOCK-205",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/alerts\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-206",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/applications\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-207",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/audit-reports\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-208",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/calendar"
+  },
+  {
+    "id": "C1-BLOCK-209",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/clarifications"
+  },
+  {
+    "id": "C1-BLOCK-210",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/discussions"
+  },
+  {
+    "id": "C1-BLOCK-211",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/drives"
+  },
+  {
+    "id": "C1-BLOCK-212",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/employers"
+  },
+  {
+    "id": "C1-BLOCK-213",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/employers/requests"
+  },
+  {
+    "id": "C1-BLOCK-214",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/enrollment-key"
+  },
+  {
+    "id": "C1-BLOCK-215",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/events"
+  },
+  {
+    "id": "C1-BLOCK-216",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/guest-engagements"
+  },
+  {
+    "id": "C1-BLOCK-217",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/hiring-assessment"
+  },
+  {
+    "id": "C1-BLOCK-218",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/infrastructure"
+  },
+  {
+    "id": "C1-BLOCK-219",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/internship-results"
+  },
+  {
+    "id": "C1-BLOCK-220",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/internships"
+  },
+  {
+    "id": "C1-BLOCK-221",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/interviews"
+  },
+  {
+    "id": "C1-BLOCK-222",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/offers"
+  },
+  {
+    "id": "C1-BLOCK-223",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/offers-upload"
+  },
+  {
+    "id": "C1-BLOCK-224",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/overview"
+  },
+  {
+    "id": "C1-BLOCK-225",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/reports"
+  },
+  {
+    "id": "C1-BLOCK-226",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/rules"
+  },
+  {
+    "id": "C1-BLOCK-227",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/settings"
+  },
+  {
+    "id": "C1-BLOCK-228",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/sponsorships"
+  },
+  {
+    "id": "C1-BLOCK-229",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/college/students"
+  },
+  {
+    "id": "C1-BLOCK-230",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/applications"
+  },
+  {
+    "id": "C1-BLOCK-231",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/assessment-summary"
+  },
+  {
+    "id": "C1-BLOCK-232",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/assessment-uploads"
+  },
+  {
+    "id": "C1-BLOCK-233",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/calendar"
+  },
+  {
+    "id": "C1-BLOCK-234",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/campus-guest-needs"
+  },
+  {
+    "id": "C1-BLOCK-235",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/discussions"
+  },
+  {
+    "id": "C1-BLOCK-236",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/drives"
+  },
+  {
+    "id": "C1-BLOCK-237",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/hiring-assessment"
+  },
+  {
+    "id": "C1-BLOCK-238",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/internships"
+  },
+  {
+    "id": "C1-BLOCK-239",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/interviews"
+  },
+  {
+    "id": "C1-BLOCK-240",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/jobs"
+  },
+  {
+    "id": "C1-BLOCK-241",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/offers"
+  },
+  {
+    "id": "C1-BLOCK-242",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/offers-upload"
+  },
+  {
+    "id": "C1-BLOCK-243",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/overview"
+  },
+  {
+    "id": "C1-BLOCK-244",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/profile"
+  },
+  {
+    "id": "C1-BLOCK-245",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/projects"
+  },
+  {
+    "id": "C1-BLOCK-246",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/select-campus"
+  },
+  {
+    "id": "C1-BLOCK-247",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/employer/sponsorships"
+  },
+  {
+    "id": "C1-BLOCK-248",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/feedback"
+  },
+  {
+    "id": "C1-BLOCK-249",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/applications"
+  },
+  {
+    "id": "C1-BLOCK-250",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/calendar"
+  },
+  {
+    "id": "C1-BLOCK-251",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/clarifications"
+  },
+  {
+    "id": "C1-BLOCK-252",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/discussions"
+  },
+  {
+    "id": "C1-BLOCK-253",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/documents"
+  },
+  {
+    "id": "C1-BLOCK-254",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/drives"
+  },
+  {
+    "id": "C1-BLOCK-255",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/internships"
+  },
+  {
+    "id": "C1-BLOCK-256",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/interviews"
+  },
+  {
+    "id": "C1-BLOCK-257",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/offers"
+  },
+  {
+    "id": "C1-BLOCK-258",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/overview"
+  },
+  {
+    "id": "C1-BLOCK-259",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/profile"
+  },
+  {
+    "id": "C1-BLOCK-260",
+    "status": "Passed",
+    "notes": "Correctly redirected away from /dashboard/student/projects"
+  }
+]

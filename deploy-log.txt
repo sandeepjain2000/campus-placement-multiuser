@@ -1,0 +1,454 @@
+Vercel CLI 54.7.1 (Node.js 22.16.0)
+Retrieving projectΓÇª
+Deploying sandeep-jains-projects-3acde1bd/campus-placement
+Uploading [--------------------] (0.0B/17.9KB)
+Uploading [==================--] (16.6KB/17.9KB)
+Uploading [====================] (17.9KB/17.9KB)
+  Inspect     https://vercel.com/sandeep-jains-projects-3acde1bd/campus-placement/H5FKinywDB6d1m3uoGgSHC1Lh3jN
+Γû▓ Production  https://campus-placement-gfeswemhq-sandeep-jains-projects-3acde1bd.vercel.app
+BuildingΓÇª
+BuildingΓÇª
+Running build in Washington, D.C., USA (East) ΓÇô iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Skipping build cache, deployment was triggered without cache.
+Downloading 3831 deployment files...
+Running "vercel build"
+Vercel CLI 54.18.4
+Installing dependencies...
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+npm warn deprecated whatwg-encoding@2.0.0: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated whatwg-encoding@2.0.0: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+added 973 packages in 19s
+192 packages are looking for funding
+run `npm fund` for details
+Detected Next.js version: 16.2.3
+Running "npm run build"
+> campus-placement@0.1.1 build
+> next build
+Applying modifyConfig from Vercel
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+Γû▓ Next.js 16.2.3 (Turbopack)
+ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+Creating an optimized production build ...
+Using external babel configuration from /vercel/path0/babel.config.js
+Γ£ô Compiled successfully in 64s
+Running TypeScript ...
+Finished TypeScript in 286ms ...
+Collecting page data using 1 worker ...
+Generating static pages using 1 worker (0/175) ...
+Generating static pages using 1 worker (43/175)
+Generating static pages using 1 worker (87/175)
+Generating static pages using 1 worker (131/175)
+Γ£ô Generating static pages using 1 worker (175/175) in 2.1s
+Finalizing page optimization ...
+Running onBuildComplete from Vercel
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /about
+Γö£ ╞Æ /api/academic-taxonomy
+Γö£ ╞Æ /api/admin/archived-students
+Γö£ ╞Æ /api/admin/archived-students/[id]/restore
+Γö£ ╞Æ /api/admin/colleges
+Γö£ ╞Æ /api/admin/colleges/[id]
+Γö£ ╞Æ /api/admin/dashboard
+Γö£ ╞Æ /api/admin/email-logs
+Γö£ ╞Æ /api/admin/email-templates
+Γö£ ╞Æ /api/admin/employers
+Γö£ ╞Æ /api/admin/employers/[id]
+Γö£ ╞Æ /api/admin/error-logs
+Γö£ ╞Æ /api/admin/pending-registrations
+Γö£ ╞Æ /api/admin/placement-listings
+Γö£ ╞Æ /api/admin/placement-listings/email
+Γö£ ╞Æ /api/admin/settings
+Γö£ ╞Æ /api/admin/users
+Γö£ ╞Æ /api/audit/logs
+Γö£ ╞Æ /api/audit/reports
+Γö£ ╞Æ /api/audit/reports/export
+Γö£ ╞Æ /api/auth/[...nextauth]
+Γö£ ╞Æ /api/auth/captcha
+Γö£ ╞Æ /api/auth/captcha/verify
+Γö£ ╞Æ /api/auth/change-password
+Γö£ ╞Æ /api/auth/forgot-password
+Γö£ ╞Æ /api/auth/register
+Γö£ ╞Æ /api/auth/register/validate-student
+Γö£ ╞Æ /api/auth/reset-password
+Γö£ ╞Æ /api/auth/verify-email
+Γö£ ╞Æ /api/clarifications
+Γö£ ╞Æ /api/college/academic-years
+Γö£ ╞Æ /api/college/applications
+Γö£ ╞Æ /api/college/bulk-notifications/meta
+Γö£ ╞Æ /api/college/bulk-notifications/preview
+Γö£ ╞Æ /api/college/bulk-notifications/send
+Γö£ ╞Æ /api/college/calendar-clashes
+Γö£ ╞Æ /api/college/dashboard
+Γö£ ╞Æ /api/college/drives
+Γö£ ╞Æ /api/college/drives/[id]
+Γö£ ╞Æ /api/college/drives/[id]/facebook-post
+Γö£ ╞Æ /api/college/drives/[id]/report
+Γö£ ╞Æ /api/college/employers
+Γö£ ╞Æ /api/college/employers/[employerId]/poc
+Γö£ ╞Æ /api/college/employers/approve
+Γö£ ╞Æ /api/college/employers/reinstate
+Γö£ ╞Æ /api/college/employers/requests
+Γö£ ╞Æ /api/college/employers/revoke
+Γö£ ╞Æ /api/college/engagement-listings
+Γö£ ╞Æ /api/college/engagement-listings/[id]
+Γö£ ╞Æ /api/college/enrollment-ledger
+Γö£ ╞Æ /api/college/events
+Γö£ ╞Æ /api/college/facilities
+Γö£ ╞Æ /api/college/hiring-assessment-view
+Γö£ ╞Æ /api/college/infrastructure
+Γö£ ╞Æ /api/college/internship-feedback
+Γö£ ╞Æ /api/college/internship-guides
+Γö£ ╞Æ /api/college/internship-ppo
+Γö£ ╞Æ /api/college/internship-results
+Γö£ ╞Æ /api/college/internships
+Γö£ ╞Æ /api/college/interviews
+Γö£ ╞Æ /api/college/interviews/[id]
+Γö£ ╞Æ /api/college/jobs
+Γö£ ╞Æ /api/college/mentorship-requests
+Γö£ ╞Æ /api/college/mentorship-requests/[id]
+Γö£ ╞Æ /api/college/message-templates
+Γö£ ╞Æ /api/college/message-templates/[id]
+Γö£ ╞Æ /api/college/offers
+Γö£ ╞Æ /api/college/offers/assessment-starter
+Γö£ ╞Æ /api/college/offers/upload
+Γö£ ╞Æ /api/college/offers/upload-meta
+Γö£ ╞Æ /api/college/overview
+Γö£ ╞Æ /api/college/reports
+Γö£ ╞Æ /api/college/rules
+Γö£ ╞Æ /api/college/settings
+Γö£ ╞Æ /api/college/settings/academic-taxonomy
+Γö£ ╞Æ /api/college/settings/logo/complete
+Γö£ ╞Æ /api/college/settings/logo/presign
+Γö£ ╞Æ /api/college/settings/placement-season
+Γö£ ╞Æ /api/college/sponsorships
+Γö£ ╞Æ /api/college/sponsorships/receipt
+Γö£ ╞Æ /api/college/startup-funding
+Γö£ ╞Æ /api/college/students
+Γö£ ╞Æ /api/college/students/[id]
+Γö£ ╞Æ /api/college/students/[id]/resume
+Γö£ ╞Æ /api/college/students/bulk-upload
+Γö£ ╞Æ /api/college/students/verify
+Γö£ ╞Æ /api/college/system-email-templates
+Γö£ ╞Æ /api/data-entry/offers
+Γö£ ╞Æ /api/data-entry/options
+Γö£ ╞Æ /api/data-entry/placement-drives
+Γö£ ╞Æ /api/data-entry/student-profiles
+Γö£ ╞Æ /api/data-entry/users
+Γö£ ╞Æ /api/debug/log
+Γö£ ╞Æ /api/debug/login-log
+Γö£ ╞Æ /api/demo/advance-application
+Γö£ ╞Æ /api/demo/apply-to-internship
+Γö£ ╞Æ /api/demo/apply-to-job
+Γö£ ╞Æ /api/demo/colleges
+Γö£ ╞Æ /api/demo/create-internships
+Γö£ ╞Æ /api/demo/create-jobs
+Γö£ ╞Æ /api/demo/create-student
+Γö£ ╞Æ /api/demo/ensure-all-tieups
+Γö£ ╞Æ /api/demo/ensure-iitm-tieup
+Γö£ ╞Æ /api/demo/placement-drive
+Γö£ ╞Æ /api/demo/purge
+Γö£ ╞Æ /api/demo/purge-all-jobs-internships
+Γö£ ╞Æ /api/developer-notes/auth
+Γö£ ╞Æ /api/developer-notes/logout
+Γö£ ╞Æ /api/discussions
+Γö£ ╞Æ /api/employer/academic-years
+Γö£ ╞Æ /api/employer/applications
+Γö£ ╞Æ /api/employer/applications/documents/view
+Γö£ ╞Æ /api/employer/applications/resume
+Γö£ ╞Æ /api/employer/applications/student-profile
+Γö£ ╞Æ /api/employer/assessment-round-map
+Γö£ ╞Æ /api/employer/assessment-update-online
+Γö£ ╞Æ /api/employer/assessments
+Γö£ ╞Æ /api/employer/assessments/[uploadId]
+Γö£ ╞Æ /api/employer/assessments/[uploadId]/audit
+Γö£ ╞Æ /api/employer/assessments/[uploadId]/rows
+Γö£ ╞Æ /api/employer/assessments/export
+Γö£ ╞Æ /api/employer/assessments/import
+Γö£ ╞Æ /api/employer/assessments/import/[sessionId]
+Γö£ ╞Æ /api/employer/assessments/starter
+Γö£ ╞Æ /api/employer/assessments/submit
+Γö£ ╞Æ /api/employer/assessments/targets
+Γö£ ╞Æ /api/employer/assessments/template
+Γö£ ╞Æ /api/employer/assessments/upload
+Γö£ ╞Æ /api/employer/calendar
+Γö£ ╞Æ /api/employer/campuses
+Γö£ ╞Æ /api/employer/dashboard
+Γö£ ╞Æ /api/employer/drives
+Γö£ ╞Æ /api/employer/drives/[id]
+Γö£ ╞Æ /api/employer/email-templates
+Γö£ ╞Æ /api/employer/engagement-listings
+Γö£ ╞Æ /api/employer/engagement-listings/[id]/confirmation-draft
+Γö£ ╞Æ /api/employer/engagement-listings/[id]/send-confirmation
+Γö£ ╞Æ /api/employer/fcfs-unavailable
+Γö£ ╞Æ /api/employer/hiring-assessment-view
+Γö£ ╞Æ /api/employer/internship-feedback
+Γö£ ╞Æ /api/employer/internship-ppo
+Γö£ ╞Æ /api/employer/internship-supervisors
+Γö£ ╞Æ /api/employer/interviews
+Γö£ ╞Æ /api/employer/interviews/[id]
+Γö£ ╞Æ /api/employer/interviews/notify
+Γö£ ╞Æ /api/employer/jobs
+Γö£ ╞Æ /api/employer/jobs/visibility
+Γö£ ╞Æ /api/employer/mentorship-requests
+Γö£ ╞Æ /api/employer/mentorship-requests/[id]/volunteer
+Γö£ ╞Æ /api/employer/offer-templates
+Γö£ ╞Æ /api/employer/offer-templates/[id]
+Γö£ ╞Æ /api/employer/offers
+Γö£ ╞Æ /api/employer/offers/[id]/resend
+Γö£ ╞Æ /api/employer/offers/assessment-starter
+Γö£ ╞Æ /api/employer/offers/bulk-generate
+Γö£ ╞Æ /api/employer/offers/bulk-preview
+Γö£ ╞Æ /api/employer/offers/options
+Γö£ ╞Æ /api/employer/offers/upload
+Γö£ ╞Æ /api/employer/posting-campus-constraints
+Γö£ ╞Æ /api/employer/profile
+Γö£ ╞Æ /api/employer/profile/logo/complete
+Γö£ ╞Æ /api/employer/profile/logo/presign
+Γö£ ╞Æ /api/employer/sponsorships
+Γö£ ╞Æ /api/employer/sponsorships/payment
+Γö£ ╞Æ /api/employer/startup-funding
+Γö£ ╞Æ /api/feedback
+Γö£ ╞Æ /api/feedback/[id]
+Γö£ ╞Æ /api/guided-runner/click
+Γö£ ╞Æ /api/guided-runner/sign-in
+Γö£ ╞Æ /api/guided-runner/state
+Γö£ ╞Æ /api/help/ask
+Γö£ ╞Æ /api/help/faq
+Γö£ ╞Æ /api/hiring-assessment
+Γö£ ╞Æ /api/notifications
+Γö£ ╞Æ /api/platform/report-error
+Γö£ ╞Æ /api/public/departments
+Γö£ ╞Æ /api/public/jobs/[id]
+Γö£ ╞Æ /api/public/jobs/[id]/questions
+Γö£ ╞Æ /api/public/registration-job-aid
+Γö£ ╞Æ /api/public/site-config
+Γö£ ╞Æ /api/public/support-message
+Γö£ ╞Æ /api/s3/view
+Γö£ ╞Æ /api/screens/ai-match
+Γö£ ╞Æ /api/screens/registry
+Γö£ ╞Æ /api/student/applications
+Γö£ ╞Æ /api/student/applications/cancel
+Γö£ ╞Æ /api/student/calendar
+Γö£ ╞Æ /api/student/dashboard
+Γö£ ╞Æ /api/student/documents
+Γö£ ╞Æ /api/student/documents/complete
+Γö£ ╞Æ /api/student/documents/presign
+Γö£ ╞Æ /api/student/documents/upload
+Γö£ ╞Æ /api/student/documents/view
+Γö£ ╞Æ /api/student/drives
+Γö£ ╞Æ /api/student/internship-feedback
+Γö£ ╞Æ /api/student/internship-ppo
+Γö£ ╞Æ /api/student/internships/not-processed
+Γö£ ╞Æ /api/student/interviews
+Γö£ ╞Æ /api/student/mentorship-requests
+Γö£ ╞Æ /api/student/mentorship-requests/[id]
+Γö£ ╞Æ /api/student/offers
+Γö£ ╞Æ /api/student/opportunity-email
+Γö£ ╞Æ /api/student/profile
+Γö£ ╞Æ /api/student/profile/avatar/complete
+Γö£ ╞Æ /api/student/profile/avatar/presign
+Γö£ ╞Æ /api/student/profile/avatar/upload
+Γö£ ╞Æ /api/student/profile/suggest-skills
+Γö£ ╞Æ /api/student/program-applications
+Γö£ ╞Æ /api/student/program-applications/cancel
+Γö£ ╞Æ /api/student/program-opportunities
+Γö£ ╞Æ /api/student/resume/view
+Γö£ ╞Æ /api/user/communication-email
+Γö£ ╞Æ /api/user/data-export
+Γö£ ╞Æ /api/user/onboarding
+Γö£ ╞Æ /auth/continue
+Γö£ ╞Æ /contact
+Γö£ Γùï /dashboard
+Γö£ Γùï /dashboard/admin
+Γö£ Γùï /dashboard/admin/archived-students
+Γö£ Γùï /dashboard/admin/audit-reports
+Γö£ Γùï /dashboard/admin/colleges
+Γö£ ╞Æ /dashboard/admin/colleges/[id]
+Γö£ Γùï /dashboard/admin/colleges/add
+Γö£ Γùï /dashboard/admin/email-logs
+Γö£ Γùï /dashboard/admin/email-templates
+Γö£ Γùï /dashboard/admin/employers
+Γö£ Γùï /dashboard/admin/error-logs
+Γö£ Γùï /dashboard/admin/feedback
+Γö£ Γùï /dashboard/admin/getting-started
+Γö£ Γùï /dashboard/admin/overview
+Γö£ Γùï /dashboard/admin/pending-registrations
+Γö£ Γùï /dashboard/admin/placement-listings
+Γö£ Γùï /dashboard/admin/settings
+Γö£ Γùï /dashboard/admin/users
+Γö£ Γùï /dashboard/alerts
+Γö£ ╞Æ /dashboard/alumni/applications/[type]
+Γö£ Γùï /dashboard/alumni/getting-started
+Γö£ Γùï /dashboard/alumni/jobs
+Γö£ Γùï /dashboard/college
+Γö£ Γùï /dashboard/college/academic-years
+Γö£ Γùï /dashboard/college/applications
+Γö£ Γùï /dashboard/college/assessments
+Γö£ Γùï /dashboard/college/audit-reports
+Γö£ Γùï /dashboard/college/bulk-notifications
+Γö£ Γùï /dashboard/college/calendar
+Γö£ Γùï /dashboard/college/clarifications
+Γö£ Γùï /dashboard/college/communication-templates
+Γö£ Γùï /dashboard/college/discussions
+Γö£ Γùï /dashboard/college/drives
+Γö£ Γùï /dashboard/college/employers
+Γö£ Γùï /dashboard/college/employers/requests
+Γö£ Γùï /dashboard/college/enrollment-key
+Γö£ Γùï /dashboard/college/events
+Γö£ Γùï /dashboard/college/getting-started
+Γö£ Γùï /dashboard/college/guest-engagements
+Γö£ Γùï /dashboard/college/guest-engagements/add
+Γö£ Γùï /dashboard/college/hiring-assessment
+Γö£ Γùï /dashboard/college/infrastructure
+Γö£ Γùï /dashboard/college/internship-feedback
+Γö£ Γùï /dashboard/college/internship-guides
+Γö£ Γùï /dashboard/college/internship-ppo
+Γö£ Γùï /dashboard/college/internship-results
+Γö£ Γùï /dashboard/college/internships
+Γö£ Γùï /dashboard/college/interviews
+Γö£ Γùï /dashboard/college/jobs
+Γö£ Γùï /dashboard/college/mentorship-requests
+Γö£ Γùï /dashboard/college/message-templates
+Γö£ Γùï /dashboard/college/offers
+Γö£ Γùï /dashboard/college/offers-upload
+Γö£ Γùï /dashboard/college/overview
+Γö£ Γùï /dashboard/college/reports
+Γö£ Γùï /dashboard/college/rules
+Γö£ Γùï /dashboard/college/settings
+Γö£ Γùï /dashboard/college/sponsorships
+Γö£ Γùï /dashboard/college/startup-funding
+Γö£ Γùï /dashboard/college/students
+Γö£ ╞Æ /dashboard/college/students/[id]
+Γö£ ╞Æ /dashboard/college/students/[id]/edit
+Γö£ Γùï /dashboard/college/students/add
+Γö£ Γùï /dashboard/employer
+Γö£ Γùï /dashboard/employer/alumni/applications
+Γö£ Γùï /dashboard/employer/alumni/assessment-online
+Γö£ Γùï /dashboard/employer/alumni/interviews
+Γö£ Γùï /dashboard/employer/alumni/jobs
+Γö£ Γùï /dashboard/employer/applications
+Γö£ Γùï /dashboard/employer/assessment-summary
+Γö£ Γùï /dashboard/employer/assessment-update-online
+Γö£ Γùï /dashboard/employer/assessment-uploads
+Γö£ ╞Æ /dashboard/employer/assessment-uploads/import/[sessionId]
+Γö£ Γùï /dashboard/employer/assessment-uploads/review
+Γö£ Γùï /dashboard/employer/calendar
+Γö£ Γùï /dashboard/employer/campus-guest-needs
+Γö£ Γùï /dashboard/employer/clarifications
+Γö£ Γùï /dashboard/employer/communication-templates
+Γö£ Γùï /dashboard/employer/discussions
+Γö£ Γùï /dashboard/employer/drives
+Γö£ ╞Æ /dashboard/employer/drives/edit/[id]
+Γö£ Γùï /dashboard/employer/drives/request
+Γö£ Γùï /dashboard/employer/fcfs-unavailable
+Γö£ Γùï /dashboard/employer/getting-started
+Γö£ Γùï /dashboard/employer/hiring-assessment
+Γö£ Γùï /dashboard/employer/internship-feedback
+Γö£ Γùï /dashboard/employer/internship-ppo
+Γö£ Γùï /dashboard/employer/internship-supervisors
+Γö£ Γùï /dashboard/employer/internships
+Γö£ Γùï /dashboard/employer/interviews
+Γö£ Γùï /dashboard/employer/jobs
+Γö£ Γùï /dashboard/employer/mentorship-requests
+Γö£ Γùï /dashboard/employer/offer-templates
+Γö£ Γùï /dashboard/employer/offers
+Γö£ Γùï /dashboard/employer/offers-upload
+Γö£ Γùï /dashboard/employer/overview
+Γö£ Γùï /dashboard/employer/profile
+Γö£ Γùï /dashboard/employer/projects
+Γö£ Γùï /dashboard/employer/select-campus
+Γö£ ╞Æ /dashboard/employer/select-campus/[collegeId]
+Γö£ Γùï /dashboard/employer/select-campus/create
+Γö£ Γùï /dashboard/employer/settings
+Γö£ Γùï /dashboard/employer/sponsorships
+Γö£ Γùï /dashboard/employer/startup-funding
+Γö£ Γùï /dashboard/feedback
+Γö£ Γùï /dashboard/feedback/new
+Γö£ Γùï /dashboard/help
+Γö£ Γùï /dashboard/my-exports
+Γö£ Γùï /dashboard/student
+Γö£ ╞Æ /dashboard/student/applications
+Γö£ ╞Æ /dashboard/student/applications/[type]
+Γö£ Γùï /dashboard/student/calendar
+Γö£ Γùï /dashboard/student/clarifications
+Γö£ Γùï /dashboard/student/discussions
+Γö£ Γùï /dashboard/student/documents
+Γö£ Γùï /dashboard/student/drives
+Γö£ Γùï /dashboard/student/getting-started
+Γö£ Γùï /dashboard/student/hackathons
+Γö£ Γùï /dashboard/student/internship-feedback
+Γö£ Γùï /dashboard/student/internship-ppo
+Γö£ Γùï /dashboard/student/internships
+Γö£ Γùï /dashboard/student/internships/not-processed
+Γö£ Γùï /dashboard/student/interviews
+Γö£ Γùï /dashboard/student/jobs
+Γö£ Γùï /dashboard/student/mentorship-requests
+Γö£ Γùï /dashboard/student/offers
+Γö£ Γùï /dashboard/student/overview
+Γö£ Γùï /dashboard/student/profile
+Γö£ Γùï /dashboard/student/projects
+Γö£ Γùï /dashboard/student/reminders
+Γö£ Γùï /data-entry
+Γö£ Γùï /data-entry/offers
+Γö£ Γùï /data-entry/placement-drives
+Γö£ Γùï /data-entry/student-profiles
+Γö£ Γùï /data-entry/users
+Γö£ ╞Æ /demo-accounts
+Γö£ Γùï /developer
+Γö£ Γùï /developer-notes
+Γö£ Γùï /developer/database-schema
+Γö£ Γùï /developer/unlock
+Γö£ Γùï /developer/use-cases-more
+Γö£ Γùï /developer/use-cases-user-testing
+Γö£ ╞Æ /features
+Γö£ Γùï /forgot-password
+Γö£ Γùï /help
+Γö£ ╞Æ /jobs/[id]
+Γö£ ╞Æ /jobs/[id]/questions
+Γö£ Γùï /login
+Γö£ Γùï /register
+Γö£ Γùï /reset-password
+Γöö Γùï /sign-in
+╞Æ Proxy (Middleware)
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+Build Completed in /vercel/output [2m]
+Deploying outputs...
+Deployment completed
+Creating build cache...
+[2K[1A[2K[GΓû▓ Production  https://campus-placement-gfeswemhq-sandeep-jains-projects-3acde1bd.vercel.app
+CompletingΓÇª
+Γû▓ Aliased     https://campus-placement-omega.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_H5FKinywDB6d1m3uoGgSHC1Lh3jN",
+    "url": "https://campus-placement-gfeswemhq-sandeep-jains-projects-3acde1bd.vercel.app",
+    "inspectorUrl": "https://vercel.com/sandeep-jains-projects-3acde1bd/campus-placement/H5FKinywDB6d1m3uoGgSHC1Lh3jN",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_H5FKinywDB6d1m3uoGgSHC1Lh3jN"
+  },
+  "message": "Deployment campus-placement-gfeswemhq-sandeep-jains-projects-3acde1bd.vercel.app ready.",
+  "next": [
+    {
+      "command": "vercel inspect campus-placement-gfeswemhq-sandeep-jains-projects-3acde1bd.vercel.app",
+      "when": "Inspect deployment"
+    },
+    {
+      "command": "vercel deploy --prod",
+      "when": "Promote to production"
+    }
+  ]
+}

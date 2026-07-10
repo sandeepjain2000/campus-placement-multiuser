@@ -1,0 +1,1168 @@
+{
+  "category": "C-2",
+  "categoryTitle": "Tabular screens CSV export checks",
+  "description": "For each tabular data screen, validate CSV export presence, functionality, and high-level output sanity.",
+  "testCases": [
+    {
+      "testCaseId": "C2-CSV-001",
+      "category": "C-2",
+      "title": "Student Applications: CSV export availability and sanity",
+      "role": "student",
+      "route": "/dashboard/student/applications",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/student/applications",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-002",
+      "category": "C-2",
+      "title": "Student Offers: CSV export availability and sanity",
+      "role": "student",
+      "route": "/dashboard/student/offers",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/student/offers",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-003",
+      "category": "C-2",
+      "title": "Student Interviews: CSV export availability and sanity",
+      "role": "student",
+      "route": "/dashboard/student/interviews",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/student/interviews",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-004",
+      "category": "C-2",
+      "title": "Student Documents: CSV export availability and sanity",
+      "role": "student",
+      "route": "/dashboard/student/documents",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/student/documents",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-005",
+      "category": "C-2",
+      "title": "Employer Applications: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/applications",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/applications",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-006",
+      "category": "C-2",
+      "title": "Employer Offers: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/offers",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/offers",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-007",
+      "category": "C-2",
+      "title": "Employer Drives: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/drives",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/drives",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-008",
+      "category": "C-2",
+      "title": "Employer Interviews: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/interviews",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/interviews",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-009",
+      "category": "C-2",
+      "title": "Employer Assessment Summary: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/assessment-summary",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/assessment-summary",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-010",
+      "category": "C-2",
+      "title": "Employer Assessment Uploads: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/assessment-uploads",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/assessment-uploads",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-011",
+      "category": "C-2",
+      "title": "Employer Calendar: CSV export availability and sanity",
+      "role": "employer",
+      "route": "/dashboard/employer/calendar",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/employer/calendar",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-012",
+      "category": "C-2",
+      "title": "College Students: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/students",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/students",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-013",
+      "category": "C-2",
+      "title": "College Applications: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/applications",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/applications",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-014",
+      "category": "C-2",
+      "title": "College Offers: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/offers",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/offers",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-015",
+      "category": "C-2",
+      "title": "College Drives: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/drives",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/drives",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-016",
+      "category": "C-2",
+      "title": "College Interviews: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/interviews",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/interviews",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-017",
+      "category": "C-2",
+      "title": "College Internship Results: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/internship-results",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/internship-results",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-018",
+      "category": "C-2",
+      "title": "College Employers: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/employers",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/employers",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-019",
+      "category": "C-2",
+      "title": "Employer Partnership Requests: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/employers/requests",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/employers/requests",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-020",
+      "category": "C-2",
+      "title": "College Calendar: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/calendar",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/calendar",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-021",
+      "category": "C-2",
+      "title": "College Reports: CSV export availability and sanity",
+      "role": "college_admin",
+      "route": "/dashboard/college/reports",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/college/reports",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-022",
+      "category": "C-2",
+      "title": "Admin Colleges: CSV export availability and sanity",
+      "role": "super_admin",
+      "route": "/dashboard/admin/colleges",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/admin/colleges",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-023",
+      "category": "C-2",
+      "title": "Admin Users: CSV export availability and sanity",
+      "role": "super_admin",
+      "route": "/dashboard/admin/users",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/admin/users",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-024",
+      "category": "C-2",
+      "title": "Admin Employers: CSV export availability and sanity",
+      "role": "super_admin",
+      "route": "/dashboard/admin/employers",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/admin/employers",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-025",
+      "category": "C-2",
+      "title": "Pending Registrations: CSV export availability and sanity",
+      "role": "super_admin",
+      "route": "/dashboard/admin/pending-registrations",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/admin/pending-registrations",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-026",
+      "category": "C-2",
+      "title": "Admin Feedback Inbox: CSV export availability and sanity",
+      "role": "super_admin",
+      "route": "/dashboard/admin/feedback",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/admin/feedback",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C2-CSV-027",
+      "category": "C-2",
+      "title": "Admin Audit Reports: CSV export availability and sanity",
+      "role": "super_admin",
+      "route": "/dashboard/admin/audit-reports",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preConditions": [
+        "Seed data loaded",
+        "User logged in with role-specific demo account",
+        "Screen contains at least one row of tabular/list data"
+      ],
+      "checks": [
+        {
+          "name": "Export option visible",
+          "expectation": "Export CSV button/link/menu action is visible and enabled on the screen."
+        },
+        {
+          "name": "Export action works",
+          "expectation": "CSV file downloads successfully after triggering export."
+        },
+        {
+          "name": "High-level data sanity",
+          "expectation": "CSV has header row, at least one data row (when UI has rows), and obvious key fields align with on-screen values for 2-3 sampled records."
+        }
+      ],
+      "steps": [
+        "Open /dashboard/admin/audit-reports",
+        "Locate tabular/list section",
+        "Click Export CSV (or equivalent export action)",
+        "Open downloaded CSV",
+        "Compare 2-3 sampled rows with current UI values"
+      ],
+      "expectedResult": [
+        "Export option exists",
+        "CSV is downloaded without errors",
+        "CSV structure and sampled values are logically correct"
+      ],
+      "priority": "high"
+    }
+  ]
+}

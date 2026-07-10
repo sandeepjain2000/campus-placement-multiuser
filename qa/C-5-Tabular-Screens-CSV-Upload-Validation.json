@@ -1,0 +1,168 @@
+{
+  "category": "C-5",
+  "categoryTitle": "Tabular screens CSV upload and reflection validation",
+  "description": "Validate CSV upload option presence, successful upload with generated datasets, zero errors, and reflected additional records on screens.",
+  "testCases": [
+    {
+      "testCaseId": "C5-AUDIT-001",
+      "category": "C-5",
+      "title": "Tabular screens CSV-upload coverage audit",
+      "role": "all_roles",
+      "route": "all tabular routes",
+      "postUploadVerifyRoute": "N/A",
+      "demoAccount": {
+        "email": "use role-wise accounts",
+        "password": "Admin@123"
+      },
+      "csvDataStrategy": [
+        "Create inventory of all tabular screens from navigation + route scan.",
+        "Mark each screen as Upload Supported / Upload Missing / Not Applicable.",
+        "For supported screens, run upload execution checks with generated data."
+      ],
+      "steps": [
+        "List all tabular screens role-wise",
+        "Check presence of CSV upload control per screen",
+        "For each screen with upload control, run upload test",
+        "Publish gap list for screens missing upload capability"
+      ],
+      "expectedResult": [
+        "Coverage matrix is complete for all tabular screens",
+        "Upload-enabled screens pass functional upload checks",
+        "Any tabular screen lacking upload is explicitly identified as a gap"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C5-EMP-001",
+      "category": "C-5",
+      "title": "Employer Offers Upload: CSV upload and data reflection",
+      "role": "employer",
+      "route": "/dashboard/employer/offers-upload",
+      "postUploadVerifyRoute": "/dashboard/employer/offers",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "csvDataStrategy": [
+        "Generate synthetic CSV rows for offers (5-10 records).",
+        "Use unique marker (e.g., C5_<timestamp>) in one column for traceability.",
+        "Follow platform CSV template columns exactly."
+      ],
+      "steps": [
+        "Login as employer and open /dashboard/employer/offers-upload",
+        "Verify CSV Upload option/button is present and enabled",
+        "Generate CSV test file as per template",
+        "Upload CSV file",
+        "Confirm upload completes with zero row-level errors",
+        "Navigate to /dashboard/employer/offers",
+        "Search for unique marker rows and validate they are visible"
+      ],
+      "expectedResult": [
+        "CSV upload action is available on screen",
+        "Upload request succeeds (no fatal validation/system errors)",
+        "Any row-level validation issues are zero for valid generated data",
+        "New records appear in target tabular screen after refresh"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C5-EMP-002",
+      "category": "C-5",
+      "title": "Employer Assessment Uploads: CSV upload and data reflection",
+      "role": "employer",
+      "route": "/dashboard/employer/assessment-uploads",
+      "postUploadVerifyRoute": "/dashboard/employer/assessment-summary",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "csvDataStrategy": [
+        "Generate synthetic CSV rows for assessment_results (5-10 records).",
+        "Use unique marker (e.g., C5_<timestamp>) in one column for traceability.",
+        "Follow platform CSV template columns exactly."
+      ],
+      "steps": [
+        "Login as employer and open /dashboard/employer/assessment-uploads",
+        "Verify CSV Upload option/button is present and enabled",
+        "Generate CSV test file as per template",
+        "Upload CSV file",
+        "Confirm upload completes with zero row-level errors",
+        "Navigate to /dashboard/employer/assessment-summary",
+        "Search for unique marker rows and validate they are visible"
+      ],
+      "expectedResult": [
+        "CSV upload action is available on screen",
+        "Upload request succeeds (no fatal validation/system errors)",
+        "Any row-level validation issues are zero for valid generated data",
+        "New records appear in target tabular screen after refresh"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C5-COL-001",
+      "category": "C-5",
+      "title": "College Offers Upload: CSV upload and data reflection",
+      "role": "college_admin",
+      "route": "/dashboard/college/offers-upload",
+      "postUploadVerifyRoute": "/dashboard/college/offers",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "csvDataStrategy": [
+        "Generate synthetic CSV rows for offers (5-10 records).",
+        "Use unique marker (e.g., C5_<timestamp>) in one column for traceability.",
+        "Follow platform CSV template columns exactly."
+      ],
+      "steps": [
+        "Login as college_admin and open /dashboard/college/offers-upload",
+        "Verify CSV Upload option/button is present and enabled",
+        "Generate CSV test file as per template",
+        "Upload CSV file",
+        "Confirm upload completes with zero row-level errors",
+        "Navigate to /dashboard/college/offers",
+        "Search for unique marker rows and validate they are visible"
+      ],
+      "expectedResult": [
+        "CSV upload action is available on screen",
+        "Upload request succeeds (no fatal validation/system errors)",
+        "Any row-level validation issues are zero for valid generated data",
+        "New records appear in target tabular screen after refresh"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C5-COL-002",
+      "category": "C-5",
+      "title": "College Students Bulk Upload: CSV upload and data reflection",
+      "role": "college_admin",
+      "route": "/dashboard/college/students",
+      "postUploadVerifyRoute": "/dashboard/college/students",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "csvDataStrategy": [
+        "Generate synthetic CSV rows for students_bulk (5-10 records).",
+        "Use unique marker (e.g., C5_<timestamp>) in one column for traceability.",
+        "Follow platform CSV template columns exactly."
+      ],
+      "steps": [
+        "Login as college_admin and open /dashboard/college/students",
+        "Verify CSV Upload option/button is present and enabled",
+        "Generate CSV test file as per template",
+        "Upload CSV file",
+        "Confirm upload completes with zero row-level errors",
+        "Navigate to /dashboard/college/students",
+        "Search for unique marker rows and validate they are visible"
+      ],
+      "expectedResult": [
+        "CSV upload action is available on screen",
+        "Upload request succeeds (no fatal validation/system errors)",
+        "Any row-level validation issues are zero for valid generated data",
+        "New records appear in target tabular screen after refresh"
+      ],
+      "priority": "critical"
+    }
+  ]
+}

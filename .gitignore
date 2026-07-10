@@ -1,0 +1,91 @@
+# See https://help.github.com/articles/ignoring-files/
+
+# Dependencies / generated content
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+/.next/
+/out/
+/build
+/.turbo/
+/.cache/
+.parcel-cache/
+.vite/
+
+# Logs
+*.log
+qa/data/state/.last-guided-marker.txt
+qa/data/voice/audio/
+qa/data/voice/transcripts/
+qa/data/voice/voice_manifest.jsonl
+qa/data/downloads/cv-exports/
+db/sqlite/guided_testing.sqlite
+db/sqlite/*.sqlite
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+/logs/
+
+# Secrets / credentials
+.env
+.env.*
+!.env.example
+
+# Keys / certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Cloud credentials
+.aws/
+azureauth.json
+service-account*.json
+
+# Local env overrides
+# NVIDIA key JSON + generated Vercel import files (secrets)
+nvidia_keys/*.json
+vercel-import/
+
+.env.local
+.env.development.local
+.env.production.local
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Deploy / hosting
+.vercel
+.netlify/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+/coverage
+playwright-report/
+test-results/
+
+# Scratch / utility scripts (local only)
+# fix_emojis.js
+# test-db.js
+# update_seed.js
+
+# Local SQLite marketing data
+# db/sqlite/*.sqlite
+
+# qa2 generated artifacts (regenerate with python qa2/generate_test_cases_json.py)
+qa2/test_cases.json
+qa2/agent_results_*.json
+qa2/logs/

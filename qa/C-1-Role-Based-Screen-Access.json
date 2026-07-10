@@ -1,0 +1,6043 @@
+{
+  "category": "C-1",
+  "categoryTitle": "Role-based screen access and open stability",
+  "description": "Validate each role can open only allowed screens, all allowed screens load without errors, and disallowed screens are blocked.",
+  "testCases": [
+    {
+      "testCaseId": "C1-VISIT-001",
+      "category": "C-1",
+      "title": "student can open /dashboard/alerts",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/alerts",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-002",
+      "category": "C-1",
+      "title": "student can open /dashboard/feedback",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/feedback",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-003",
+      "category": "C-1",
+      "title": "student can open /dashboard/my-exports",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/my-exports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-004",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/applications",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/applications",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-005",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/calendar",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/calendar",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-006",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/clarifications",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/clarifications",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-007",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/discussions",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/discussions",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-008",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/documents",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/documents",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-009",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/drives",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/drives",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-010",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/internships",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/internships",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-011",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/interviews",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/interviews",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-012",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/offers",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/offers",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-013",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/overview",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/overview",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-014",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/profile",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/profile",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-015",
+      "category": "C-1",
+      "title": "student can open /dashboard/student/projects",
+      "type": "positive_navigation",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/student/projects",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-016",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/audit-reports",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/audit-reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-017",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/colleges",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/colleges"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-018",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/employers",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/employers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-019",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/feedback",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/feedback"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-020",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/overview",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-021",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/pending-registrations",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/pending-registrations"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-022",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/settings",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/settings"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-023",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/admin/users",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/users"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-024",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/applications",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-025",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/audit-reports",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/audit-reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-026",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/calendar",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-027",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/clarifications",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/clarifications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-028",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/discussions",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-029",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/drives",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-030",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/employers",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/employers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-031",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/employers/requests",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/employers/requests"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-032",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/enrollment-key",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/enrollment-key"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-033",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/events",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/events"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-034",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/guest-engagements",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/guest-engagements"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-035",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/hiring-assessment",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/hiring-assessment"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-036",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/infrastructure",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/infrastructure"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-037",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/internship-results",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/internship-results"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-038",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/internships",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-039",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/interviews",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-040",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/offers",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-041",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/offers-upload",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/offers-upload"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-042",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/overview",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-043",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/reports",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-044",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/rules",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/rules"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-045",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/settings",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/settings"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-046",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/sponsorships",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/sponsorships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-047",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/college/students",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/students"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-048",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/applications",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-049",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/assessment-summary",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/assessment-summary"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-050",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/assessment-uploads",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/assessment-uploads"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-051",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/calendar",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-052",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/campus-guest-needs",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/campus-guest-needs"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-053",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/discussions",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-054",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/drives",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-055",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/hiring-assessment",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/hiring-assessment"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-056",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/internships",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-057",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/interviews",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-058",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/jobs",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/jobs"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-059",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/offers",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-060",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/offers-upload",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/offers-upload"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-061",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/overview",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-062",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/profile",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/profile"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-063",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/projects",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/projects"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-064",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/select-campus",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/select-campus"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-065",
+      "category": "C-1",
+      "title": "student cannot open /dashboard/employer/sponsorships",
+      "type": "negative_authorization",
+      "role": "student",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/sponsorships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-066",
+      "category": "C-1",
+      "title": "employer can open /dashboard/alerts",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/alerts",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-067",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/applications",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/applications",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-068",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/assessment-summary",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/assessment-summary",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-069",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/assessment-uploads",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/assessment-uploads",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-070",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/calendar",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/calendar",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-071",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/campus-guest-needs",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/campus-guest-needs",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-072",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/discussions",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/discussions",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-073",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/drives",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/drives",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-074",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/hiring-assessment",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/hiring-assessment",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-075",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/internships",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/internships",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-076",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/interviews",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/interviews",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-077",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/jobs",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/jobs",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-078",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/offers",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/offers",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-079",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/offers-upload",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/offers-upload",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-080",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/overview",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/overview",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-081",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/profile",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/profile",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-082",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/projects",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/projects",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-083",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/select-campus",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/select-campus",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-084",
+      "category": "C-1",
+      "title": "employer can open /dashboard/employer/sponsorships",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/employer/sponsorships",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-085",
+      "category": "C-1",
+      "title": "employer can open /dashboard/feedback",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/feedback",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-086",
+      "category": "C-1",
+      "title": "employer can open /dashboard/my-exports",
+      "type": "positive_navigation",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/my-exports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-087",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/audit-reports",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/audit-reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-088",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/colleges",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/colleges"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-089",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/employers",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/employers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-090",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/feedback",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/feedback"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-091",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/overview",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-092",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/pending-registrations",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/pending-registrations"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-093",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/settings",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/settings"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-094",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/admin/users",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/users"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-095",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/applications",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-096",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/audit-reports",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/audit-reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-097",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/calendar",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-098",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/clarifications",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/clarifications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-099",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/discussions",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-100",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/drives",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-101",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/employers",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/employers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-102",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/employers/requests",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/employers/requests"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-103",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/enrollment-key",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/enrollment-key"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-104",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/events",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/events"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-105",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/guest-engagements",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/guest-engagements"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-106",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/hiring-assessment",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/hiring-assessment"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-107",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/infrastructure",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/infrastructure"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-108",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/internship-results",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/internship-results"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-109",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/internships",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-110",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/interviews",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-111",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/offers",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-112",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/offers-upload",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/offers-upload"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-113",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/overview",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-114",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/reports",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-115",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/rules",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/rules"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-116",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/settings",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/settings"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-117",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/sponsorships",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/sponsorships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-118",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/college/students",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/students"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-119",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/applications",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-120",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/calendar",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-121",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/clarifications",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/clarifications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-122",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/discussions",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-123",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/documents",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/documents"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-124",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/drives",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-125",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/internships",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-126",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/interviews",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-127",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/offers",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-128",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/overview",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-129",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/profile",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/profile"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-130",
+      "category": "C-1",
+      "title": "employer cannot open /dashboard/student/projects",
+      "type": "negative_authorization",
+      "role": "employer",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/projects"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-131",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/alerts",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/alerts",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-132",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/applications",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/applications",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-133",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/audit-reports",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/audit-reports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-134",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/calendar",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/calendar",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-135",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/clarifications",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/clarifications",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-136",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/discussions",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/discussions",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-137",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/drives",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/drives",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-138",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/employers",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/employers",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-139",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/employers/requests",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/employers/requests",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-140",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/enrollment-key",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/enrollment-key",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-141",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/events",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/events",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-142",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/guest-engagements",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/guest-engagements",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-143",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/hiring-assessment",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/hiring-assessment",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-144",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/infrastructure",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/infrastructure",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-145",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/internship-results",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/internship-results",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-146",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/internships",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/internships",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-147",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/interviews",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/interviews",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-148",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/offers",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/offers",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-149",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/offers-upload",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/offers-upload",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-150",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/overview",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/overview",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-151",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/reports",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/reports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-152",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/rules",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/rules",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-153",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/settings",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/settings",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-154",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/sponsorships",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/sponsorships",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-155",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/college/students",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/college/students",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-156",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/feedback",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/feedback",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-157",
+      "category": "C-1",
+      "title": "college_admin can open /dashboard/my-exports",
+      "type": "positive_navigation",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/my-exports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/admin/audit-reports",
+        "/dashboard/admin/colleges",
+        "/dashboard/admin/employers",
+        "/dashboard/admin/feedback",
+        "/dashboard/admin/overview"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-158",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/audit-reports",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/audit-reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-159",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/colleges",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/colleges"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-160",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/employers",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/employers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-161",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/feedback",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/feedback"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-162",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/overview",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-163",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/pending-registrations",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/pending-registrations"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-164",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/settings",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/settings"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-165",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/admin/users",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/admin/users"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-166",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/applications",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-167",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/assessment-summary",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/assessment-summary"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-168",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/assessment-uploads",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/assessment-uploads"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-169",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/calendar",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-170",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/campus-guest-needs",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/campus-guest-needs"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-171",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/discussions",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-172",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/drives",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-173",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/hiring-assessment",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/hiring-assessment"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-174",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/internships",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-175",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/interviews",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-176",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/jobs",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/jobs"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-177",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/offers",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-178",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/offers-upload",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/offers-upload"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-179",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/overview",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-180",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/profile",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/profile"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-181",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/projects",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/projects"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-182",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/select-campus",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/select-campus"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-183",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/employer/sponsorships",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/sponsorships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-184",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/applications",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-185",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/calendar",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-186",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/clarifications",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/clarifications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-187",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/discussions",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-188",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/documents",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/documents"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-189",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/drives",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-190",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/internships",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-191",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/interviews",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-192",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/offers",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-193",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/overview",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-194",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/profile",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/profile"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-195",
+      "category": "C-1",
+      "title": "college_admin cannot open /dashboard/student/projects",
+      "type": "negative_authorization",
+      "role": "college_admin",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/projects"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-196",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/audit-reports",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/audit-reports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-197",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/colleges",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/colleges",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-198",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/employers",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/employers",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-199",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/feedback",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/feedback",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-200",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/overview",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/overview",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-201",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/pending-registrations",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/pending-registrations",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-202",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/settings",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/settings",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-203",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/admin/users",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/admin/users",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-VISIT-204",
+      "category": "C-1",
+      "title": "super_admin can open /dashboard/my-exports",
+      "type": "positive_navigation",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Navigate to /dashboard/my-exports",
+        "Wait for page to load completely"
+      ],
+      "expected": [
+        "Target screen opens successfully",
+        "No runtime error banner/toast/modal is shown",
+        "No crash/blank screen is observed"
+      ],
+      "forbiddenRoutesSample": [
+        "/dashboard/alerts",
+        "/dashboard/college/applications",
+        "/dashboard/college/audit-reports",
+        "/dashboard/college/calendar",
+        "/dashboard/college/clarifications"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-205",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/alerts",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/alerts"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-206",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/applications",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-207",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/audit-reports",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/audit-reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-208",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/calendar",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-209",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/clarifications",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/clarifications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-210",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/discussions",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-211",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/drives",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-212",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/employers",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/employers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-213",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/employers/requests",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/employers/requests"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-214",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/enrollment-key",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/enrollment-key"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-215",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/events",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/events"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-216",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/guest-engagements",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/guest-engagements"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-217",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/hiring-assessment",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/hiring-assessment"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-218",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/infrastructure",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/infrastructure"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-219",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/internship-results",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/internship-results"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-220",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/internships",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-221",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/interviews",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-222",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/offers",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-223",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/offers-upload",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/offers-upload"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-224",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/overview",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-225",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/reports",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/reports"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-226",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/rules",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/rules"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-227",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/settings",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/settings"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-228",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/sponsorships",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/sponsorships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-229",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/college/students",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/college/students"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-230",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/applications",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-231",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/assessment-summary",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/assessment-summary"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-232",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/assessment-uploads",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/assessment-uploads"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-233",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/calendar",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-234",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/campus-guest-needs",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/campus-guest-needs"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-235",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/discussions",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-236",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/drives",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-237",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/hiring-assessment",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/hiring-assessment"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-238",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/internships",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-239",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/interviews",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-240",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/jobs",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/jobs"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-241",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/offers",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-242",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/offers-upload",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/offers-upload"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-243",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/overview",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-244",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/profile",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/profile"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-245",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/projects",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/projects"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-246",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/select-campus",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/select-campus"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-247",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/employer/sponsorships",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/employer/sponsorships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-248",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/feedback",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/feedback"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-249",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/applications",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/applications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-250",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/calendar",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/calendar"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-251",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/clarifications",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/clarifications"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-252",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/discussions",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/discussions"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-253",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/documents",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/documents"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-254",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/drives",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/drives"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-255",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/internships",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/internships"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-256",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/interviews",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/interviews"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-257",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/offers",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/offers"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-258",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/overview",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/overview"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-259",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/profile",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/profile"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C1-BLOCK-260",
+      "category": "C-1",
+      "title": "super_admin cannot open /dashboard/student/projects",
+      "type": "negative_authorization",
+      "role": "super_admin",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login with demo account",
+        "Directly open URL /dashboard/student/projects"
+      ],
+      "expected": [
+        "Access is denied OR user is redirected to role-appropriate screen",
+        "Wrong screen is not accessible",
+        "No server/client error is shown"
+      ],
+      "priority": "high"
+    }
+  ]
+}

@@ -1,0 +1,602 @@
+{
+  "assessment-update-online": [
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer",
+      "observe": "Employer dashboard loads.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Assessment uploads (CSV)",
+      "observe": "Tabbed Internship, Jobs, Drive, Projects — export CSV per tab.",
+      "action": { "type": "goto", "path": "/dashboard/employer/assessment-uploads" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Assessment Update Online",
+      "observe": "Inline editable hiring_result rows per application.",
+      "action": { "type": "goto", "path": "/dashboard/employer/assessment-update-online" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Edit hiring_result inline — manual",
+      "observe": "Change round values; Save changes shows dirty row count.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Submit results when complete — manual",
+      "observe": "Submit locks further CSV and online edits for that context.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Hiring Results Dashboard",
+      "observe": "Read-only summary of submitted assessment outcomes.",
+      "action": { "type": "goto", "path": "/dashboard/employer/hiring-assessment" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College opens Hiring Assessment",
+      "observe": "Read-only mirror of employer submitted results.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Navigate to college Hiring Assessment",
+      "observe": "Same outcomes visible to college TPO.",
+      "action": { "type": "goto", "path": "/dashboard/college/hiring-assessment" }
+    }
+  ],
+  "full-time-job": [
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer",
+      "observe": "Employer hub ready to publish a full-time job.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Jobs and Programs",
+      "observe": "Job posting list and create form.",
+      "action": { "type": "goto", "path": "/dashboard/employer/jobs" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Publish full_time job — manual",
+      "observe": "Set campus visibility; publish with GT- marker title if testing linkage.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Approve job on Internships and Programs or Jobs list.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open college Internships and Programs",
+      "observe": "Pending job or internship row for employer posting.",
+      "action": { "type": "goto", "path": "/dashboard/college/internships" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student browses Jobs",
+      "observe": "Eligible full-time job visible after approval.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open Browse Jobs",
+      "observe": "Apply via program application path.",
+      "action": { "type": "goto", "path": "/dashboard/student/jobs" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer reviews Applications for Jobs",
+      "observe": "Pipeline shows student application; update status or record offer.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Applications",
+      "observe": "Filter Jobs tab for new applicant.",
+      "action": { "type": "goto", "path": "/dashboard/employer/applications" }
+    }
+  ],
+  "employer-registration": [
+    {
+      "phase": "SETUP",
+      "label": "Open Sign In page",
+      "observe": "Registration path for new employer — manual account creation.",
+      "action": { "type": "goto", "path": "/sign-in" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Create employer account — manual",
+      "observe": "Fill company and admin details; verify email from inbox (context email_verification).",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Review pending registrations.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Pending Registrations",
+      "observe": "New employer row awaiting approval.",
+      "action": { "type": "goto", "path": "/dashboard/admin/pending-registrations" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Approve registration — manual",
+      "observe": "Employer receives registration_approved email.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Search registrant login email; context registration_approved or email_verification.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "password-reset": [
+    {
+      "phase": "SETUP",
+      "label": "Open Sign In page",
+      "observe": "Forgot password link visible.",
+      "action": { "type": "goto", "path": "/sign-in" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open Forgot password",
+      "observe": "Enter login email; same success message for unknown emails (no enumeration).",
+      "action": { "type": "goto", "path": "/forgot-password" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Submit reset request — manual",
+      "observe": "Check inbox for password_reset context mail (1-hour link).",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Complete reset on link — manual",
+      "observe": "Choose new password; sign in with updated credentials.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin opens Email logs",
+      "observe": "Confirm recipient_login_email matches account.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Navigate to Email delivery logs",
+      "observe": "Filter context password_reset.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "bulk-student-import": [
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Ready for bulk CSV import.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Students list",
+      "observe": "Bulk upload control on Students screen.",
+      "action": { "type": "goto", "path": "/dashboard/college/students" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Upload student CSV — manual",
+      "observe": "student_welcome emails sent; college_student_bulk_import summary to admin.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "New student signs in — manual",
+      "observe": "Use temp password from welcome mail; complete profile.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College verifies student — manual",
+      "observe": "Verify student on Students list unlocks placement features.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Return to Students",
+      "observe": "Verified badge on imported row.",
+      "action": { "type": "goto", "path": "/dashboard/college/students" }
+    }
+  ],
+  "sponsorship-receipt": [
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Sponsorships module for donation tracking.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Sponsorships",
+      "observe": "Record donation and send receipt to sponsor email.",
+      "action": { "type": "goto", "path": "/dashboard/college/sponsorships" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Send donation receipt — manual",
+      "observe": "sponsorship_donation_receipt context in email logs.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin opens Email logs",
+      "observe": "Search sponsor email or sponsorship context.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Navigate to Email delivery logs",
+      "observe": "Receipt row with recipient_login_email audit trail.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "interview-slot-notify": [
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in",
+      "observe": "Campus partnership must be approved for target college.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Interview Scheduling",
+      "observe": "Link slot to job, internship, or drive opening.",
+      "action": { "type": "goto", "path": "/dashboard/employer/interviews" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Notify applicants — manual",
+      "observe": "employer_interview_slot emails to eligible students.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens My Interviews",
+      "observe": "Scheduled slot with date, mode, venue.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to My Interviews",
+      "observe": "Alert and interview row match employer notification.",
+      "action": { "type": "goto", "path": "/dashboard/student/interviews" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Email logs — employer_interview_slot",
+      "observe": "Filter by context or student login email.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Sent rows with recipient audit fields.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "email-delivery-audit": [
+    {
+      "phase": "EMPLOYER",
+      "label": "Trigger selection email — manual prerequisite",
+      "observe": "Run internship publish-hire first, or Select applicant (student_selection context).",
+      "action": { "type": "wait", "ms": 3000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Platform admin hub.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Search recipient login email — survives deleted QA accounts.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Review row detail — manual",
+      "observe": "Original, after communication routing, final SMTP; context and recipient_login_email.",
+      "action": { "type": "wait", "ms": 14000 }
+    }
+  ],
+  "communication-email-routing": [
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin opens Email logs",
+      "observe": "Compare original_to vs after_communication_to vs resolved_to.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Navigate to Email delivery logs",
+      "observe": "recipient_login_email always stores login address even when mail routes to communication_email.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Search known student login — manual",
+      "observe": "arjun.verma@iitm.edu or test user; trace three-step routing trail.",
+      "action": { "type": "wait", "ms": 14000 }
+    }
+  ],
+  "session-ads-toggle": [
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Platform Settings controls session ad banner.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Platform Settings",
+      "observe": "Show sponsored banner checkbox — default off.",
+      "action": { "type": "goto", "path": "/dashboard/admin/settings" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Toggle sponsored banner — manual",
+      "observe": "Save; refresh student dashboard to see SessionAdBanner appear or disappear.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student dashboard check",
+      "observe": "Banner visibility matches platform setting after refresh.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open student dashboard",
+      "observe": "No email sent — UI-only regression.",
+      "action": { "type": "goto", "path": "/dashboard/student" }
+    }
+  ],
+  "audit-report-export": [
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Audit Reports export with emailed download link.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Audit Reports",
+      "observe": "Pick date range and delivery email.",
+      "action": { "type": "goto", "path": "/dashboard/college/audit-reports" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Export CSV with email — manual",
+      "observe": "audit_report_export context; time-limited download link in inbox.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Verify in Email logs",
+      "observe": "Export notification row with acting user.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Filter audit_report_export context.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "login-support-feedback": [
+    {
+      "phase": "SETUP",
+      "label": "Open Login page",
+      "observe": "Login support contact form for pre-login help.",
+      "action": { "type": "goto", "path": "/login" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Submit login support message — manual",
+      "observe": "login_support context mail to platform inbox with replyTo user email.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens Feedback",
+      "observe": "Submit feedback thread as any role.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to Feedback",
+      "observe": "Create new feedback item.",
+      "action": { "type": "goto", "path": "/dashboard/feedback" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin replies on Feedback inbox",
+      "observe": "feedback_reply email and in-app alert to submitter.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Feedback inbox",
+      "observe": "Post reply — manual step during recording.",
+      "action": { "type": "goto", "path": "/dashboard/admin/feedback" }
+    }
+  ],
+  "data-export-notice": [
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in",
+      "observe": "Personal data export from My data export.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open My data export",
+      "observe": "Download CSV; user_data_export notice email sent.",
+      "action": { "type": "goto", "path": "/dashboard/my-exports" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Run export — manual",
+      "observe": "Browser download plus email log with recipientUserId.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Verify Email logs",
+      "observe": "context user_data_export.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Acting user equals recipient for self-export.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "guest-engagement": [
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in",
+      "observe": "Campus guest needs and confirmation emails.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Campus guest needs",
+      "observe": "Engagement listings with guest registrants.",
+      "action": { "type": "goto", "path": "/dashboard/employer/campus-guest-needs" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Send guest confirmation — manual",
+      "observe": "guest_confirmation context in email logs.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Verify Email logs",
+      "observe": "Guest original address and employer as acting user.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Search guest email or guest_confirmation context.",
+      "action": { "type": "goto", "path": "/dashboard/admin/email-logs" }
+    }
+  ],
+  "internship-guides-feedback-supervisors": [
+    {
+      "phase": "SETUP",
+      "label": "Prerequisite — selected intern on record",
+      "observe": "Requires at least one internship application in Selected or In progress. If lists are empty, run qa/runners/batch/run_internship_apply_auto_voice.bat or the full internship E2E through Select first.",
+      "action": { "type": "wait", "ms": 2000 }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College assigns campus guide for the intern",
+      "observe": "Programs and Drives → Internship guides. Find the selected student. Click Assign guide, enter faculty contact details and notes, then save.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Internship guides",
+      "observe": "Cards list selected and in-progress interns on your campus.",
+      "action": { "type": "goto", "path": "/dashboard/college/internship-guides" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Assign campus guide — manual",
+      "observe": "Enter guide name, department, email, and notes for the student.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer assigns company supervisor",
+      "observe": "Student Opportunities → Internship supervisors.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship supervisors",
+      "observe": "Selected and in-progress interns for your company.",
+      "action": { "type": "goto", "path": "/dashboard/employer/internship-supervisors" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Assign company supervisor — manual",
+      "observe": "Enter supervisor name, team, email, phone, and notes for the intern.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship Progress Reviews",
+      "observe": "Employer feedback table; Add or Edit on a selected intern row.",
+      "action": { "type": "goto", "path": "/dashboard/employer/internship-feedback" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Submit employer internship progress review — manual",
+      "observe": "Optional star rating plus at least ten characters of feedback text.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens Internship Progress Reviews",
+      "observe": "Campus guide and company supervisor visible when assigned. Submit student feedback below.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to Internship Progress Reviews",
+      "observe": "Selected internship card with guide, supervisor, and feedback form.",
+      "action": { "type": "goto", "path": "/dashboard/student/internship-feedback" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Submit student internship progress review — manual",
+      "observe": "Star rating optional; feedback text at least ten characters.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College reviews internship progress review",
+      "observe": "Read-only table; Export CSV when rows exist.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Internship Progress Reviews",
+      "observe": "Student and employer feedback columns for submitted rows.",
+      "action": { "type": "goto", "path": "/dashboard/college/internship-feedback" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Confirm supervisor on Internship guides",
+      "observe": "Same intern card shows campus guide and company supervisor read-only.",
+      "action": { "type": "goto", "path": "/dashboard/college/internship-guides" }
+    }
+  ]
+}

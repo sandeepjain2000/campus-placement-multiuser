@@ -1,0 +1,120 @@
+module,role,case_id,use_case,guided_command
+internships,employer,EI-01,"View all internship postings for the company (draft, published, closed)",npm run test:guided:focus -- EI-01
+internships,employer,EI-02,"Open the create-internship form and enter title, duration, stipend range, vacancies, min CGPA, skills/keywords, and notes",npm run test:guided:focus -- EI-02
+internships,employer,EI-03,Publish a new internship to one or more approved partner campuses,npm run test:guided:focus -- EI-03
+internships,employer,EI-04,Attempt to publish without selecting any campus and confirm validation blocks save,npm run test:guided:focus -- EI-04
+internships,employer,EI-05,Attempt to publish when no campus partnership is approved,npm run test:guided:focus -- EI-05
+internships,employer,EI-06,Save a draft internship without publishing (students must not see it),npm run test:guided:focus -- EI-06
+internships,employer,EI-07,Sync campus visibility on an existing internship (add or remove colleges),npm run test:guided:focus -- EI-07
+internships,employer,EI-08,Confirm published internship shows correct metadata on the employer list,npm run test:guided:focus -- EI-08
+internships,employer,EI-09,Open Applications → Internships tab and see program applicants only,npm run test:guided:focus -- EI-09
+internships,employer,EI-10,Filter internship applicants by status,npm run test:guided:focus -- EI-10
+internships,employer,EI-11,"Search internship applicants by name, system ID, roll, email, college, branch, or opening",npm run test:guided:focus -- EI-11
+internships,employer,EI-12,"Sort internship applicants by date, CGPA, or name",npm run test:guided:focus -- EI-12
+internships,employer,EI-13,Open full student profile from an internship application,npm run test:guided:focus -- EI-13
+internships,employer,EI-14,Open student CV when resume exists; confirm no CV action when missing,npm run test:guided:focus -- EI-14
+internships,employer,EI-15,Shortlist an applicant in Applied or On hold status,npm run test:guided:focus -- EI-15
+internships,employer,EI-16,"Mark applicant In progress, Selected, Rejected, or On hold",npm run test:guided:focus -- EI-16
+internships,employer,EI-17,Confirm status updates appear in the list and in exported data,npm run test:guided:focus -- EI-17
+internships,employer,EI-18,Export filtered internship applicants to CSV (Applications → Internships → Export → current list),npm run test:guided:focus -- EI-18
+internships,employer,EI-19,Export all internship applicants to CSV (Export → full list),npm run test:guided:focus -- EI-19
+internships,employer,EI-20,"Verify applicant export CSV columns (student, system ID, roll, email, college, branch, CGPA, opening, type, status, applied date, source = Program)",npm run test:guided:focus -- EI-20
+internships,employer,EI-21,Export CSV on Assessment uploads (CSV) — Internship tab (all applications; same format for re-upload),npm run test:guided:focus -- EI-21
+internships,employer,EI-22,CSV upload or Assessment Update Online — Internship tab (round labels from Assessment map),npm run test:guided:focus -- EI-22
+internships,employer,EI-23,"Offers bulk CSV via Offers page (route /offers-upload — no sidebar menu link)",npm run test:guided:focus -- EI-23
+internships,student,SI-01,View published internships visible to the student’s college,npm run test:guided:focus -- SI-01
+internships,student,SI-02,Search and filter the internship list,npm run test:guided:focus -- SI-02
+internships,student,SI-03,"Open internship detail (description, stipend, CGPA, vacancies, company)",npm run test:guided:focus -- SI-03
+internships,student,SI-04,Apply to a published internship when a valid primary resume/CV exists,npm run test:guided:focus -- SI-04
+internships,student,SI-05,"Confirm apply blocked without resume, when placement-locked, archived, or below min CGPA",npm run test:guided:focus -- SI-05
+internships,student,SI-06,Confirm apply blocked when posting is unpublished or not visible to the campus,npm run test:guided:focus -- SI-06
+internships,student,SI-07,Confirm re-apply on same internship updates existing row (no duplicate applications),npm run test:guided:focus -- SI-07
+internships,student,SI-08,View internship applications under My Applications → Internships,npm run test:guided:focus -- SI-08
+internships,student,SI-09,"See status updates when employer shortlists, selects, or rejects",npm run test:guided:focus -- SI-09
+internships,student,SI-10,Withdraw an internship application and re-apply while posting remains published,npm run test:guided:focus -- SI-10
+internships,student,SI-11,Export filtered internship applications to CSV (My Applications → Internships → Export → current tab/filter),npm run test:guided:focus -- SI-11
+internships,student,SI-12,Export all internship applications to CSV (Export → full list for that type),npm run test:guided:focus -- SI-12
+internships,student,SI-13,"Verify student application export CSV includes company, role/title, status, applied date, and related fields",npm run test:guided:focus -- SI-13
+internships,student,SI-14,Confirm student cannot upload a CSV to apply to internships (apply is UI-only per posting),npm run test:guided:focus -- SI-14
+internships,student,SI-15,"New student (including college CSV import) completes profile + resume, then applies successfully",npm run test:guided:focus -- SI-15
+internships,college,CI-01,View published internships from employers approved for this campus,npm run test:guided:focus -- CI-01
+internships,college,CI-02,Confirm non-approved employers’ internships do not appear,npm run test:guided:focus -- CI-02
+internships,college,CI-03,"Add a single student manually (roll, email) as alternative to CSV",npm run test:guided:focus -- CI-03
+internships,college,CI-04,Download student bulk-import CSV template (Students → Template),npm run test:guided:focus -- CI-04
+internships,college,CI-05,Bulk-import students via CSV and confirm accounts created with welcome credentials,npm run test:guided:focus -- CI-05
+internships,college,CI-06,Review bulk-import result — success count and per-row error report for invalid CSV rows,npm run test:guided:focus -- CI-06
+internships,college,CI-07,"Export master student list to CSV (filtered or full, from Students screen)",npm run test:guided:focus -- CI-07
+internships,college,CI-08,"Confirm CSV-imported student can sign in, add resume, and apply to a visible internship",npm run test:guided:focus -- CI-08
+internships,college,CI-09,View internship program applications on college Applications (read-only),npm run test:guided:focus -- CI-09
+internships,college,CI-10,Export published internship catalog to CSV (Internship results → export),npm run test:guided:focus -- CI-10
+internships,college,CI-11,View employer assessment upload rows for campus (Hiring assessment — read-only mirror of employer CSV uploads),npm run test:guided:focus -- CI-11
+internships,college,CI-12,Export hiring-assessment view to CSV for campus reporting,npm run test:guided:focus -- CI-12
+internships,college,CI-13,After employer uploads internship assessments (CSV or Online) rows appear on college Hiring Assessment,npm run test:guided:focus -- CI-13
+internships,college,CI-14,"Download offers/assessment-starter CSV listing campus students (College Offers or Hiring assessment — prep sheet, not internship apply)",npm run test:guided:focus -- CI-14
+internships,college,CI-15,Import offers via CSV on college Offers (separate from internship selection; optional regression only),npm run test:guided:focus -- CI-15
+internships,college,CI-16,Revoke employer partnership and confirm that employer’s internships disappear for students,npm run test:guided:focus -- CI-16
+placement-drives,employer,DRV-E01,"View all placement drives across partner campuses (requested, approved, scheduled, in progress, completed, cancelled)",npm run test:guided:focus -- DRV-E01
+placement-drives,employer,DRV-E02,Filter drives list by one or more approved campuses,npm run test:guided:focus -- DRV-E02
+placement-drives,employer,DRV-E03,"Export placement drives list to CSV (id, college, title, date, drive type, status, venue, registered count, CTC breakup)",npm run test:guided:focus -- DRV-E03
+placement-drives,employer,DRV-E04,"Open Request placement drive and enter title, description, drive type, date, venue, optional linked job, and CTC breakup",npm run test:guided:focus -- DRV-E04
+placement-drives,employer,DRV-E05,Submit drive request to an approved campus and confirm status is Requested,npm run test:guided:focus -- DRV-E05
+placement-drives,employer,DRV-E06,Attempt drive request on a campus without approved partnership and confirm rejection,npm run test:guided:focus -- DRV-E06
+placement-drives,employer,DRV-E07,Link an optional company job posting to the drive and confirm job belongs to the employer,npm run test:guided:focus -- DRV-E07
+placement-drives,employer,DRV-E08,"Open Applications → Jobs tab for all placement-drive applicants (applications table, not internships)",npm run test:guided:focus -- DRV-E08
+placement-drives,employer,DRV-E09,Open applicants filtered to one drive via link from the drives list (?tab=jobs&driveId=…),npm run test:guided:focus -- DRV-E09
+placement-drives,employer,DRV-E10,"Filter drive applicants by status, search, and sort (date, CGPA, name)",npm run test:guided:focus -- DRV-E10
+placement-drives,employer,DRV-E11,Open full student profile and CV from a drive application,npm run test:guided:focus -- DRV-E11
+placement-drives,employer,DRV-E12,Shortlist a drive applicant in Applied or On hold status,npm run test:guided:focus -- DRV-E12
+placement-drives,employer,DRV-E13,"Mark drive applicant In progress, Selected, Rejected, or On hold",npm run test:guided:focus -- DRV-E13
+placement-drives,employer,DRV-E14,Export filtered drive applicants to CSV (Applications → Jobs → Export → current list),npm run test:guided:focus -- DRV-E14
+placement-drives,employer,DRV-E15,Export all drive applicants to CSV (Export → full list),npm run test:guided:focus -- DRV-E15
+placement-drives,employer,DRV-E16,"Verify drive applicant export CSV (system ID, roll, college, opening/drive, status, applied date, source = Placement drive)",npm run test:guided:focus -- DRV-E16
+placement-drives,employer,DRV-E17,Export CSV — Drive tab on Assessment uploads (CSV) (all drive applications),npm run test:guided:focus -- DRV-E17
+placement-drives,employer,DRV-E18,"CSV upload on Drive tab (placement_drive_id per row; round_1…round_5; labels from Assessment map)",npm run test:guided:focus -- DRV-E18
+placement-drives,employer,DRV-E19,Review assessment upload summary (accepted vs rejected rows) and edit individual rows after upload,npm run test:guided:focus -- DRV-E19
+placement-drives,employer,DRV-E20,Re-upload assessment CSV after fixing rejected rows and confirm outcomes update,npm run test:guided:focus -- DRV-E20
+placement-drives,employer,DRV-E21,Offers starter CSV from Offers page (prefilled students; route /offers-upload),npm run test:guided:focus -- DRV-E21
+placement-drives,employer,DRV-E22,"Bulk-import offers via CSV for students on campus master list (system_id or roll + job_title, optional drive_id, status)",npm run test:guided:focus -- DRV-E22
+placement-drives,employer,DRV-E23,Confirm offers CSV row fails when student has not applied to the referenced drive (if product enforces apply-before-offer for that path),npm run test:guided:focus -- DRV-E23
+placement-drives,employer,DRV-E24,Create or edit a single offer linked to a placement drive from the Offers screen (non-CSV path),npm run test:guided:focus -- DRV-E24
+placement-drives,student,DRV-S01,Browse placement drives visible for the student’s college (approved / scheduled only),npm run test:guided:focus -- DRV-S01
+placement-drives,student,DRV-S02,"Filter drives by mode (on-campus, off-campus, virtual, hybrid), status, and month/year",npm run test:guided:focus -- DRV-S02
+placement-drives,student,DRV-S03,"View drive details (company, role, date, venue, salary/CGPA eligibility, vacancies, registered count)",npm run test:guided:focus -- DRV-S03
+placement-drives,student,DRV-S04,Apply to an open placement drive when a valid primary resume/CV exists,npm run test:guided:focus -- DRV-S04
+placement-drives,student,DRV-S05,"Confirm apply blocked without resume, when placement-locked, archived, or below drive/job min CGPA",npm run test:guided:focus -- DRV-S05
+placement-drives,student,DRV-S06,Confirm apply blocked when drive date is in the past,npm run test:guided:focus -- DRV-S06
+placement-drives,student,DRV-S07,Confirm apply blocked when drive is not approved/scheduled for the campus,npm run test:guided:focus -- DRV-S07
+placement-drives,student,DRV-S08,Confirm duplicate apply updates existing application (same student + drive),npm run test:guided:focus -- DRV-S08
+placement-drives,student,DRV-S09,Track drive applications under My Applications → Drives,npm run test:guided:focus -- DRV-S09
+placement-drives,student,DRV-S10,"See status updates when employer shortlists, selects, or rejects",npm run test:guided:focus -- DRV-S10
+placement-drives,student,DRV-S11,Withdraw a drive application and re-apply while the drive remains open,npm run test:guided:focus -- DRV-S11
+placement-drives,student,DRV-S12,Export filtered drive applications to CSV (My Applications → Drives → Export → current filter/tab),npm run test:guided:focus -- DRV-S12
+placement-drives,student,DRV-S13,Export all drive applications to CSV (Export → full list),npm run test:guided:focus -- DRV-S13
+placement-drives,student,DRV-S14,"Verify student drive-application export CSV (company, role, status, applied date, drive date)",npm run test:guided:focus -- DRV-S14
+placement-drives,student,DRV-S15,Confirm student cannot upload a CSV to apply to a drive (apply is UI-only),npm run test:guided:focus -- DRV-S15
+placement-drives,student,DRV-S16,View drive-related dates on the Placement calendar,npm run test:guided:focus -- DRV-S16
+placement-drives,student,DRV-S17,View interview slots tied to drive applications under My Interviews (when scheduled),npm run test:guided:focus -- DRV-S17
+placement-drives,student,DRV-S18,View and respond to offers linked to a drive under My Offers (when employer/college records an offer),npm run test:guided:focus -- DRV-S18
+placement-drives,student,DRV-S19,"New or CSV-imported student completes profile + resume, then applies to an approved drive",npm run test:guided:focus -- DRV-S19
+placement-drives,college,DRV-C01,View all placement drives for the campus (including Awaiting approval),npm run test:guided:focus -- DRV-C01
+placement-drives,college,DRV-C02,Filter drives by academic year when academic-year context is set,npm run test:guided:focus -- DRV-C02
+placement-drives,college,DRV-C03,Approve a drive in Requested status and confirm it becomes Approved,npm run test:guided:focus -- DRV-C03
+placement-drives,college,DRV-C04,Reject a requested drive and confirm status becomes Cancelled,npm run test:guided:focus -- DRV-C04
+placement-drives,college,DRV-C05,Attempt approve/reject on a drive not in Requested status and confirm 409 / error,npm run test:guided:focus -- DRV-C05
+placement-drives,college,DRV-C06,Confirm employer receives notification/email after drive approval,npm run test:guided:focus -- DRV-C06
+placement-drives,college,DRV-C07,"Export campus placement drives list to CSV (company, role, date, type, status, venue, registered, selected)",npm run test:guided:focus -- DRV-C07
+placement-drives,college,DRV-C08,Assign attached placement staff to a drive and save,npm run test:guided:focus -- DRV-C08
+placement-drives,college,DRV-C09,"Mark social share channels planned for a drive (Twitter, Facebook, LinkedIn, etc.)",npm run test:guided:focus -- DRV-C09
+placement-drives,college,DRV-C10,Post drive to Facebook Page when integration is configured,npm run test:guided:focus -- DRV-C10
+placement-drives,college,DRV-C11,Download post-drive report as JSON (applicant stats by status — not CSV),npm run test:guided:focus -- DRV-C11
+placement-drives,college,DRV-C12,Switch drives view between list and calendar,npm run test:guided:focus -- DRV-C12
+placement-drives,college,DRV-C13,Download student bulk-import CSV template (Students → Template),npm run test:guided:focus -- DRV-C13
+placement-drives,college,DRV-C14,Bulk-import students via CSV before drive apply testing,npm run test:guided:focus -- DRV-C14
+placement-drives,college,DRV-C15,Export master student list to CSV (filtered or full),npm run test:guided:focus -- DRV-C15
+placement-drives,college,DRV-C16,View drive-related applications on college Applications (read-only),npm run test:guided:focus -- DRV-C16
+placement-drives,college,DRV-C17,View employer assessment CSV upload rows for the campus (Hiring assessment — read-only),npm run test:guided:focus -- DRV-C17
+placement-drives,college,DRV-C18,Export hiring-assessment view to CSV after employer uploads drive assessment results,npm run test:guided:focus -- DRV-C18
+placement-drives,college,DRV-C19,Download offers/assessment-starter CSV for campus students (College Offers or Hiring assessment),npm run test:guided:focus -- DRV-C19
+placement-drives,college,DRV-C20,"Import offers via CSV on college Offers (optional; separate from drive apply, for offer logging)",npm run test:guided:focus -- DRV-C20
+placement-drives,college,DRV-C21,Confirm students on campus see the drive only after college approval (not while requested),npm run test:guided:focus -- DRV-C21
+placement-drives,college,DRV-C22,Revoke employer partnership and confirm that employer’s drives and applications path are blocked for new activity,npm run test:guided:focus -- DRV-C22
