@@ -1,0 +1,18 @@
+{
+  "student-reminders": {
+    "backup": "student-reminders-page.js.bak",
+    "target": "src/app/dashboard/student/reminders/page.js"
+  },
+  "college-employers": {
+    "backup": "college-employers-page.js.bak",
+    "target": "src/app/dashboard/college/employers/page.js"
+  },
+  "college-infrastructure": {
+    "backup": "college-infrastructure-page.js.bak",
+    "target": "src/app/dashboard/college/infrastructure/page.js"
+  },
+  "student-documents": {
+    "backup": "student-documents-page.js.bak",
+    "target": "src/app/dashboard/student/documents/page.js"
+  }
+}

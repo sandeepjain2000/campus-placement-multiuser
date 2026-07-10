@@ -1,0 +1,53 @@
+{
+  "id": "email-delivery-audit",
+  "title": "Email delivery audit (super admin)",
+  "oneLiner": "Voice-guided tour for use case: Email delivery audit (super admin)",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Trigger selection email — manual prerequisite",
+      "observe": "Run internship publish-hire first, or Select applicant (student_selection context).",
+      "action": {
+        "type": "wait",
+        "ms": 3000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Platform admin hub.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Search recipient login email — survives deleted QA accounts.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Review row detail — manual",
+      "observe": "Original, after communication routing, final SMTP; context and recipient_login_email.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    }
+  ]
+}

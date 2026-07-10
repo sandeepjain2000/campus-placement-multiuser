@@ -1,0 +1,9 @@
+{
+  "employer-profile": { "backup": "employer-profile-page.js.bak", "target": "src/app/dashboard/employer/profile/page.js" },
+  "college-overview": { "backup": "college-overview-page.js.bak", "target": "src/app/dashboard/college/overview/page.js" },
+  "college-clarifications": { "backup": "college-clarifications-page.js.bak", "target": "src/app/dashboard/college/clarifications/page.js" },
+  "employer-jobs": { "backup": "employer-jobs-page.js.bak", "target": "src/app/dashboard/employer/jobs/page.js" },
+  "employer-drives": { "backup": "employer-drives-page.js.bak", "target": "src/app/dashboard/employer/drives/page.js" },
+  "college-employers-requests": { "backup": "college-employers-requests-page.js.bak", "target": "src/app/dashboard/college/employers/requests/page.js" },
+  "employer-drives-api": { "backup": "employer-drives-route.js.bak", "target": "src/app/api/employer/drives/route.js" }
+}

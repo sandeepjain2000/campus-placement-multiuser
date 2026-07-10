@@ -1,0 +1,14 @@
+{
+  "globals-css": {
+    "backup": "globals.css.bak",
+    "target": "src/app/globals.css"
+  },
+  "auth-provider": {
+    "backup": "AuthProvider.js.bak",
+    "target": "src/components/AuthProvider.js"
+  },
+  "toast-provider": {
+    "backup": "ToastProvider.js.bak",
+    "target": "src/components/ToastProvider.js"
+  }
+}

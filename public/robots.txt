@@ -1,0 +1,7 @@
+# PlacementHub — public marketing pages may be indexed; app and APIs are not.
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /developer/
+Disallow: /data-entry/
+Disallow: /api/

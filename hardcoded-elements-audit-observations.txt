@@ -1,0 +1,156 @@
+Hard-Coded / Dummy UI Audit Observations
+========================================
+
+Scope
+-----
+This note captures additional hard-coded and dummy UI findings observed in the Campus Placement project. These observations were recorded without changing application code.
+
+
+1. College Dashboard Title Is Not Fully Data-Driven
+--------------------------------------------------
+File:
+src/app/dashboard/college/overview/page.js
+
+Finding:
+The college dashboard subtitle is rendered from the authenticated session tenant name:
+
+  session?.user?.tenantName?.trim() || 'Your institution'
+
+Example shown in UI:
+
+  Indian Institute of Technology, Madras • Placement Season 2025-26
+
+Problem:
+The college name shown on the dashboard is not guaranteed to come from the editable College Settings profile. If a college updates its institution name in settings, this dashboard header may still show the session/seed tenant name.
+
+Expected behavior:
+The dashboard should prefer the saved college profile/settings value, then fall back to tenant DB data only if settings are missing.
+
+
+2. Placement Season Is Session/Client-State Driven
+--------------------------------------------------
+Files:
+src/app/dashboard/college/overview/page.js
+src/app/dashboard/layout.js
+
+Finding:
+The academic year / placement season is generated from getCurrentAcademicYear() and stored in sessionStorage as activeAcademicYear.
+
+Problem:
+This is not persisted as an editable college configuration. It can show a value such as 2025-26 without being tied to an official saved placement season for the college.
+
+Expected behavior:
+Placement season should be editable in college settings or generated from persisted academic-year configuration.
+
+
+3. Wireframe / Dummy Language Is Still Visible
+----------------------------------------------
+File:
+src/app/dashboard/college/infrastructure/page.js
+
+Examples found:
+
+  Wireframe
+  College social channels (preview)
+  Static post shells
+  dummy preview
+  Wireframe month grid
+  Wireframe publish targets
+
+Problem:
+Production-facing UI should not describe features as wireframes, dummy previews, static shells, or fake publish targets.
+
+Expected behavior:
+Either show real data-backed social/website preview cards, or hide the section until the feature is production-ready.
+
+
+4. Social Preview Toolkit Still Uses Mock Concepts
+-------------------------------------------------
+File:
+src/components/wireframe/SocialWireframeToolkit.jsx
+
+Findings:
+Components and UI still use mock/wireframe concepts, including:
+
+  MockLinkedIn
+  MockFacebook
+  MockInstagram
+  MockX
+  Read-only visual preview
+  not a live embed
+  nothing is posted from PlacementHub
+
+Problem:
+The feature appears as a demo/prototype instead of a real system feature.
+
+Expected behavior:
+Social channel output should be generated from college settings, events, bookings, and dashboard metrics. If no real social integration exists, the UI should not be presented as a dummy/wireframe feature.
+
+
+5. Logo Is Editable in Settings, But Not Reliably Used Everywhere
+-----------------------------------------------------------------
+Files:
+src/app/dashboard/college/settings/page.js
+src/app/api/college/settings/logo/complete/route.js
+src/app/dashboard/layout.js
+
+Finding:
+College Settings supports uploading or pasting a logo URL, and the API saves logo_url. However, dashboard layout surfaces often call EntityLogo with only a name:
+
+  session.user.tenantName || session.user.name
+
+Problem:
+Some surfaces ignore the saved logo URL and derive/guess a logo from text instead.
+
+Expected behavior:
+Every college/employer logo surface should prefer the saved uploaded logo_url or editable logo URL. If missing, use a neutral initials fallback.
+
+
+6. EntityLogo Has Hard-Coded Demo Entity Mapping
+------------------------------------------------
+File:
+src/components/EntityLogo.js
+
+Hard-coded mappings include:
+
+  IIT Madras / IITM -> /logos/IITM.jpg
+  NIT Trichy / NITT -> /logos/nitt.jpg
+  BITS Pilani / BITS -> /logos/BITS.jpg
+  TechCorp -> /logos/TechCorp.jpg
+  Infosys -> /logos/infosys.jpg
+  PlacementHub / admin / super -> /logos/superadmin.jpg
+
+Problem:
+The component guesses logos from entity names. This is hard-coded demo behavior and can show the wrong logo for real institutions or companies.
+
+Expected behavior:
+Logo display should use explicit saved logo data. If no logo is configured, show initials or a neutral generated placeholder.
+
+
+7. College Settings Has Hard-Coded Profile Defaults
+---------------------------------------------------
+File:
+src/app/dashboard/college/settings/page.js
+
+Defaults include:
+
+  accreditation.naacGrade = 'A++'
+  placementOfficer.designation = 'Training & Placement Officer'
+
+Problem:
+These are editable, but still pre-filled assumptions. Profile elements should either come from persisted data or remain blank until the user provides them.
+
+Expected behavior:
+Use saved data from the database. If missing, show empty fields or neutral placeholders rather than real-looking defaults.
+
+
+8. Overall Rule To Enforce
+--------------------------
+All profile and screen elements should be one of:
+
+  1. Editable and persisted.
+  2. Generated from real stored data.
+  3. Computed from live database metrics.
+  4. Hidden until enough data exists.
+
+The application should not show dummy, mock, wireframe, static shell, seeded-brand, or hard-coded institution/company assumptions in production-facing screens.

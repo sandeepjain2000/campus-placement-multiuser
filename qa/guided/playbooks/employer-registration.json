@@ -1,0 +1,71 @@
+{
+  "id": "employer-registration",
+  "title": "New employer registration → approval",
+  "oneLiner": "Voice-guided tour for use case: New employer registration → approval",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open Sign In page",
+      "observe": "Registration path for new employer — manual account creation.",
+      "action": {
+        "type": "goto",
+        "path": "/sign-in"
+      }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Create employer account — manual",
+      "observe": "Fill company and admin details; verify email from inbox (context email_verification).",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Review pending registrations.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Pending Registrations",
+      "observe": "New employer row awaiting approval.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/pending-registrations"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Approve registration — manual",
+      "observe": "Employer receives registration_approved email.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Search registrant login email; context registration_approved or email_verification.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    }
+  ]
+}

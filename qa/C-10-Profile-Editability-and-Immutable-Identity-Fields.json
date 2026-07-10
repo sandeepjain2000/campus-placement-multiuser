@@ -1,0 +1,294 @@
+{
+  "category": "C-10",
+  "categoryTitle": "Profile editability with immutable identity constraints",
+  "description": "Validate that profile elements are editable except immutable identity fields (student/company/college names), including AWS-backed assets.",
+  "testCases": [
+    {
+      "testCaseId": "C10-EDIT-001",
+      "category": "C-10",
+      "type": "editable_fields",
+      "title": "Student Profile editable fields can be updated",
+      "role": "student",
+      "route": "/dashboard/student/profile",
+      "account": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "editableFieldSamples": [
+        "Phone",
+        "Bio",
+        "Department metadata (if allowed)",
+        "Skills/projects references"
+      ],
+      "steps": [
+        "Login as student and open /dashboard/student/profile",
+        "Edit each sample editable field with valid new value",
+        "Save changes",
+        "Refresh page and re-open profile",
+        "Verify updated values persist and render correctly"
+      ],
+      "expectedResult": [
+        "All editable fields accept valid updates",
+        "No unauthorized validation blocks for editable fields",
+        "Saved values persist after refresh/re-login"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C10-EDIT-002",
+      "category": "C-10",
+      "type": "editable_fields",
+      "title": "Employer Profile editable fields can be updated",
+      "role": "employer",
+      "route": "/dashboard/employer/profile",
+      "account": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "editableFieldSamples": [
+        "Website",
+        "Description",
+        "Locations",
+        "Company size/type"
+      ],
+      "steps": [
+        "Login as employer and open /dashboard/employer/profile",
+        "Edit each sample editable field with valid new value",
+        "Save changes",
+        "Refresh page and re-open profile",
+        "Verify updated values persist and render correctly"
+      ],
+      "expectedResult": [
+        "All editable fields accept valid updates",
+        "No unauthorized validation blocks for editable fields",
+        "Saved values persist after refresh/re-login"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C10-EDIT-003",
+      "category": "C-10",
+      "type": "editable_fields",
+      "title": "College Profile/Settings editable fields can be updated",
+      "role": "college_admin",
+      "route": "/dashboard/college/settings",
+      "account": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "editableFieldSamples": [
+        "Placement officer details",
+        "Website",
+        "Social links",
+        "Season label"
+      ],
+      "steps": [
+        "Login as college_admin and open /dashboard/college/settings",
+        "Edit each sample editable field with valid new value",
+        "Save changes",
+        "Refresh page and re-open profile",
+        "Verify updated values persist and render correctly"
+      ],
+      "expectedResult": [
+        "All editable fields accept valid updates",
+        "No unauthorized validation blocks for editable fields",
+        "Saved values persist after refresh/re-login"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C10-IMM-001",
+      "category": "C-10",
+      "type": "immutable_identity_fields",
+      "title": "Student Profile immutable identity fields are protected",
+      "role": "student",
+      "route": "/dashboard/student/profile",
+      "account": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "immutableFields": [
+        "Student Name"
+      ],
+      "steps": [
+        "Login as student and open /dashboard/student/profile",
+        "Attempt to edit immutable identity field(s) through UI",
+        "Attempt direct update request via network/API (if feasible in QA)",
+        "Save/submit and observe response",
+        "Reload and verify immutable values unchanged"
+      ],
+      "expectedResult": [
+        "Immutable field is read-only in UI OR blocked with clear validation",
+        "Backend rejects unauthorized mutation attempts",
+        "Original immutable identity value remains unchanged"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C10-IMM-002",
+      "category": "C-10",
+      "type": "immutable_identity_fields",
+      "title": "Employer Profile immutable identity fields are protected",
+      "role": "employer",
+      "route": "/dashboard/employer/profile",
+      "account": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "immutableFields": [
+        "Company Name"
+      ],
+      "steps": [
+        "Login as employer and open /dashboard/employer/profile",
+        "Attempt to edit immutable identity field(s) through UI",
+        "Attempt direct update request via network/API (if feasible in QA)",
+        "Save/submit and observe response",
+        "Reload and verify immutable values unchanged"
+      ],
+      "expectedResult": [
+        "Immutable field is read-only in UI OR blocked with clear validation",
+        "Backend rejects unauthorized mutation attempts",
+        "Original immutable identity value remains unchanged"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C10-IMM-003",
+      "category": "C-10",
+      "type": "immutable_identity_fields",
+      "title": "College Profile/Settings immutable identity fields are protected",
+      "role": "college_admin",
+      "route": "/dashboard/college/settings",
+      "account": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "immutableFields": [
+        "College Name"
+      ],
+      "steps": [
+        "Login as college_admin and open /dashboard/college/settings",
+        "Attempt to edit immutable identity field(s) through UI",
+        "Attempt direct update request via network/API (if feasible in QA)",
+        "Save/submit and observe response",
+        "Reload and verify immutable values unchanged"
+      ],
+      "expectedResult": [
+        "Immutable field is read-only in UI OR blocked with clear validation",
+        "Backend rejects unauthorized mutation attempts",
+        "Original immutable identity value remains unchanged"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C10-AWS-001",
+      "category": "C-10",
+      "type": "aws_stored_elements_update",
+      "title": "Student Profile AWS-backed elements are updateable",
+      "role": "student",
+      "route": "/dashboard/student/profile",
+      "account": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "awsElements": [
+        "Profile avatar",
+        "Resume/document upload"
+      ],
+      "steps": [
+        "Login as student and open /dashboard/student/profile",
+        "Upload replacement file/image for AWS-backed element",
+        "Complete upload flow (presign + complete, if applicable)",
+        "Refresh UI and verify new asset is rendered",
+        "Open asset URL to confirm accessibility permissions are correct"
+      ],
+      "expectedResult": [
+        "AWS-backed element upload/update succeeds",
+        "New asset reference is persisted and visible in UI",
+        "No stale asset after refresh/cache bust"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C10-AWS-002",
+      "category": "C-10",
+      "type": "aws_stored_elements_update",
+      "title": "Employer Profile AWS-backed elements are updateable",
+      "role": "employer",
+      "route": "/dashboard/employer/profile",
+      "account": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "awsElements": [
+        "Company logo upload"
+      ],
+      "steps": [
+        "Login as employer and open /dashboard/employer/profile",
+        "Upload replacement file/image for AWS-backed element",
+        "Complete upload flow (presign + complete, if applicable)",
+        "Refresh UI and verify new asset is rendered",
+        "Open asset URL to confirm accessibility permissions are correct"
+      ],
+      "expectedResult": [
+        "AWS-backed element upload/update succeeds",
+        "New asset reference is persisted and visible in UI",
+        "No stale asset after refresh/cache bust"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C10-AWS-003",
+      "category": "C-10",
+      "type": "aws_stored_elements_update",
+      "title": "College Profile/Settings AWS-backed elements are updateable",
+      "role": "college_admin",
+      "route": "/dashboard/college/settings",
+      "account": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "awsElements": [
+        "College logo upload"
+      ],
+      "steps": [
+        "Login as college_admin and open /dashboard/college/settings",
+        "Upload replacement file/image for AWS-backed element",
+        "Complete upload flow (presign + complete, if applicable)",
+        "Refresh UI and verify new asset is rendered",
+        "Open asset URL to confirm accessibility permissions are correct"
+      ],
+      "expectedResult": [
+        "AWS-backed element upload/update succeeds",
+        "New asset reference is persisted and visible in UI",
+        "No stale asset after refresh/cache bust"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C10-AUDIT-001",
+      "category": "C-10",
+      "type": "profile_field_policy_matrix",
+      "title": "Profile field policy matrix: Editable vs Immutable vs AWS-backed",
+      "role": "all_roles",
+      "route": "all profile modules",
+      "account": {
+        "email": "role-wise demo",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Create full field inventory for student/employer/college profiles",
+        "Tag each field as Editable / Immutable / System-managed",
+        "Tag each media/document field as AWS-backed or local",
+        "Validate UI + API behavior matches policy",
+        "Publish discrepancy list"
+      ],
+      "expectedResult": [
+        "Every profile field has explicit governance status",
+        "Identity fields remain immutable",
+        "AWS-backed profile elements are updateable where intended"
+      ],
+      "priority": "critical"
+    }
+  ]
+}

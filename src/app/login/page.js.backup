@@ -1,0 +1,930 @@
+'use client';
+import { useState, useEffect, useMemo, useRef, useCallback, Suspense } from 'react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useToast } from '@/components/ToastProvider';
+import { getDashboardPath } from '@/lib/utils';
+import { DEMO_LOGINS, DEMO_SEED_PASSWORD, isDemoLoginsEnabled, SEEDED_EMPLOYER_CREDENTIALS } from '@/lib/demoLogins';
+import { ArrowRight, ChevronDown, ChevronUp, KeyRound, GraduationCap, Building2, School, ShieldCheck, Users, Eye, EyeOff, MessageCircleQuestion, FlaskConical, BookOpen } from 'lucide-react';
+import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
+import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
+import LoginSupportContact from '@/components/auth/LoginSupportContact';
+import DevScreenTag from '@/components/DevScreenTag';
+import { showSandboxLoginBanner } from '@/lib/sandboxBanner';
+import {
+  consumeLoginPrefillEmail,
+  readLoginFormValues,
+  writeLoginFormValues,
+} from '@/lib/loginClient';
+import { markBrowserSessionActive, SESSION_BROWSER_MARKER_KEY } from '@/lib/sessionPolicy';
+
+/** Match `/demo-accounts` three-column grouping: Students | Employers | (Super + College admins). */
+const DEMO_GROUP_META = {
+  student: {
+    label: 'Students',
+    icon: GraduationCap,
+    color: 'var(--primary-700)',
+    bg: 'var(--primary-50)',
+    border: 'var(--primary-200)',
+  },
+  alumni: {
+    label: 'Alumni',
+    icon: GraduationCap,
+    color: 'var(--accent-700, #6d28d9)',
+    bg: 'var(--accent-50, #f5f3ff)',
+    border: 'var(--accent-200, #ddd6fe)',
+  },
+  employer: {
+    label: 'Employers',
+    icon: Building2,
+    color: 'var(--success-700)',
+    bg: 'var(--success-50)',
+    border: 'var(--success-200)',
+  },
+  admin: {
+    label: 'College Admins',
+    icon: School,
+    color: 'var(--warning-700)',
+    bg: 'var(--warning-50)',
+    border: 'var(--warning-200)',
+  },
+  superadmin: {
+    label: 'Super Admins',
+    icon: ShieldCheck,
+    color: 'var(--danger-700)',
+    bg: 'var(--danger-50)',
+    border: 'var(--danger-200)',
+  },
+  dummy: {
+    label: 'Coming Soon',
+    icon: Users,
+    color: 'var(--text-tertiary)',
+    bg: 'var(--bg-secondary)',
+    border: 'var(--border-default)',
+  },
+};
+
+function getGroupKey(demo) {
+  if (demo.isDummy) return 'dummy';
+  if (demo.group === 'alumni') return 'alumni';
+  if (demo.icon === '🎓') return 'student';
+  if (demo.icon === '🏢') return 'employer';
+  if (demo.icon === '⚙️') return 'superadmin';
+  if (demo.icon === '🏫') return 'admin';
+  return 'admin';
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: 'var(--bg-secondary)' }}><div className="skeleton" style={{ width: 220, height: 28 }} /></div>}>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('placementhub_login_source', '/login');
+    } catch (e) {}
+  }, []);
+  const forceLogin = searchParams.get('force') === '1';
+  const guidedAutoLogin = searchParams.get('guided') === '1';
+  const guidedEmail = searchParams.get('email')?.trim() || '';
+  const guidedLoginAttempted = useRef(false);
+  const { status, data: session } = useSession();
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const [registeredBanner, setRegisteredBanner] = useState('');
+  const [showCredentials, setShowCredentials] = useState(false);
+  const signingOut = useRef(false);
+  const loggingInRef = useRef(false);
+  const loginFormRef = useRef(null);
+  /** After the user types or picks a saved login, do not overwrite with ?email= from the URL. */
+  const userChoseCredentials = useRef(false);
+  const urlPrefillApplied = useRef(false);
+  const toast = useToast();
+  const [emailReadOnly, setEmailReadOnly] = useState(true);
+  const [passwordReadOnly, setPasswordReadOnly] = useState(true);
+
+  const uniqueDemoLogins = useMemo(() => {
+    const seen = new Set();
+    const merged = [...DEMO_LOGINS, ...SEEDED_EMPLOYER_CREDENTIALS];
+    return merged.filter((d) => {
+      const key = String(d?.email || '').trim().toLowerCase();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, []);
+  const demosByGroup = useMemo(() => {
+    const buckets = { student: [], alumni: [], employer: [], admin: [], superadmin: [], dummy: [] };
+    for (const d of uniqueDemoLogins) {
+      const k = getGroupKey(d);
+      if (buckets[k]) buckets[k].push(d);
+    }
+    return buckets;
+  }, [uniqueDemoLogins]);
+
+  /**
+   * Demo prefill (sessionStorage from /demo-accounts, or URL ?email= param).
+   * DO NOT MODIFY NEEDLESSLY. This is a fix for double login requirement and test prefill.
+   */
+  useEffect(() => {
+    if (userChoseCredentials.current || urlPrefillApplied.current) return;
+
+    const emailFromStorage = consumeLoginPrefillEmail();
+    const emailFromUrl = searchParams.get('email')?.trim() || '';
+    const email = emailFromStorage || emailFromUrl;
+    if (!email) return;
+
+    urlPrefillApplied.current = true;
+
+    // Clean up query param so page refreshes don't stick to it
+    if (emailFromUrl) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('email');
+      const next = params.toString() ? `/login?${params}` : '/login';
+      router.replace(next, { scroll: false });
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      if (userChoseCredentials.current) return;
+      const form = loginFormRef.current;
+      if (!form) return;
+      const current = readLoginFormValues(form).email;
+      if (current && current.toLowerCase() !== email.toLowerCase()) {
+        userChoseCredentials.current = true;
+        return;
+      }
+      if (!current) {
+        writeLoginFormValues(form, { email, password: DEMO_SEED_PASSWORD });
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [searchParams, router]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const verify = params.get('verify');
+    if (verify === 'success') {
+      setRegisteredBanner('Email verified. You can sign in below with your password.');
+      return;
+    }
+    if (verify === 'expired') {
+      setRegisteredBanner('That verification link has expired. Register again or contact support if you need help.');
+      return;
+    }
+    if (verify === 'invalid' || verify === 'error') {
+      setRegisteredBanner('That verification link is invalid or was already used.');
+      return;
+    }
+    const errorParam = params.get('error');
+    if (errorParam) {
+      console.warn(`LoginPage: Landed on login page with error query parameter: ${errorParam}`);
+      if (errorParam === 'session') {
+        setError('Sign-in could not be completed. Please try again.');
+      } else if (errorParam === 'stale') {
+        setError('Your browser session has ended. Please sign in again.');
+      } else if (errorParam === 'CredentialsSignin') {
+        setError('Incorrect email or password. Please try again.');
+      } else if (errorParam === 'Configuration') {
+        setError('Server authentication configuration error. Please contact support.');
+      } else if (errorParam === 'AccessDenied') {
+        setError('Access denied. You do not have permission to sign in.');
+      } else if (errorParam === 'Verification') {
+        setError('The verification link has expired or has already been used.');
+      } else {
+        setError(`Sign-in error: ${errorParam}. Please try again.`);
+      }
+      return;
+    }
+    const q = params.get('registered');
+    if (q === 'pending-platform') {
+      setRegisteredBanner(
+        'Registration received. Verify your email from our message, then wait for platform approval before signing in.',
+      );
+    } else if (q === 'check-email' || q === 'true') {
+      setRegisteredBanner(
+        'Account created. Open the verification link we emailed you, then sign in below with the password you chose.',
+      );
+    }
+  }, []);
+
+  // If ?force=1, sign out existing session so the user can switch accounts
+  // DO NOT MODIFY NEEDLESSLY. This is a fix for double login requirement.
+  useEffect(() => {
+    if (forceLogin && status === 'authenticated' && !signingOut.current) {
+      signingOut.current = true;
+      console.log('LoginPage: force login requested and user is authenticated. Performing full redirecting signout...');
+      void signOut({ callbackUrl: '/login' });
+    }
+  }, [forceLogin, status]);
+
+  // DO NOT MODIFY NEEDLESSLY. This is a fix for double login requirement.
+  // We only redirect client-side if the session is fully active (marker === '1').
+  // If the marker is missing (e.g. stale session or just logged out), we do NOT trigger
+  // a client-side signOut on the login page itself to avoid redirect loops and double signouts.
+  // Instead, the stale session check is handled when they try to access protected pages.
+  useEffect(() => {
+    if (forceLogin) return; // don't auto-redirect when force login
+    if (loggingInRef.current) return; // skip stale check if actively logging in
+    if (status !== 'authenticated' || !session?.user?.role) return;
+
+    let marker = null;
+    try {
+      marker = sessionStorage.getItem(SESSION_BROWSER_MARKER_KEY);
+    } catch {
+      /* ignore */
+    }
+
+    if (marker === '1') {
+      router.replace(getDashboardPath(session.user.role));
+    }
+  }, [status, session, router, forceLogin]);
+
+  const submitCredentials = useCallback(
+    async ({ email, password, token, answer }) => {
+      console.log(`LoginPage: submitCredentials initiated for email: ${email}`);
+      if (!email || !password) {
+        console.warn('LoginPage: submitCredentials validation failed (missing email/password)');
+        setError('Email and password are required.');
+        return false;
+      }
+      if (!token) {
+        console.warn('LoginPage: submitCredentials validation failed (missing captchaToken)');
+        setError('Verification is still loading. Wait a moment, then try again.');
+        return false;
+      }
+      const finalAnswer = String(answer ?? '').trim();
+      setError('');
+      setLoading(true);
+      loggingInRef.current = true;
+      setCaptchaAnswer(finalAnswer);
+      try {
+        console.log('LoginPage: Invoking next-auth signIn with credentials...');
+        const result = await signIn('credentials', {
+          email,
+          password,
+          captchaToken: token,
+          captchaAnswer: finalAnswer,
+          redirect: false,
+        });
+        
+        console.log('LoginPage: next-auth signIn response:', {
+          ok: result?.ok,
+          status: result?.status,
+          error: result?.error,
+          url: result?.url
+        });
+
+        if (result?.error || result?.ok === false) {
+          console.error(`LoginPage: signIn failed. error=${result?.error}`);
+          loggingInRef.current = false;
+          let userMsg = result?.error;
+          if (userMsg === 'CredentialsSignin') {
+            userMsg = 'Incorrect email or password. Please try again.';
+          } else if (!userMsg) {
+            userMsg = 'Sign in failed. Please check your credentials and try again.';
+          }
+          setError(userMsg);
+          if (String(result?.error || '').toLowerCase().includes('verification')) {
+            setCaptchaAnswer('');
+            setCaptchaKey((k) => k + 1);
+          }
+          // Pause for 2 seconds as requested by user to display failure result
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return false;
+        }
+
+        console.log('LoginPage: signIn succeeded. Marking browser session active and preparing redirection...');
+        markBrowserSessionActive();
+        
+        // Display success message and wait 2 seconds before redirecting
+        setRegisteredBanner('Sign in successful! Redirecting in 2 seconds...');
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // /auth/continue reads the session cookie server-side — no need to wait for SessionProvider.
+        if (typeof window !== 'undefined') {
+          window.location.replace(`${window.location.origin}/auth/continue`);
+        } else {
+          router.replace('/auth/continue');
+        }
+        return true;
+      } catch (err) {
+        console.error('LoginPage: submitCredentials exception caught:', err);
+        setError('An unexpected error occurred during sign-in. Please try again.');
+        loggingInRef.current = false;
+        // Pause for 2 seconds to let the user see the failure message
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [router],
+  );
+
+  /** Guided playbook — dev only: sign in via server API (no captcha UI race). */
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    if (!guidedAutoLogin || !guidedEmail) return;
+    if (guidedLoginAttempted.current) return;
+    if (forceLogin && status === 'loading') return;
+
+    guidedLoginAttempted.current = true;
+    void (async () => {
+      setError('');
+      setLoading(true);
+      try {
+        const res = await fetch('/api/guided-runner/sign-in', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: guidedEmail, password: DEMO_SEED_PASSWORD }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok || !data.redirectTo) {
+          guidedLoginAttempted.current = false;
+          setError(data.error || 'Guided sign-in failed. Start the playbook in a second terminal.');
+          return;
+        }
+        markBrowserSessionActive();
+        window.location.replace(`${window.location.origin}${data.redirectTo}`);
+      } catch {
+        guidedLoginAttempted.current = false;
+        setError('Guided sign-in failed. Check that npm run test:guided:playbook is running.');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [guidedAutoLogin, guidedEmail, forceLogin, status]);
+
+  /** Only hide the form when already signed in (redirecting). Keep form mounted while session is "loading". */
+  if (!forceLogin && status === 'authenticated') {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: 'var(--bg-secondary)' }}>
+        <div className="skeleton" style={{ width: 220, height: 28 }} />
+      </div>
+    );
+  }
+
+  const showDemoLogins = isDemoLoginsEnabled();
+  const showSandboxBanner = showSandboxLoginBanner();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    userChoseCredentials.current = true;
+    const { email, password } = readLoginFormValues(e.currentTarget);
+
+    if (!captchaToken) {
+      setError('Verification is still loading. Wait a moment, then try again.');
+      return;
+    }
+    await submitCredentials({
+      email,
+      password,
+      token: captchaToken,
+      answer: captchaAnswer,
+    });
+  };
+
+  const fillCredential = (demo) => {
+    if (demo.isDummy) {
+      toast.info("Placement Committee is coming soon. It's currently in design.");
+      return;
+    }
+    setError('');
+    userChoseCredentials.current = true;
+    writeLoginFormValues(loginFormRef.current, { email: demo.email, password: DEMO_SEED_PASSWORD });
+    setShowCredentials(false);
+    toast.info('Credentials auto-filled — click Sign In.');
+  };
+
+
+  /** One card — same structure as a column on `/demo-accounts`. */
+  const renderDemoListCard = (groupKey) => {
+    const items = demosByGroup[groupKey] || [];
+    if (items.length === 0) return null;
+    const meta = DEMO_GROUP_META[groupKey];
+    const Icon = meta.icon;
+    return (
+      <div
+        key={groupKey}
+        style={{
+          background: 'var(--bg-primary)',
+          border: '1px solid var(--border-default)',
+          borderRadius: 'var(--radius-md)',
+          overflow: 'hidden',
+          boxShadow: 'var(--shadow-sm)',
+          minWidth: 0,
+        }}
+      >
+        <div
+          style={{
+            background: meta.bg,
+            borderBottom: `1px solid ${meta.border}`,
+            padding: '0.5rem 0.65rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            color: meta.color,
+            fontWeight: 700,
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            fontSize: '0.65rem',
+          }}
+        >
+          <Icon size={13} aria-hidden />
+          {meta.label} ({items.length})
+        </div>
+        <div>
+          {items.map((demo, i) => (
+            <div
+              key={demo.email}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.45rem 0.6rem',
+                borderBottom: i < items.length - 1 ? '1px solid var(--border-default)' : 'none',
+                background: 'var(--bg-primary)',
+                gap: '0.4rem',
+              }}
+            >
+              <div style={{ minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: demo.isDummy ? 'var(--text-tertiary)' : 'var(--text-primary)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {demo.label}
+                  {demo.name ? (
+                    <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}> · {demo.name}</span>
+                  ) : null}
+                </div>
+                <div
+                  style={{
+                    fontSize: '0.68rem',
+                    color: 'var(--text-tertiary)',
+                    fontFamily: 'monospace',
+                    marginTop: '0.06rem',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {demo.email}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => fillCredential(demo)}
+                disabled={demo.isDummy}
+                style={{
+                  flexShrink: 0,
+                  padding: '0.2rem 0.45rem',
+                  fontSize: '0.68rem',
+                  fontWeight: 600,
+                  borderRadius: 'var(--radius-sm)',
+                  border: `1px solid ${demo.isDummy ? 'var(--border-default)' : meta.border}`,
+                  background: demo.isDummy ? 'var(--bg-secondary)' : meta.bg,
+                  color: demo.isDummy ? 'var(--text-tertiary)' : meta.color,
+                  cursor: demo.isDummy ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {demo.isDummy ? 'Soon' : 'Use →'}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-secondary)', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <div style={{ position: 'fixed', top: '0.65rem', right: '0.75rem', zIndex: 100000 }}>
+        <DevScreenTag screenId="LOGIN_OLD" />
+      </div>
+      {showSandboxBanner ? (
+        <div
+          role="status"
+          className="login-sandbox-banner"
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            gap: '0.75rem',
+            padding: '0.875rem clamp(1rem, 4vw, 2rem)',
+            background: 'var(--warning-50, #fffbeb)',
+            borderBottom: '1px solid var(--warning-200, #fde68a)',
+            color: 'var(--warning-800, #92400e)',
+            boxSizing: 'border-box',
+          }}
+        >
+          <FlaskConical size={20} style={{ flexShrink: 0, marginTop: '0.1rem' }} aria-hidden />
+          <div style={{ width: '100%', maxWidth: '72rem' }}>
+            <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, lineHeight: 1.35 }}>
+              Sandbox environment — not production
+            </p>
+            <p style={{ margin: '0.35rem 0 0', fontSize: '0.8125rem', fontWeight: 500, lineHeight: 1.5, opacity: 0.95 }}>
+              This site is for demonstration and testing only. Do not rely on it for real placements or enter confidential personal data.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem 1rem',
+        }}
+      >
+      <div style={{ width: '100%', maxWidth: showCredentials && showDemoLogins ? 'min(960px, 100%)' : '420px', transition: 'max-width 0.2s ease' }}>
+
+        {/* Back to Landing Link */}
+        <div style={{ marginBottom: '1.25rem', textAlign: 'left' }}>
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--primary-600)', fontSize: '0.875rem', textDecoration: 'none', fontWeight: 500 }}>
+            <span>&larr;</span> Back to landing page
+          </Link>
+        </div>
+
+        {/* Modern Centered Header */}
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', height: '2.5rem', width: '2.5rem', alignItems: 'center', justifyContent: 'center', borderRadius: '0.75rem', backgroundColor: 'var(--primary-600)', color: '#ffffff', fontWeight: 'bold', fontSize: '1.125rem', boxShadow: '0 4px 6px rgba(79, 70, 229, 0.2)' }}>
+              P
+            </div>
+            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.025em' }}>PlacementHub</span>
+          </Link>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>Welcome back</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Sign in to your account to continue</p>
+        </div>
+
+        {/* Auth Card */}
+        <div style={{ backgroundColor: 'var(--bg-primary)', borderRadius: 'var(--radius-xl)', padding: '2rem', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-default)' }}>
+          
+          {registeredBanner && !error && (
+            <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--success-50)', border: '1px solid var(--success-100)', borderRadius: 'var(--radius-md)', color: 'var(--success-700)', fontSize: '0.875rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+              {registeredBanner}
+            </div>
+          )}
+
+          {error && (
+            <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--danger-50)', border: '1px solid var(--danger-100)', borderRadius: 'var(--radius-md)', color: 'var(--danger-700)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+              {error}
+            </div>
+          )}
+
+          {showDemoLogins && (
+            <div className="hidden-on-mobile" style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-default)' }}>
+              <button
+                type="button"
+                id="view-credentials-btn"
+                onClick={() => setShowCredentials((v) => !v)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.625rem 0.875rem',
+                  background: showCredentials ? 'var(--primary-50)' : 'var(--bg-secondary)',
+                  border: `1px solid ${showCredentials ? 'var(--primary-300)' : 'var(--border-default)'}`,
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  color: showCredentials ? 'var(--primary-700)' : 'var(--text-primary)',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <KeyRound size={15} />
+                  Demo accounts
+                </span>
+                {showCredentials ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+
+              {showCredentials && (
+                <div
+                  style={{
+                    marginTop: '0.625rem',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: 'var(--radius-md)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: '0.5rem 0.875rem',
+                      background: 'var(--bg-secondary)',
+                      borderBottom: '1px solid var(--border-default)',
+                      fontSize: '0.75rem',
+                      color: 'var(--text-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    Same layout as <strong>View all system accounts</strong> — password:{' '}
+                    <code
+                      style={{
+                        fontWeight: 700,
+                        color: 'var(--text-primary)',
+                        background: 'var(--bg-primary)',
+                        padding: '0.1rem 0.35rem',
+                        borderRadius: 4,
+                      }}
+                    >
+                      {DEMO_SEED_PASSWORD}
+                    </code>
+                  </div>
+
+                  <div
+                    style={{
+                      padding: '0.75rem',
+                      background: 'var(--bg-primary)',
+                    }}
+                  >
+                    <div
+                      className="login-demo-accounts-grid"
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                        gap: '0.75rem',
+                        alignItems: 'start',
+                      }}
+                    >
+                      <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {renderDemoListCard('student')}
+                        {renderDemoListCard('alumni')}
+                        {renderDemoListCard('dummy')}
+                      </div>
+                      <div style={{ minWidth: 0 }}>{renderDemoListCard('employer')}</div>
+                      <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {renderDemoListCard('superadmin')}
+                        {renderDemoListCard('admin')}
+                      </div>
+                    </div>
+                  </div>
+                  <style>{`
+                    @media (max-width: 720px) {
+                      .login-demo-accounts-grid {
+                        grid-template-columns: 1fr !important;
+                      }
+                    }
+                  `}</style>
+                </div>
+              )}
+            </div>
+          )}
+
+          {guidedAutoLogin && process.env.NODE_ENV !== 'production' ? (
+            <div
+              className="card"
+              style={{
+                marginBottom: '1rem',
+                padding: '0.75rem 1rem',
+                border: '1px solid var(--primary-200)',
+                background: 'var(--primary-50)',
+                fontSize: '0.875rem',
+                color: 'var(--primary-900)',
+              }}
+            >
+              Guided test — signing in automatically as <strong>{guidedEmail || 'demo user'}</strong>.
+              {loading ? ' Please wait…' : null}
+            </div>
+          ) : null}
+
+          <form id="login-form" ref={loginFormRef} onSubmit={handleSubmit} autoComplete="off">
+            <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+              <label className="form-label" htmlFor="login-email">Email address</label>
+              <input
+                id="login-email"
+                name="email"
+                type="email"
+                autoComplete="off"
+                readOnly={emailReadOnly}
+                onFocus={() => setEmailReadOnly(false)}
+                onClick={() => setEmailReadOnly(false)}
+                className="form-input"
+                placeholder="you@example.com"
+                defaultValue=""
+                onInput={() => {
+                  userChoseCredentials.current = true;
+                }}
+                required
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label className="form-label" htmlFor="login-password">Password</label>
+                <Link href="/forgot-password" style={{ fontSize: '0.8125rem', color: 'var(--primary-600)', fontWeight: 500, textDecoration: 'none' }}>
+                  Forgot password?
+                </Link>
+              </div>
+              <div style={{ position: 'relative' }}>
+              <input
+                id="login-password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="off"
+                readOnly={passwordReadOnly}
+                onFocus={() => setPasswordReadOnly(false)}
+                onClick={() => setPasswordReadOnly(false)}
+                className="form-input"
+                placeholder="Enter your password"
+                defaultValue=""
+                onInput={() => {
+                  userChoseCredentials.current = true;
+                }}
+                onKeyDown={(e) => {
+                  if (e.key !== 'Enter') return;
+                  if (captchaToken) return; // let form submit
+                  e.preventDefault();
+                  userChoseCredentials.current = true;
+                  setError('Verification is still loading. Wait a moment, then try again.');
+                }}
+                style={{ paddingRight: '2.4rem' }}
+                required
+              />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                  className="btn btn-ghost btn-sm"
+                  style={{
+                    position: 'absolute',
+                    right: '0.45rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    minWidth: 28,
+                    width: 28,
+                    height: 28,
+                    padding: 0,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+            </div>
+
+            <LoginCaptchaField
+              key={captchaKey}
+              token={captchaToken}
+              answer={captchaAnswer}
+              onTokenChange={setCaptchaToken}
+              onAnswerChange={setCaptchaAnswer}
+              disabled={loading}
+            />
+
+            <button
+              id="login-submit"
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading || !captchaToken}
+              style={{ width: '100%', padding: '0.625rem', fontSize: '1rem', justifyContent: 'center' }}
+              title={
+                !captchaToken
+                  ? 'Wait for the verification question to load'
+                  : undefined
+              }
+            >
+              {loading
+                ? 'Signing in…'
+                : !captchaToken
+                  ? 'Loading verification…'
+                  : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="hidden-on-mobile" style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-default)' }}>
+            <Link
+              href="/demo-accounts"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.625rem 0.875rem',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-md)',
+                textDecoration: 'none',
+                color: 'var(--text-primary)',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                transition: 'all 0.15s',
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Users size={15} />
+                View all system accounts
+              </span>
+              <ArrowRight size={16} style={{ color: 'var(--text-secondary)' }} />
+            </Link>
+            <Link
+              href="/help"
+              className="hidden-on-mobile"
+              style={{
+                marginTop: '0.5rem',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.625rem 0.875rem',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-md)',
+                textDecoration: 'none',
+                color: 'var(--text-primary)',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                transition: 'all 0.15s',
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <BookOpen size={15} />
+                Help documentation
+              </span>
+              <ArrowRight size={16} style={{ color: 'var(--text-secondary)' }} />
+            </Link>
+          </div>
+        </div>
+
+        <LoginSupportContact
+          hideExternalInboxLinks={
+            Boolean(registeredBanner) ||
+            searchParams.get('registered') != null ||
+            searchParams.get('verify') != null
+          }
+        />
+
+        <p
+          className="login-help-faq-hint"
+          style={{
+            marginTop: '0.75rem',
+            fontSize: '0.8125rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.5,
+            textAlign: 'center',
+          }}
+        >
+          <MessageCircleQuestion size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} aria-hidden />
+          FAQ search: use the <strong>Help</strong> button at the bottom-right.
+        </p>
+
+        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+          Employers and colleges:{' '}
+          <Link href="/register" style={{ color: 'var(--primary-600)', fontWeight: 600, textDecoration: 'none' }}>
+            Request an account
+          </Link>
+          <span className="text-secondary" style={{ display: 'block', marginTop: '0.35rem', fontSize: '0.8125rem' }}>
+            Students are added by their college — use the login email from your welcome message.
+          </span>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'monospace' }}>
+          Build: 12 Jun 2026, 11:48 PM (v1.0.4)
+        </div>
+
+        <DocumentationHelpWidget fullDocHref="/help" />
+
+        <style>{`
+          @media (max-width: 768px) {
+            .hidden-on-mobile {
+              display: none !important;
+            }
+          }
+        `}</style>
+      </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,54 @@
+{
+  "student-dashboard": {
+    "backup": "student-dashboard-route.js.bak",
+    "target": "src/app/api/student/dashboard/route.js"
+  },
+  "college-interviews": {
+    "backup": "college-interviews-page.js.bak",
+    "target": "src/app/dashboard/college/interviews/page.js"
+  },
+  "admin-settings": {
+    "backup": "admin-settings-page.js.bak",
+    "target": "src/app/dashboard/admin/settings/page.js"
+  },
+  "student-calendar": {
+    "backup": "student-calendar-page.js.bak",
+    "target": "src/app/dashboard/student/calendar/page.js"
+  },
+  "student-drives": {
+    "backup": "student-drives-page.js.bak",
+    "target": "src/app/dashboard/student/drives/page.js"
+  },
+  "college-reports": {
+    "backup": "college-reports-page.js.bak",
+    "target": "src/app/dashboard/college/reports/page.js"
+  },
+  "dashboard-layout": {
+    "backup": "dashboard-layout.js.bak",
+    "target": "src/app/dashboard/layout.js"
+  },
+  "college-overview": {
+    "backup": "college-overview-page.js.bak",
+    "target": "src/app/dashboard/college/overview/page.js"
+  },
+  "admin-overview": {
+    "backup": "admin-overview-page.js.bak",
+    "target": "src/app/dashboard/admin/overview/page.js"
+  },
+  "admin-colleges": {
+    "backup": "admin-colleges-page.js.bak",
+    "target": "src/app/dashboard/admin/colleges/page.js"
+  },
+  "admin-employers": {
+    "backup": "admin-employers-page.js.bak",
+    "target": "src/app/dashboard/admin/employers/page.js"
+  },
+  "admin-users": {
+    "backup": "admin-users-page.js.bak",
+    "target": "src/app/dashboard/admin/users/page.js"
+  },
+  "alerts": {
+    "backup": "alerts-page.js.bak",
+    "target": "src/app/dashboard/alerts/page.js"
+  }
+}

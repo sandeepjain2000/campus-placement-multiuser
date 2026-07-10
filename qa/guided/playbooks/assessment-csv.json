@@ -1,0 +1,71 @@
+{
+  "id": "assessment-csv",
+  "title": "Assessment results (CSV)",
+  "oneLiner": "Voice-guided tour for use case: Assessment results (CSV)",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Assessment uploads (CSV)",
+      "observe": "Tabbed Export CSV + CSV upload (no mapping dialog)",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Assessment uploads (CSV) (continued)",
+      "observe": "Tabbed Export CSV + CSV upload (no mapping dialog)",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/assessment-uploads"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Export tab CSV, edit round columns, upload — or use Assessment Update Online — manual step",
+      "observe": "Upload or save succeeds; accepted/saved count shown Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Assessment map (round labels) or Hiring Results Dashboard",
+      "observe": "Uploaded rows reflected",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/hiring-assessment"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Hiring Assessment",
+      "observe": "Same outcomes visible on college view",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Hiring Assessment (continued)",
+      "observe": "Same outcomes visible on college view",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/hiring-assessment"
+      }
+    }
+  ]
+}

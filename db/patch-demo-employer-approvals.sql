@@ -1,0 +1,2 @@
+-- Deprecated: demo employer–campus approvals were removed (see migrations/005_clear_demo_employer_tieups.sql).
+-- Tie-ups are created only when an employer requests access in the product.

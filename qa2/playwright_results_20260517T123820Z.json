@@ -1,0 +1,95 @@
+{
+  "generatedAt": "20260517T123820Z",
+  "baseUrl": "https://campus-placement-omega.vercel.app",
+  "execution": "playwright+nvidia_verdict",
+  "model": "meta/llama-3.1-8b-instruct",
+  "totalTokens": 719,
+  "avgTokensPerCase": 359.5,
+  "logFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\logs\\run_playwright_20260517T123820Z.log",
+  "results": [
+    {
+      "id": "C1-VISIT-001",
+      "title": "C1-VISIT-001",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/alerts",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/alerts",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 1786,
+          "textSample": "P\nPlacementHub\nHome\nCOMMUNICATION\nClarifications\nAlerts\nFeedback\nAV\nArjun Verma\nStudent\nHome\nIndian Institute of Technology, Madras\n\nStudent Portal\n\nS-10\nEmail\nSign Out\n\ud83d\udce8\nInbox & Alerts\n\nSystem notifications, event coordination, and alerts.\n\n\ud83d\udce5 Inbox\n0\n\u2b50 Starred\n\ud83d\uddd1\ufe0f Trash\n\u2b50\nSystem success\nApplication Submitted\n-\nYou have successfully applied for the internship.\n26m ago\n\u2b50\nSystem success\nApplication Submitted\n-\nYou have successfully applied for the full_time.\n26m ago\n\u2b50\nSystem success\nApplication Submitted\n-\nYou have successfully applied for the full_time.\n26m ago\n\u2b50\nSystem success\nApplication Su",
+          "headings": [
+            "Indian Institute of Technology, Madras",
+            "\ud83d\udce8\nInbox & Alerts"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Target screen opens successfully with no runtime errors or crash",
+      "usage": {
+        "total_tokens": 339,
+        "total_prompt_tokens": 319,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-001-COMP",
+      "title": "C1-VISIT-001 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/alerts",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/alerts",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 1786,
+          "textSample": "P\nPlacementHub\nHome\nCOMMUNICATION\nClarifications\nAlerts\nFeedback\nAV\nArjun Verma\nStudent\nHome\nIndian Institute of Technology, Madras\n\nStudent Portal\n\nS-10\nEmail\nSign Out\n\ud83d\udce8\nInbox & Alerts\n\nSystem notifications, event coordination, and alerts.\n\n\ud83d\udce5 Inbox\n0\n\u2b50 Starred\n\ud83d\uddd1\ufe0f Trash\n\u2b50\nSystem success\nApplication Submitted\n-\nYou have successfully applied for the internship.\n26m ago\n\u2b50\nSystem success\nApplication Submitted\n-\nYou have successfully applied for the full_time.\n26m ago\n\u2b50\nSystem success\nApplication Submitted\n-\nYou have successfully applied for the full_time.\n26m ago\n\u2b50\nSystem success\nApplication Su",
+          "headings": [
+            "Indian Institute of Technology, Madras",
+            "\ud83d\udce8\nInbox & Alerts"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Target screen opens successfully on desktop and mobile viewport without runtime errors or horizontal scroll",
+      "usage": {
+        "total_tokens": 380,
+        "total_prompt_tokens": 355,
+        "total_completion_tokens": 25,
+        "entry_count": 1
+      }
+    }
+  ]
+}

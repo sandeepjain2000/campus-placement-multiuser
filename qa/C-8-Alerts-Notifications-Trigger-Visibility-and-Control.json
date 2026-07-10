@@ -1,0 +1,443 @@
+{
+  "category": "C-8",
+  "categoryTitle": "Alert/notification trigger, visibility, and preference control",
+  "description": "Validate alert creation for each transaction/change event, intended cross-role visibility, and user-level control over alert categories.",
+  "testCases": [
+    {
+      "testCaseId": "C8-ALERT-001",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Employer creates drive request creates intended alert",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/drives",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "college_admin",
+      "intendedViewerRoute": "/dashboard/alerts",
+      "intendedViewerAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Drive request",
+      "steps": [
+        "Login as employer and execute transaction at /dashboard/employer/drives",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as college_admin and open /dashboard/alerts",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-002",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "College admin approves drive creates intended alert",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/college/drives",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "employer",
+      "intendedViewerRoute": "/dashboard/alerts",
+      "intendedViewerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Drive approval",
+      "steps": [
+        "Login as college_admin and execute transaction at /dashboard/college/drives",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as employer and open /dashboard/alerts",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-003",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Student applies to internship/drive creates intended alert",
+      "actorRole": "student",
+      "actorRoute": "/dashboard/student/drives",
+      "actorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "employer",
+      "intendedViewerRoute": "/dashboard/alerts",
+      "intendedViewerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "New application",
+      "steps": [
+        "Login as student and execute transaction at /dashboard/student/drives",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as employer and open /dashboard/alerts",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-004",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Employer shortlists/rejects candidate creates intended alert",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/applications",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "student",
+      "intendedViewerRoute": "/dashboard/alerts",
+      "intendedViewerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Application status changed",
+      "steps": [
+        "Login as employer and execute transaction at /dashboard/employer/applications",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as student and open /dashboard/alerts",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-005",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Interview gets scheduled/updated creates intended alert",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/interviews",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "student",
+      "intendedViewerRoute": "/dashboard/student/interviews",
+      "intendedViewerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Interview schedule",
+      "steps": [
+        "Login as employer and execute transaction at /dashboard/employer/interviews",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as student and open /dashboard/student/interviews",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-006",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Offer released to student creates intended alert",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/offers",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "student",
+      "intendedViewerRoute": "/dashboard/alerts",
+      "intendedViewerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Offer released",
+      "steps": [
+        "Login as employer and execute transaction at /dashboard/employer/offers",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as student and open /dashboard/alerts",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-007",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Student accepts/rejects offer creates intended alert",
+      "actorRole": "student",
+      "actorRoute": "/dashboard/student/offers",
+      "actorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "employer",
+      "intendedViewerRoute": "/dashboard/alerts",
+      "intendedViewerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Offer response",
+      "steps": [
+        "Login as student and execute transaction at /dashboard/student/offers",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as employer and open /dashboard/alerts",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-008",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "Employer sends partnership request creates intended alert",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/select-campus",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "college_admin",
+      "intendedViewerRoute": "/dashboard/college/employers/requests",
+      "intendedViewerAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Partnership request",
+      "steps": [
+        "Login as employer and execute transaction at /dashboard/employer/select-campus",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as college_admin and open /dashboard/college/employers/requests",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-ALERT-009",
+      "category": "C-8",
+      "type": "alert_trigger_and_visibility",
+      "title": "College publishes clarification creates intended alert",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/college/clarifications",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "intendedViewerRole": "student",
+      "intendedViewerRoute": "/dashboard/student/clarifications",
+      "intendedViewerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedAlertType": "Clarification posted",
+      "steps": [
+        "Login as college_admin and execute transaction at /dashboard/college/clarifications",
+        "Capture transaction reference (id/title/status/time)",
+        "Login as student and open /dashboard/student/clarifications",
+        "Verify new alert/notification entry is visible",
+        "Open alert target and verify deep-link/context is correct"
+      ],
+      "expectedResult": [
+        "Alert entry is created for intended viewer(s)",
+        "Alert content matches transaction context",
+        "Unauthorized roles do not see this alert"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C8-PREF-001",
+      "category": "C-8",
+      "type": "alert_preference_control",
+      "title": "User can view alert/notification preference settings",
+      "actorRole": "student",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student and open /dashboard/alerts",
+        "Locate alert/notification controls",
+        "Toggle category ON/OFF and save",
+        "Trigger mapped transaction",
+        "Verify alert visibility follows configured preference"
+      ],
+      "expectedResult": [
+        "Preference control is available and persists after refresh/login",
+        "Suppressed categories do not show new alerts",
+        "Enabled categories show new alerts"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C8-PREF-002",
+      "category": "C-8",
+      "type": "alert_preference_control",
+      "title": "User can disable one alert category",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/alerts",
+        "Locate alert/notification controls",
+        "Toggle category ON/OFF and save",
+        "Trigger mapped transaction",
+        "Verify alert visibility follows configured preference"
+      ],
+      "expectedResult": [
+        "Preference control is available and persists after refresh/login",
+        "Suppressed categories do not show new alerts",
+        "Enabled categories show new alerts"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C8-PREF-003",
+      "category": "C-8",
+      "type": "alert_preference_control",
+      "title": "Disabled alert category suppresses future alert creation/visibility",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/alerts",
+        "Locate alert/notification controls",
+        "Toggle category ON/OFF and save",
+        "Trigger mapped transaction",
+        "Verify alert visibility follows configured preference"
+      ],
+      "expectedResult": [
+        "Preference control is available and persists after refresh/login",
+        "Suppressed categories do not show new alerts",
+        "Enabled categories show new alerts"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C8-PREF-004",
+      "category": "C-8",
+      "type": "alert_preference_control",
+      "title": "User can re-enable alert category and receive alerts again",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/alerts",
+        "Locate alert/notification controls",
+        "Toggle category ON/OFF and save",
+        "Trigger mapped transaction",
+        "Verify alert visibility follows configured preference"
+      ],
+      "expectedResult": [
+        "Preference control is available and persists after refresh/login",
+        "Suppressed categories do not show new alerts",
+        "Enabled categories show new alerts"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C8-PREF-005",
+      "category": "C-8",
+      "type": "alert_preference_control",
+      "title": "Alert preferences are isolated per user",
+      "actorRole": "super_admin",
+      "actorRoute": "/dashboard/admin/settings",
+      "actorAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as super_admin and open /dashboard/admin/settings",
+        "Locate alert/notification controls",
+        "Toggle category ON/OFF and save",
+        "Trigger mapped transaction",
+        "Verify alert visibility follows configured preference"
+      ],
+      "expectedResult": [
+        "Preference control is available and persists after refresh/login",
+        "Suppressed categories do not show new alerts",
+        "Enabled categories show new alerts"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C8-AUDIT-001",
+      "category": "C-8",
+      "type": "coverage_matrix",
+      "title": "All transaction/change events mapped to alert rules",
+      "actorRole": "all_roles",
+      "actorRoute": "all transactional/change routes",
+      "actorAccount": {
+        "email": "role-wise demo",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Build inventory of all transaction + status-change events",
+        "Map each event to expected alert recipients",
+        "Execute sample events and verify alert creation",
+        "Publish gap register for missing/incorrect alert behavior"
+      ],
+      "expectedResult": [
+        "Complete mapping exists for alert coverage",
+        "Any missing alert triggers or wrong recipient mapping is logged"
+      ],
+      "priority": "critical"
+    }
+  ]
+}

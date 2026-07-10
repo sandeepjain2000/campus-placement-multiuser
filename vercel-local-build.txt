@@ -1,0 +1,824 @@
+Vercel CLI 54.7.1 (Node.js 22.16.0)
+WARNING: You should not upload the `.next` directory.
+Installing dependencies...
+
+up to date in 2s
+
+189 packages are looking for funding
+  run `npm fund` for details
+Detected Next.js version: 16.2.3
+Running "npm run build"
+
+> campus-placement@0.1.1 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+Γû▓ Next.js 16.2.3 (Turbopack)
+- Environments: .env.local
+
+ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+  Using external babel configuration from C:\Users\sandeep\Downloads\Claudes\CampusPlacement\campus-placement\babel.config.js
+Γ£ô Compiled successfully in 33.3s
+  Running TypeScript ...
+  Finished TypeScript in 476ms ...
+  Collecting page data using 11 workers ...
+(node:23712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28032) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16220) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  Generating static pages using 11 workers (0/176) ...
+  Generating static pages using 11 workers (44/176) 
+  Generating static pages using 11 workers (88/176) 
+  Generating static pages using 11 workers (132/176) 
+Γ£ô Generating static pages using 11 workers (176/176) in 2.5s
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /about
+Γö£ ╞Æ /api/academic-taxonomy
+Γö£ ╞Æ /api/admin/archived-students
+Γö£ ╞Æ /api/admin/archived-students/[id]/restore
+Γö£ ╞Æ /api/admin/colleges
+Γö£ ╞Æ /api/admin/colleges/[id]
+Γö£ ╞Æ /api/admin/dashboard
+Γö£ ╞Æ /api/admin/email-logs
+Γö£ ╞Æ /api/admin/email-templates
+Γö£ ╞Æ /api/admin/employers
+Γö£ ╞Æ /api/admin/employers/[id]
+Γö£ ╞Æ /api/admin/error-logs
+Γö£ ╞Æ /api/admin/pending-registrations
+Γö£ ╞Æ /api/admin/placement-listings
+Γö£ ╞Æ /api/admin/placement-listings/email
+Γö£ ╞Æ /api/admin/settings
+Γö£ ╞Æ /api/admin/users
+Γö£ ╞Æ /api/audit/logs
+Γö£ ╞Æ /api/audit/reports
+Γö£ ╞Æ /api/audit/reports/export
+Γö£ ╞Æ /api/auth/[...nextauth]
+Γö£ ╞Æ /api/auth/captcha
+Γö£ ╞Æ /api/auth/captcha/verify
+Γö£ ╞Æ /api/auth/change-password
+Γö£ ╞Æ /api/auth/forgot-password
+Γö£ ╞Æ /api/auth/register
+Γö£ ╞Æ /api/auth/register/validate-student
+Γö£ ╞Æ /api/auth/reset-password
+Γö£ ╞Æ /api/auth/verify-email
+Γö£ ╞Æ /api/clarifications
+Γö£ ╞Æ /api/college/academic-years
+Γö£ ╞Æ /api/college/applications
+Γö£ ╞Æ /api/college/bulk-notifications/meta
+Γö£ ╞Æ /api/college/bulk-notifications/preview
+Γö£ ╞Æ /api/college/bulk-notifications/send
+Γö£ ╞Æ /api/college/calendar-clashes
+Γö£ ╞Æ /api/college/dashboard
+Γö£ ╞Æ /api/college/drives
+Γö£ ╞Æ /api/college/drives/[id]
+Γö£ ╞Æ /api/college/drives/[id]/facebook-post
+Γö£ ╞Æ /api/college/drives/[id]/report
+Γö£ ╞Æ /api/college/employers
+Γö£ ╞Æ /api/college/employers/[employerId]/poc
+Γö£ ╞Æ /api/college/employers/approve
+Γö£ ╞Æ /api/college/employers/reinstate
+Γö£ ╞Æ /api/college/employers/requests
+Γö£ ╞Æ /api/college/employers/revoke
+Γö£ ╞Æ /api/college/engagement-listings
+Γö£ ╞Æ /api/college/engagement-listings/[id]
+Γö£ ╞Æ /api/college/enrollment-ledger
+Γö£ ╞Æ /api/college/events
+Γö£ ╞Æ /api/college/facilities
+Γö£ ╞Æ /api/college/hiring-assessment-view
+Γö£ ╞Æ /api/college/infrastructure
+Γö£ ╞Æ /api/college/internship-feedback
+Γö£ ╞Æ /api/college/internship-guides
+Γö£ ╞Æ /api/college/internship-ppo
+Γö£ ╞Æ /api/college/internship-results
+Γö£ ╞Æ /api/college/internships
+Γö£ ╞Æ /api/college/interviews
+Γö£ ╞Æ /api/college/interviews/[id]
+Γö£ ╞Æ /api/college/jobs
+Γö£ ╞Æ /api/college/mentorship-requests
+Γö£ ╞Æ /api/college/mentorship-requests/[id]
+Γö£ ╞Æ /api/college/message-templates
+Γö£ ╞Æ /api/college/message-templates/[id]
+Γö£ ╞Æ /api/college/offers
+Γö£ ╞Æ /api/college/offers/assessment-starter
+Γö£ ╞Æ /api/college/offers/upload
+Γö£ ╞Æ /api/college/offers/upload-meta
+Γö£ ╞Æ /api/college/overview
+Γö£ ╞Æ /api/college/reports
+Γö£ ╞Æ /api/college/rules
+Γö£ ╞Æ /api/college/settings
+Γö£ ╞Æ /api/college/settings/academic-taxonomy
+Γö£ ╞Æ /api/college/settings/logo/complete
+Γö£ ╞Æ /api/college/settings/logo/presign
+Γö£ ╞Æ /api/college/settings/placement-season
+Γö£ ╞Æ /api/college/sponsorships
+Γö£ ╞Æ /api/college/sponsorships/receipt
+Γö£ ╞Æ /api/college/startup-funding
+Γö£ ╞Æ /api/college/students
+Γö£ ╞Æ /api/college/students/[id]
+Γö£ ╞Æ /api/college/students/[id]/cvs
+Γö£ ╞Æ /api/college/students/[id]/cvs/[cvId]/verify
+Γö£ ╞Æ /api/college/students/[id]/resume
+Γö£ ╞Æ /api/college/students/bulk-upload
+Γö£ ╞Æ /api/college/students/verify
+Γö£ ╞Æ /api/college/system-email-templates
+Γö£ ╞Æ /api/data-entry/offers
+Γö£ ╞Æ /api/data-entry/options
+Γö£ ╞Æ /api/data-entry/placement-drives
+Γö£ ╞Æ /api/data-entry/student-profiles
+Γö£ ╞Æ /api/data-entry/users
+Γö£ ╞Æ /api/debug/log
+Γö£ ╞Æ /api/debug/login-log
+Γö£ ╞Æ /api/demo/advance-application
+Γö£ ╞Æ /api/demo/apply-to-internship
+Γö£ ╞Æ /api/demo/apply-to-job
+Γö£ ╞Æ /api/demo/colleges
+Γö£ ╞Æ /api/demo/create-internships
+Γö£ ╞Æ /api/demo/create-jobs
+Γö£ ╞Æ /api/demo/create-student
+Γö£ ╞Æ /api/demo/ensure-all-tieups
+Γö£ ╞Æ /api/demo/ensure-iitm-tieup
+Γö£ ╞Æ /api/demo/placement-drive
+Γö£ ╞Æ /api/demo/purge
+Γö£ ╞Æ /api/demo/purge-all-jobs-internships
+Γö£ ╞Æ /api/developer-notes/auth
+Γö£ ╞Æ /api/developer-notes/logout
+Γö£ ╞Æ /api/discussions
+Γö£ ╞Æ /api/employer/academic-years
+Γö£ ╞Æ /api/employer/applications
+Γö£ ╞Æ /api/employer/applications/documents/view
+Γö£ ╞Æ /api/employer/applications/resume
+Γö£ ╞Æ /api/employer/applications/student-profile
+Γö£ ╞Æ /api/employer/assessment-round-map
+Γö£ ╞Æ /api/employer/assessment-update-online
+Γö£ ╞Æ /api/employer/assessments
+Γö£ ╞Æ /api/employer/assessments/[uploadId]
+Γö£ ╞Æ /api/employer/assessments/[uploadId]/audit
+Γö£ ╞Æ /api/employer/assessments/[uploadId]/rows
+Γö£ ╞Æ /api/employer/assessments/export
+Γö£ ╞Æ /api/employer/assessments/import
+Γö£ ╞Æ /api/employer/assessments/import/[sessionId]
+Γö£ ╞Æ /api/employer/assessments/starter
+Γö£ ╞Æ /api/employer/assessments/submit
+Γö£ ╞Æ /api/employer/assessments/targets
+Γö£ ╞Æ /api/employer/assessments/template
+Γö£ ╞Æ /api/employer/assessments/upload
+Γö£ ╞Æ /api/employer/calendar
+Γö£ ╞Æ /api/employer/campuses
+Γö£ ╞Æ /api/employer/dashboard
+Γö£ ╞Æ /api/employer/drives
+Γö£ ╞Æ /api/employer/drives/[id]
+Γö£ ╞Æ /api/employer/email-templates
+Γö£ ╞Æ /api/employer/engagement-listings
+Γö£ ╞Æ /api/employer/engagement-listings/[id]/confirmation-draft
+Γö£ ╞Æ /api/employer/engagement-listings/[id]/send-confirmation
+Γö£ ╞Æ /api/employer/fcfs-unavailable
+Γö£ ╞Æ /api/employer/hiring-assessment-view
+Γö£ ╞Æ /api/employer/internship-feedback
+Γö£ ╞Æ /api/employer/internship-ppo
+Γö£ ╞Æ /api/employer/internship-supervisors
+Γö£ ╞Æ /api/employer/interviews
+Γö£ ╞Æ /api/employer/interviews/[id]
+Γö£ ╞Æ /api/employer/interviews/notify
+Γö£ ╞Æ /api/employer/jobs
+Γö£ ╞Æ /api/employer/jobs/visibility
+Γö£ ╞Æ /api/employer/mentorship-requests
+Γö£ ╞Æ /api/employer/mentorship-requests/[id]/volunteer
+Γö£ ╞Æ /api/employer/offer-templates
+Γö£ ╞Æ /api/employer/offer-templates/[id]
+Γö£ ╞Æ /api/employer/offers
+Γö£ ╞Æ /api/employer/offers/[id]/resend
+Γö£ ╞Æ /api/employer/offers/assessment-starter
+Γö£ ╞Æ /api/employer/offers/bulk-generate
+Γö£ ╞Æ /api/employer/offers/bulk-preview
+Γö£ ╞Æ /api/employer/offers/options
+Γö£ ╞Æ /api/employer/offers/upload
+Γö£ ╞Æ /api/employer/posting-campus-constraints
+Γö£ ╞Æ /api/employer/profile
+Γö£ ╞Æ /api/employer/profile/logo/complete
+Γö£ ╞Æ /api/employer/profile/logo/presign
+Γö£ ╞Æ /api/employer/sponsorships
+Γö£ ╞Æ /api/employer/sponsorships/payment
+Γö£ ╞Æ /api/employer/startup-funding
+Γö£ ╞Æ /api/feedback
+Γö£ ╞Æ /api/feedback/[id]
+Γö£ ╞Æ /api/guided-runner/click
+Γö£ ╞Æ /api/guided-runner/sign-in
+Γö£ ╞Æ /api/guided-runner/state
+Γö£ ╞Æ /api/help/ask
+Γö£ ╞Æ /api/help/faq
+Γö£ ╞Æ /api/hiring-assessment
+Γö£ ╞Æ /api/notifications
+Γö£ ╞Æ /api/platform/report-error
+Γö£ ╞Æ /api/public/departments
+Γö£ ╞Æ /api/public/jobs/[id]
+Γö£ ╞Æ /api/public/jobs/[id]/questions
+Γö£ ╞Æ /api/public/registration-job-aid
+Γö£ ╞Æ /api/public/site-config
+Γö£ ╞Æ /api/public/support-message
+Γö£ ╞Æ /api/s3/view
+Γö£ ╞Æ /api/screens/ai-match
+Γö£ ╞Æ /api/screens/registry
+Γö£ ╞Æ /api/student/applications
+Γö£ ╞Æ /api/student/applications/cancel
+Γö£ ╞Æ /api/student/calendar
+Γö£ ╞Æ /api/student/cvs
+Γö£ ╞Æ /api/student/cvs/[id]
+Γö£ ╞Æ /api/student/cvs/[id]/view
+Γö£ ╞Æ /api/student/cvs/upload
+Γö£ ╞Æ /api/student/dashboard
+Γö£ ╞Æ /api/student/documents
+Γö£ ╞Æ /api/student/documents/complete
+Γö£ ╞Æ /api/student/documents/presign
+Γö£ ╞Æ /api/student/documents/upload
+Γö£ ╞Æ /api/student/documents/view
+Γö£ ╞Æ /api/student/drives
+Γö£ ╞Æ /api/student/internship-feedback
+Γö£ ╞Æ /api/student/internship-ppo
+Γö£ ╞Æ /api/student/internships/not-processed
+Γö£ ╞Æ /api/student/interviews
+Γö£ ╞Æ /api/student/mentorship-requests
+Γö£ ╞Æ /api/student/mentorship-requests/[id]
+Γö£ ╞Æ /api/student/offers
+Γö£ ╞Æ /api/student/opportunity-email
+Γö£ ╞Æ /api/student/profile
+Γö£ ╞Æ /api/student/profile/avatar/complete
+Γö£ ╞Æ /api/student/profile/avatar/presign
+Γö£ ╞Æ /api/student/profile/avatar/upload
+Γö£ ╞Æ /api/student/profile/suggest-skills
+Γö£ ╞Æ /api/student/program-applications
+Γö£ ╞Æ /api/student/program-applications/cancel
+Γö£ ╞Æ /api/student/program-opportunities
+Γö£ ╞Æ /api/student/resume/view
+Γö£ ╞Æ /api/user/communication-email
+Γö£ ╞Æ /api/user/data-export
+Γö£ ╞Æ /api/user/onboarding
+Γö£ ╞Æ /auth/continue
+Γö£ ╞Æ /contact
+Γö£ Γùï /dashboard
+Γö£ Γùï /dashboard/admin
+Γö£ Γùï /dashboard/admin/archived-students
+Γö£ Γùï /dashboard/admin/audit-reports
+Γö£ Γùï /dashboard/admin/colleges
+Γö£ ╞Æ /dashboard/admin/colleges/[id]
+Γö£ Γùï /dashboard/admin/colleges/add
+Γö£ Γùï /dashboard/admin/email-logs
+Γö£ Γùï /dashboard/admin/email-templates
+Γö£ Γùï /dashboard/admin/employers
+Γö£ Γùï /dashboard/admin/error-logs
+Γö£ Γùï /dashboard/admin/feedback
+Γö£ Γùï /dashboard/admin/getting-started
+Γö£ Γùï /dashboard/admin/overview
+Γö£ Γùï /dashboard/admin/pending-registrations
+Γö£ Γùï /dashboard/admin/placement-listings
+Γö£ Γùï /dashboard/admin/settings
+Γö£ Γùï /dashboard/admin/users
+Γö£ Γùï /dashboard/alerts
+Γö£ ╞Æ /dashboard/alumni/applications/[type]
+Γö£ Γùï /dashboard/alumni/getting-started
+Γö£ Γùï /dashboard/alumni/jobs
+Γö£ Γùï /dashboard/college
+Γö£ Γùï /dashboard/college/academic-years
+Γö£ Γùï /dashboard/college/applications
+Γö£ Γùï /dashboard/college/assessments
+Γö£ Γùï /dashboard/college/audit-reports
+Γö£ Γùï /dashboard/college/bulk-notifications
+Γö£ Γùï /dashboard/college/calendar
+Γö£ Γùï /dashboard/college/clarifications
+Γö£ Γùï /dashboard/college/communication-templates
+Γö£ Γùï /dashboard/college/discussions
+Γö£ Γùï /dashboard/college/drives
+Γö£ Γùï /dashboard/college/employers
+Γö£ Γùï /dashboard/college/employers/requests
+Γö£ Γùï /dashboard/college/enrollment-key
+Γö£ Γùï /dashboard/college/events
+Γö£ Γùï /dashboard/college/getting-started
+Γö£ Γùï /dashboard/college/guest-engagements
+Γö£ Γùï /dashboard/college/guest-engagements/add
+Γö£ Γùï /dashboard/college/hiring-assessment
+Γö£ Γùï /dashboard/college/infrastructure
+Γö£ Γùï /dashboard/college/internship-feedback
+Γö£ Γùï /dashboard/college/internship-guides
+Γö£ Γùï /dashboard/college/internship-ppo
+Γö£ Γùï /dashboard/college/internship-results
+Γö£ Γùï /dashboard/college/internships
+Γö£ Γùï /dashboard/college/interviews
+Γö£ Γùï /dashboard/college/jobs
+Γö£ Γùï /dashboard/college/mentorship-requests
+Γö£ Γùï /dashboard/college/message-templates
+Γö£ Γùï /dashboard/college/offers
+Γö£ Γùï /dashboard/college/offers-upload
+Γö£ Γùï /dashboard/college/overview
+Γö£ Γùï /dashboard/college/reports
+Γö£ Γùï /dashboard/college/rules
+Γö£ Γùï /dashboard/college/settings
+Γö£ Γùï /dashboard/college/sponsorships
+Γö£ Γùï /dashboard/college/startup-funding
+Γö£ Γùï /dashboard/college/students
+Γö£ ╞Æ /dashboard/college/students/[id]
+Γö£ ╞Æ /dashboard/college/students/[id]/edit
+Γö£ Γùï /dashboard/college/students/add
+Γö£ Γùï /dashboard/employer
+Γö£ Γùï /dashboard/employer/alumni/applications
+Γö£ Γùï /dashboard/employer/alumni/assessment-online
+Γö£ Γùï /dashboard/employer/alumni/interviews
+Γö£ Γùï /dashboard/employer/alumni/jobs
+Γö£ Γùï /dashboard/employer/applications
+Γö£ Γùï /dashboard/employer/assessment-summary
+Γö£ Γùï /dashboard/employer/assessment-update-online
+Γö£ Γùï /dashboard/employer/assessment-uploads
+Γö£ ╞Æ /dashboard/employer/assessment-uploads/import/[sessionId]
+Γö£ Γùï /dashboard/employer/assessment-uploads/review
+Γö£ Γùï /dashboard/employer/calendar
+Γö£ Γùï /dashboard/employer/campus-guest-needs
+Γö£ Γùï /dashboard/employer/clarifications
+Γö£ Γùï /dashboard/employer/communication-templates
+Γö£ Γùï /dashboard/employer/discussions
+Γö£ Γùï /dashboard/employer/drives
+Γö£ ╞Æ /dashboard/employer/drives/edit/[id]
+Γö£ Γùï /dashboard/employer/drives/request
+Γö£ Γùï /dashboard/employer/fcfs-unavailable
+Γö£ Γùï /dashboard/employer/getting-started
+Γö£ Γùï /dashboard/employer/hiring-assessment
+Γö£ Γùï /dashboard/employer/internship-feedback
+Γö£ Γùï /dashboard/employer/internship-ppo
+Γö£ Γùï /dashboard/employer/internship-supervisors
+Γö£ Γùï /dashboard/employer/internships
+Γö£ Γùï /dashboard/employer/interviews
+Γö£ Γùï /dashboard/employer/jobs
+Γö£ Γùï /dashboard/employer/mentorship-requests
+Γö£ Γùï /dashboard/employer/offer-templates
+Γö£ Γùï /dashboard/employer/offers
+Γö£ Γùï /dashboard/employer/offers-upload
+Γö£ Γùï /dashboard/employer/overview
+Γö£ Γùï /dashboard/employer/profile
+Γö£ Γùï /dashboard/employer/projects
+Γö£ Γùï /dashboard/employer/select-campus
+Γö£ ╞Æ /dashboard/employer/select-campus/[collegeId]
+Γö£ Γùï /dashboard/employer/select-campus/create
+Γö£ Γùï /dashboard/employer/settings
+Γö£ Γùï /dashboard/employer/sponsorships
+Γö£ Γùï /dashboard/employer/startup-funding
+Γö£ Γùï /dashboard/feedback
+Γö£ Γùï /dashboard/feedback/new
+Γö£ Γùï /dashboard/help
+Γö£ Γùï /dashboard/my-exports
+Γö£ Γùï /dashboard/student
+Γö£ ╞Æ /dashboard/student/applications
+Γö£ ╞Æ /dashboard/student/applications/[type]
+Γö£ Γùï /dashboard/student/calendar
+Γö£ Γùï /dashboard/student/clarifications
+Γö£ Γùï /dashboard/student/cvs
+Γö£ Γùï /dashboard/student/discussions
+Γö£ Γùï /dashboard/student/documents
+Γö£ Γùï /dashboard/student/drives
+Γö£ Γùï /dashboard/student/getting-started
+Γö£ Γùï /dashboard/student/hackathons
+Γö£ Γùï /dashboard/student/internship-feedback
+Γö£ Γùï /dashboard/student/internship-ppo
+Γö£ Γùï /dashboard/student/internships
+Γö£ Γùï /dashboard/student/internships/not-processed
+Γö£ Γùï /dashboard/student/interviews
+Γö£ Γùï /dashboard/student/jobs
+Γö£ Γùï /dashboard/student/mentorship-requests
+Γö£ Γùï /dashboard/student/offers
+Γö£ Γùï /dashboard/student/overview
+Γö£ Γùï /dashboard/student/profile
+Γö£ Γùï /dashboard/student/projects
+Γö£ Γùï /dashboard/student/reminders
+Γö£ Γùï /data-entry
+Γö£ Γùï /data-entry/offers
+Γö£ Γùï /data-entry/placement-drives
+Γö£ Γùï /data-entry/student-profiles
+Γö£ Γùï /data-entry/users
+Γö£ ╞Æ /demo-accounts
+Γö£ Γùï /developer
+Γö£ Γùï /developer-notes
+Γö£ Γùï /developer/database-schema
+Γö£ Γùï /developer/unlock
+Γö£ Γùï /developer/use-cases-more
+Γö£ Γùï /developer/use-cases-user-testing
+Γö£ ╞Æ /features
+Γö£ Γùï /forgot-password
+Γö£ Γùï /help
+Γö£ ╞Æ /jobs/[id]
+Γö£ ╞Æ /jobs/[id]/questions
+Γö£ Γùï /login
+Γö£ Γùï /register
+Γö£ Γùï /reset-password
+Γöö Γùï /sign-in
+
+
+╞Æ Proxy (Middleware)
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+
+Traced Next.js server files in: 84.305ms
+Tracing entries due to missing build traces:
+[
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/_global-error/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/_not-found/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/about/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/contact/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/archived-students/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/audit-reports/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/colleges/[id]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/colleges/add/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/colleges/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/email-logs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/email-templates/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/employers/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/error-logs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/feedback/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/getting-started/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/overview/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/pending-registrations/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/placement-listings/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/settings/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/admin/users/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/alerts/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/alumni/applications/[type]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/alumni/getting-started/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/alumni/jobs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/academic-years/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/applications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/assessments/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/audit-reports/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/bulk-notifications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/calendar/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/clarifications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/communication-templates/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/discussions/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/drives/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/employers/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/employers/requests/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/enrollment-key/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/events/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/getting-started/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/guest-engagements/add/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/guest-engagements/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/hiring-assessment/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/infrastructure/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/internship-feedback/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/internship-guides/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/internship-ppo/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/internship-results/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/internships/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/interviews/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/jobs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/mentorship-requests/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/message-templates/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/offers-upload/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/offers/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/overview/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/reports/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/rules/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/settings/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/sponsorships/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/startup-funding/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/students/[id]/edit/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/students/[id]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/students/add/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/college/students/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/alumni/applications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/alumni/assessment-online/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/alumni/interviews/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/alumni/jobs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/applications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/assessment-summary/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/assessment-update-online/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/assessment-uploads/import/[sessionId]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/assessment-uploads/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/assessment-uploads/review/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/calendar/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/campus-guest-needs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/clarifications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/communication-templates/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/discussions/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/drives/edit/[id]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/drives/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/drives/request/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/fcfs-unavailable/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/getting-started/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/hiring-assessment/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/internship-feedback/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/internship-ppo/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/internship-supervisors/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/internships/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/interviews/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/jobs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/mentorship-requests/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/offer-templates/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/offers-upload/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/offers/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/overview/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/profile/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/projects/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/select-campus/[collegeId]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/select-campus/create/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/select-campus/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/settings/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/sponsorships/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/employer/startup-funding/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/feedback/new/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/feedback/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/help/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/my-exports/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/applications/[type]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/applications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/calendar/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/clarifications/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/cvs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/discussions/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/documents/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/drives/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/getting-started/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/hackathons/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/internship-feedback/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/internship-ppo/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/internships/not-processed/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/internships/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/interviews/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/jobs/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/mentorship-requests/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/offers/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/overview/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/profile/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/projects/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/dashboard/student/reminders/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/data-entry/offers/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/data-entry/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/data-entry/placement-drives/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/data-entry/student-profiles/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/data-entry/users/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/demo-accounts/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/developer-notes/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/developer/database-schema/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/developer/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/developer/unlock/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/developer/use-cases-more/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/developer/use-cases-user-testing/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/features/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/forgot-password/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/help/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/jobs/[id]/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/jobs/[id]/questions/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/login/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/register/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/reset-password/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/sign-in/page.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/academic-taxonomy/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/archived-students/[id]/restore/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/archived-students/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/colleges/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/colleges/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/dashboard/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/email-logs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/email-templates/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/employers/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/employers/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/error-logs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/pending-registrations/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/placement-listings/email/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/placement-listings/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/settings/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/admin/users/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/audit/logs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/audit/reports/export/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/audit/reports/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/[...nextauth]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/captcha/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/captcha/verify/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/change-password/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/forgot-password/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/register/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/register/validate-student/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/reset-password/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/auth/verify-email/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/clarifications/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/academic-years/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/applications/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/bulk-notifications/meta/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/bulk-notifications/preview/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/bulk-notifications/send/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/calendar-clashes/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/dashboard/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/drives/[id]/facebook-post/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/drives/[id]/report/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/drives/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/drives/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/employers/[employerId]/poc/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/employers/approve/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/employers/reinstate/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/employers/requests/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/employers/revoke/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/employers/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/engagement-listings/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/engagement-listings/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/enrollment-ledger/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/events/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/facilities/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/hiring-assessment-view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/infrastructure/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/internship-feedback/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/internship-guides/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/internship-ppo/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/internship-results/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/internships/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/interviews/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/interviews/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/jobs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/mentorship-requests/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/mentorship-requests/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/message-templates/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/message-templates/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/offers/assessment-starter/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/offers/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/offers/upload-meta/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/offers/upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/overview/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/reports/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/rules/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/settings/academic-taxonomy/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/settings/logo/complete/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/settings/logo/presign/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/settings/placement-season/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/settings/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/sponsorships/receipt/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/sponsorships/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/startup-funding/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/[id]/cvs/[cvId]/verify/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/[id]/cvs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/[id]/resume/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/bulk-upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/students/verify/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/college/system-email-templates/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/data-entry/offers/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/data-entry/options/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/data-entry/placement-drives/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/data-entry/student-profiles/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/data-entry/users/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/debug/log/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/debug/login-log/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/advance-application/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/apply-to-internship/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/apply-to-job/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/colleges/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/create-internships/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/create-jobs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/create-student/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/ensure-all-tieups/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/ensure-iitm-tieup/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/placement-drive/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/purge-all-jobs-internships/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/demo/purge/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/developer-notes/auth/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/developer-notes/logout/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/discussions/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/academic-years/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/applications/documents/view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/applications/resume/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/applications/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/applications/student-profile/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessment-round-map/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessment-update-online/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/[uploadId]/audit/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/[uploadId]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/[uploadId]/rows/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/export/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/import/[sessionId]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/import/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/starter/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/submit/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/targets/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/template/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/assessments/upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/calendar/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/campuses/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/dashboard/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/drives/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/drives/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/email-templates/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/engagement-listings/[id]/confirmation-draft/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/engagement-listings/[id]/send-confirmation/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/engagement-listings/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/fcfs-unavailable/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/hiring-assessment-view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/internship-feedback/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/internship-ppo/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/internship-supervisors/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/interviews/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/interviews/notify/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/interviews/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/jobs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/jobs/visibility/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/mentorship-requests/[id]/volunteer/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/mentorship-requests/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offer-templates/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offer-templates/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/[id]/resend/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/assessment-starter/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/bulk-generate/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/bulk-preview/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/options/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/offers/upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/posting-campus-constraints/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/profile/logo/complete/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/profile/logo/presign/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/profile/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/sponsorships/payment/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/sponsorships/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/employer/startup-funding/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/feedback/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/feedback/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/guided-runner/click/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/guided-runner/sign-in/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/guided-runner/state/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/help/ask/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/help/faq/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/hiring-assessment/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/notifications/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/platform/report-error/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/public/departments/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/public/jobs/[id]/questions/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/public/jobs/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/public/registration-job-aid/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/public/site-config/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/public/support-message/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/s3/view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/screens/ai-match/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/screens/registry/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/applications/cancel/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/applications/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/calendar/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/cvs/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/cvs/[id]/view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/cvs/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/cvs/upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/dashboard/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/documents/complete/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/documents/presign/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/documents/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/documents/upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/documents/view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/drives/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/internship-feedback/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/internship-ppo/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/internships/not-processed/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/interviews/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/mentorship-requests/[id]/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/mentorship-requests/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/offers/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/opportunity-email/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/profile/avatar/complete/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/profile/avatar/presign/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/profile/avatar/upload/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/profile/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/profile/suggest-skills/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/program-applications/cancel/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/program-applications/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/program-opportunities/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/student/resume/view/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/user/communication-email/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/user/data-export/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/api/user/onboarding/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/auth/continue/route.js",
+  "C:/Users/sandeep/Downloads/Claudes/CampusPlacement/campus-placement/.next/server/app/favicon.ico/route.js"
+]: 454.523ms
+Created all serverless functions in: 870.26ms
+{
+  "status": "error",
+  "reason": "build_failed",
+  "message": "Unable to find lambda for route: /dashboard/admin",
+  "next": [
+    {
+      "command": "vercel pull --yes",
+      "when": "Ensure project settings are present"
+    },
+    {
+      "command": "vercel build --yes",
+      "when": "re-run build"
+    }
+  ]
+}
+Error: Unable to find lambda for route: /dashboard/admin

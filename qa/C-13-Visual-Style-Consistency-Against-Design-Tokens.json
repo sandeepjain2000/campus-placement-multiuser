@@ -1,0 +1,778 @@
+{
+  "category": "C-13",
+  "categoryTitle": "Visual style consistency vs established app tokens",
+  "description": "Detect deviation in font, color, size, spacing, radius, and components from globals.css design system.",
+  "sourceOfTruthFile": "src/app/globals.css",
+  "testCases": [
+    {
+      "testCaseId": "C13-VIS-001",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/layout (shell)",
+      "route": "/dashboard/layout (shell)",
+      "role": "all",
+      "uiFocus": "Sidebar, top bar, nav density, focus rings",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P1"
+    },
+    {
+      "testCaseId": "C13-VIS-002",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/student/overview",
+      "route": "/dashboard/student/overview",
+      "role": "student",
+      "uiFocus": "Cards, stats grid, typography",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P1"
+    },
+    {
+      "testCaseId": "C13-VIS-003",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/student/profile",
+      "route": "/dashboard/student/profile",
+      "role": "student",
+      "uiFocus": "Forms, labels, file inputs",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P1"
+    },
+    {
+      "testCaseId": "C13-VIS-004",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/college/overview",
+      "route": "/dashboard/college/overview",
+      "role": "college_admin",
+      "uiFocus": "KPI cards, charts placeholders",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P1"
+    },
+    {
+      "testCaseId": "C13-VIS-005",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/college/offers",
+      "route": "/dashboard/college/offers",
+      "role": "college_admin",
+      "uiFocus": "Table, modals, action buttons",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P1"
+    },
+    {
+      "testCaseId": "C13-VIS-006",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/college/drives",
+      "route": "/dashboard/college/drives",
+      "role": "college_admin",
+      "uiFocus": "Status chips, report CTA",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-007",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/employer/overview",
+      "route": "/dashboard/employer/overview",
+      "role": "employer",
+      "uiFocus": "Dashboard cards",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-008",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/employer/offers",
+      "route": "/dashboard/employer/offers",
+      "role": "employer",
+      "uiFocus": "Dense table, filters",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-009",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/employer/select-campus",
+      "route": "/dashboard/employer/select-campus",
+      "role": "employer",
+      "uiFocus": "Cards, inline styles hot spot",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-010",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/admin/overview",
+      "route": "/dashboard/admin/overview",
+      "role": "super_admin",
+      "uiFocus": "Admin chrome consistency",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-011",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/alerts",
+      "route": "/dashboard/alerts",
+      "role": "multi",
+      "uiFocus": "List rows, empty states",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-012",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /dashboard/help",
+      "route": "/dashboard/help",
+      "role": "multi",
+      "uiFocus": "Prose, accordions, spacing",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-013",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /login",
+      "route": "/login",
+      "role": "public",
+      "uiFocus": "Auth layout vs dashboard tokens",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-014",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /register",
+      "route": "/register",
+      "role": "public",
+      "uiFocus": "Auth layout vs dashboard tokens",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-VIS-015",
+      "category": "C-13",
+      "type": "visual_token_audit",
+      "title": "Visual consistency audit: /",
+      "route": "/",
+      "role": "public",
+      "uiFocus": "Landing vs app shell consistency",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Open route in light and dark theme (if supported)",
+        "Compare typography: body uses Inter; display headings use Fraunces where intended",
+        "Verify text colors use semantic tokens (no one-off grays)",
+        "Verify primary CTAs use .btn-primary (or equivalent token-backed variant)",
+        "Verify secondary actions use .btn-secondary",
+        "Verify cards use .card or token-backed surfaces",
+        "Verify spacing follows 4/8px rhythm (--space-*)",
+        "Verify border radius uses token scale",
+        "Inspect DevTools: flag inline styles that duplicate token values"
+      ],
+      "expectedResult": [
+        "No blocking visual deviation from globals.css token system",
+        "Deviations are documented with screenshot + selector + suggested token"
+      ],
+      "priority": "P2"
+    },
+    {
+      "testCaseId": "C13-AUTO-001",
+      "category": "C-13",
+      "type": "automated_heuristic",
+      "title": "Repo scan: inline style and hard-coded color hotspots",
+      "route": "src/app (dashboard + public)",
+      "role": "qa_engineering",
+      "uiFocus": "Grep / lint for style={{ and #[0-9a-fA-F]{3,6}",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Search codebase for inline style objects on dashboard pages",
+        "Search for hex colors in JSX outside theme definition files",
+        "Triage: acceptable (charts/third-party) vs should migrate to token"
+      ],
+      "expectedResult": [
+        "Inventory of files with highest deviation risk",
+        "Trend line improves sprint-over-sprint"
+      ],
+      "priority": "P1"
+    },
+    {
+      "testCaseId": "C13-AUDIT-001",
+      "category": "C-13",
+      "type": "full_route_matrix",
+      "title": "Complete dashboard route visual consistency sign-off",
+      "route": "all /dashboard/** routes from menuConfig",
+      "role": "all",
+      "uiFocus": "100% route coverage checklist",
+      "establishedStyleReference": {
+        "fonts": {
+          "sans": "Inter (--font-sans)",
+          "display": "Fraunces (--font-display) for headings/display only"
+        },
+        "semanticColors": "text-primary/secondary/tertiary, --primary-*, --success-*, --warning-*, --danger-*, --info-*, --gray-*",
+        "surfaces": "--bg-primary/secondary/tertiary/elevated, --border-default/strong",
+        "spacing": "--space-xs through --space-3xl",
+        "radius": "--radius-sm through --radius-full",
+        "shadows": "--shadow-sm/md/lg/xl",
+        "components": "Prefer .btn, .btn-primary, .btn-secondary, .card, .form-input, .form-select per globals.css"
+      },
+      "deviationSignalsToFlag": [
+        "Hard-coded hex/rgb in inline style or arbitrary class (e.g. #333, rgb()) instead of CSS variables",
+        "Font family or font-size set inline instead of body/heading scale in globals",
+        "Button that is not .btn / .btn-* variant but custom-styled <button>",
+        "Border radius or shadow that does not match --radius-* / --shadow-* scale",
+        "Text color as raw gray hex instead of var(--text-*) or token",
+        "Inconsistent heading level styling (h1/h2) vs .page-header patterns",
+        "Mix of emoji-heavy headers with pages that use plain text (document pattern per screen type)"
+      ],
+      "steps": [
+        "Enumerate every route from dashboardMenu.js + screenRegistry",
+        "Mark each Pass / Minor deviation / Major deviation",
+        "File bugs for Major; backlog Minor to token migration"
+      ],
+      "expectedResult": [
+        "Signed matrix attached to release",
+        "Zero undocumented Major deviations at release gate"
+      ],
+      "priority": "P0"
+    }
+  ]
+}

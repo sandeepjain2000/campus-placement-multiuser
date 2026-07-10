@@ -1,0 +1,62 @@
+{
+  "id": "guest-engagement",
+  "title": "Guest engagement confirmation",
+  "oneLiner": "Voice-guided tour for use case: Guest engagement confirmation",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in",
+      "observe": "Campus guest needs and confirmation emails.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Campus guest needs",
+      "observe": "Engagement listings with guest registrants.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/campus-guest-needs"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Send guest confirmation — manual",
+      "observe": "guest_confirmation context in email logs.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Verify Email logs",
+      "observe": "Guest original address and employer as acting user.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Search guest email or guest_confirmation context.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    }
+  ]
+}
