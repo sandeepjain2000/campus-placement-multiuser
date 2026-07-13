@@ -705,7 +705,8 @@ function EmployerAssessmentUploadsContent() {
           Upload history
         </h3>
         <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
-          Use <strong>View / edit</strong> to adjust hiring results after a successful upload.
+          Use <strong>View / edit</strong> to adjust hiring results after a successful upload. Accepted and Rejected
+          counts reflect current hiring results after you save edits.
         </p>
         {error && <p style={{ color: 'var(--danger-600)' }}>{error.message}</p>}
         {isLoading ? (

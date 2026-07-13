@@ -6,7 +6,8 @@ import useSWR from 'swr';
 import { useToast } from '@/components/ToastProvider';
 import { CvLabelInput } from '@/components/student/StudentCvApply';
 import { CV_LABEL_MAX_LENGTH } from '@/lib/studentCvShared';
-import { patchStudentCv, postStudentCvUpload, studentCvViewUrl } from '@/lib/studentCvApiPaths';
+import { patchStudentCv, postStudentCvUpload, studentCvDownloadUrl, studentCvViewUrl } from '@/lib/studentCvApiPaths';
+import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
 import { Archive, CheckCircle2, CircleAlert, FileText, Star, Upload } from 'lucide-react';
 
 const fetcher = async (url) => {
@@ -244,14 +245,11 @@ export default function StudentMyCvsPage() {
                             <Archive size={14} style={{ marginRight: 4 }} />
                             Archive
                           </button>
-                          <a
-                            className="btn btn-ghost btn-sm"
-                            href={studentCvViewUrl(cv.id)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Preview
-                          </a>
+                          <CvViewDownloadButtons
+                            viewUrl={studentCvViewUrl(cv.id)}
+                            downloadUrl={studentCvDownloadUrl(cv.id)}
+                            viewLabel="View"
+                          />
                         </>
                       )}
                     </div>
@@ -271,10 +269,18 @@ export default function StudentMyCvsPage() {
               <div style={{ display: 'grid', gap: '0.5rem' }}>
                 {archived.map((cv) => (
                   <div key={cv.id} className="card" style={{ padding: '0.75rem 1rem', opacity: 0.85 }}>
-                    <strong>{cv.label}</strong>
-                    <span className="badge badge-gray" style={{ marginLeft: 8 }}>
-                      Archived
-                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <div>
+                        <strong>{cv.label}</strong>
+                        <span className="badge badge-gray" style={{ marginLeft: 8 }}>
+                          Archived
+                        </span>
+                      </div>
+                      <CvViewDownloadButtons
+                        viewUrl={studentCvViewUrl(cv.id)}
+                        downloadUrl={studentCvDownloadUrl(cv.id)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

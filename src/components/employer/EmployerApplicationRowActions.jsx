@@ -6,7 +6,7 @@ import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction
  * Icon-only row actions for employer application tables (S-46).
  * View uses Eye + overlay doc count; CV is a separate scroll/resume action.
  */
-export default function EmployerApplicationRowActions({ app, onViewProfile, onOpenResume, onUpdateStatus, busy = false }) {
+export default function EmployerApplicationRowActions({ app, onViewProfile, onOpenResume, onDownloadResume, onUpdateStatus, busy = false }) {
   return (
     <div className="table-actions">
       <StandardTableIconAction
@@ -18,13 +18,22 @@ export default function EmployerApplicationRowActions({ app, onViewProfile, onOp
         badge={app.documentCount}
       />
       {app.hasResume ? (
-        <StandardTableIconAction
-          action="cv"
-          variant="ghost"
-          onClick={onOpenResume}
-          disabled={busy}
-          tooltip={app.cvLabel ? `Open CV: ${app.cvLabel}` : 'Open CV in new tab'}
-        />
+        <>
+          <StandardTableIconAction
+            action="cv"
+            variant="ghost"
+            onClick={onOpenResume}
+            disabled={busy}
+            tooltip={app.cvLabel ? `View CV: ${app.cvLabel}` : 'View CV in new tab'}
+          />
+          <StandardTableIconAction
+            action="download"
+            variant="ghost"
+            onClick={onDownloadResume}
+            disabled={busy}
+            tooltip={app.cvLabel ? `Download CV: ${app.cvLabel}` : 'Download CV'}
+          />
+        </>
       ) : null}
       {app.status !== 'withdrawn' && (app.status === 'applied' || app.status === 'on_hold') ? (
         <>

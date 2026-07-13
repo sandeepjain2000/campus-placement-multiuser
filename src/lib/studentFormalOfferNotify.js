@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { sendMail } from '@/lib/mailer';
+import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { formatCurrency } from '@/lib/utils';
 import { buildOfferEmailLetterSection } from '@/lib/offerTemplateRender';
 import { isPendingOfferStatus, normalizeOfferStatus } from '@/lib/offerStatusNormalize';
@@ -133,6 +134,15 @@ export async function notifyStudentFormalOffer({
        VALUES ($1, $2, $3, $4, $5)`,
       [studentUserId, title, message, 'success', '/dashboard/student/offers'],
     );
+    await mirrorInAppAlertToYopmail({
+      title,
+      message,
+      type: 'success',
+      link: '/dashboard/student/offers',
+      audience: '1 student',
+      recipientEmail: email || null,
+      userId: studentUserId,
+    });
   } catch (err) {
     console.error('Failed to create formal offer in-app notification:', err);
   }

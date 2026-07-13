@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { getApplyBlockReason } from '@/lib/getApplyBlockReason';
+import { resolveEffectiveStudentBatchYear } from '@/lib/studentBatch';
 import {
   resolveStudentEligibilityGroupCode,
   resolveStudentEligibilityGroupName,
@@ -13,7 +14,8 @@ import { getStudentCampusCvVerificationGate } from '@/lib/studentCv';
 async function queryStudentProfileRow(studentId) {
   try {
     return await query(
-      `SELECT cgpa, branch, department, batch_year, backlogs_active, placement_status, tenant_id, aux_profile
+      `SELECT cgpa, branch, department, batch_year, graduation_year, joining_academic_year,
+              backlogs_active, placement_status, tenant_id, aux_profile
        FROM student_profiles WHERE id = $1::uuid LIMIT 1`,
       [studentId],
     );
@@ -21,7 +23,8 @@ async function queryStudentProfileRow(studentId) {
     if (e?.code !== '42703') throw e;
     try {
       return await query(
-        `SELECT cgpa, branch, department, batch_year, backlogs_active, placement_status, tenant_id
+        `SELECT cgpa, branch, department, batch_year, graduation_year, joining_academic_year,
+                backlogs_active, placement_status, tenant_id
          FROM student_profiles WHERE id = $1::uuid LIMIT 1`,
         [studentId],
       );
@@ -78,7 +81,13 @@ export async function loadStudentApplyProfile(studentId, tenantId = null) {
     cgpa,
     branch: row.branch || '',
     department: row.department || '',
-    batchYear: row.batch_year != null && row.batch_year !== '' ? Number(row.batch_year) : null,
+    batchYear: resolveEffectiveStudentBatchYear({
+      batchYear: row.batch_year,
+      graduationYear: row.graduation_year,
+      joining_academic_year: row.joining_academic_year,
+      batchLabel: aux.batchLabel,
+      joiningAcademicYear: aux.joiningAcademicYear,
+    }),
     backlogsActive: Number(row.backlogs_active ?? 0),
     hasResume: resumeState.hasResume,
     isPlacementLocked: Boolean(placementLock.locked),

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { query, transaction } from '@/lib/db';
 import { isUuid } from '@/lib/tenantContext';
 import { writeEmployerAssessmentAudit } from '@/lib/employerAssessmentAudit';
+import { recalculateAssessmentUploadSummary } from '@/lib/assessmentUploadSummary';
 import { formatStudentSystemId } from '@/lib/studentSystemId';
 import { AND_EAU_NOT_DELETED, AND_SP_NOT_DELETED } from '@/lib/softDeleteSql';
 
@@ -125,6 +126,8 @@ async function __platform_PATCH(request, { params }) {
 
     const ROW_FIELDS = ['hiring_result', 'remarks', 'candidate_name'];
 
+    let summary = null;
+
     await transaction(async (client) => {
       const prevRes = await client.query(
         `SELECT id, roll_number, hiring_result, remarks, candidate_name
@@ -198,9 +201,11 @@ async function __platform_PATCH(request, { params }) {
           },
         });
       }
+
+      summary = await recalculateAssessmentUploadSummary(client, uploadId);
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, summary });
   } catch (e) {
     console.error('PATCH /api/employer/assessments/[uploadId]', e);
     return NextResponse.json({ error: 'Failed to save assessment rows' }, { status: 500 });

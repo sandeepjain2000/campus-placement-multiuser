@@ -9,7 +9,7 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import DevScreenTag from '@/components/DevScreenTag';
 import EntityLogo from '@/components/EntityLogo';
 import { useResolvedBrandLogoUrl } from '@/hooks/useResolvedBrandLogoUrl';
-import { getDashboardMenu, NAV_SECTION_STORAGE_KEY, ROLE_HOME_PATHS, getDashboardNavItemKey } from '@/config/dashboardMenu';
+import { getDashboardMenu, NAV_SECTION_STORAGE_KEY, ROLE_HOME_PATHS, getRoleProfilePath, getRoleProfileLabel, getDashboardNavItemKey } from '@/config/dashboardMenu';
 import { isAlumniStudent } from '@/lib/studentAlumni';
 import { ALUMNI_BROWSE_JOBS_PATH, ALUMNI_MY_JOBS_PATH } from '@/lib/alumniRoutes';
 import { EMPLOYER_ALUMNI_JOBS_PATH } from '@/lib/employerAlumniRoutes';
@@ -234,23 +234,30 @@ export default function DashboardFullScreenHub({ role, session }) {
               style={{ paddingLeft: '2.25rem' }}
             />
           </div>
-          <div style={{ flexShrink: 0 }}>
-            <EntityLogo
-              name={logoName}
-              logoUrl={brandLogoUrl}
-              placeholderUrl={
-                role === 'employer' || role === 'college_admin' ? DEFAULT_ENTITY_LOGO_URL : null
-              }
-              size="sm"
-              shape="rounded"
-            />
-          </div>
-          <div style={{ fontSize: '0.8125rem', textAlign: 'right', minWidth: 0, maxWidth: '9rem' }}>
-            <div style={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {session?.user?.name}
+          <Link
+            href={getRoleProfilePath(role)}
+            className="dashboard-identity-link dashboard-identity-link--hub"
+            aria-label={`${getRoleProfileLabel(role)} — ${session?.user?.name}`}
+            title={getRoleProfileLabel(role)}
+          >
+            <div style={{ flexShrink: 0 }}>
+              <EntityLogo
+                name={logoName}
+                logoUrl={brandLogoUrl}
+                placeholderUrl={
+                  role === 'employer' || role === 'college_admin' ? DEFAULT_ENTITY_LOGO_URL : null
+                }
+                size="sm"
+                shape="rounded"
+              />
             </div>
-            <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>{getRoleDisplayName(role)}</div>
-          </div>
+            <div style={{ fontSize: '0.8125rem', textAlign: 'right', minWidth: 0 }}>
+              <div style={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {session?.user?.name}
+              </div>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>{getRoleDisplayName(role)}</div>
+            </div>
+          </Link>
           <NotificationDropdown />
           <ThemeToggleButton />
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => signOut({ callbackUrl: '/login?force=1' })}>

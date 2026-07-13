@@ -85,20 +85,26 @@ export async function getObjectBufferFromKey(key) {
   };
 }
 
-export async function createDownloadUrlForKey(key, expiresInSeconds = 60 * 60 * 24 * 7, { downloadFileName } = {}) {
+export async function createDownloadUrlForKey(key, expiresInSeconds = 60 * 60 * 24 * 7, { downloadFileName, disposition, contentType } = {}) {
   if (!isS3Configured()) {
     throw new Error('S3 is not configured (missing AWS env vars).');
   }
   const client = getClient();
   const bucket = process.env.S3_BUCKET_NAME;
+  const safeName = downloadFileName ? String(downloadFileName).replace(/"/g, '') : '';
+  let responseContentDisposition;
+  if (safeName) {
+    if (disposition === 'inline') {
+      responseContentDisposition = `inline; filename="${safeName}"`;
+    } else {
+      responseContentDisposition = `attachment; filename="${safeName}"`;
+    }
+  }
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: key,
-    ...(downloadFileName
-      ? {
-          ResponseContentDisposition: `attachment; filename="${String(downloadFileName).replace(/"/g, '')}"`,
-        }
-      : {}),
+    ...(responseContentDisposition ? { ResponseContentDisposition: responseContentDisposition } : {}),
+    ...(contentType ? { ResponseContentType: contentType } : {}),
   });
   const downloadUrl = await getSignedUrl(client, command, { expiresIn: expiresInSeconds });
   return { bucket, key, downloadUrl, expiresIn: expiresInSeconds };

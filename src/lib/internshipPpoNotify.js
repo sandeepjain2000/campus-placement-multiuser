@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { sendMail } from '@/lib/mailer';
+import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 
 function appOrigin() {
   const u = process.env.NEXTAUTH_URL;
@@ -33,6 +34,15 @@ export async function notifyStudentInternshipPpoConfirmed({
        VALUES ($1, $2, $3, $4, $5)`,
       [studentUserId, title, message, 'success', PPO_LINK],
     );
+    await mirrorInAppAlertToYopmail({
+      title,
+      message,
+      type: 'success',
+      link: PPO_LINK,
+      audience: '1 student',
+      recipientEmail: email || null,
+      userId: studentUserId,
+    });
   } catch (err) {
     console.error('Failed to create PPO in-app notification:', err);
   }

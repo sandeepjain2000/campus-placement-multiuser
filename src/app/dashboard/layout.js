@@ -13,6 +13,8 @@ import PageLoading from '@/components/PageLoading';
 import {
   getDashboardMenu,
   ROLE_HOME_PATHS,
+  getRoleProfilePath,
+  getRoleProfileLabel,
   NAV_SECTION_STORAGE_KEY,
   findSectionIdByPath,
   isSidebarItemActive,
@@ -446,33 +448,41 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem' }}>
-            {(role === 'employer' || role === 'college_admin') ? (
-              <EntityLogo
-                name={
-                  role === 'employer'
-                    ? employerDisplayName || session.user.name
-                    : (collegeSettings?.institution?.collegeName || session.user.tenantName || session.user.name)
-                }
-                logoUrl={resolvedBrandLogoUrl}
-                placeholderUrl={DEFAULT_ENTITY_LOGO_URL}
-                size="sm"
-                shape="rounded"
-              />
-            ) : (
-              <div className="avatar avatar-md">
-                {getInitials(session.user.name)}
-              </div>
-            )}
-            <div className="sidebar-footer-meta" style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {session.user.name}
-              </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                {getRoleDisplayName(role)}
+          <Link
+            href={getRoleProfilePath(role)}
+            className="dashboard-identity-link"
+            onClick={() => setMobileOpen(false)}
+            aria-label={`${getRoleProfileLabel(role)} — ${session.user.name}`}
+            title={getRoleProfileLabel(role)}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem' }}>
+              {(role === 'employer' || role === 'college_admin') ? (
+                <EntityLogo
+                  name={
+                    role === 'employer'
+                      ? employerDisplayName || session.user.name
+                      : (collegeSettings?.institution?.collegeName || session.user.tenantName || session.user.name)
+                  }
+                  logoUrl={resolvedBrandLogoUrl}
+                  placeholderUrl={DEFAULT_ENTITY_LOGO_URL}
+                  size="sm"
+                  shape="rounded"
+                />
+              ) : (
+                <div className="avatar avatar-md">
+                  {getInitials(session.user.name)}
+                </div>
+              )}
+              <div className="sidebar-footer-meta" style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {session.user.name}
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                  {getRoleDisplayName(role)}
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       </aside>
 

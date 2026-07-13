@@ -41,7 +41,13 @@ export default function EmployerAssessmentUpdateOnlinePage() {
   const [targets, setTargets] = useState([]);
   const [targetCounts, setTargetCounts] = useState({ internship: 0, jobs: 0, drive: 0, projects: 0 });
   const [targetsLoading, setTargetsLoading] = useState(false);
-  const [selectedTargetId, setSelectedTargetId] = useState('');
+  const [targetByKind, setTargetByKind] = useState({
+    internship: '',
+    jobs: '',
+    drive: '',
+    projects: '',
+  });
+  const selectedTargetId = targetByKind[kindTab] || '';
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [submittingResults, setSubmittingResults] = useState(false);
@@ -101,12 +107,11 @@ export default function EmployerAssessmentUpdateOnlinePage() {
   useEffect(() => {
     if (!selectedTenantId) {
       setTargets([]);
-      setSelectedTargetId('');
+      setTargetByKind({ internship: '', jobs: '', drive: '', projects: '' });
       return;
     }
     let mounted = true;
     setTargets([]);
-    setSelectedTargetId('');
     setTargetsLoading(true);
     (async () => {
       try {
@@ -114,7 +119,10 @@ export default function EmployerAssessmentUpdateOnlinePage() {
         if (!mounted) return;
         setTargets(list);
         setTargetCounts((prev) => ({ ...prev, [kindTab]: list.length }));
-        setSelectedTargetId((prev) => pickDefaultAssessmentTargetId(list, prev));
+        setTargetByKind((prev) => ({
+          ...prev,
+          [kindTab]: pickDefaultAssessmentTargetId(list, prev[kindTab]),
+        }));
       } catch (e) {
         if (mounted) {
           setTargets([]);
@@ -134,9 +142,13 @@ export default function EmployerAssessmentUpdateOnlinePage() {
   const isSubmitted = submissionStatus === 'submitted';
 
   const loadRows = useCallback(async () => {
-    if (!selectedTenantId || !selectedTargetId) {
+    if (!selectedTenantId || !selectedTargetId || targetsLoading) {
       setRows([]);
       setSubmissionStatus('draft');
+      return;
+    }
+    const targetValid = targets.some((t) => String(t.id) === String(selectedTargetId));
+    if (targets.length > 0 && !targetValid) {
       return;
     }
     setLoading(true);
@@ -159,7 +171,7 @@ export default function EmployerAssessmentUpdateOnlinePage() {
     } finally {
       setLoading(false);
     }
-  }, [kindTab, selectedTenantId, selectedTargetId, driveId, jobId, addToast]);
+  }, [kindTab, selectedTenantId, selectedTargetId, driveId, jobId, targets, targetsLoading, addToast]);
 
   useEffect(() => {
     void loadRows();
@@ -333,7 +345,9 @@ export default function EmployerAssessmentUpdateOnlinePage() {
               className="form-select"
               value={selectedTargetId}
               disabled={targetsLoading || !selectedTenantId}
-              onChange={(e) => setSelectedTargetId(e.target.value)}
+              onChange={(e) =>
+                setTargetByKind((prev) => ({ ...prev, [kindTab]: e.target.value }))
+              }
             >
               <option value="">{targetsLoading ? 'Loading…' : 'Select target…'}</option>
               {targets.map((t) => (

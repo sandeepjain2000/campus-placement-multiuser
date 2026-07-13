@@ -301,6 +301,75 @@ export async function sendStudentWelcomeEmails(p) {
   }
 }
 
+export const PASSWORD_RESET_SUBJECT = '[PlacementHub] Reset your password';
+
+/**
+ * @param {{ firstName?: string | null, resetLink: string }} p
+ */
+export function passwordResetEmailBodies({ firstName, resetLink }) {
+  const fn = (firstName && String(firstName).trim()) || 'there';
+  const text =
+    `Hi ${fn},\n\n` +
+    `Click the link below to reset your PlacementHub password:\n\n` +
+    `${resetLink}\n\n` +
+    `This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.`;
+  const html = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #f3f4f6; padding: 20px; border-bottom: 1px solid #e5e7eb;">
+          <h2 style="margin: 0; color: #1f2937;">Password Reset Request</h2>
+        </div>
+        <div style="padding: 20px;">
+          <p>Hi ${fn},</p>
+          <p>We received a request to reset your PlacementHub password. Click the button below to choose a new password.</p>
+          <a href="${resetLink}" style="display: inline-block; background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; margin-bottom: 15px;">Reset Password</a>
+          <p>This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.</p>
+        </div>
+      </div>
+    `;
+  return { text, html };
+}
+
+/**
+ * Password reset to the user's login email plus a demo inbox copy (YOPmail when configured).
+ * @param {{ loginEmail: string, firstName?: string | null, resetLink: string, userId?: string }} p
+ */
+export async function sendPasswordResetEmail(p) {
+  const { loginEmail, firstName, resetLink, userId } = p;
+  const { text, html } = passwordResetEmailBodies({ firstName, resetLink });
+  const platform = await getPlatformSettings();
+  const yopInbox = String(platform?.systemNotificationInboxEmail || '').trim();
+
+  await sendMail({
+    to: loginEmail,
+    subject: PASSWORD_RESET_SUBJECT,
+    text,
+    html,
+    context: 'password_reset',
+    userId,
+    recipientUserId: userId,
+    skipRecipientRedirect: true,
+  });
+
+  if (yopInbox) {
+    const copyText =
+      `Demo inbox copy — password reset for ${loginEmail}\n` +
+      `(Original recipient: ${loginEmail})\n\n` +
+      text;
+    const copyHtml = `<p style="font-family:sans-serif;color:#6b7280;font-size:13px;">Demo inbox copy — password reset for ${loginEmail}</p>${html}`;
+    await sendMail({
+      to: yopInbox,
+      subject: `[Password reset] ${loginEmail} — ${PASSWORD_RESET_SUBJECT}`,
+      text: copyText,
+      html: copyHtml,
+      context: 'password_reset_yop_copy',
+      userId,
+      recipientUserId: userId,
+      skipRecipientRedirect: true,
+      skipCommunicationRouting: true,
+    });
+  }
+}
+
 /**
  * @param {{ to: string | string[], subject: string, text: string, html?: string, context?: string, userId?: string, recipientUserId?: string, replyTo?: string, skipCommunicationRouting?: boolean }} opts
  * @param {string} [opts.context] — audit label for logs (e.g. `guest_confirmation`, `student_welcome`)
@@ -447,5 +516,62 @@ export async function sendMail(opts) {
       smtpResponse: e.response != null ? String(e.response).slice(0, 2000) : null,
     });
     throw err;
+  }
+}
+
+function mailAppOrigin() {
+  const u = process.env.NEXTAUTH_URL;
+  if (u) return u.replace(/\/$/, '');
+  const v = process.env.VERCEL_URL;
+  if (v) return (v.startsWith('http') ? v : `https://${v}`).replace(/\/$/, '');
+  return '';
+}
+
+/**
+ * Mirror an in-app alert to the platform demo inbox (YOPmail when configured).
+ * Does not throw — failures are logged only.
+ * @param {{ title: string, message: string, type?: string, link?: string | null, audience?: string, recipientEmail?: string | null, userId?: string }} opts
+ */
+export async function sendInAppAlertYopCopy({
+  title,
+  message,
+  type = 'info',
+  link = null,
+  audience = '',
+  recipientEmail = null,
+  userId,
+}) {
+  const platform = await getPlatformSettings();
+  const yopInbox = String(platform?.systemNotificationInboxEmail || '').trim();
+  if (!yopInbox) return;
+
+  const origin = mailAppOrigin();
+  const linkPath = link ? String(link).trim() : '';
+  const absLink = linkPath && origin ? `${origin}${linkPath.startsWith('/') ? linkPath : `/${linkPath}`}` : linkPath;
+  const subject = `[Alert] ${String(title || 'Notification').trim()}`;
+  const header = [
+    'Demo inbox copy — in-app alert (also visible under Alerts in PlacementHub)',
+    audience ? `Audience: ${audience}` : null,
+    recipientEmail ? `Recipient: ${recipientEmail}` : null,
+    `Type: ${type}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const text = `${header}\n\n${String(title || '').trim()}\n\n${String(message || '').trim()}${absLink ? `\n\nOpen: ${absLink}` : ''}`;
+
+  try {
+    await sendMail({
+      to: yopInbox,
+      subject,
+      text,
+      context: 'in_app_alert_yop_copy',
+      userId,
+      recipientUserId: userId,
+      skipRecipientRedirect: true,
+      skipCommunicationRouting: true,
+    });
+  } catch (e) {
+    console.error('[mail:in_app_alert_yop_copy] failed:', e.message);
   }
 }

@@ -65,6 +65,14 @@ function mapRow(row) {
           sourceKind,
         })
       : null,
+    resumeDownloadUrl: hasResume
+      ? buildEmployerResumeApiUrl({
+          studentId: row.student_id,
+          applicationId: row.id,
+          sourceKind,
+          download: true,
+        })
+      : null,
     resumeFileName: row.cv_label || null,
     cvLabel: row.cv_label || null,
     documentCount: Number(row.document_count) || 0,

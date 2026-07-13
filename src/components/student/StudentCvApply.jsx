@@ -334,7 +334,7 @@ export function useStudentApplyWithCvModal({ onApply, onError, renderExtras }) {
       onError={onError}
     >
       {typeof renderExtrasRef.current === 'function'
-        ? renderExtrasRef.current(metadataRef.current)
+        ? renderExtrasRef.current(metadataRef.current, { submitting })
         : null}
     </StudentApplyWithCvModal>
   );

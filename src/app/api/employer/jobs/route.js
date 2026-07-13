@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { query, transaction } from '@/lib/db';
-import { validateEmployerJobPayload, validateMaxBacklogsPayload, validateTitlePayload } from '@/lib/apiInputValidation';
+import { validateEmployerJobPayload, validateInternshipBatchYearPayload, validateMaxBacklogsPayload, validateTitlePayload } from '@/lib/apiInputValidation';
 import { normalizeTitle } from '@/lib/validators';
 import { jobPostingNotDeletedSql } from '@/lib/migrationReady';
 import {
@@ -36,11 +36,11 @@ import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
 import {
   buildInternshipAdditionalInfo,
   parseInternshipAdditionalInfo,
-  resolveBatchYearInput,
   resolveEligibleBranchesInput,
   resolveInternshipDateInput,
   resolveInternshipDatesFromRow,
   resolveMaxBacklogsInput,
+  validateInternshipBatchYearField,
   validateInternshipDateFields,
 } from '@/lib/internshipPostingMeta';
 
@@ -782,8 +782,16 @@ async function __platform_POST(request) {
         return NextResponse.json({ error: backlogErr, field: 'maxBacklogs' }, { status: 400 });
       }
     }
+    if (!alumniJob && jobType === 'internship') {
+      const batchErr = validateInternshipBatchYearPayload(batchYear, {
+        required: status === 'published',
+      });
+      if (batchErr) {
+        return NextResponse.json({ error: batchErr, field: 'batchYear' }, { status: 400 });
+      }
+    }
     const maxBacklogsResolved = alumniJob ? null : resolveMaxBacklogsInput(maxBacklogs);
-    const batchYearResolved = alumniJob ? null : resolveBatchYearInput(batchYear);
+    const batchYearResolved = alumniJob ? null : validateInternshipBatchYearField(batchYear).value;
     const additionalInfoResolved = alumniJob
       ? null
       : buildInternshipAdditionalInfo({
@@ -1064,7 +1072,7 @@ async function __platform_PATCH(request) {
       const batchYearForUpdate = alumniJob
         ? null
         : batchYear !== undefined
-          ? resolveBatchYearInput(batchYear)
+          ? validateInternshipBatchYearField(batchYear).value
           : existing.batch_year;
       const existingDates = resolveInternshipDatesFromRow(existing);
       const startDateForUpdate =
@@ -1087,6 +1095,15 @@ async function __platform_PATCH(request) {
           const err = new Error(dates.formError);
           err.statusCode = 400;
           err.field = dates.fieldErrors.endDate ? 'endDate' : dates.fieldErrors.startDate ? 'startDate' : 'dates';
+          throw err;
+        }
+        const batchErr = validateInternshipBatchYearPayload(batchYearForUpdate, {
+          required: status === 'published',
+        });
+        if (batchErr) {
+          const err = new Error(batchErr);
+          err.statusCode = 400;
+          err.field = 'batchYear';
           throw err;
         }
       }

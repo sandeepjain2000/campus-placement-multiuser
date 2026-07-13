@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { CheckCircle2, CircleAlert, FileText } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
+import { collegeStudentCvDownloadUrl, collegeStudentCvViewUrl } from '@/lib/studentCvApiPaths';
 
 function formatVerifiedAt(value) {
   if (!value) return '';
@@ -148,29 +150,35 @@ export default function CollegeStudentCvsPanel({ studentId }) {
                 )}
               </div>
             </div>
-            {meta.canVerify ? (
-              cv.isVerified ? (
-                <button
-                  type="button"
-                  className="btn btn-ghost btn-sm"
-                  disabled={updatingId === cv.id}
-                  onClick={() => toggleVerify(cv.id, false)}
-                >
-                  Clear verification
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="btn btn-primary btn-sm"
-                  disabled={updatingId === cv.id}
-                  onClick={() => toggleVerify(cv.id, true)}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-                >
-                  <CheckCircle2 size={14} aria-hidden />
-                  Mark verified
-                </button>
-              )
-            ) : null}
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' }}>
+              <CvViewDownloadButtons
+                viewUrl={collegeStudentCvViewUrl(studentId, cv.id)}
+                downloadUrl={collegeStudentCvDownloadUrl(studentId, cv.id)}
+              />
+              {meta.canVerify ? (
+                cv.isVerified ? (
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    disabled={updatingId === cv.id}
+                    onClick={() => toggleVerify(cv.id, false)}
+                  >
+                    Clear verification
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    disabled={updatingId === cv.id}
+                    onClick={() => toggleVerify(cv.id, true)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                  >
+                    <CheckCircle2 size={14} aria-hidden />
+                    Mark verified
+                  </button>
+                )
+              ) : null}
+            </div>
           </div>
         </article>
       ))}

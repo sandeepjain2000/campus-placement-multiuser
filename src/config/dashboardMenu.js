@@ -40,6 +40,33 @@ export const ROLE_HOME_PATHS = {
   super_admin: '/dashboard/admin',
 };
 
+/** Profile / account settings destination for the sidebar identity card. */
+export const ROLE_PROFILE_PATHS = {
+  student: '/dashboard/student/profile',
+  employer: '/dashboard/employer/profile',
+  college_admin: '/dashboard/college/settings',
+  placement_committee: '/dashboard/college/overview',
+  super_admin: '/dashboard/admin/settings',
+};
+
+const ROLE_PROFILE_LABELS = {
+  student: 'My Profile',
+  employer: 'Company Profile',
+  college_admin: 'College settings',
+  placement_committee: 'Dashboard overview',
+  super_admin: 'Platform settings',
+};
+
+/** @param {string | undefined | null} role */
+export function getRoleProfilePath(role) {
+  return ROLE_PROFILE_PATHS[role] || ROLE_HOME_PATHS[role] || '/dashboard';
+}
+
+/** @param {string | undefined | null} role */
+export function getRoleProfileLabel(role) {
+  return ROLE_PROFILE_LABELS[role] || 'Profile';
+}
+
 export function isRoleDashboardHome(pathname, role) {
   const home = ROLE_HOME_PATHS[role];
   return Boolean(home && pathname === home);

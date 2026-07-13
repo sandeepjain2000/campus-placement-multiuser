@@ -117,6 +117,10 @@ export function validateMaxBacklogsPayload(value) {
   );
 }
 
+export function validateInternshipBatchYearPayload(value, { required = false } = {}) {
+  return validateFieldOrError(FIELD_IDS.EMPLOYER_INTERNSHIP_BATCH_YEAR, value, { required });
+}
+
 export function validateEmployerOfferPayload({ salary, deadline, joiningDate }) {
   return rejectIfInvalid([
     validateFieldOrError(FIELD_IDS.EMPLOYER_OFFER_SALARY, salary),

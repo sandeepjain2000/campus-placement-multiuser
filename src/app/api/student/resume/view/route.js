@@ -3,27 +3,15 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { getOrCreateStudentProfileId } from '@/lib/studentServer';
-import { createDownloadUrlForKey, isS3Configured } from '@/lib/s3';
+import { isS3Configured } from '@/lib/s3';
 import { isAuthoritativeResumeUrl, resolveStudentResumeUrl } from '@/lib/studentResumeUrl';
+import { isCvDownloadRequest, presignLegacyResumeFile } from '@/lib/studentCvPresign';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
 export const revalidate = 0;
 
-
-
-
-function extractS3Key(fileUrl) {
-  try {
-    const u = new URL(String(fileUrl || ''));
-    const key = decodeURIComponent((u.pathname || '').replace(/^\/+/, ''));
-    return key || null;
-  } catch {
-    return null;
-  }
-}
-
-async function __platform_GET() {
+async function __platform_GET(request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'student') {
@@ -71,19 +59,19 @@ async function __platform_GET() {
       return NextResponse.json({ error: 'File storage not configured' }, { status: 503 });
     }
 
-    const key = extractS3Key(resumeUrl);
-    if (!key) {
-      return NextResponse.json({ error: 'Invalid résumé file location' }, { status: 400 });
-    }
-
-    const { downloadUrl } = await createDownloadUrlForKey(key, 60 * 30);
+    const legacyDoc = documents.find((d) => String(d.type || '').toLowerCase() === 'resume');
+    const mode = isCvDownloadRequest(request) ? 'download' : 'view';
+    const { downloadUrl } = await presignLegacyResumeFile({
+      fileUrl: resumeUrl,
+      fileName: legacyDoc?.name || 'resume.pdf',
+      mode,
+    });
     return NextResponse.redirect(downloadUrl);
   } catch (e) {
     console.error('GET /api/student/resume/view', e);
     return NextResponse.json({ error: 'Could not open résumé' }, { status: 500 });
   }
 }
-
 
 const __platformApiHandlers = withApiHandlers({
   GET: __platform_GET,

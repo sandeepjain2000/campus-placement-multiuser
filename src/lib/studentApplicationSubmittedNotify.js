@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { sendMail } from '@/lib/mailer';
+import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { isAlumniJobType } from '@/lib/studentAlumni';
 
 const NOTIFICATION_TITLE_MAX = 250;
@@ -106,6 +107,15 @@ export async function notifyStudentApplicationSubmitted({
        VALUES ($1::uuid, $2, $3, 'success', $4)`,
       [studentUserId, clipNotificationTitle(alert.title), alert.message, linkPath],
     );
+    await mirrorInAppAlertToYopmail({
+      title: clipNotificationTitle(alert.title),
+      message: alert.message,
+      type: 'success',
+      link: linkPath,
+      audience: '1 student',
+      recipientEmail: email || null,
+      userId: studentUserId,
+    });
   } catch (err) {
     console.error('Failed to create application submitted in-app notification:', err);
   }

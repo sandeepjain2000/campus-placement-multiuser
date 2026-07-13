@@ -50,6 +50,7 @@ const FIELD_CODE_MAP = {
   'employer.drive.date': 'EMP-DRV-DT',
   'employer.interview.date': 'EMP-INT-DT',
   'employer.interview.assigned': 'EMP-INT-ASN',
+  'employer.internship.batchYear': 'EMP-INT-BATCH',
   'employer.foundedYear': 'EMP-FOUND',
   'employer.offer.salary': 'EMP-OFF-SAL',
   'employer.offer.deadline': 'EMP-OFF-DL',

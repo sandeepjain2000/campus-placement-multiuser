@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
-import { createDownloadUrlForKey, isS3Configured } from '@/lib/s3';
+import { isS3Configured } from '@/lib/s3';
+import { isCvDownloadRequest, presignLegacyResumeFile } from '@/lib/studentCvPresign';
 import { extractS3Key, getLatestResumeForStudent } from '@/lib/employerApplicationAccess';
 import { isAuthoritativeResumeUrl, resolveStudentResumeUrl } from '@/lib/studentResumeUrl';
 import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
@@ -27,7 +28,7 @@ function isS3Url(url) {
   }
 }
 
-async function __platform_GET(_request, { params }) {
+async function __platform_GET(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
     const gate = assertCollegeStaff(session);
@@ -79,7 +80,18 @@ async function __platform_GET(_request, { params }) {
     if (isS3Url(fileUrl) && isS3Configured()) {
       const key = extractS3Key(fileUrl);
       if (key) {
-        const { downloadUrl } = await createDownloadUrlForKey(key, 60 * 30);
+        const mode = isCvDownloadRequest(request) ? 'download' : 'view';
+        const legacyDoc = (await query(
+          `SELECT document_name FROM student_documents
+           WHERE student_id = $1::uuid AND LOWER(document_type) = 'resume'
+           ORDER BY uploaded_at DESC LIMIT 1`,
+          [studentId],
+        )).rows[0];
+        const { downloadUrl } = await presignLegacyResumeFile({
+          fileUrl,
+          fileName: legacyDoc?.document_name || 'resume.pdf',
+          mode,
+        });
         return NextResponse.redirect(downloadUrl);
       }
     }

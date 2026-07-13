@@ -11,6 +11,7 @@ import {
   STUDENT_RESUME_REQUIRED_APPLY_MESSAGE,
   STUDENT_CV_VERIFICATION_REQUIRED_APPLY_MESSAGE,
 } from '@/lib/studentApplyMessages';
+import { resolveEffectiveStudentBatchYear } from '@/lib/studentBatch';
 
 const DEFAULT_OPEN_STATUSES = ['published'];
 
@@ -134,10 +135,11 @@ export function postingEligibilityFromJobRow(row) {
           : null,
       branch: row.student_branch || row.branch || '',
       department: row.student_department || row.department || '',
-      batchYear:
-        row.student_batch_year != null && row.student_batch_year !== ''
-          ? Number(row.student_batch_year)
-          : null,
+      batchYear: resolveEffectiveStudentBatchYear({
+        batch_year: row.student_batch_year,
+        graduation_year: row.student_graduation_year,
+        joining_academic_year: row.student_joining_academic_year,
+      }),
       backlogsActive: Number(row.student_backlogs_active ?? row.backlogs_active ?? 0),
     },
   };

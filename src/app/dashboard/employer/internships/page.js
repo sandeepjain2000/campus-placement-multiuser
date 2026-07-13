@@ -295,6 +295,7 @@ export default function EmployerInternshipsPage() {
         title,
         startDate,
         endDate,
+        batchYear,
         maxBacklogs,
         minCgpa,
         stipend,
@@ -338,7 +339,7 @@ export default function EmployerInternshipsPage() {
           eligibleBranches,
           specializations,
           maxBacklogs: validation.maxBacklogs,
-          batchYear: batchYear === '' ? null : batchYear,
+          batchYear: validation.batchYear,
           startDate: startDate || null,
           endDate: endDate || null,
           tenantIds: asDraft ? [] : tenantIds,
@@ -700,17 +701,23 @@ export default function EmployerInternshipsPage() {
             <InternFieldError message={fieldErrors.maxBacklogs} />
           </div>
           <div className="form-group">
-            <label className="form-label">Batch year</label>
-            <input
-              className="form-input"
-              type="number"
-              min="2000"
-              max="2100"
+            <label className="form-label">Batch year <span className="required">*</span></label>
+            <ValidatedNumberInput
+              fieldId={FIELD_IDS.EMPLOYER_INTERNSHIP_BATCH_YEAR}
+              value={batchYear}
               step="1"
               placeholder="e.g. 2026"
-              value={batchYear}
-              onChange={(e) => setBatchYear(e.target.value)}
+              context={{ required: !canSaveAsDraft || !!savedDraftId || editingInternship?.status === 'draft' }}
+              onChange={(v) => {
+                setBatchYear(v);
+                if (fieldErrors.batchYear) setFieldErrors((prev) => ({ ...prev, batchYear: '' }));
+              }}
+              className={fieldErrors.batchYear ? 'form-input input-error' : 'form-input'}
             />
+            <p className="text-xs text-secondary" style={{ margin: '0.35rem 0 0' }}>
+              Required when publishing. Current year through 4 years ahead (e.g. {new Date().getFullYear()}–{new Date().getFullYear() + 4}).
+            </p>
+            <InternFieldError message={fieldErrors.batchYear} />
           </div>
           <div className="form-group" style={{ gridColumn: '1 / -1' }}>
             <label className="form-label">Skills (comma-separated)</label>

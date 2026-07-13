@@ -14,6 +14,7 @@ import {
 import { getCollegeOfferRules } from '@/lib/offerPlacementRules';
 import { isAuthoritativeResumeUrl } from '@/lib/studentResumeUrl';
 import { AND_DRIVE_NOT_DELETED, AND_JP_NOT_DELETED } from '@/lib/softDeleteSql';
+import { resolveEffectiveStudentBatchYear } from '@/lib/studentBatch';
 
 const PLACEMENT_STATUS_LOCK = new Set(['placed', 'opted_out', 'higher_studies']);
 
@@ -122,7 +123,10 @@ function studentLikeFromCampusRow(row, { placementLockedIds, internshipLockedIds
     cgpa,
     branch: row.branch || '',
     department: row.department || '',
-    batchYear: row.batch_year != null && row.batch_year !== '' ? Number(row.batch_year) : null,
+    batchYear: resolveEffectiveStudentBatchYear({
+      batch_year: row.batch_year,
+      joining_academic_year: row.joining_academic_year,
+    }),
     backlogsActive: Number(row.backlogs_active ?? 0),
     hasResume,
     isPlacementLocked: placementLockedIds.has(row.student_profile_id),

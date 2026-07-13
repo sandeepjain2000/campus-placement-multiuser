@@ -43,6 +43,7 @@ export async function resolveEmployerApplicationResume({
         fileUrl: cvRow.file_url,
         downloadFileName: buildCvDownloadFileName(cvRow.label, cvRow.file_extension),
         cvLabel: cvRow.label,
+        fileExtension: cvRow.file_extension,
       };
     }
   }
@@ -62,6 +63,7 @@ export async function resolveEmployerApplicationResume({
         fileUrl: row.file_url,
         downloadFileName: buildCvDownloadFileName(row.label, row.file_extension),
         cvLabel: row.label,
+        fileExtension: row.file_extension,
       };
     }
   }
@@ -96,9 +98,18 @@ export async function resolveEmployerApplicationResume({
   };
 }
 
-export function buildEmployerResumeApiUrl({ studentId, applicationId, sourceKind }) {
+export function buildEmployerResumeApiUrl({ studentId, applicationId, sourceKind, download = false }) {
   const params = new URLSearchParams({ studentId: String(studentId) });
   if (applicationId) params.set('applicationId', String(applicationId));
   if (sourceKind) params.set('source', String(sourceKind));
+  if (download) params.set('download', '1');
   return `/api/employer/applications/resume?${params.toString()}`;
+}
+
+export function buildEmployerResumeViewUrl(opts) {
+  return buildEmployerResumeApiUrl(opts);
+}
+
+export function buildEmployerResumeDownloadUrl(opts) {
+  return buildEmployerResumeApiUrl({ ...opts, download: true });
 }

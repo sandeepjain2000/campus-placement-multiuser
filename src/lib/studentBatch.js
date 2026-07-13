@@ -96,3 +96,36 @@ export function formatBatchLabel(batchYear, graduationYear) {
   if (gy) return String(gy);
   return '';
 }
+
+/**
+ * Canonical admission batch year for eligibility checks — matches profile batch display
+ * (joining academic year / batch label wins over a stale batch_year column).
+ */
+export function resolveEffectiveStudentBatchYear({
+  batchYear,
+  batch_year,
+  graduationYear,
+  graduation_year,
+  joiningAcademicYear,
+  joining_academic_year,
+  batch,
+  batchLabel,
+} = {}) {
+  const resolved = resolveStudentBatch({
+    batchYear: batchYear ?? batch_year,
+    graduationYear: graduationYear ?? graduation_year,
+    joining_academic_year: joining_academic_year ?? joiningAcademicYear,
+    batchLabel: batchLabel ?? batch,
+    joiningAcademicYear: joiningAcademicYear ?? batch,
+  });
+
+  const cohortLabel = String(resolved.batch || resolved.joiningAcademicYear || '').trim();
+  if (cohortLabel) {
+    const fromCohort = parseAdmissionBatchYear(cohortLabel);
+    if (fromCohort.ok && fromCohort.year != null) {
+      return fromCohort.year;
+    }
+  }
+
+  return resolved.batchYear ?? null;
+}

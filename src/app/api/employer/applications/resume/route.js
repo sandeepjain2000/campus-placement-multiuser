@@ -3,11 +3,11 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
   canEmployerAccessStudent,
-  extractS3Key,
   getEmployerProfileId,
 } from '@/lib/employerApplicationAccess';
 import { resolveEmployerApplicationResume } from '@/lib/employerApplicationResume';
-import { createDownloadUrlForKey, isS3Configured } from '@/lib/s3';
+import { isS3Configured } from '@/lib/s3';
+import { isCvDownloadRequest, presignStudentCvFile, presignLegacyResumeFile } from '@/lib/studentCvPresign';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
 
 export const dynamic = 'force-dynamic';
@@ -54,13 +54,26 @@ async function __platform_GET(request) {
       return NextResponse.json({ error: 'No uploaded resume found for this student' }, { status: 404 });
     }
 
-    const { fileUrl, downloadFileName } = resolved;
+    const { fileUrl, downloadFileName, cvLabel, fileExtension } = resolved;
+    const mode = isCvDownloadRequest(request) ? 'download' : 'view';
 
     if (isS3Url(fileUrl) && isS3Configured()) {
-      const key = extractS3Key(fileUrl);
-      if (key) {
-        const { downloadUrl } = await createDownloadUrlForKey(key, 60 * 30, { downloadFileName });
-        return NextResponse.redirect(downloadUrl);
+      try {
+        const presigned = fileExtension
+          ? await presignStudentCvFile({
+              fileUrl,
+              label: cvLabel,
+              fileExtension,
+              mode,
+            })
+          : await presignLegacyResumeFile({
+              fileUrl,
+              fileName: downloadFileName,
+              mode,
+            });
+        return NextResponse.redirect(presigned.downloadUrl);
+      } catch (presignErr) {
+        console.error('employer resume presign failed', presignErr);
       }
     }
 

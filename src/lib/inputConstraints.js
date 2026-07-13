@@ -12,6 +12,7 @@ import {
   validateOfferDates,
   validatePlacementDate,
 } from '@/lib/dateOnly';
+import { validateInternshipBatchYearField } from '@/lib/internshipPostingMeta';
 import { MAX_TITLE_LENGTH, validateEducationBoard, validateTitle } from '@/lib/validators';
 import { formatValidationError } from '@/lib/validationErrorCode';
 
@@ -62,6 +63,7 @@ export const FIELD_IDS = {
   EMPLOYER_DRIVE_DATE: 'employer.drive.date',
   EMPLOYER_INTERVIEW_DATE: 'employer.interview.date',
   EMPLOYER_INTERVIEW_ASSIGNED: 'employer.interview.assigned',
+  EMPLOYER_INTERNSHIP_BATCH_YEAR: 'employer.internship.batchYear',
   EMPLOYER_FOUNDED_YEAR: 'employer.foundedYear',
   EMPLOYER_OFFER_SALARY: 'employer.offer.salary',
   EMPLOYER_OFFER_DEADLINE: 'employer.offer.deadline',
@@ -146,6 +148,12 @@ function gradYearBounds({ isAlumni = false } = {}) {
 function checkBatchYear(value, { required = false, isAlumni = false } = {}) {
   const { min, max } = batchYearBounds({ isAlumni });
   return checkIntRange(value, { min, max, allowEmpty: !required, label: 'Batch / admission year' });
+}
+
+function checkInternshipBatchYear(value, { required = false, date } = {}) {
+  const r = validateInternshipBatchYearField(value, { required, date });
+  if (r.formError) return err(r.formError);
+  return ok();
 }
 
 function checkGradYear(value, { batchYear, required = false, isAlumni = false } = {}) {
@@ -261,6 +269,12 @@ export function validateField(fieldId, value, ctx = {}) {
 
     case FIELD_IDS.STUDENT_BATCH_YEAR:
       return checkBatchYear(value, { required: Boolean(ctx.required), isAlumni: Boolean(ctx.isAlumni) });
+
+    case FIELD_IDS.EMPLOYER_INTERNSHIP_BATCH_YEAR:
+      return checkInternshipBatchYear(value, {
+        required: Boolean(ctx.required),
+        date: ctx.date instanceof Date ? ctx.date : undefined,
+      });
 
     case FIELD_IDS.STUDENT_GRAD_YEAR:
       return checkGradYear(value, {

@@ -263,6 +263,11 @@ export default function EmployerApplicationsPage() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const downloadResume = (url) => {
+    if (!url) { addToast('No resume on file for this student.', 'info'); return; }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const updateStatus = async (app, status) => {
     const appKey = `${app.sourceKind}-${app.id}`;
     if (updatingAppKey === appKey) return;
@@ -616,6 +621,7 @@ export default function EmployerApplicationsPage() {
                           })
                         }
                         onOpenResume={() => openResume(app.resumeUrl)}
+                        onDownloadResume={() => downloadResume(app.resumeDownloadUrl)}
                         onUpdateStatus={updateStatus}
                       />
                     </td>

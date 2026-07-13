@@ -260,6 +260,53 @@ export function resolveMaxBacklogsInput(value) {
   return Math.max(0, Math.floor(n));
 }
 
+export const INTERNSHIP_BATCH_YEAR_MAX_YEARS_AHEAD = 4;
+
+/** @param {Date} [date] */
+export function getInternshipBatchYearBounds(date = new Date()) {
+  const year = date.getFullYear();
+  return { min: year, max: year + INTERNSHIP_BATCH_YEAR_MAX_YEARS_AHEAD };
+}
+
+/**
+ * Validate employer internship batch year (current calendar year through +4 years).
+ * @param {string | number | null | undefined} value
+ * @param {{ required?: boolean, date?: Date }} [options]
+ * @returns {{ fieldErrors: Record<string, string>, formError: string | null, value: number | null }}
+ */
+export function validateInternshipBatchYearField(value, options = {}) {
+  const { required = false, date = new Date() } = options;
+  const fieldErrors = {};
+  const raw = value === '' || value == null ? '' : String(value).trim();
+
+  if (!raw) {
+    if (required) fieldErrors.batchYear = 'Batch year is required.';
+  } else if (!/^\d{4}$/.test(raw)) {
+    fieldErrors.batchYear = 'Enter batch year as a 4-digit year (e.g. 2026).';
+  } else {
+    const y = Number(raw);
+    const { min, max } = getInternshipBatchYearBounds(date);
+    if (y < min) {
+      fieldErrors.batchYear = `Batch year cannot be before ${min}.`;
+    } else if (y > max) {
+      fieldErrors.batchYear = `Batch year cannot be after ${max} (maximum ${INTERNSHIP_BATCH_YEAR_MAX_YEARS_AHEAD} years ahead).`;
+    }
+  }
+
+  const formError = fieldErrors.batchYear || null;
+  const resolved = formError ? null : raw ? Number(raw) : null;
+  return { fieldErrors, formError, value: resolved };
+}
+
+/**
+ * @param {string | number | null | undefined} value
+ * @param {{ required?: boolean, date?: Date }} [options]
+ * @returns {string | null}
+ */
+export function validateInternshipBatchYearForSubmit(value, options = {}) {
+  return validateInternshipBatchYearField(value, options).formError;
+}
+
 export function resolveBatchYearInput(value) {
   if (value === '' || value == null) return null;
   const n = Number(value);

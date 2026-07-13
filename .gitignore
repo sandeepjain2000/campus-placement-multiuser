@@ -89,3 +89,5 @@ test-results/
 qa2/test_cases.json
 qa2/agent_results_*.json
 qa2/logs/
+
+.vercel

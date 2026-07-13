@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { query, transaction } from '@/lib/db';
 import { isUuid } from '@/lib/tenantContext';
 import { writeEmployerAssessmentAudit } from '@/lib/employerAssessmentAudit';
+import { recalculateAssessmentUploadSummary } from '@/lib/assessmentUploadSummary';
 import { resolveRollFromCsvIdentifiers } from '@/lib/studentSystemId';
 import { normalizeHiringResult, validateHiringResult } from '@/lib/hiringResult';
 import {
@@ -177,12 +178,7 @@ async function __platform_POST(request, { params }) {
         ],
       );
 
-      if (wasNew) {
-        await client.query(
-          `UPDATE employer_assessment_uploads SET accepted_rows = accepted_rows + 1 WHERE id = $1::uuid`,
-          [uploadId],
-        );
-      }
+      await recalculateAssessmentUploadSummary(client, uploadId);
 
       await writeEmployerAssessmentAudit(client, {
         tenantId: upload.tenant_id,

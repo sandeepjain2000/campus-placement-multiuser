@@ -2,6 +2,7 @@ import { validateFieldOrError, FIELD_IDS } from '@/lib/inputConstraints';
 import { validateAndResolveEmployerJobSubmit } from '@/lib/employerJobSubmitValidation';
 import {
   resolveMaxBacklogsInput,
+  validateInternshipBatchYearField,
   validateInternshipDateFields,
 } from '@/lib/internshipPostingMeta';
 
@@ -31,6 +32,9 @@ export function mapEmployerInternshipApiError(error, field) {
     return { fieldErrors: { endDate: msg }, formError: msg };
   }
   if (lower.includes('backlog')) return { fieldErrors: { maxBacklogs: msg }, formError: msg };
+  if (lower.includes('batch year') || lower.includes('batch')) {
+    return { fieldErrors: { batchYear: msg }, formError: msg };
+  }
   if (lower.includes('cgpa')) return { fieldErrors: { minCgpa: msg }, formError: msg };
   if (lower.includes('campus') || lower.includes('tie-up') || lower.includes('tenant')) {
     return { fieldErrors: { _campuses: msg }, formError: msg };
@@ -42,12 +46,13 @@ export function mapEmployerInternshipApiError(error, field) {
 
 /**
  * Client-side validation for employer internship create/edit.
- * @returns {{ fieldErrors: Record<string, string>, formError: string | null, minCgpa: number | null, maxBacklogs: number | null }}
+ * @returns {{ fieldErrors: Record<string, string>, formError: string | null, minCgpa: number | null, maxBacklogs: number | null, batchYear: number | null }}
  */
 export function validateEmployerInternshipForm({
   title,
   startDate,
   endDate,
+  batchYear,
   maxBacklogs,
   minCgpa,
   stipend,
@@ -60,6 +65,9 @@ export function validateEmployerInternshipForm({
 
   const titleErr = validateFieldOrError(FIELD_IDS.COMMON_TITLE, title, { label: 'Internship title' });
   if (titleErr) fieldErrors.title = titleErr;
+
+  const batchResolved = validateInternshipBatchYearField(batchYear, { required: !asDraft });
+  Object.assign(fieldErrors, batchResolved.fieldErrors);
 
   if (!asDraft) {
     const dates = validateInternshipDateFields(startDate, endDate, { required: true });
@@ -101,5 +109,6 @@ export function validateEmployerInternshipForm({
     formError,
     minCgpa: validated.minCgpa,
     maxBacklogs: resolveMaxBacklogsInput(maxBacklogs === '' ? '0' : maxBacklogs),
+    batchYear: batchResolved.value,
   };
 }

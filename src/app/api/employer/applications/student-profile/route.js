@@ -16,7 +16,7 @@ import {
 } from '@/lib/studentResumeUrl';
 import { formatStudentSystemId } from '@/lib/studentSystemId';
 import { resolveStudentPhotoDisplayUrl } from '@/lib/clientAssetUrl';
-import { buildEmployerResumeApiUrl, resolveEmployerApplicationResume } from '@/lib/employerApplicationResume';
+import { buildEmployerResumeApiUrl, buildEmployerResumeDownloadUrl, resolveEmployerApplicationResume } from '@/lib/employerApplicationResume';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -142,6 +142,9 @@ async function __platform_GET(request) {
     const resumeUrl = hasResume
       ? buildEmployerResumeApiUrl({ studentId, applicationId, sourceKind })
       : '';
+    const resumeDownloadUrl = hasResume
+      ? buildEmployerResumeDownloadUrl({ studentId, applicationId, sourceKind })
+      : '';
     const primaryResumeFileName =
       resolvedResume?.cvLabel ||
       resolveStudentResumeFileName({
@@ -186,6 +189,7 @@ async function __platform_GET(request) {
           hasResume,
           fileName: primaryResumeFileName,
           viewUrl: resumeUrl,
+          downloadUrl: resumeDownloadUrl,
         },
         documents: displayDocuments,
         languages,

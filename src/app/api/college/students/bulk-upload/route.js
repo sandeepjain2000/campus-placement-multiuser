@@ -5,6 +5,7 @@ import { transaction, query } from '@/lib/db';
 import { parseCsvLine } from '@/lib/csvParse';
 import { parseStudentRow, validateStudentCsvHeaders } from '@/lib/collegeStudentsCsv';
 import { sendMail, sendStudentWelcomeEmails } from '@/lib/mailer';
+import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { SANDBOX_DEFAULT_PASSWORD, SANDBOX_PASSWORD_HASH } from '@/lib/sandboxCredentials';
 import {
   assertEmailAvailable,
@@ -239,6 +240,16 @@ async function __platform_POST(req) {
          VALUES ($1, $2, $3, 'info', false, NOW())`,
         [session.user.id, emailSubject, emailText],
       );
+
+      await mirrorInAppAlertToYopmail({
+        title: emailSubject,
+        message: emailText,
+        type: 'info',
+        link: '/dashboard/alerts',
+        audience: '1 college admin',
+        recipientEmail: adminEmail,
+        userId: session.user.id,
+      });
 
       await query(
         `INSERT INTO audit_logs (user_id, tenant_id, action, entity_type, new_values, created_at)

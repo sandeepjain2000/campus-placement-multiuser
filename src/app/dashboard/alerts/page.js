@@ -198,7 +198,7 @@ export default function AlertsEmailPage() {
           </h1>
           <p>
             {mailbox === 'inbox' &&
-              'System notifications, event coordination, and alerts. Use the star button on each row to save important alerts.'}
+              'System notifications and event alerts from your PlacementHub inbox. In demo environments, each alert is also copied to placementhub@yopmail.com for QA. Use the star button on each row to save important alerts.'}
             {mailbox === 'starred' && 'Alerts you marked with a star for quick access.'}
             {mailbox === 'trash' &&
               'Alerts in Trash are removed from your inbox. Restore or delete them permanently.'}

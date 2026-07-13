@@ -1644,10 +1644,11 @@ a.admin-entity-name-btn {
   text-decoration: none;
 }
 
-/* College students list — generous name column */
+/* College students list — generous name column; scroll when viewport is narrower than min-width */
 .college-students-table {
   table-layout: fixed;
   width: 100%;
+  min-width: 72rem;
 }
 
 /* College applications — fit all columns in viewport (override data-table max-content) */
@@ -2012,6 +2013,14 @@ a.admin-entity-name-btn {
 
 .college-students-col-actions {
   width: 8.5rem;
+  min-width: 8.5rem;
+}
+
+.college-students-table th.college-students-col-actions,
+.college-students-table td.college-students-col-actions {
+  min-width: 8.5rem;
+  width: 8.5rem;
+  white-space: nowrap;
 }
 
 .college-students-table th.college-students-col-name,
@@ -3595,7 +3604,7 @@ button.dev-screen-id-tag {
   padding-right: 0.5rem;
 }
 
-.sidebar.collapsed .sidebar-footer > div {
+.sidebar.collapsed .sidebar-footer .dashboard-identity-link > div {
   justify-content: center;
   padding-left: 0.35rem;
   padding-right: 0.35rem;
@@ -3711,6 +3720,35 @@ button.dev-screen-id-tag {
 .sidebar-footer {
   padding: 0.75rem;
   border-top: 1px solid var(--border-default);
+}
+
+.dashboard-identity-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-md);
+  transition: background-color 0.15s ease-out;
+  cursor: pointer;
+}
+
+.dashboard-identity-link:hover {
+  background: var(--bg-secondary);
+}
+
+.dashboard-identity-link:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+  background: var(--bg-secondary);
+}
+
+.dashboard-identity-link--hub {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  min-width: 0;
+  max-width: 9rem;
 }
 
 /* ============================================

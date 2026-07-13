@@ -8,6 +8,8 @@ import {
   validateStudentResumeFileAsync,
 } from '@/lib/studentDocumentUpload';
 import { CvLabelInput } from '@/components/student/StudentCvApply';
+import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
+import { appendCvDownloadParam } from '@/lib/studentCvApiPaths';
 import { CV_LABEL_MAX_LENGTH } from '@/lib/studentCvShared';
 
 /**
@@ -134,14 +136,11 @@ export default function StudentResumeUploadCard({
           ) : null}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
             {hasResume && resumeViewUrl ? (
-              <a
-                href={resumeViewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-secondary btn-sm"
-              >
-                View résumé
-              </a>
+              <CvViewDownloadButtons
+                viewUrl={resumeViewUrl}
+                downloadUrl={appendCvDownloadParam(resumeViewUrl)}
+                viewLabel="View résumé"
+              />
             ) : null}
             <label
               className={`btn btn-primary btn-sm${cvUploading ? ' disabled' : ''}`}

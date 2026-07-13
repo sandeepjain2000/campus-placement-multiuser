@@ -290,7 +290,7 @@ export default function DesktopCollegeStudents() {
 
       {!isLoading && (
         <>
-          <div className="desktop-table card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border-default)' }}>
+          <div className="card card-table-shell desktop-table">
             <div className="table-container" style={{ border: 'none' }}>
               <table className="data-table college-students-table">
                 <colgroup>
@@ -314,7 +314,7 @@ export default function DesktopCollegeStudents() {
                     <th>Job Status</th>
                     <th title="Student profile approved by college">Profile</th>
                     {requireCvVerification ? <th title="Uploaded CV verified for drives &amp; internships">CV</th> : null}
-                    <th style={{ paddingRight: '1.5rem', textAlign: 'right' }}>Actions</th>
+                    <th className="college-students-col-actions" style={{ paddingRight: '1.5rem', textAlign: 'right' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -363,7 +363,7 @@ export default function DesktopCollegeStudents() {
                             <StudentCvVerificationBadge status={s.cvStatus} compact />
                           </td>
                         ) : null}
-                        <td style={{ paddingRight: '1.5rem', textAlign: 'right' }}>
+                        <td className="college-students-col-actions" style={{ paddingRight: '1.5rem', textAlign: 'right' }}>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                             <StandardTableIconAction
                               action="view"

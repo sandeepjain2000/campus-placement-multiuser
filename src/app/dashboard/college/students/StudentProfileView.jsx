@@ -24,6 +24,8 @@ import {
 import Link from 'next/link';
 import { formatStatus } from '@/lib/utils';
 import CollegeStudentCvsPanel from '@/components/college/CollegeStudentCvsPanel';
+import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
+import { appendCvDownloadParam } from '@/lib/studentCvApiPaths';
 import {
   getCompletedSectionCount,
   getProfileSectionTotal,
@@ -284,17 +286,11 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
           </div>
           <div className="student-detail-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
             {resumeHref ? (
-              <a
-                href={resumeHref}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-secondary btn-sm"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-              >
-                <FileText size={16} aria-hidden />
-                View resume
-                <ExternalLink size={14} aria-hidden />
-              </a>
+              <CvViewDownloadButtons
+                viewUrl={resumeHref}
+                downloadUrl={appendCvDownloadParam(resumeHref)}
+                viewLabel="View resume"
+              />
             ) : (
               <span
                 className="badge badge-gray"
@@ -464,17 +460,11 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
                         {student.resumeFileName || 'Uploaded by student'}
                       </div>
                     </div>
-                    <a
-                      href={resumeHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn btn-primary btn-sm"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-                    >
-                      <FileText size={15} aria-hidden />
-                      Open resume
-                      <ExternalLink size={13} aria-hidden />
-                    </a>
+                    <CvViewDownloadButtons
+                      viewUrl={resumeHref}
+                      downloadUrl={appendCvDownloadParam(resumeHref)}
+                      viewLabel="Open resume"
+                    />
                   </div>
                 </article>
               ) : null}

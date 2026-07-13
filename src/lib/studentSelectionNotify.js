@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { sendMail } from '@/lib/mailer';
+import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { studentApplicationsHrefForType } from '@/lib/studentSelectionOffer';
 
 function appOrigin() {
@@ -120,6 +121,14 @@ export async function recordStudentSelectionNotification(opts, { runQuery = quer
      VALUES ($1, $2, $3, $4, $5)`,
     [studentUserId, 'Selection update', inAppMessage, 'success', applicationsPath],
   );
+  await mirrorInAppAlertToYopmail({
+    title: 'Selection update',
+    message: inAppMessage,
+    type: 'success',
+    link: applicationsPath,
+    audience: '1 student',
+    userId: studentUserId,
+  });
   return true;
 }
 

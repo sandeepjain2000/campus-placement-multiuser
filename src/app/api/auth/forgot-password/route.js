@@ -2,7 +2,7 @@ import { withApiHandlers } from '@/lib/platformErrorRoute';
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import crypto from 'crypto';
-import { sendMail } from '@/lib/mailer';
+import { sendPasswordResetEmail } from '@/lib/mailer';
 
 function appOrigin() {
   const u = process.env.NEXTAUTH_URL;
@@ -40,29 +40,13 @@ async function __platform_POST(req) {
     );
 
     const resetLink = `${appOrigin()}/reset-password?token=${token}`;
-    
-    const html = `
-      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-        <div style="background-color: #f3f4f6; padding: 20px; border-bottom: 1px solid #e5e7eb;">
-          <h2 style="margin: 0; color: #1f2937;">Password Reset Request</h2>
-        </div>
-        <div style="padding: 20px;">
-          <p>Hi ${user.first_name},</p>
-          <p>We received a request to reset your PlacementHub password. Click the button below to choose a new password.</p>
-          <a href="${resetLink}" style="display: inline-block; background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; margin-bottom: 15px;">Reset Password</a>
-          <p>This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.</p>
-        </div>
-      </div>
-    `;
 
     try {
-      await sendMail({
-        to: email,
-        subject: '[PlacementHub] Reset your password',
-        text: `Hi ${user.first_name},\n\nClick the link below to reset your PlacementHub password:\n\n${resetLink}\n\nThis link will expire in 1 hour.`,
-        html,
-        context: 'password_reset',
-        recipientUserId: user.id,
+      await sendPasswordResetEmail({
+        loginEmail: email.trim().toLowerCase(),
+        firstName: user.first_name,
+        resetLink,
+        userId: user.id,
       });
     } catch (mailErr) {
       console.error('Forgot password mail error:', mailErr);

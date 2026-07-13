@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
 import { getDegreeTimelineWarning } from '@/lib/degreeTimeline';
-import StudentListAvatar from '@/components/student/StudentListAvatar';
+import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
 
 const PROFILE_TABS = [
   { id: 'overview', label: 'Overview' },
@@ -189,9 +189,11 @@ function DocumentsPanel({ student, onOpenResume }) {
               <div className="employer-student-profile-list-title">CV / Resume</div>
               <div className="employer-student-profile-list-meta">{resume.fileName || 'Uploaded by student'}</div>
             </div>
-            <button type="button" className="btn btn-primary btn-sm" onClick={() => onOpenResume(resume.viewUrl)}>
-              <FileText size={15} /> Open CV
-            </button>
+            <CvViewDownloadButtons
+              viewUrl={resume.viewUrl}
+              downloadUrl={resume.downloadUrl}
+              viewLabel="View CV"
+            />
           </article>
         ) : (
           <p className="text-sm text-secondary" style={{ margin: 0 }}>No CV uploaded yet.</p>
@@ -306,9 +308,11 @@ export default function EmployerStudentProfileModal({
           </div>
           <div className="employer-student-profile-header-actions">
             {student?.resume?.hasResume ? (
-              <button type="button" className="btn btn-primary btn-sm" onClick={() => onOpenResume(student.resume.viewUrl)}>
-                <FileText size={16} /> Open CV
-              </button>
+              <CvViewDownloadButtons
+                viewUrl={student.resume.viewUrl}
+                downloadUrl={student.resume.downloadUrl}
+                viewLabel="View CV"
+              />
             ) : null}
             <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close profile">
               <X size={18} />

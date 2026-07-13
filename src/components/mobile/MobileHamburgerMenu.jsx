@@ -4,6 +4,7 @@ import { X, Home, Users, Briefcase, Calendar, Settings, LogOut, CheckSquare } fr
 import Link from 'next/link';
 import { signOut } from '@/lib/clientSignOut';
 import { getRoleDisplayName } from '@/lib/utils';
+import { getRoleProfilePath, getRoleProfileLabel } from '@/config/dashboardMenu';
 import { DEFAULT_ENTITY_LOGO_URL } from '@/lib/clientAssetUrl';
 import EntityLogo from '@/components/EntityLogo';
 import { useResolvedBrandLogoUrl } from '@/hooks/useResolvedBrandLogoUrl';
@@ -81,23 +82,32 @@ export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
         </div>
 
         <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border-default)', background: 'var(--bg-secondary)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-            <div style={{ width: 44, height: 44, flexShrink: 0 }}>
-              <EntityLogo
-                name={session?.user?.tenantName || name}
-                logoUrl={brandLogoUrl}
-                placeholderUrl={
-                  role === 'employer' || role === 'college_admin' ? DEFAULT_ENTITY_LOGO_URL : null
-                }
-                size="md"
-                shape="rounded"
-              />
+          <Link
+            href={getRoleProfilePath(role)}
+            className="dashboard-identity-link"
+            onClick={onClose}
+            aria-label={`${getRoleProfileLabel(role)} — ${name}`}
+            title={getRoleProfileLabel(role)}
+            style={{ marginBottom: '1.5rem' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ width: 44, height: 44, flexShrink: 0 }}>
+                <EntityLogo
+                  name={session?.user?.tenantName || name}
+                  logoUrl={brandLogoUrl}
+                  placeholderUrl={
+                    role === 'employer' || role === 'college_admin' ? DEFAULT_ENTITY_LOGO_URL : null
+                  }
+                  size="md"
+                  shape="rounded"
+                />
+              </div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontWeight: 600, fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRoleDisplayName(role)}</div>
+              </div>
             </div>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontWeight: 600, fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRoleDisplayName(role)}</div>
-            </div>
-          </div>
+          </Link>
           <button onClick={() => signOut({ callbackUrl: '/login?force=1' })} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'flex-start', gap: '0.75rem', padding: '0.75rem 1rem' }}>
             <LogOut size={18} strokeWidth={2} /> Sign out
           </button>

@@ -132,7 +132,7 @@ export default function StudentDrivesPage() {
     return programOpportunityFromRow(drive);
   }
 
-  const { openApplyModal, applyModal, applying: isSubmitting } = useStudentApplyWithCvModal({
+  const { openApplyModal, applyModal } = useStudentApplyWithCvModal({
     onApply: async (cvId, metadata) => {
       const drive = metadata?.drive;
       if (!drive) return;
@@ -156,7 +156,7 @@ export default function StudentDrivesPage() {
       }
     },
     onError: (msg) => addToast(msg, 'warning'),
-    renderExtras: (metadata) => {
+    renderExtras: (metadata, { submitting = false } = {}) => {
       const drive = metadata?.drive;
       if (!drive) return null;
       return (
@@ -175,7 +175,7 @@ export default function StudentDrivesPage() {
               placeholder="E.g. Bangalore, Remote, Any"
               value={locationPref}
               onChange={(e) => setLocationPref(e.target.value)}
-              disabled={isSubmitting}
+              disabled={submitting}
             />
           </div>
         </>

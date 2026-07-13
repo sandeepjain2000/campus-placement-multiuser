@@ -14,6 +14,7 @@ import {
   loadAssessmentPostingOpportunity,
 } from '@/lib/assessmentExportEligibility';
 import { upsertAssessmentRowInContext } from '@/lib/assessmentRowUpsert';
+import { recalculateAssessmentUploadSummary } from '@/lib/assessmentUploadSummary';
 import { findApplicationForStudent } from '@/lib/assessmentUploadProcessCore';
 import { writeEmployerAssessmentAudit } from '@/lib/employerAssessmentAudit';
 import {
@@ -315,6 +316,8 @@ export async function saveAssessmentUpdateOnlineRows(employerId, userId, kind, c
         saved += 1;
         t.log('saveAssessmentUpdateOnlineRows', 'upsert_row_success', { rollNumber: student.college_roll_no });
       }
+
+      await recalculateAssessmentUploadSummary(client, uploadId);
     });
 
     t.log('saveAssessmentUpdateOnlineRows', 'transaction_success', { saved, errorCount: errors.length });

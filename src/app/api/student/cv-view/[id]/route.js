@@ -5,10 +5,10 @@ import { handleStudentCvViewGet } from '@/lib/studentCvViewHandler';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-async function __platform_GET(_request, { params }) {
+async function __platform_GET(request, { params }) {
   try {
     const { id } = await params;
-    return await handleStudentCvViewGet(id);
+    return await handleStudentCvViewGet(id, request);
   } catch (e) {
     console.error('GET /api/student/cv-view/[id]', e);
     return NextResponse.json({ error: 'Could not open CV' }, { status: 500 });
