@@ -12,6 +12,9 @@
 -- Reset existing data so this script is re-runnable in test environments.
 TRUNCATE TABLE
   audit_logs,
+  marketplace_orders,
+  marketplace_services,
+  marketplace_providers,
   employer_assessment_change_log,
   employer_assessment_rows,
   employer_assessment_rounds,
@@ -62,7 +65,11 @@ RESTART IDENTITY CASCADE;
 INSERT INTO tenants (id, name, slug, type, city, state, email, communication_email, accreditation, naac_grade, established_year) VALUES
 ('a1000000-0000-0000-0000-000000000001', 'Indian Institute of Technology, Madras', 'iit-madras', 'college', 'Chennai', 'Tamil Nadu', 'placement@iitm.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A++', 1958),
 ('a1000000-0000-0000-0000-000000000002', 'National Institute of Technology, Trichy', 'nit-trichy', 'college', 'Tiruchirappalli', 'Tamil Nadu', 'placement@nitt.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964),
-('a1000000-0000-0000-0000-000000000003', 'Birla Institute of Technology, Pilani', 'bits-pilani', 'college', 'Pilani', 'Rajasthan', 'placement@bits.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964);
+('a1000000-0000-0000-0000-000000000003', 'Birla Institute of Technology, Pilani', 'bits-pilani', 'college', 'Pilani', 'Rajasthan', 'placement@bits.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964),
+('a1000000-0000-0000-0000-000000000004', 'Jadavpur University', 'jadavpur-university', 'college', 'Kolkata', 'West Bengal', 'placement@jadavpur.seed', 'sandeepjain200019@gmail.com', 'UGC', 'A', 1955),
+('a1000000-0000-0000-0000-000000000005', 'Vellore Institute of Technology', 'vit-vellore', 'college', 'Vellore', 'Tamil Nadu', 'placement@vit.seed', 'sandeepjain200019@gmail.com', 'NAAC', 'A++', 1984),
+('a1000000-0000-0000-0000-000000000006', 'Delhi Technological University', 'dtu-delhi', 'college', 'New Delhi', 'Delhi', 'placement@dtu.seed', 'sandeepjain200019@gmail.com', 'UGC', 'A', 1941),
+('a1000000-0000-0000-0000-000000000007', 'Indian Institute of Information Technology Hyderabad', 'iiit-hyderabad', 'college', 'Hyderabad', 'Telangana', 'placement@iiith.seed', 'sandeepjain200019@gmail.com', 'MoE', 'A++', 1998);
 
 -- 1b. College public profile + logos + settings (replaces former hard-coded EntityLogo / defaults)
 UPDATE tenants SET
@@ -168,7 +175,11 @@ WHERE id = 'a1000000-0000-0000-0000-000000000003';
 INSERT INTO shard_binding_pairs (ref_scope_id, surface_token) VALUES
 ('a1000000-0000-0000-0000-000000000001', md5('seed-campus-iitm-2025') || md5('seed-campus-iitm-2025-x')),
 ('a1000000-0000-0000-0000-000000000002', md5('seed-campus-nitt-2025') || md5('seed-campus-nitt-2025-x')),
-('a1000000-0000-0000-0000-000000000003', md5('seed-campus-bits-2025') || md5('seed-campus-bits-2025-x'))
+('a1000000-0000-0000-0000-000000000003', md5('seed-campus-bits-2025') || md5('seed-campus-bits-2025-x')),
+('a1000000-0000-0000-0000-000000000004', md5('seed-campus-jadavpur-2025') || md5('seed-campus-jadavpur-2025-x')),
+('a1000000-0000-0000-0000-000000000005', md5('seed-campus-vit-2025') || md5('seed-campus-vit-2025-x')),
+('a1000000-0000-0000-0000-000000000006', md5('seed-campus-dtu-2025') || md5('seed-campus-dtu-2025-x')),
+('a1000000-0000-0000-0000-000000000007', md5('seed-campus-iiith-2025') || md5('seed-campus-iiith-2025-x'))
 ON CONFLICT (ref_scope_id) DO UPDATE SET surface_token = EXCLUDED.surface_token;
 
 -- 2. Create Users
@@ -186,7 +197,15 @@ INSERT INTO users (id, tenant_id, email, communication_email, password_hash, rol
 ('b1000000-0000-0000-0000-000000000012', 'a1000000-0000-0000-0000-000000000003', 'admin@bits.edu', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'college_admin', 'Suresh', 'Rao', true, true),
 ('b1000000-0000-0000-0000-000000000017', 'a1000000-0000-0000-0000-000000000001', 'committee@iitm.edu', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true),
 ('b1000000-0000-0000-0000-000000000042', 'a1000000-0000-0000-0000-000000000002', 'committee@nitt.edu', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true),
-('b1000000-0000-0000-0000-000000000043', 'a1000000-0000-0000-0000-000000000003', 'committee@bits.edu', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true);
+('b1000000-0000-0000-0000-000000000043', 'a1000000-0000-0000-0000-000000000003', 'committee@bits.edu', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true),
+('b1000000-0000-0000-0000-000000000050', 'a1000000-0000-0000-0000-000000000004', 'admin.jadavpur@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'college_admin', 'Placement', 'Office', true, true),
+('b1000000-0000-0000-0000-000000000051', 'a1000000-0000-0000-0000-000000000005', 'admin.vit@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'college_admin', 'Placement', 'Office', true, true),
+('b1000000-0000-0000-0000-000000000052', 'a1000000-0000-0000-0000-000000000006', 'admin.dtu@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'college_admin', 'Placement', 'Office', true, true),
+('b1000000-0000-0000-0000-000000000053', 'a1000000-0000-0000-0000-000000000007', 'admin.iiith@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'college_admin', 'Placement', 'Office', true, true),
+('b1000000-0000-0000-0000-000000000054', 'a1000000-0000-0000-0000-000000000004', 'committee.jadavpur@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true),
+('b1000000-0000-0000-0000-000000000055', 'a1000000-0000-0000-0000-000000000005', 'committee.vit@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true),
+('b1000000-0000-0000-0000-000000000056', 'a1000000-0000-0000-0000-000000000006', 'committee.dtu@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true),
+('b1000000-0000-0000-0000-000000000057', 'a1000000-0000-0000-0000-000000000007', 'committee.iiith@campus-placement.work', 'sandeepjain200019@gmail.com', '$2b$10$ltqrYuTkwv8DSRWH/v5kyeuL2KX7OX8IwqYect/Bbp/8kZOXcVp82', 'placement_committee', 'Placement', 'Committee', true, true);
 
 -- Employers
 INSERT INTO users (id, email, communication_email, password_hash, role, first_name, last_name, is_active, is_verified) VALUES
@@ -227,7 +246,11 @@ UPDATE users SET phone = x.p FROM (VALUES
 INSERT INTO college_settings (tenant_id, max_offers_per_student, offer_acceptance_window_days, min_cgpa_threshold, placement_season_start, placement_season_end) VALUES
 ('a1000000-0000-0000-0000-000000000001', 2, 7, 6.0, '2026-08-01', '2027-05-31'),
 ('a1000000-0000-0000-0000-000000000002', 1, 5, 6.5, '2026-08-01', '2027-05-31'),
-('a1000000-0000-0000-0000-000000000003', 2, 7, 6.0, '2026-08-01', '2027-05-31');
+('a1000000-0000-0000-0000-000000000003', 2, 7, 6.0, '2026-08-01', '2027-05-31'),
+('a1000000-0000-0000-0000-000000000004', 2, 7, 6.0, '2026-08-01', '2027-05-31'),
+('a1000000-0000-0000-0000-000000000005', 2, 7, 6.0, '2026-08-01', '2027-05-31'),
+('a1000000-0000-0000-0000-000000000006', 2, 7, 6.5, '2026-08-01', '2027-05-31'),
+('a1000000-0000-0000-0000-000000000007', 2, 7, 6.5, '2026-08-01', '2027-05-31');
 
 -- Sponsorship remittance details (used on employer sponsorship checkout + college view)
 UPDATE college_settings SET
@@ -547,83 +570,9 @@ INSERT INTO application_status_log (application_id, from_status, to_status, chan
   'in_progress', 'selected', 'b1000000-0000-0000-0000-000000000004', 'Final panel approved offer recommendation.', NOW() - INTERVAL '3 days'
 );
 
--- 18. Student documents (placeholder URLs for test)
-INSERT INTO student_documents (student_id, document_type, document_name, file_url, file_size, is_verified) VALUES
-((SELECT id FROM student_profiles WHERE roll_number = 'CS2021001'), 'resume', 'Arjun_Verma_Resume.pdf', 'https://example-bucket.local/docs/arjun-resume.pdf', 245000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'CS2021002'), 'resume', 'Sneha_Iyer_Resume.pdf', 'https://example-bucket.local/docs/sneha-resume.pdf', 231000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'CS2021003'), 'resume', 'Kavya_Reddy_Resume.pdf', 'https://example-bucket.local/docs/kavya-resume.pdf', 228000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'CS2021003'), 'certificate', 'Kavya_Cloud_Cert.pdf', 'https://example-bucket.local/docs/kavya-cloud-cert.pdf', 188000, false),
-((SELECT id FROM student_profiles WHERE roll_number = 'EC2021001'), 'resume', 'Rohan_Sharma_Resume.pdf', 'https://example-bucket.local/docs/rohan-resume.pdf', 219000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'ME2021001'), 'resume', 'Vikram_Singh_Resume.pdf', 'https://example-bucket.local/docs/vikram-resume.pdf', 205000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'CS2021101'), 'resume', 'Sneha_Rao_Resume.pdf', 'https://example-bucket.local/docs/sneha-rao-resume.pdf', 212000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'EE2021102'), 'resume', 'Aditya_Menon_Resume.pdf', 'https://example-bucket.local/docs/aditya-resume.pdf', 198000, true),
-((SELECT id FROM student_profiles WHERE roll_number = 'CS2021201'), 'resume', 'Rahul_Mehta_Resume.pdf', 'https://example-bucket.local/docs/rahul-resume.pdf', 241000, true);
-
--- 18b. Sync profile resume_url from real resume documents (dummy.pdf is ignored by the app)
-UPDATE student_profiles sp
-SET resume_url = latest.file_url, updated_at = NOW()
-FROM (
-  SELECT DISTINCT ON (sd.student_id)
-    sd.student_id,
-    sd.file_url
-  FROM student_documents sd
-  WHERE LOWER(sd.document_type) = 'resume'
-    AND sd.file_url IS NOT NULL
-    AND TRIM(sd.file_url) <> ''
-    AND sd.file_url NOT ILIKE '%dummy.pdf%'
-  ORDER BY sd.student_id, sd.uploaded_at DESC NULLS LAST
-) AS latest
-WHERE sp.id = latest.student_id;
-
--- 18c. Labelled student_cvs rows (multi-CV apply + employer download labels)
-INSERT INTO student_cvs (
-  student_id, label, file_url, file_size, original_file_name, file_extension,
-  is_default, created_at, updated_at
-)
-SELECT
-  sd.student_id,
-  LEFT(
-    COALESCE(
-      NULLIF(TRIM(regexp_replace(sd.document_name, '\.[^.]+$', '')), ''),
-      'CV'
-    ),
-    20
-  ) AS label,
-  sd.file_url,
-  sd.file_size,
-  sd.document_name,
-  COALESCE(
-    NULLIF(LOWER(substring(sd.document_name from '\.[^.]+$')), ''),
-    '.pdf'
-  ) AS file_extension,
-  (
-    sp.resume_url IS NOT NULL
-    AND TRIM(sp.resume_url) <> ''
-    AND TRIM(sd.file_url) = TRIM(sp.resume_url)
-  ) AS is_default,
-  COALESCE(sd.uploaded_at, NOW()),
-  COALESCE(sd.uploaded_at, NOW())
-FROM student_documents sd
-INNER JOIN student_profiles sp ON sp.id = sd.student_id
-WHERE LOWER(sd.document_type) = 'resume'
-  AND NOT EXISTS (
-    SELECT 1 FROM student_cvs sc
-    WHERE sc.student_id = sd.student_id AND sc.file_url = sd.file_url
-  );
-
-UPDATE student_cvs sc
-SET is_default = true, updated_at = NOW()
-FROM (
-  SELECT DISTINCT ON (student_id) id, student_id
-  FROM student_cvs
-  WHERE archived_at IS NULL
-  ORDER BY student_id, is_default DESC, created_at DESC
-) pick
-WHERE sc.id = pick.id
-  AND NOT EXISTS (
-    SELECT 1 FROM student_cvs d
-    WHERE d.student_id = sc.student_id AND d.is_default = true AND d.archived_at IS NULL
-  );
+-- 18. Student documents / CVs: only real uploads belong here.
+-- Do not seed example-bucket.local or AWS URLs — missing objects surface raw S3 errors.
+-- Demo profiles keep dummy.pdf on resume_url (ignored by the app) until a student uploads.
 
 -- 19. College facilities / venues (for infrastructure booking)
 INSERT INTO college_facilities (tenant_id, name, facility_type, capacity, has_projector, has_ac, has_wifi, has_video_conf, is_available) VALUES
@@ -1260,38 +1209,7 @@ INSERT INTO student_projects (student_id, title, description, tech_stack, projec
 ((SELECT id FROM student_profiles WHERE roll_number = 'EC2021202'), 'FPGA Signal Lab', 'Teaching lab exercises for DSP on FPGA boards.', ARRAY['VHDL', 'Verilog'], 'https://projects.example.com/fpga-lab', NULL, '2026-05-01', '2026-09-01'),
 ((SELECT id FROM student_profiles WHERE roll_number = 'EC2021202'), 'Campus Shuttle ETA', 'Live shuttle tracking mini-app for Pilani campus.', ARRAY['React Native', 'Node.js'], 'https://projects.example.com/shuttle-eta', NULL, '2026-02-15', '2026-06-30');
 
-INSERT INTO student_documents (student_id, document_type, document_name, file_url, file_size, is_verified) VALUES
-((SELECT id FROM student_profiles WHERE roll_number = 'EC2021202'), 'resume', 'Priya_Singh_Resume.pdf', 'https://example-bucket.local/docs/priya-singh-resume.pdf', 207000, true);
-
-UPDATE student_profiles sp
-SET resume_url = sd.file_url, updated_at = NOW()
-FROM student_documents sd
-WHERE sd.student_id = sp.id
-  AND sp.roll_number = 'EC2021202'
-  AND LOWER(sd.document_type) = 'resume'
-  AND sd.file_url NOT ILIKE '%dummy.pdf%';
-
-INSERT INTO student_cvs (
-  student_id, label, file_url, file_size, original_file_name, file_extension,
-  is_default, created_at, updated_at
-)
-SELECT
-  sd.student_id,
-  LEFT(COALESCE(NULLIF(TRIM(regexp_replace(sd.document_name, '\.[^.]+$', '')), ''), 'CV'), 20),
-  sd.file_url,
-  sd.file_size,
-  sd.document_name,
-  COALESCE(NULLIF(LOWER(substring(sd.document_name from '\.[^.]+$')), ''), '.pdf'),
-  true,
-  COALESCE(sd.uploaded_at, NOW()),
-  COALESCE(sd.uploaded_at, NOW())
-FROM student_documents sd
-JOIN student_profiles sp ON sp.id = sd.student_id AND sp.roll_number = 'EC2021202'
-WHERE LOWER(sd.document_type) = 'resume'
-  AND NOT EXISTS (
-    SELECT 1 FROM student_cvs sc
-    WHERE sc.student_id = sd.student_id AND sc.file_url = sd.file_url
-  );
+-- No seeded resume document for Priya Singh — upload a real CV in the app.
 
 -- 3. Tie up every employer to all three seeded colleges (≥2 employers per campus; here: full grid, all approved)
 DELETE FROM employer_approvals;
@@ -1380,4 +1298,54 @@ END $$;
 
 -- After migration 045: ensure seeded accounts can sign in (email verification gate)
 UPDATE users SET email_verified_at = COALESCE(email_verified_at, NOW()) WHERE email_verified_at IS NULL;
+
+-- Marketplace catalog (keep demo providers/services after seed resets)
+INSERT INTO marketplace_providers (name, category, tagline, description, website, contact_email, is_active) VALUES
+('CampusApt Prep', 'aptitude_tests', 'Campus-ready aptitude and analytical assessments',
+ 'Standardized aptitude batteries for placement seasons — numerical, logical, and verbal modules with campus batch scheduling.',
+ 'https://example.com/campusapt', 'partners@campusapt.example', true),
+('CodeForge Assess', 'coding_assessments', 'Timed coding rounds for campus hiring',
+ 'Online coding assessments with language packs, plagiarism signals, and CSV score export for PlacementHub hiring results.',
+ 'https://example.com/codeforge', 'campus@codeforge.example', true),
+('ProctorShield', 'proctoring', 'Secure online exam proctoring',
+ 'Browser lockdown, identity checks, and live/AI invigilation windows for remote aptitude and coding rounds.',
+ 'https://example.com/proctorshield', 'sales@proctorshield.example', true),
+('PlacementReady Academy', 'training', 'Pre-placement prep cohorts',
+ 'Aptitude brush-up, resume workshops, and mock interview packs scheduled around campus drive calendars.',
+ 'https://example.com/placementready', 'hello@placementready.example', true),
+('CareerLink Advisors', 'career_services', 'Employer branding and campus career booths',
+ 'On-campus career fair booths, employer brand sessions, and student mentoring hours for partner companies.',
+ 'https://example.com/careerlink', 'partners@careerlink.example', true);
+
+INSERT INTO marketplace_services (
+  provider_id, title, description, price_inr, billing_unit,
+  available_to_college, available_to_employer, is_published, sort_order
+)
+SELECT p.id, v.title, v.description, v.price_inr, v.billing_unit,
+       v.available_to_college, v.available_to_employer, true, v.sort_order
+FROM marketplace_providers p
+JOIN (VALUES
+  ('CampusApt Prep', 'Batch Aptitude Assessment (300 seats)',
+   'One campus cohort of up to 300 students. Includes online proctoring window coordination and score CSV export for PlacementHub assessment uploads.',
+   45000.00, 'per_batch', true, true, 10),
+  ('CampusApt Prep', 'Aptitude Retake Window (50 seats)',
+   'Follow-up seat pack for absentees and retakes within 14 days of the primary batch.',
+   12000.00, 'per_batch', true, false, 20),
+  ('CodeForge Assess', 'Campus Coding Round (200 seats)',
+   'Two-hour coding assessment with auto-scoring and rank export.',
+   65000.00, 'per_batch', true, true, 10),
+  ('CodeForge Assess', 'Employer Take-Home Pack',
+   'Reusable take-home coding pack for employer shortlists — grading dashboard and plagiarism report.',
+   28000.00, 'one_time', false, true, 20),
+  ('ProctorShield', 'Live Proctoring Add-on (per student)',
+   'Live + AI proctoring overlay for an existing aptitude or coding session.',
+   150.00, 'per_student', true, true, 10),
+  ('PlacementReady Academy', 'Pre-Placement Bootcamp (weekend)',
+   'Saturday–Sunday aptitude + soft-skills cohort for final-year students.',
+   95000.00, 'per_batch', true, false, 10),
+  ('CareerLink Advisors', 'Campus Branding Day',
+   'Half-day employer brand session with auditorium slot coordination and student RSVP list.',
+   40000.00, 'one_time', true, true, 10)
+) AS v(provider_name, title, description, price_inr, billing_unit, available_to_college, available_to_employer, sort_order)
+  ON LOWER(p.name) = LOWER(v.provider_name);
 

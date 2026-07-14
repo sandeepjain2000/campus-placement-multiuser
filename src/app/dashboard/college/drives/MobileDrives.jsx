@@ -21,6 +21,17 @@ import { mapCollegeDriveFromApi, isDriveStaffDirty } from '@/lib/collegeDrivesCl
 import { fetchCollegeDrivesList } from '@/lib/collegeDrivesApi';
 import { approveCollegeDriveWithClashCheck } from '@/lib/collegeDriveApprovalClient';
 import PageLoading from '@/components/PageLoading';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import CollegeDriveStatusTabs from '@/components/college/CollegeDriveStatusTabs';
+import {
+  DEFAULT_COLLEGE_DRIVE_STATUS_TAB,
+  countDrivesByStatusTab,
+  filterDrivesByStatusTab,
+} from '@/lib/collegeDriveStatusTabs';
+import {
+  REJECT_DRIVE_CONFIRM_PHRASE,
+  buildRejectDriveConfirmMessage,
+} from '@/lib/collegeDriveRejectConfirm';
 
 const STATUS_META = {
   requested: { label: 'Awaiting Approval', icon: AlertCircle },
@@ -28,7 +39,7 @@ const STATUS_META = {
   scheduled: { label: 'Scheduled', icon: Clock },
   in_progress: { label: 'In Progress', icon: Target },
   completed: { label: 'Completed', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', icon: XCircle },
+  cancelled: { label: 'Rejected', icon: XCircle },
 };
 
 function StatusPill({ status }) {
@@ -43,7 +54,7 @@ function StatusPill({ status }) {
   );
 }
 
-export default function MobileDrives() {
+export default function mb_Drives() {
   const { addToast } = useToast();
   const [drives, setDrives] = useState([]);
   const [staffDirectory, setStaffDirectory] = useState([]);
@@ -52,6 +63,8 @@ export default function MobileDrives() {
   const [downloading, setDownloading] = useState(null);
 
   const [expandedId, setExpandedId] = useState(null);
+  const [statusTab, setStatusTab] = useState(DEFAULT_COLLEGE_DRIVE_STATUS_TAB);
+  const [rejectTarget, setRejectTarget] = useState(null);
   const [facebookPageShare, setFacebookPageShare] = useState(false);
   const [postingFacebookId, setPostingFacebookId] = useState(null);
   const [staffSavingId, setStaffSavingId] = useState(null);
@@ -160,7 +173,7 @@ export default function MobileDrives() {
         }
         return;
       }
-      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: 'approved' } : d)));
+      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: result.status || 'approved' } : d)));
       addToast('Drive approved.', 'success');
     } catch (error) { addToast(error.message, 'error'); }
     finally { setActionBusyId(null); }
@@ -172,7 +185,8 @@ export default function MobileDrives() {
       const res = await fetch('/api/college/drives', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ driveId: id, action: 'reject' }) });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Failed to reject drive');
-      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: 'cancelled' } : d)));
+      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: json?.drive?.status || 'cancelled' } : d)));
+      setRejectTarget(null);
       addToast('Drive rejected.', 'info');
     } catch (error) { addToast(error.message, 'error'); }
     finally { setActionBusyId(null); }
@@ -207,6 +221,11 @@ export default function MobileDrives() {
   const pendingCount = drives.filter(d => d.status === 'requested').length;
   const completedCount = drives.filter(d => d.status === 'completed').length;
   const activeCount = drives.filter(d => ['approved', 'scheduled', 'in_progress'].includes(d.status)).length;
+  const statusCounts = useMemo(() => countDrivesByStatusTab(drives), [drives]);
+  const visibleDrives = useMemo(
+    () => filterDrivesByStatusTab(drives, statusTab),
+    [drives, statusTab],
+  );
 
   return (
     <>
@@ -237,15 +256,31 @@ export default function MobileDrives() {
       )}
 
       {!isLoading && (
-        drives.length === 0 ? (
+        <>
+          <CollegeDriveStatusTabs
+            activeTab={statusTab}
+            onTabChange={setStatusTab}
+            counts={statusCounts}
+          />
+          {drives.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '5rem 2rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px dashed var(--border-default)' }}>
             <Target size={40} style={{ opacity: 0.2, margin: '0 auto 1rem' }} />
             <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.95rem' }}>No drives yet. Employers request placement drives from their dashboard.</p>
           </div>
+        ) : visibleDrives.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem 1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px dashed var(--border-default)' }}>
+            <CheckCircle2 size={32} style={{ opacity: 0.25, margin: '0 auto 0.75rem' }} />
+            <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>
+              {statusTab === 'unapproved'
+                ? 'No unapproved drives. New requests will appear here.'
+                : 'No drives in this tab.'}
+            </p>
+          </div>
         ) : (
           <div className="mobile-drives-list">
-            {drives.map((drive) => {
+            {visibleDrives.map((drive) => {
               const isExpanded = expandedId === drive.id;
+              const canDecide = drive.status === 'requested' && actionBusyId !== drive.id;
               return (
                 <div key={drive.id} style={{ border: '1px solid var(--border-default)', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg-elevated)', marginBottom: '0.75rem' }}>
                   <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -262,7 +297,7 @@ export default function MobileDrives() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                       <div>
-                        <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date & Type</div>
+                        <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date &amp; Type</div>
                         <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
                           {drive.date ? formatDate(drive.date) : '—'}
                         </div>
@@ -285,10 +320,10 @@ export default function MobileDrives() {
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                       {drive.status === 'requested' && (
                         <>
-                          <button className="btn btn-primary btn-sm" type="button" onClick={() => approveDrive(drive.id)} disabled={actionBusyId === drive.id}>
-                            <CheckCircle size={13} style={{marginRight:4}}/> Approve
+                          <button className="btn btn-primary btn-sm" type="button" onClick={() => approveDrive(drive.id)} disabled={!canDecide}>
+                            <CheckCircle size={13} style={{marginRight:4}}/> {actionBusyId === drive.id ? 'Approving…' : 'Approve'}
                           </button>
-                          <button className="btn btn-ghost btn-sm" type="button" onClick={() => rejectDrive(drive.id)} disabled={actionBusyId === drive.id} style={{ color: '#dc2626', border: '1px solid #fecaca' }}>
+                          <button className="btn btn-ghost btn-sm" type="button" onClick={() => setRejectTarget(drive)} disabled={!canDecide} style={{ color: '#dc2626', border: '1px solid #fecaca' }}>
                             <XCircle size={13} style={{marginRight:4}}/> Reject
                           </button>
                         </>
@@ -358,9 +393,30 @@ export default function MobileDrives() {
               );
             })}
           </div>
-        )
+        )}
+        </>
       )}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(rejectTarget)}
+        title="Reject this placement drive?"
+        message={buildRejectDriveConfirmMessage(rejectTarget)}
+        confirmPhrase={REJECT_DRIVE_CONFIRM_PHRASE}
+        confirmPhraseLabel={`Type ${REJECT_DRIVE_CONFIRM_PHRASE} to confirm rejection`}
+        confirmLabel="Reject drive"
+        cancelLabel="Keep drive"
+        confirmTone="danger"
+        loading={Boolean(rejectTarget && actionBusyId === rejectTarget.id)}
+        onCancel={() => {
+          if (rejectTarget && actionBusyId === rejectTarget.id) return;
+          setRejectTarget(null);
+        }}
+        onConfirm={() => {
+          if (!rejectTarget || actionBusyId === rejectTarget.id) return;
+          void rejectDrive(rejectTarget.id);
+        }}
+      />
     </>
   );
 }

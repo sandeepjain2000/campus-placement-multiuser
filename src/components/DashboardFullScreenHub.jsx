@@ -41,6 +41,7 @@ function getQuickActions(role, employerHasCampus, isAlumni) {
       { label: 'Alumni job postings', href: EMPLOYER_ALUMNI_JOBS_PATH },
       { label: 'Placement drives', href: '/dashboard/employer/drives' },
       { label: 'Applications', href: '/dashboard/employer/applications' },
+      { label: 'Marketplace', href: '/dashboard/employer/marketplace' },
       { label: 'Alerts', href: '/dashboard/alerts' },
       { label: 'Feedback', href: '/dashboard/feedback' },
     ];
@@ -68,6 +69,7 @@ function getQuickActions(role, employerHasCampus, isAlumni) {
       { label: 'Placement drives', href: '/dashboard/college/drives' },
       { label: 'Employers', href: '/dashboard/college/employers' },
       { label: 'Employer Partnership Requests', href: '/dashboard/college/employers/requests' },
+      { label: 'Marketplace', href: '/dashboard/college/marketplace' },
       { label: 'Settings', href: '/dashboard/college/settings' },
       { label: 'Alerts', href: '/dashboard/alerts' },
     ];
@@ -84,6 +86,7 @@ function getQuickActions(role, employerHasCampus, isAlumni) {
     return [
       { label: 'Onboard colleges & employers', href: '/dashboard/admin/pending-registrations' },
       { label: 'Colleges', href: '/dashboard/admin/colleges' },
+      { label: 'Marketplace', href: '/dashboard/admin/marketplace' },
       { label: 'Users', href: '/dashboard/admin/users' },
       { label: 'Employers', href: '/dashboard/admin/employers' },
       { label: 'Feedback inbox', href: '/dashboard/admin/feedback' },
@@ -255,7 +258,9 @@ export default function DashboardFullScreenHub({ role, session }) {
               <div style={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {session?.user?.name}
               </div>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>{getRoleDisplayName(role)}</div>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>
+                {getRoleDisplayName(role, { isAlumni })}
+              </div>
             </div>
           </Link>
           <NotificationDropdown />

@@ -16,6 +16,8 @@ FROM (
     AND TRIM(sd.file_url) <> ''
     AND sd.file_url NOT ILIKE '%dummy.pdf%'
     AND sd.file_url NOT ILIKE '%wai/er/tests%'
+    AND sd.file_url NOT ILIKE '%example-bucket%'
+    AND sd.file_url NOT ILIKE '%campus-placement.local%'
   ORDER BY sd.student_id, sd.uploaded_at DESC NULLS LAST
 ) AS latest
 WHERE sp.id = latest.student_id
@@ -24,6 +26,8 @@ WHERE sp.id = latest.student_id
     OR TRIM(sp.resume_url) = ''
     OR sp.resume_url ILIKE '%dummy.pdf%'
     OR sp.resume_url ILIKE '%wai/er/tests%'
+    OR sp.resume_url ILIKE '%example-bucket%'
+    OR sp.resume_url ILIKE '%campus-placement.local%'
     OR TRIM(sp.resume_url) <> TRIM(latest.file_url)
   );
 

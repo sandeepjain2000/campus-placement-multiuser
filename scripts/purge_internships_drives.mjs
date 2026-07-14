@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Soft-delete all internships, jobs (sandbox types), and placement drives for a clean QA view.
+ * Also permanently deletes all in-app alerts (inbox + trash).
  *
  *   npm run qa:purge:internships-drives
  *
@@ -72,11 +73,14 @@ async function purgeRemainingDrives(client) {
     `UPDATE placement_drives SET is_deleted = true, updated_at = NOW()
      WHERE COALESCE(is_deleted, false) = false`,
   );
+  // Always wipe inbox + trash so stale internship/drive alerts never linger after purge.
+  const alerts = await client.query(`DELETE FROM notifications`);
   return {
     jobs: jobs.rowCount || 0,
     programApplications: progApps.rowCount || 0,
     drives: drives.rowCount || 0,
     applications: apps.rowCount || 0,
+    alerts: alerts.rowCount || 0,
   };
 }
 
@@ -119,7 +123,7 @@ async function main() {
 
     const extra = await purgeRemainingDrives(client);
     console.log(
-      `  DB cleanup: ${extra.jobs} jobs/internships, ${extra.drives} drives, ${extra.programApplications} program apps, ${extra.applications} drive apps`,
+      `  DB cleanup: ${extra.jobs} jobs/internships, ${extra.drives} drives, ${extra.programApplications} program apps, ${extra.applications} drive apps, ${extra.alerts} alerts`,
     );
 
     const after = await countActive(client);
@@ -128,7 +132,7 @@ async function main() {
     if (after.jobs > 0 || after.drives > 0) {
       console.warn('  Some rows remain (may need migration 066 is_deleted columns or manual review).\n');
     } else {
-      console.log('✓ Internships and drives cleared.\n');
+      console.log('✓ Internships, drives, and alerts cleared.\n');
     }
   } finally {
     await client.end();

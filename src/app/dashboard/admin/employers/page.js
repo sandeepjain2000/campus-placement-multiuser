@@ -238,9 +238,10 @@ export default function AdminEmployersPage() {
     }
   };
 
-  const getExportRows = () => {
+  const getExportRows = (scope = 'current') => {
     const headers = ['Company', 'Industry', 'Total Hires', 'Verified', 'Account'];
-    const rowsList = employers.map((e) => [
+    const source = scope === 'full' ? employers : displayEmployers;
+    const rowsList = source.map((e) => [
       e.name,
       e.industry,
       String(e.hires),

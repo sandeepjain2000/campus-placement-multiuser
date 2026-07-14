@@ -1,4 +1,4 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
 
@@ -29,7 +29,38 @@ export function describeStorageError(error) {
   if (name === 'AccessDenied' || name === 'AccessDeniedException') {
     return 'File storage access denied. The AWS IAM user needs s3:PutObject and s3:GetObject on the documents bucket.';
   }
+  if (
+    name === 'NotFound'
+    || name === 'NoSuchKey'
+    || name === 'NoSuchBucket'
+    || error?.$metadata?.httpStatusCode === 404
+    || /nosuchkey/i.test(message)
+  ) {
+    return 'This file is no longer available.';
+  }
   return message || 'Upload failed';
+}
+
+/** True when the object exists in the configured bucket. Missing keys return false (never throw). */
+export async function s3ObjectExists(key) {
+  if (!isS3Configured()) return false;
+  const safeKey = String(key || '').replace(/^\/+/, '');
+  if (!safeKey) return false;
+  try {
+    const client = getClient();
+    await client.send(
+      new HeadObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: safeKey,
+      }),
+    );
+    return true;
+  } catch (error) {
+    const name = String(error?.name || error?.Code || '');
+    const status = error?.$metadata?.httpStatusCode;
+    if (name === 'NotFound' || name === 'NoSuchKey' || status === 404) return false;
+    throw error;
+  }
 }
 
 function getClient() {

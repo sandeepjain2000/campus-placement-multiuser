@@ -6,7 +6,12 @@ const DEMO_RESUME_URL_MARKERS = [
 
 export function isPlaceholderResumeUrl(url) {
   const value = String(url || '').trim().toLowerCase();
-  return !value || value.includes('campus-placement.local') || value.includes('/student-documents/');
+  return (
+    !value
+    || value.includes('campus-placement.local')
+    || value.includes('/student-documents/')
+    || value.includes('example-bucket.local')
+  );
 }
 
 export function isDemoResumeUrl(url) {

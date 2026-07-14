@@ -7,6 +7,7 @@ import {
   notifyRegistrationResolved,
 } from '@/lib/registrationNotify';
 import { newEmailVerificationToken, sendSignupVerificationEmail } from '@/lib/emailVerification';
+import { auditNewValues, getRequestClientIp, writeAuditLog } from '@/lib/auditLog';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -126,6 +127,19 @@ async function __platform_POST(request) {
         return NextResponse.json({ error: 'Verification token generated, but failed to send email. Check SMTP configuration.' }, { status: 500 });
       }
 
+      void writeAuditLog({
+        userId: session.user.id,
+        tenantId: u.tenant_id || null,
+        action: 'RESEND_REGISTRATION_VERIFICATION',
+        entityType: 'users',
+        entityId: userId,
+        newValues: auditNewValues(`Resent verification to ${u.email}`, {
+          email: u.email,
+          role: u.role,
+        }),
+        ipAddress: getRequestClientIp(request),
+      });
+
       return NextResponse.json({ ok: true, message: 'Verification email resent successfully.' });
     }
 
@@ -153,6 +167,19 @@ async function __platform_POST(request) {
         approved: false,
         reason: reason || undefined,
         role: u.role,
+      });
+      void writeAuditLog({
+        userId: session.user.id,
+        tenantId: u.tenant_id || null,
+        action: 'REJECT_REGISTRATION',
+        entityType: 'users',
+        entityId: userId,
+        newValues: auditNewValues(`Rejected ${u.email}`, {
+          email: u.email,
+          role: u.role,
+          reason: reason || null,
+        }),
+        ipAddress: getRequestClientIp(request),
       });
       return NextResponse.json({ ok: true });
     }
@@ -191,6 +218,19 @@ async function __platform_POST(request) {
         });
       }
     }
+
+    void writeAuditLog({
+      userId: session.user.id,
+      tenantId: u.tenant_id || null,
+      action: 'APPROVE_REGISTRATION',
+      entityType: 'users',
+      entityId: userId,
+      newValues: auditNewValues(`Approved ${u.email}`, {
+        email: u.email,
+        role: u.role,
+      }),
+      ipAddress: getRequestClientIp(request),
+    });
 
     return NextResponse.json({ ok: true });
   } catch (e) {

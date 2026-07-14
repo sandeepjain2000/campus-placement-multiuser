@@ -97,15 +97,16 @@ export default function AdminPendingRegistrationsPage() {
     }
   };
 
-  const getExportRows = () => {
+  const getExportRows = (scope = 'current') => {
     const headers = ['Party', 'Contact Name', 'Email', 'Email verified', 'Role', 'Requested Date'];
-    const rowsList = rows.map(r => [
+    const source = scope === 'full' ? rows : displayRows;
+    const rowsList = source.map((r) => [
       r.label,
       `${r.firstName} ${r.lastName}`,
       r.email,
       r.emailVerified ? 'Yes' : 'No',
       r.role === 'college_admin' ? 'College' : 'Employer',
-      r.createdAt ? new Date(r.createdAt).toLocaleString() : ''
+      r.createdAt ? new Date(r.createdAt).toLocaleString() : '',
     ]);
     return { headers, rows: rowsList };
   };

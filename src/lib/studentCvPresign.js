@@ -1,5 +1,5 @@
 import { buildCvDownloadFileName } from '@/lib/studentCvShared';
-import { createDownloadUrlForKey, isS3Configured } from '@/lib/s3';
+import { createDownloadUrlForKey, isS3Configured, s3ObjectExists } from '@/lib/s3';
 
 export function extractS3KeyFromFileUrl(fileUrl) {
   try {
@@ -49,6 +49,9 @@ export async function presignStudentCvFile({
   if (!key) {
     throw new Error('Invalid file location');
   }
+  if (!(await s3ObjectExists(key))) {
+    throw new Error('This file is no longer available.');
+  }
   const downloadFileName = buildCvDownloadFileName(label, fileExtension);
   const disposition = mode === 'download' ? 'attachment' : 'inline';
   const contentType = disposition === 'inline' ? guessCvContentType(fileExtension) : null;
@@ -70,6 +73,9 @@ export async function presignLegacyResumeFile({ fileUrl, fileName, mode = 'view'
   const key = extractS3KeyFromFileUrl(fileUrl);
   if (!key) {
     throw new Error('Invalid file location');
+  }
+  if (!(await s3ObjectExists(key))) {
+    throw new Error('This file is no longer available.');
   }
   const safeName = String(fileName || 'resume.pdf').replace(/"/g, '');
   const ext = safeName.includes('.') ? safeName.slice(safeName.lastIndexOf('.')) : '.pdf';

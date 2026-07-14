@@ -14,6 +14,7 @@ import {
   parseInstitutionClassificationsFromBody,
 } from '@/lib/tenantInstitutionClassifications';
 import { syncCollegeAdminUsersActive } from '@/lib/adminOrganizationActive';
+import { auditNewValues, getRequestClientIp, writeAuditLog } from '@/lib/auditLog';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -169,10 +170,11 @@ async function __platform_PATCH(request, { params }) {
       'nirf_rank = $10',
       'is_active = $11',
     ];
-    const params = [id, name, city, state, pincode, website, email, phone, naac, nirfRank, active];
+    // Must not be named `params` — that shadows the Next.js route `params` and throws TDZ on every PATCH.
+    const queryParams = [id, name, city, state, pincode, website, email, phone, naac, nirfRank, active];
     for (const entry of classificationEntries) {
-      params.push(entry.value);
-      setParts.push(`${entry.column} = $${params.length}`);
+      queryParams.push(entry.value);
+      setParts.push(`${entry.column} = $${queryParams.length}`);
     }
     setParts.push('updated_at = NOW()');
 
@@ -181,7 +183,7 @@ async function __platform_PATCH(request, { params }) {
        SET ${setParts.join(',\n         ')}
        WHERE id = $1::uuid AND type = 'college'
        RETURNING id`,
-      params,
+      queryParams,
     );
 
     if (!updated.rowCount) {
@@ -193,7 +195,36 @@ async function __platform_PATCH(request, { params }) {
     }
 
     const row = await loadCollege(id);
-    return NextResponse.json({ college: mapCollege(row) });
+    const college = mapCollege(row);
+    void writeAuditLog({
+      userId: auth.session?.user?.id,
+      tenantId: id,
+      action: active !== Boolean(existing.is_active)
+        ? (active ? 'REACTIVATE_COLLEGE' : 'DEACTIVATE_COLLEGE')
+        : 'UPDATE_COLLEGE',
+      entityType: 'tenants',
+      entityId: id,
+      oldValues: {
+        name: existing.name,
+        city: existing.city,
+        state: existing.state,
+        email: existing.email,
+        naac: existing.naac_grade,
+        nirfRank: existing.nirf_rank,
+        active: Boolean(existing.is_active),
+      },
+      newValues: auditNewValues(`${college.name} updated`, {
+        name: college.name,
+        city: college.city,
+        state: college.state,
+        email: college.email,
+        naac: college.naac,
+        nirfRank: college.nirfRank,
+        active: college.active,
+      }),
+      ipAddress: getRequestClientIp(request),
+    });
+    return NextResponse.json({ college });
   } catch (error) {
     console.error('PATCH /api/admin/colleges/[id]', error);
     return NextResponse.json({ error: 'Failed to update college' }, { status: 500 });

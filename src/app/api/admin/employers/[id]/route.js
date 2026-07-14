@@ -10,6 +10,7 @@ import {
 } from '@/lib/organizationNames';
 import { validateAdminEmployerForm } from '@/lib/adminEmployerForm';
 import { setEmployerUserActive } from '@/lib/adminOrganizationActive';
+import { auditNewValues, getRequestClientIp, writeAuditLog } from '@/lib/auditLog';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers, respondPlatformError } from '@/lib/platformErrorRoute';
@@ -204,7 +205,33 @@ async function __platform_PATCH(request, { params }) {
     }
 
     const row = await loadEmployer(id);
-    return NextResponse.json({ employer: mapEmployer(row) });
+    const employer = mapEmployer(row);
+    void writeAuditLog({
+      userId: auth.session?.user?.id,
+      tenantId: null,
+      action:
+        accountActive !== Boolean(existing.account_active)
+          ? (accountActive ? 'REACTIVATE_EMPLOYER' : 'DEACTIVATE_EMPLOYER')
+          : 'UPDATE_EMPLOYER',
+      entityType: 'employer_profiles',
+      entityId: id,
+      oldValues: {
+        name: existing.company_name,
+        industry: existing.industry,
+        verified: Boolean(existing.is_verified),
+        blacklisted: Boolean(existing.is_blacklisted),
+        active: Boolean(existing.account_active),
+      },
+      newValues: auditNewValues(`${employer.name} updated`, {
+        name: employer.name,
+        industry: employer.industry,
+        verified: employer.verified,
+        blacklisted: employer.blacklisted,
+        active: employer.accountActive,
+      }),
+      ipAddress: getRequestClientIp(request),
+    });
+    return NextResponse.json({ employer });
   } catch (error) {
     return respondPlatformError(error, {
       context: 'api_admin_employers_id',

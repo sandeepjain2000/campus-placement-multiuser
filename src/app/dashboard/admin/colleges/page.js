@@ -68,9 +68,10 @@ export default function AdminCollegesPage() {
     sortOptions: COMMON_SORT_OPTIONS,
   });
 
-  const getExportRows = () => {
+  const getExportRows = (scope = 'current') => {
     const headers = ['College', 'City', 'NAAC', 'Students', 'Placed', 'Rate', 'Status'];
-    const rows = colleges.map((c) => [
+    const source = scope === 'full' ? colleges : displayColleges;
+    const rows = source.map((c) => [
       c.name,
       c.city,
       c.naac,

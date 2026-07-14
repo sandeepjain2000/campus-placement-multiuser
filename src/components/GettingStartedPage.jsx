@@ -67,7 +67,7 @@ export default function GettingStartedPage() {
   const isAlumni = Boolean(session?.user?.isAlumni);
   const userId = session?.user?.id;
   const { data, error, isLoading, mutate } = useSWR(
-    userId ? '/api/user/onboarding' : null,
+    userId && role !== 'placement_committee' ? '/api/user/onboarding' : null,
     onboardingFetcher,
   );
 
@@ -79,6 +79,42 @@ export default function GettingStartedPage() {
     return (
       <div className="card animate-fadeIn" style={{ padding: '2rem', textAlign: 'center' }}>
         <p className="text-secondary" style={{ margin: 0 }}>Sign in to view your setup checklist.</p>
+      </div>
+    );
+  }
+
+  if (role === 'placement_committee') {
+    return (
+      <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem', letterSpacing: '-0.02em' }}>
+            Getting Started
+          </h1>
+          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+            Placement Committee onboarding
+          </p>
+        </div>
+        <div
+          className="card"
+          style={{
+            maxWidth: 560,
+            margin: '0 auto',
+            padding: '2.5rem 2rem',
+            textAlign: 'center',
+            border: '1px solid var(--border-default)',
+          }}
+        >
+          <Rocket size={28} style={{ color: 'var(--text-tertiary)', marginBottom: '0.75rem' }} aria-hidden />
+          <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            Coming soon…
+          </p>
+          <p style={{ margin: '0.65rem 0 0', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            A Placement Committee setup checklist is not available yet. Use Dashboard to browse campus placement activity.
+          </p>
+          <Link href="/dashboard/college/overview" className="btn btn-secondary btn-sm" style={{ marginTop: '1.25rem' }}>
+            Go to Dashboard
+          </Link>
+        </div>
       </div>
     );
   }

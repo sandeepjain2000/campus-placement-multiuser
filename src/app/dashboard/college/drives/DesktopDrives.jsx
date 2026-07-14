@@ -15,6 +15,17 @@ import { mapCollegeDriveFromApi, isDriveStaffDirty } from '@/lib/collegeDrivesCl
 import { fetchCollegeDrivesList } from '@/lib/collegeDrivesApi';
 import { approveCollegeDriveWithClashCheck } from '@/lib/collegeDriveApprovalClient';
 import PageLoading from '@/components/PageLoading';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import CollegeDriveStatusTabs from '@/components/college/CollegeDriveStatusTabs';
+import {
+  DEFAULT_COLLEGE_DRIVE_STATUS_TAB,
+  countDrivesByStatusTab,
+  filterDrivesByStatusTab,
+} from '@/lib/collegeDriveStatusTabs';
+import {
+  REJECT_DRIVE_CONFIRM_PHRASE,
+  buildRejectDriveConfirmMessage,
+} from '@/lib/collegeDriveRejectConfirm';
 import {
   Target, CheckCircle, XCircle, Download, Video, Building2,
   ChevronDown, ChevronUp, LayoutList, CalendarDays, X,
@@ -27,7 +38,7 @@ const STATUS_META = {
   scheduled: { label: 'Scheduled', icon: Clock },
   in_progress: { label: 'In Progress', icon: Target },
   completed: { label: 'Completed', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', icon: XCircle },
+  cancelled: { label: 'Rejected', icon: XCircle },
 };
 
 function StatusPill({ status }) {
@@ -50,6 +61,8 @@ export default function DesktopDrives() {
   const [actionBusyId, setActionBusyId] = useState(null);
   const [downloading, setDownloading] = useState(null);
   const [view, setView] = useState('list');
+  const [statusTab, setStatusTab] = useState(DEFAULT_COLLEGE_DRIVE_STATUS_TAB);
+  const [rejectTarget, setRejectTarget] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
   const [facebookPageShare, setFacebookPageShare] = useState(false);
   const [postingFacebookId, setPostingFacebookId] = useState(null);
@@ -124,10 +137,6 @@ export default function DesktopDrives() {
     return map;
   }, [drives, staffDirectory]);
 
-  const calItems = useMemo(() => drives.map((d) => ({
-    id: d.id, date: d.date, title: d.company, time: '', meta: `${formatStatus(d.status)} · ${d.role}`
-  })), [drives]);
-
   const getDrivesCsv = useCallback((_scope) => ({
     headers: ['Company', 'Role', 'Date', 'Type', 'Status', 'Venue', 'Registered', 'Selected'],
     rows: drives.map((d) => [d.company, d.role, d.date, d.type, d.status, d.venue, String(d.registered), String(d.selected)]),
@@ -159,7 +168,7 @@ export default function DesktopDrives() {
         }
         return;
       }
-      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: 'approved' } : d)));
+      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: result.status || 'approved' } : d)));
       addToast('Drive approved.', 'success');
     } catch (error) { addToast(error.message, 'error'); }
     finally { setActionBusyId(null); }
@@ -171,7 +180,8 @@ export default function DesktopDrives() {
       const res = await fetch('/api/college/drives', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ driveId: id, action: 'reject' }) });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Failed to reject drive');
-      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: 'cancelled' } : d)));
+      setDrives((prev) => prev.map((d) => (d.id === id ? { ...d, status: json?.drive?.status || json?.status || 'cancelled' } : d)));
+      setRejectTarget(null);
       addToast('Drive rejected.', 'info');
     } catch (error) { addToast(error.message, 'error'); }
     finally { setActionBusyId(null); }
@@ -206,6 +216,17 @@ export default function DesktopDrives() {
   const pendingCount = drives.filter(d => d.status === 'requested').length;
   const completedCount = drives.filter(d => d.status === 'completed').length;
   const activeCount = drives.filter(d => ['approved', 'scheduled', 'in_progress'].includes(d.status)).length;
+  const statusCounts = useMemo(() => countDrivesByStatusTab(drives), [drives]);
+  const visibleDrives = useMemo(
+    () => filterDrivesByStatusTab(drives, statusTab),
+    [drives, statusTab],
+  );
+  const calItems = useMemo(
+    () => visibleDrives.map((d) => ({
+      id: d.id, date: d.date, title: d.company, time: '', meta: `${formatStatus(d.status)} · ${d.role}`
+    })),
+    [visibleDrives],
+  );
 
   return (
     <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
@@ -257,19 +278,38 @@ export default function DesktopDrives() {
         </PageLoading>
       )}
 
+      {!isLoading && (
+        <CollegeDriveStatusTabs
+          activeTab={statusTab}
+          onTabChange={setStatusTab}
+          counts={statusCounts}
+        />
+      )}
+
       {!isLoading && view === 'calendar' && <EmployerCalendarGrid items={calItems} initialYear={2026} initialMonth={7} />}
 
       {!isLoading && view === 'list' && (
-        drives.length === 0 ? (
+        <>
+          {drives.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '5rem 2rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px dashed var(--border-default)' }}>
             <Target size={40} style={{ opacity: 0.2, margin: '0 auto 1rem' }} />
             <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.95rem' }}>No drives yet. Employers request placement drives from their dashboard.</p>
           </div>
+        ) : visibleDrives.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3.5rem 2rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px dashed var(--border-default)' }}>
+            <CheckCircle2 size={36} style={{ opacity: 0.25, margin: '0 auto 0.85rem' }} />
+            <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.95rem' }}>
+              {statusTab === 'unapproved'
+                ? 'No unapproved drives. New requests will appear here.'
+                : 'No drives in this tab.'}
+            </p>
+          </div>
         ) : (
           <div style={{ border: '1px solid var(--border-default)', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg-elevated)' }}>
-            {drives.map((drive, idx) => {
+            {visibleDrives.map((drive, idx) => {
               const isExpanded = expandedId === drive.id;
-              const isLast = idx === drives.length - 1;
+              const isLast = idx === visibleDrives.length - 1;
+              const canDecide = drive.status === 'requested' && actionBusyId !== drive.id;
               return (
                 <div key={drive.id} id={`drive-${drive.id}`} style={{ borderBottom: isLast ? 'none' : '1px solid var(--border-default)' }}>
 
@@ -327,10 +367,10 @@ export default function DesktopDrives() {
                     <div style={{ flex: '0 0 auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       {drive.status === 'requested' && (
                         <>
-                          <button className="btn btn-primary btn-sm" type="button" onClick={() => approveDrive(drive.id)} disabled={actionBusyId === drive.id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}>
+                          <button className="btn btn-primary btn-sm" type="button" onClick={() => approveDrive(drive.id)} disabled={!canDecide} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}>
                             <CheckCircle size={13} /> {actionBusyId === drive.id ? 'Approving…' : 'Approve'}
                           </button>
-                          <button className="btn btn-ghost btn-sm" type="button" onClick={() => rejectDrive(drive.id)} disabled={actionBusyId === drive.id} style={{ color: '#dc2626', fontSize: '0.8rem', border: '1px solid #fecaca', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                          <button className="btn btn-ghost btn-sm" type="button" onClick={() => setRejectTarget(drive)} disabled={!canDecide} style={{ color: '#dc2626', fontSize: '0.8rem', border: '1px solid #fecaca', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                             <XCircle size={13} /> Reject
                           </button>
                         </>
@@ -423,8 +463,29 @@ export default function DesktopDrives() {
               );
             })}
           </div>
-        )
+        )}
+        </>
       )}
+
+      <ConfirmDialog
+        open={Boolean(rejectTarget)}
+        title="Reject this placement drive?"
+        message={buildRejectDriveConfirmMessage(rejectTarget)}
+        confirmPhrase={REJECT_DRIVE_CONFIRM_PHRASE}
+        confirmPhraseLabel={`Type ${REJECT_DRIVE_CONFIRM_PHRASE} to confirm rejection`}
+        confirmLabel="Reject drive"
+        cancelLabel="Keep drive"
+        confirmTone="danger"
+        loading={Boolean(rejectTarget && actionBusyId === rejectTarget.id)}
+        onCancel={() => {
+          if (rejectTarget && actionBusyId === rejectTarget.id) return;
+          setRejectTarget(null);
+        }}
+        onConfirm={() => {
+          if (!rejectTarget || actionBusyId === rejectTarget.id) return;
+          void rejectDrive(rejectTarget.id);
+        }}
+      />
     </div>
   );
 }

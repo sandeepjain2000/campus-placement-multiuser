@@ -11,6 +11,18 @@ function normalizeAuditAction(raw) {
 }
 
 /**
+ * Merge a short searchable summary into new_values for Audit Reports display.
+ * @param {string} summary
+ * @param {Record<string, unknown>|null|undefined} [extra]
+ */
+export function auditNewValues(summary, extra = null) {
+  const base = extra && typeof extra === 'object' && !Array.isArray(extra) ? { ...extra } : {};
+  const text = String(summary || '').trim();
+  if (text) base.summary = text.slice(0, 500);
+  return Object.keys(base).length ? base : null;
+}
+
+/**
  * Best-effort audit row; never throws to callers.
  * @param {AuditPayload} payload
  */

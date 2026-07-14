@@ -104,7 +104,9 @@ export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontWeight: 600, fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRoleDisplayName(role)}</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {getRoleDisplayName(role, { isAlumni })}
+                </div>
               </div>
             </div>
           </Link>

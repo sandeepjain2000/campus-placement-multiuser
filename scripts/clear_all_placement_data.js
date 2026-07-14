@@ -29,6 +29,7 @@ const COUNT_QUERIES = [
   ['job_posting_visibility', 'SELECT COUNT(*)::int AS n FROM job_posting_visibility'],
   ['offers', 'SELECT COUNT(*)::int AS n FROM offers'],
   ['employer_assessment_uploads', 'SELECT COUNT(*)::int AS n FROM employer_assessment_uploads'],
+  ['notifications (alerts)', 'SELECT COUNT(*)::int AS n FROM notifications'],
 ];
 
 async function snapshot(client, label) {
@@ -56,7 +57,7 @@ async function main() {
     await client.query(sql);
     await client.query('COMMIT');
     await snapshot(client, 'After');
-    console.log('\nDone — jobs, internships/programs, drives, and dependent rows removed.');
+    console.log('\nDone — jobs, internships/programs, drives, alerts, and dependent rows removed.');
     console.log('Tenants, users, students, and employers are unchanged.\n');
   } catch (e) {
     await client.query('ROLLBACK').catch(() => {});

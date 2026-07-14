@@ -175,9 +175,18 @@ export function getDashboardPath(role) {
 }
 
 /**
- * Get role display name
+ * Get role display name for identity chrome and tables.
+ * @param {string} role
+ * @param {{ isAlumni?: boolean } | boolean} [optionsOrIsAlumni]
  */
-export function getRoleDisplayName(role) {
+export function getRoleDisplayName(role, optionsOrIsAlumni) {
+  const isAlumni =
+    typeof optionsOrIsAlumni === 'boolean'
+      ? optionsOrIsAlumni
+      : Boolean(optionsOrIsAlumni?.isAlumni ?? optionsOrIsAlumni?.is_alumni);
+
+  if (role === 'student' && isAlumni) return 'Alumni';
+
   const names = {
     super_admin: 'Super Admin',
     college_admin: 'College Admin',

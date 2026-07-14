@@ -13,7 +13,7 @@ import {
   Building2, GraduationCap, FolderDot, Briefcase, ClipboardList, Send, Gem, MessageSquare,
   Building, Calendar, Settings, TrendingUp, Users, HelpCircle, ListChecks, Inbox,
   CalendarDays, PartyPopper, SlidersHorizontal, Handshake, KeyRound, Mic, Download, Map, Rocket,
-  CalendarRange, Table2,
+  CalendarRange, Table2, Store,
   UserPlus,
   Mail,
   Archive,
@@ -342,6 +342,7 @@ export const menuConfig = {
         title: 'Organization Management',
         items: [
           { label: 'Company Profile', href: '/dashboard/employer/profile', icon: Building2 },
+          { label: 'Marketplace', href: '/dashboard/employer/marketplace', icon: Store },
           { label: 'Sponsorships', href: '/dashboard/employer/sponsorships', icon: Gem },
           { label: 'Startup Seed Funding', href: '/dashboard/employer/startup-funding', icon: Rocket },
           { label: 'Campus Guest Needs', href: '/dashboard/employer/campus-guest-needs', icon: Mic },
@@ -433,6 +434,7 @@ export const menuConfig = {
         items: [
           { label: 'Employers', href: '/dashboard/college/employers', icon: Building2 },
           { label: 'Employer Partnership Requests', href: '/dashboard/college/employers/requests', icon: Inbox },
+          { label: 'Marketplace', href: '/dashboard/college/marketplace', icon: Store },
           { label: 'Sponsorships', href: '/dashboard/college/sponsorships', icon: Gem },
           { label: 'Startup Seed Funding', href: '/dashboard/college/startup-funding', icon: Rocket },
         ],
@@ -565,6 +567,7 @@ export const menuConfig = {
           { label: 'Colleges', href: '/dashboard/admin/colleges', icon: Building },
           { label: 'Employers', href: '/dashboard/admin/employers', icon: Building2 },
           { label: 'Placement listings', href: '/dashboard/admin/placement-listings', icon: Briefcase },
+          { label: 'Marketplace', href: '/dashboard/admin/marketplace', icon: Store },
           { label: 'Users', href: '/dashboard/admin/users', icon: Users },
           { label: 'Archived students', href: '/dashboard/admin/archived-students', icon: Archive },
         ],

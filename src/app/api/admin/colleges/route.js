@@ -17,6 +17,7 @@ import { assertEmailAvailable, formatEmailInUseMessage } from '@/lib/userEmail';
 import { slugify } from '@/lib/utils';
 import { getPasswordValidationError, validateEmail, validatePersonName } from '@/lib/validators';
 import { SP_ACTIVE_ON } from '@/lib/studentProfileActive';
+import { auditNewValues, getRequestClientIp, writeAuditLog } from '@/lib/auditLog';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -191,6 +192,21 @@ async function __platform_POST(request) {
       firstName: created.admin.first_name,
       collegeName: created.collegeName,
       surfaceToken: created.surfaceToken,
+    });
+
+    void writeAuditLog({
+      userId: session.user.id,
+      tenantId: created.tenantId,
+      action: 'CREATE_COLLEGE',
+      entityType: 'tenants',
+      entityId: created.tenantId,
+      newValues: auditNewValues(`College created: ${created.collegeName}`, {
+        name: created.collegeName,
+        city,
+        state,
+        adminEmail: created.admin.email,
+      }),
+      ipAddress: getRequestClientIp(request),
     });
 
     return NextResponse.json(

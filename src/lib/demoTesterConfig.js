@@ -70,7 +70,7 @@ export const DEMO_ACTION_GROUPS = [
       {
         id: 'purge-all-jobs-internships',
         title: 'Delete all jobs & internships',
-        hint: 'Soft-delete every job and internship posting across all employers',
+        hint: 'Soft-delete every job/internship posting and permanently delete all in-app alerts',
         endpoint: '/api/demo/purge-all-jobs-internships',
         hideCount: true,
       },

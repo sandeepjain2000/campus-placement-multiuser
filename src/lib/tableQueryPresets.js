@@ -16,12 +16,7 @@ export const ROLE_FILTER_OPTIONS = [
   { value: 'student', label: 'Student' },
 ];
 
-export const COMMON_SORT_OPTIONS = [
-  { ...SORT_NAME_ASC, compare: (a, b) => String(a?.name ?? a?.title ?? '').localeCompare(String(b?.name ?? b?.title ?? ''), undefined, { sensitivity: 'base' }) },
-  { ...SORT_NAME_DESC, compare: (a, b) => String(b?.name ?? b?.title ?? '').localeCompare(String(a?.name ?? a?.title ?? ''), undefined, { sensitivity: 'base' }) },
-  SORT_DATE_DESC,
-  SORT_DATE_ASC,
-];
+export const COMMON_SORT_OPTIONS = [SORT_NAME_ASC, SORT_NAME_DESC, SORT_DATE_DESC, SORT_DATE_ASC];
 
 export const COMPANY_SORT_OPTIONS = [
   {

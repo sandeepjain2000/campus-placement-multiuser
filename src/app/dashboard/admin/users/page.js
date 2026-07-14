@@ -63,13 +63,14 @@ export default function AdminUsersPage() {
     sortOptions: COMMON_SORT_OPTIONS,
   });
 
-  const getExportRows = () => {
+  const getExportRows = (scope = 'current') => {
     const headers = ['User', 'Email', 'Role', 'Status'];
-    const rowsList = displayUsers.map(u => [
+    const source = scope === 'full' ? users : displayUsers;
+    const rowsList = source.map((u) => [
       u.name,
       u.email,
       getRoleDisplayName(u.role),
-      u.active ? 'Active' : 'Inactive'
+      u.active ? 'Active' : 'Inactive',
     ]);
     return { headers, rows: rowsList };
   };

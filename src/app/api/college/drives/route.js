@@ -252,13 +252,17 @@ async function __platform_PATCH(request) {
       if (!meta.rows[0]) {
         return NextResponse.json({ error: 'Drive not found' }, { status: 404 });
       }
-      return NextResponse.json(
-        {
-          error: 'This drive is not awaiting approval.',
-          currentStatus: meta.rows[0].status,
-        },
-        { status: 409 },
-      );
+      const currentStatus = meta.rows[0].status;
+      const rejectedAlready = currentStatus === 'cancelled' || currentStatus === 'rejected';
+      let error = 'This drive is not awaiting approval.';
+      if (action === 'approve' && rejectedAlready) {
+        error = 'This drive was rejected and cannot be approved again.';
+      } else if (action === 'reject' && currentStatus === 'approved') {
+        error = 'This drive is already approved and cannot be rejected.';
+      } else if (action === 'reject' && rejectedAlready) {
+        error = 'This drive is already rejected.';
+      }
+      return NextResponse.json({ error, currentStatus }, { status: 409 });
     }
 
     const row = updated.rows[0];

@@ -166,6 +166,12 @@ async function trashAlertsForEntities(client, { entityIds = [], textPatterns = [
   return total;
 }
 
+/** Permanently remove every in-app alert (inbox + trash). Used by bulk QA purges. */
+async function deleteAllAlerts(client) {
+  const res = await client.query(`DELETE FROM notifications`);
+  return res.rowCount || 0;
+}
+
 /** Remove college calendar rows tied to purged placement drives (sandbox cleanup). */
 async function removeCalendarEntriesForDrives(client, drives) {
   let total = 0;
@@ -828,6 +834,7 @@ const ALL_JOB_AND_PROGRAM_TYPES = [...JOB_KIND_TYPES.job, ...JOB_KIND_TYPES.inte
 /**
  * Soft-delete every job and internship/program posting (all employers).
  * Cascades program applications, linked drives, offers, and assessments.
+ * Always permanently deletes all in-app alerts (inbox + trash).
  */
 export async function purgeAllJobsAndInternships(audit = {}) {
   return transaction(async (client) => {
@@ -841,26 +848,35 @@ export async function purgeAllJobsAndInternships(audit = {}) {
       )
     ).rows;
 
-    if (!jobRows.length) {
-      return {
-        ok: true,
-        action: 'purge-all-jobs-internships',
-        deleted: 0,
-        summary: {},
-        message: 'No jobs or internships to delete.',
-      };
-    }
-
-    const jobIds = jobRows.map((r) => r.id);
     const summary = {
-      jobs: jobRows.filter((r) => JOB_KIND_TYPES.job.includes(r.job_type)).length,
-      internships: jobRows.filter((r) => JOB_KIND_TYPES.internship.includes(r.job_type)).length,
+      jobs: 0,
+      internships: 0,
       programApplications: 0,
       drives: 0,
       driveApplications: 0,
       offers: 0,
       assessments: 0,
+      alertsDeleted: 0,
     };
+
+    summary.alertsDeleted = await deleteAllAlerts(client);
+
+    if (!jobRows.length) {
+      return {
+        ok: true,
+        action: 'purge-all-jobs-internships',
+        deleted: 0,
+        summary,
+        message:
+          summary.alertsDeleted > 0
+            ? `No jobs or internships to delete. Cleared ${summary.alertsDeleted} alert(s).`
+            : 'No jobs, internships, or alerts to delete.',
+      };
+    }
+
+    const jobIds = jobRows.map((r) => r.id);
+    summary.jobs = jobRows.filter((r) => JOB_KIND_TYPES.job.includes(r.job_type)).length;
+    summary.internships = jobRows.filter((r) => JOB_KIND_TYPES.internship.includes(r.job_type)).length;
 
     const driveRows = (
       await client.query(

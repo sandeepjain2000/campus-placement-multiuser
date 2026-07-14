@@ -21,9 +21,13 @@ const STEP_ICONS = {
 };
 
 export default function mb_GettingStarted() {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const userId = session?.user?.id;
-  const { data, error, isLoading } = useSWR(userId ? '/api/user/onboarding' : null, fetcher);
+  const role = session?.user?.role;
+  const { data, error, isLoading } = useSWR(
+    userId && role !== 'placement_committee' ? '/api/user/onboarding' : null,
+    fetcher,
+  );
 
   const steps = data?.progress?.steps || [];
   const completedCount = steps.filter((s) => s.completed).length;
@@ -31,6 +35,46 @@ export default function mb_GettingStarted() {
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 100;
   const nextStep = steps.find((s) => !s.completed);
   const isComplete = data?.progress?.isComplete || completedCount === totalCount;
+
+  if (sessionStatus === 'loading') {
+    return (
+      <>
+        <MobileHeader title="Getting Started" />
+        <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
+          <div className="skeleton" style={{ height: 120, borderRadius: '12px' }} />
+        </div>
+      </>
+    );
+  }
+
+  if (role === 'placement_committee') {
+    return (
+      <>
+        <MobileHeader title="Getting Started" />
+        <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
+          <div
+            className="card"
+            style={{
+              padding: '2rem 1.25rem',
+              textAlign: 'center',
+              border: '1px solid var(--border-default)',
+            }}
+          >
+            <Rocket size={24} style={{ color: 'var(--text-tertiary)', marginBottom: '0.65rem' }} aria-hidden />
+            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              Coming soon…
+            </p>
+            <p style={{ margin: '0.55rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              A Placement Committee setup checklist is not available yet.
+            </p>
+            <Link href="/dashboard/college/overview" className="btn btn-secondary btn-sm" style={{ marginTop: '1rem' }}>
+              Go to Dashboard
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

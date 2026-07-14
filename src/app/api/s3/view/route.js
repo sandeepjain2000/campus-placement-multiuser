@@ -2,7 +2,7 @@ import { withApiHandlers } from '@/lib/platformErrorRoute';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { createDownloadUrlForKey, isS3Configured } from '@/lib/s3';
+import { createDownloadUrlForKey, describeStorageError, isS3Configured, s3ObjectExists } from '@/lib/s3';
 
 function extractS3KeyAndHost(rawUrl) {
   try {
@@ -66,11 +66,19 @@ async function __platform_GET(request) {
       return NextResponse.json({ error: 'Unsupported S3 host' }, { status: 400 });
     }
 
+    const exists = await s3ObjectExists(parsed.key);
+    if (!exists) {
+      return NextResponse.json({ error: 'This file is no longer available.' }, { status: 404 });
+    }
+
     const { downloadUrl } = await createDownloadUrlForKey(parsed.key, 60 * 30);
     return NextResponse.redirect(downloadUrl);
   } catch (e) {
     console.error('GET /api/s3/view', e);
-    return NextResponse.json({ error: 'Could not open file' }, { status: 500 });
+    return NextResponse.json(
+      { error: describeStorageError(e) || 'Could not open file' },
+      { status: 500 },
+    );
   }
 }
 

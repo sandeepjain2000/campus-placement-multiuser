@@ -132,6 +132,10 @@ async function __platform_GET() {
         { id: 'students', title: 'Invite Students', completed: false, href: '/dashboard/college/students' },
       ];
       progress.isComplete = false;
+    } else if (role === 'placement_committee') {
+      progress.steps = [];
+      progress.isComplete = false;
+      progress.comingSoon = true;
     } else {
       // Basic static steps for super admin
       progress.steps = [

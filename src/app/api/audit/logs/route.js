@@ -25,8 +25,9 @@ function formatAuditDetails(row) {
     }
     return parts.join(' · ') || null;
   }
-  if (typeof nv.summary === 'string') return nv.summary;
-  return null;
+  if (typeof nv.summary === 'string' && nv.summary.trim()) return nv.summary.trim();
+  const fallback = [nv.name, nv.email, nv.label, nv.adminEmail].filter(Boolean);
+  return fallback.length ? fallback.join(' · ') : null;
 }
 
 async function __platform_GET(request) {

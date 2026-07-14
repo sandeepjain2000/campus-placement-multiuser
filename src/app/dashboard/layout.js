@@ -478,7 +478,7 @@ export default function DashboardLayout({ children }) {
                   {session.user.name}
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                  {getRoleDisplayName(role)}
+                  {getRoleDisplayName(role, { isAlumni: Boolean(session.user?.isAlumni) })}
                 </div>
               </div>
             </div>
@@ -547,7 +547,13 @@ export default function DashboardLayout({ children }) {
                           session.user.name}
                   </h2>
                   <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                    {role === 'employer' ? 'Corporate Partner' : role === 'student' ? 'Student Portal' : 'College Administration'}
+                    {role === 'employer'
+                      ? 'Corporate Partner'
+                      : role === 'student'
+                        ? session.user?.isAlumni
+                          ? 'Alumni Portal'
+                          : 'Student Portal'
+                        : 'College Administration'}
                   </p>
                 </div>
               </div>

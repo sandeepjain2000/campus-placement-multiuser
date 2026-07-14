@@ -126,7 +126,11 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
       <div className="page-header">
         <div className="page-header-left">
           <h1>🧾 {scopeLabel}</h1>
-          <p>Track database changes done from screens, filter by date, and export CSV via secure email link.</p>
+          <p>
+            Platform and college screen actions written to the audit trail — college/employer updates,
+            onboarding decisions, settings, demos, and assessment changes. Filter by date and export CSV
+            via secure email link.
+          </p>
         </div>
       </div>
 
@@ -171,7 +175,7 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
           </div>
           <div className="form-group">
             <label className="form-label">Action (optional)</label>
-            <input className="form-input" placeholder="e.g. DEMO_PURGE, UPDATE_ADMIN_SETTINGS" value={action} onChange={(e) => setAction(e.target.value)} />
+            <input className="form-input" placeholder="e.g. UPDATE_COLLEGE, APPROVE_REGISTRATION, DEMO_PURGE" value={action} onChange={(e) => setAction(e.target.value)} />
           </div>
           <div className="form-group">
             <label className="form-label">Entity type (optional)</label>

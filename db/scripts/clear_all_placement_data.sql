@@ -50,21 +50,5 @@ SET placement_status = 'unplaced',
     updated_at = NOW()
 WHERE placement_status = 'placed';
 
--- Stale in-app alerts about applications / internships / drives
-UPDATE notifications
-SET deleted_at = COALESCE(deleted_at, NOW())
-WHERE deleted_at IS NULL
-  AND (
-    link ILIKE '%/dashboard/student/applications%'
-    OR link ILIKE '%/dashboard/student/internships%'
-    OR link ILIKE '%/dashboard/employer/applications%'
-    OR link ILIKE '%/dashboard/employer/internships%'
-    OR link ILIKE '%/dashboard/employer/drives%'
-    OR link ILIKE '%/dashboard/college/applications%'
-    OR link ILIKE '%/dashboard/college/internships%'
-    OR link ILIKE '%/dashboard/college/drives%'
-    OR title ILIKE '%internship%'
-    OR title ILIKE '%placement drive%'
-    OR title ILIKE '%shortlist%'
-    OR title ILIKE '%selected%'
-  );
+-- All in-app alerts (inbox + trash) — purge must leave Alerts empty
+DELETE FROM notifications;
