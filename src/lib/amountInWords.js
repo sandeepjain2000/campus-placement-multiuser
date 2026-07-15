@@ -82,6 +82,25 @@ export function formatIndianAmountInWords(amount, { suffix = 'Rupees' } = {}) {
 }
 
 /**
+ * Indian English words for a salary / CTC band (min–max).
+ * @param {number|string|null|undefined} min
+ * @param {number|string|null|undefined} max
+ * @param {{ suffix?: string }} [options]
+ * @returns {string} e.g. "One Lakh Rupees to Two Lakh Rupees"
+ */
+export function formatIndianSalaryRangeInWords(min, max, { suffix = 'Rupees' } = {}) {
+  const minWords = formatIndianAmountInWords(min, { suffix });
+  const maxWords = formatIndianAmountInWords(max, { suffix });
+  if (minWords && maxWords) {
+    if (minWords === maxWords) return minWords;
+    return `${minWords} to ${maxWords}`;
+  }
+  if (minWords) return `From ${minWords}`;
+  if (maxWords) return `Up to ${maxWords}`;
+  return '';
+}
+
+/**
  * Combine optional package CTC and free-text breakup for drive storage.
  * @param {string|number|null|undefined} packageAmount
  * @param {string|null|undefined} details
@@ -96,6 +115,8 @@ export function buildDriveCtcBreakup(packageAmount, details, formatCurrencyFn) {
   if (!Number.isFinite(amount) || amount <= 0) return detailText || null;
 
   const words = formatIndianAmountInWords(amount);
-  const header = `Package: ${formatCurrencyFn(amount)} (${words})`;
+  const header = words
+    ? `Package: ${formatCurrencyFn(amount)}\n${words}`
+    : `Package: ${formatCurrencyFn(amount)}`;
   return detailText ? `${header}\n${detailText}` : header;
 }

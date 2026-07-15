@@ -3,13 +3,12 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import useSWR from 'swr';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatDate, formatStatus, getStatusColor, formatSalaryRangeParts } from '@/lib/utils';
 import { formatEmployerMinCgpa } from '@/lib/employerJobDisplay';
 import {
   formatEligibleBranchesLabel,
   PLACEMENT_DRIVE_JOB_TYPE_LABELS,
 } from '@/lib/placementDriveJobFields';
-import { formatSalaryRange } from '@/lib/utils';
 import { DriveDetailsSection } from '@/components/employer/DriveFormSection';
 import EntityLogo from '@/components/EntityLogo';
 import { useToast } from '@/components/ToastProvider';
@@ -939,7 +938,7 @@ function DriveDetailsDialog({ drive, onClose }) {
   const jobType = drive.job_type || drive.jobType;
   const skills = drive.skills_required || drive.skillsRequired;
   const locations = drive.locations;
-  const salaryLabel = formatSalaryRange(
+  const { numeric: salaryLabel, words: salaryWords } = formatSalaryRangeParts(
     drive.salary_min ?? drive.salaryMin,
     drive.salary_max ?? drive.salaryMax,
   );
@@ -1039,6 +1038,11 @@ function DriveDetailsDialog({ drive, onClose }) {
             <div>
               <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>CTC band (public)</div>
               <div className="text-sm font-semibold">{salaryLabel}</div>
+              {salaryWords ? (
+                <div className="text-xs text-secondary" style={{ marginTop: '0.25rem', lineHeight: 1.4 }}>
+                  {salaryWords}
+                </div>
+              ) : null}
             </div>
             <div>
               <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Skills</div>

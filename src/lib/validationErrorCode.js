@@ -81,6 +81,16 @@ const FIELD_CODE_MAP = {
   'student.rollNo': 'STU-ROLL',
   'student.branch': 'STU-BRANCH',
   'student.email': 'STU-EMAIL',
+  'student.commEmail': 'STU-CEMAIL',
+  'student.program': 'STU-PROG',
+  'student.semester': 'STU-SEM',
+  'student.placementStatus': 'STU-JOB',
+  'student.internshipStatus': 'STU-INT',
+  'student.photo': 'STU-PHOTO',
+  'student.linkedin': 'STU-LI',
+  'student.github': 'STU-GH',
+  'student.portfolio': 'STU-PORT',
+  'student.resumeUrl': 'STU-RESUME',
   'employer.jobType': 'EMP-JTYPE',
   'employer.salaryRange': 'EMP-SAL-RNG',
 
@@ -106,12 +116,15 @@ export function fieldIdToValidationPrefix(fieldId) {
  */
 export function inferValidationRuleSuffix(message) {
   const text = String(message || '');
-  if (/is required\.?$/i.test(text)) return 'REQ';
-  if (/must be a number/i.test(text)) return 'NUM';
-  if (/enter a valid/i.test(text)) return 'FMT';
-  if (/must be between|cannot be|must be greater|must be at most|too (large|early|late)|cannot exceed/i.test(text)) {
+  if (/is required\.?$/i.test(text) || /^no file/i.test(text) || /select an academic/i.test(text)) return 'REQ';
+  if (/must be a number|must be a positive number/i.test(text)) return 'NUM';
+  if (/enter a valid|invalid (email|placement|internship)|use (a |international)|must be a valid url|please use a jpeg/i.test(text)) {
+    return 'FMT';
+  }
+  if (/must be between|cannot be|must be greater|must be at most|too (large|early|late)|cannot exceed|must be 1|on or after|file is empty/i.test(text)) {
     return 'RNG';
   }
+  if (/cloud storage|s3|not configured|upload failed|access denied/i.test(text)) return 'S3';
   return 'VAL';
 }
 

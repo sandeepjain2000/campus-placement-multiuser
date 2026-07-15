@@ -12,6 +12,7 @@ import { resolveAlumniStudentFlag } from '@/lib/studentAlumniServer';
 import { ALUMNI_JOB_TYPES } from '@/lib/studentAlumni';
 import { evaluateStudentOverviewCompletion } from '@/lib/studentProfileCompletion';
 import { countStudentVisibleOffers } from '@/lib/studentOffersCount';
+import { formatSalaryRangeParts } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -128,7 +129,9 @@ async function __platform_GET(request) {
           d.title AS role,
           d.drive_date AS date,
           d.drive_type AS type,
-          d.status
+          d.status,
+          d.salary_min,
+          d.salary_max
         FROM placement_drives d
         JOIN employer_profiles ep ON d.employer_id = ep.id
         WHERE d.tenant_id = $1 AND d.status IN ('approved', 'scheduled') ${AND_DRIVE_NOT_DELETED}
@@ -201,10 +204,20 @@ async function __platform_GET(request) {
         profileCompletion,
         profileCompletionItems,
       },
-      recentDrives: drivesQuery.rows.map((d) => ({
-        ...d,
-        salary: d.type === 'alumni_job' ? 'See job details' : 'See drive details',
-      })),
+      recentDrives: drivesQuery.rows.map((d) => {
+        if (d.type === 'alumni_job') {
+          return { ...d, salary: 'See job details', salaryWords: '' };
+        }
+        const parts = formatSalaryRangeParts(
+          d.salary_min != null ? Number(d.salary_min) : null,
+          d.salary_max != null ? Number(d.salary_max) : null,
+        );
+        return {
+          ...d,
+          salary: parts.numeric,
+          salaryWords: parts.words,
+        };
+      }),
       applications: appsQuery.rows.map((a) => ({
         ...a,
         round: Number(a.currentRound) > 0 ? `Round ${a.currentRound}` : 'Pending',

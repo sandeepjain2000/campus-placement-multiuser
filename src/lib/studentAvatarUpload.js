@@ -1,9 +1,15 @@
 import { readUploadHeader, validateBufferContentType, validateUploadHeader } from '@/lib/fileMagicBytes';
+import { formatValidationError } from '@/lib/validationErrorCode';
 
 /** Matches `src/app/api/student/profile/avatar/presign/route.js` */
 export const STUDENT_AVATAR_MAX_BYTES = 2 * 1024 * 1024;
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const PHOTO_FIELD = 'student.photo';
+
+function photoErr(message) {
+  return formatValidationError(PHOTO_FIELD, message);
+}
 
 /**
  * Browser/OS quirks: normalize before presign + Set lookup.
@@ -22,20 +28,20 @@ export function normalizeStudentAvatarContentType(raw) {
  */
 export function validateStudentAvatarFile(file) {
   if (!file || typeof file !== 'object') {
-    return { ok: false, error: 'No file selected.' };
+    return { ok: false, error: photoErr('No file selected.') };
   }
   const contentType = normalizeStudentAvatarContentType(file.type);
   if (!ALLOWED.has(contentType)) {
     return {
       ok: false,
-      error: 'Please use a JPEG, PNG, WebP, or GIF image.',
+      error: photoErr('Please use a JPEG, PNG, WebP, or GIF image.'),
     };
   }
   if (file.size > STUDENT_AVATAR_MAX_BYTES) {
-    return { ok: false, error: 'Image too large (max 2MB).' };
+    return { ok: false, error: photoErr('Image too large (max 2MB).') };
   }
   if (file.size <= 0) {
-    return { ok: false, error: 'File is empty.' };
+    return { ok: false, error: photoErr('File is empty.') };
   }
   return { ok: true, contentType };
 }
@@ -46,7 +52,9 @@ export function validateStudentAvatarFile(file) {
  */
 export function validateStudentAvatarBuffer(buffer, declaredContentType) {
   const magic = validateBufferContentType(buffer, declaredContentType);
-  if (!magic.ok) return magic;
+  if (!magic.ok) {
+    return { ok: false, error: photoErr(magic.error || 'Invalid image file.') };
+  }
   return { ok: true, contentType: magic.contentType };
 }
 
@@ -55,7 +63,11 @@ export async function validateStudentAvatarFileAsync(file) {
   const meta = validateStudentAvatarFile(file);
   if (!meta.ok) return meta;
   const bytes = await readUploadHeader(file);
-  return validateUploadHeader(bytes, meta.contentType);
+  const header = validateUploadHeader(bytes, meta.contentType);
+  if (!header.ok) {
+    return { ok: false, error: photoErr(header.error || 'Invalid image file.') };
+  }
+  return header;
 }
 
 export function studentAvatarAcceptAttr() {

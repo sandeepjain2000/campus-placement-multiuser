@@ -148,7 +148,7 @@ export default function StudentOverviewPage() {
                 <p className="text-sm text-secondary" style={{ marginBottom: '0.75rem' }}>
                   {drive.role}
                 </p>
-                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', color: 'var(--text-tertiary)', flexWrap: 'wrap' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <Calendar size={14} /> {formatDate(drive.date)}
                   </span>
@@ -169,6 +169,11 @@ export default function StudentOverviewPage() {
                     )}
                   </span>
                 </div>
+                {drive.salaryWords ? (
+                  <p className="text-xs text-secondary" style={{ margin: '0.4rem 0 0', lineHeight: 1.35 }}>
+                    {drive.salaryWords}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>

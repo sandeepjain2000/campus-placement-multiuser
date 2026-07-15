@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
-import { Plus, Loader2, Save } from 'lucide-react';
+import { Plus, Loader2, Save, Upload } from 'lucide-react';
 import TagPicker from '@/components/TagPicker';
 import { resolveStudentRollNumber } from '@/lib/validators';
 import {
@@ -22,7 +22,12 @@ import { mapProgramToStudentFields } from '@/lib/academicTaxonomy/mapProgram';
 import { getMaxAdmissionBatchYear } from '@/lib/admissionBatchYear';
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import ValidatedDateInput from '@/components/form/ValidatedDateInput';
+import CurrencyAmountInput from '@/components/form/CurrencyAmountInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
+import StudentListAvatar from '@/components/student/StudentListAvatar';
+import { uploadCollegeStudentAvatarViaServer } from '@/lib/clientCollegeStudentAvatarUpload';
+import { studentAvatarAcceptAttr } from '@/lib/studentAvatarUpload';
+import { errorMessageFromApiBody } from '@/lib/errorReference';
 
 export { ADD_STUDENT_DEPARTMENTS };
 
@@ -76,6 +81,9 @@ export default function AddStudentForm({
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [pendingAvatarFile, setPendingAvatarFile] = useState(null);
+  const [pendingAvatarPreview, setPendingAvatarPreview] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const nameRef = useRef(null);
   const { data: collegeSettings } = useSWR(active ? '/api/college/settings' : null, settingsFetcher);
   const { data: taxonomySettings } = useSWR(
@@ -94,6 +102,11 @@ export default function AddStudentForm({
     if (!active) return;
     setErrors({});
     setServerError('');
+    setPendingAvatarFile(null);
+    setPendingAvatarPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return '';
+    });
     if (isEdit && initialValues) {
       setForm({ ...initialCollegeStudentForm(), ...initialValues });
     } else {
@@ -101,6 +114,61 @@ export default function AddStudentForm({
       setTimeout(() => nameRef.current?.focus(), 100);
     }
   }, [active, isEdit, initialValues]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingAvatarPreview) URL.revokeObjectURL(pendingAvatarPreview);
+    };
+  }, [pendingAvatarPreview]);
+
+  const displayPhoto = pendingAvatarPreview || form.photo_url || '';
+
+  const handlePhotoSelected = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setErrors((err) => ({ ...err, photo_url: '' }));
+    setServerError('');
+
+    if (isEdit && editStudentId) {
+      setAvatarUploading(true);
+      try {
+        const result = await uploadCollegeStudentAvatarViaServer(editStudentId, file);
+        if (!result.ok) {
+          setErrors((err) => ({ ...err, photo_url: result.error || 'Upload failed' }));
+          return;
+        }
+        setForm((f) => ({ ...f, photo_url: result.avatar_url || '' }));
+        setPendingAvatarFile(null);
+        setPendingAvatarPreview((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return '';
+        });
+      } finally {
+        setAvatarUploading(false);
+      }
+      return;
+    }
+
+    // Add flow: upload after the student record is created.
+    setPendingAvatarFile(file);
+    setPendingAvatarPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+  };
+
+  const clearPendingPhoto = () => {
+    setPendingAvatarFile(null);
+    setPendingAvatarPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return '';
+    });
+    if (!isEdit) {
+      setForm((f) => ({ ...f, photo_url: '' }));
+    }
+  };
 
   useEffect(() => {
     if (!active || isEdit || !taxonomySettings?.settings?.defaultProgramCode) return;
@@ -140,13 +208,31 @@ export default function AddStudentForm({
       );
       const json = await res.json();
       if (!res.ok) {
-        setServerError(json.error || (isEdit ? 'Failed to update student.' : 'Failed to add student.'));
+        setServerError(
+          errorMessageFromApiBody(json, isEdit ? 'Failed to update student.' : 'Failed to add student.'),
+        );
         return;
       }
+
+      if (!isEdit && pendingAvatarFile && json.studentId) {
+        setAvatarUploading(true);
+        const uploaded = await uploadCollegeStudentAvatarViaServer(json.studentId, pendingAvatarFile);
+        setAvatarUploading(false);
+        if (!uploaded.ok) {
+          onSuccess({
+            ...json,
+            message: `${json.message || 'Student added.'} Photo upload failed: ${uploaded.error}`,
+            photoUploadError: uploaded.error,
+          });
+          return;
+        }
+      }
+
       onSuccess(json);
     } catch {
-      setServerError('Network error. Please try again.');
+      setServerError(errorMessageFromApiBody(null, 'Network error. Please try again.'));
     } finally {
+      setAvatarUploading(false);
       setSubmitting(false);
     }
   };
@@ -243,13 +329,82 @@ export default function AddStudentForm({
                 onChange={(e) => set('enrollment_number', e.target.value)}
               />
             </Field>
-            <Field label="Photo URL" error={errors.photo_url} fullWidth>
-              <input
-                className={`form-input${errors.photo_url ? ' input-error' : ''}`}
-                value={form.photo_url}
-                onChange={(e) => set('photo_url', e.target.value)}
-                placeholder="https://…"
-              />
+            <Field
+              label="Profile photo"
+              error={errors.photo_url}
+              hint="Upload a JPEG, PNG, WebP, or GIF (max 2MB). Files are stored in Amazon S3 — URL pasting is not supported."
+              fullWidth
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  flexWrap: 'wrap',
+                  padding: '0.75rem 1rem',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: '10px',
+                  background: 'var(--bg-secondary)',
+                }}
+              >
+                {pendingAvatarPreview ? (
+                  <img
+                    src={pendingAvatarPreview}
+                    alt=""
+                    width={56}
+                    height={56}
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '1px solid var(--border-default)',
+                      flexShrink: 0,
+                    }}
+                  />
+                ) : (
+                  <StudentListAvatar photo={displayPhoto} name={form.name || 'Student'} size={56} />
+                )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', minWidth: 0 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <label
+                      className="btn btn-secondary btn-sm"
+                      style={{
+                        cursor: avatarUploading || submitting ? 'wait' : 'pointer',
+                        opacity: avatarUploading || submitting ? 0.75 : 1,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        margin: 0,
+                      }}
+                    >
+                      {avatarUploading ? <Loader2 size={14} className="animate-spin" aria-hidden /> : <Upload size={14} aria-hidden />}
+                      {avatarUploading ? 'Uploading…' : displayPhoto || pendingAvatarFile ? 'Change photo' : 'Upload photo'}
+                      <input
+                        type="file"
+                        accept={studentAvatarAcceptAttr()}
+                        hidden
+                        disabled={avatarUploading || submitting}
+                        onChange={handlePhotoSelected}
+                      />
+                    </label>
+                    {!isEdit && pendingAvatarFile ? (
+                      <button type="button" className="btn btn-ghost btn-sm" onClick={clearPendingPhoto} disabled={avatarUploading || submitting}>
+                        Remove
+                      </button>
+                    ) : null}
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                    {isEdit
+                      ? form.photo_url
+                        ? 'Photo uploaded to S3 and linked to this student.'
+                        : 'No photo yet — upload one for this student (stored in S3).'
+                      : pendingAvatarFile
+                        ? `${pendingAvatarFile.name} will upload to S3 when you save.`
+                        : 'Optional — can also be uploaded later from the student profile (S3).'}
+                  </p>
+                </div>
+              </div>
             </Field>
           </div>
         </fieldset>
@@ -566,20 +721,22 @@ export default function AddStudentForm({
           <SectionLegend>Preferences</SectionLegend>
           <div className="add-student-grid">
             <Field label="Expected Salary Min (₹/year)" error={errors.expected_salary_min}>
-              <ValidatedNumberInput
+              <CurrencyAmountInput
                 fieldId={FIELD_IDS.STUDENT_SALARY_MIN}
                 className={`form-input${errors.expected_salary_min ? ' input-error' : ''}`}
                 value={form.expected_salary_min}
                 onChange={(v) => set('expected_salary_min', v)}
+                placeholder="100000"
               />
             </Field>
             <Field label="Expected Salary Max (₹/year)" error={errors.expected_salary_max}>
-              <ValidatedNumberInput
+              <CurrencyAmountInput
                 fieldId={FIELD_IDS.STUDENT_SALARY_MAX}
                 context={{ salaryMin: form.expected_salary_min }}
                 className={`form-input${errors.expected_salary_max ? ' input-error' : ''}`}
                 value={form.expected_salary_max}
                 onChange={(v) => set('expected_salary_max', v)}
+                placeholder="200000"
               />
             </Field>
             <Field label="Preferred Locations" fullWidth>

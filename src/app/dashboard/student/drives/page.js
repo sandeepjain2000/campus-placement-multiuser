@@ -486,6 +486,11 @@ export default function StudentDrivesPage() {
                 <div className="drive-info-item">
                   <div className="drive-info-label">Package</div>
                   <div className="drive-info-value">{drive.salary}</div>
+                  {drive.salaryWords ? (
+                    <div className="text-xs text-secondary" style={{ marginTop: '0.2rem', lineHeight: 1.35 }}>
+                      {drive.salaryWords}
+                    </div>
+                  ) : null}
                 </div>
                 <div className="drive-info-item">
                   <div className="drive-info-label">Mode</div>

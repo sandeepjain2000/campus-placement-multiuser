@@ -49,7 +49,7 @@ describe('collegeStudentsCsv strict import', () => {
     const blank = validateStudentCsvRowNoBlanks(cells, idx, 2);
     expect(blank.ok).toBe(false);
     expect(blank.error).toMatch(/CGPA/i);
-    expect(blank.error).toMatch(/Remarks may be left blank/i);
+    expect(blank.error).toMatch(/Remarks and Photo URL may be left blank/i);
   });
 
   it('allows blank Remarks when all other fields are filled', () => {
@@ -62,6 +62,16 @@ describe('collegeStudentsCsv strict import', () => {
       throw new Error(parsed.error);
     }
     expect(parsed.student.importRemarks).toBe('');
+  });
+
+  it('allows blank Photo URL and does not import a photo URL', () => {
+    const idx = buildHeaderIndex(STUDENT_CSV_HEADERS);
+    const cells = fullRow({ 'Photo URL': '' });
+    const blank = validateStudentCsvRowNoBlanks(cells, idx, 2);
+    expect(blank.ok).toBe(true);
+    const parsed = parseStudentRow(cells, idx, 2);
+    expect(parsed.ok).toBe(true);
+    expect(parsed.student.photo).toBeNull();
   });
 
   it('rejects blank Department', () => {

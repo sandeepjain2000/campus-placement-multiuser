@@ -3,6 +3,7 @@
  */
 
 import { parseYmdToLocalDate, toDateOnlyString } from '@/lib/dateOnly';
+import { formatIndianSalaryRangeInWords } from '@/lib/amountInWords';
 
 /**
  * Format currency value (INR)
@@ -17,13 +18,24 @@ export function formatCurrency(amount, currency = 'INR') {
 }
 
 /**
- * Format salary range
+ * Format salary / CTC band as numbers only (e.g. "₹1,00,000 - ₹2,00,000").
+ * Use {@link formatSalaryRangeParts} when amount-in-words should sit beside the numbers.
  */
 export function formatSalaryRange(min, max, currency = 'INR') {
   if (!min && !max) return 'Not disclosed';
   if (min && max) return `${formatCurrency(min, currency)} - ${formatCurrency(max, currency)}`;
   if (min) return `From ${formatCurrency(min, currency)}`;
   return `Up to ${formatCurrency(max, currency)}`;
+}
+
+/**
+ * Numeric CTC band plus Indian amount-in-words (shown separately in the UI).
+ * @returns {{ numeric: string, words: string }}
+ */
+export function formatSalaryRangeParts(min, max, currency = 'INR') {
+  const numeric = formatSalaryRange(min, max, currency);
+  if (numeric === 'Not disclosed') return { numeric, words: '' };
+  return { numeric, words: formatIndianSalaryRangeInWords(min, max) };
 }
 
 /**

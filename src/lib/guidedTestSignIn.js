@@ -82,6 +82,7 @@ export async function performGuidedTestSignIn(email, password = DEMO_SEED_PASSWO
       logoUrl: user.avatar,
       brandLogoUrl: user.brandLogoUrl ?? null,
       studentPlacementVerified: user.studentPlacementVerified,
+      isAlumni: user.isAlumni,
     },
     secret: secret || 'placementhub-dev-captcha',
     maxAge: JWT_SESSION_MAX_AGE_SECONDS,

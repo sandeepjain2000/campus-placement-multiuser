@@ -1,4 +1,5 @@
-import { formatIndianAmountInWords } from '@/lib/amountInWords';
+import { formatIndianAmountInWords, formatIndianSalaryRangeInWords } from '@/lib/amountInWords';
+import { formatSalaryRange, formatSalaryRangeParts } from '@/lib/utils';
 
 describe('formatIndianAmountInWords', () => {
   it('returns empty for blank or invalid values', () => {
@@ -19,5 +20,25 @@ describe('formatIndianAmountInWords', () => {
     expect(formatIndianAmountInWords(40000, { suffix: 'Rupees per month' })).toBe(
       'Forty Thousand Rupees per month',
     );
+  });
+});
+
+describe('formatIndianSalaryRangeInWords', () => {
+  it('formats min–max bands', () => {
+    expect(formatIndianSalaryRangeInWords(100000, 200000)).toBe(
+      'One Lakh Rupees to Two Lakh Rupees',
+    );
+    expect(formatIndianSalaryRangeInWords(100000, null)).toBe('From One Lakh Rupees');
+  });
+});
+
+describe('formatSalaryRangeParts', () => {
+  it('keeps numbers and words separate for drive CTC display', () => {
+    const parts = formatSalaryRangeParts(100000, 200000);
+    expect(parts.numeric).toContain('1,00,000');
+    expect(parts.numeric).toContain('2,00,000');
+    expect(parts.numeric).not.toMatch(/Lakh/);
+    expect(parts.words).toBe('One Lakh Rupees to Two Lakh Rupees');
+    expect(formatSalaryRange(100000, 200000)).toBe(parts.numeric);
   });
 });

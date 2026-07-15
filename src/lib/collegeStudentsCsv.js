@@ -1,4 +1,3 @@
-import { isBrowserLoadableAssetUrl } from '@/lib/clientAssetUrl';
 import { parseJoiningBatch, reconcileBatchFields } from '@/lib/studentBatch';
 import { defaultAdmissionBatchYear } from '@/lib/admissionBatchYear';
 import { formatProfileSectionsCell } from '@/lib/studentProfileSections';
@@ -12,8 +11,11 @@ export const CURRENT_JOINING_BATCH = defaultAdmissionBatchYear();
 export const CURRENT_ADMISSION_YEAR = defaultAdmissionBatchYear();
 export const CURRENT_GRADUATION_YEAR = '2026';
 
-/** Only column that may be left blank on import rows. */
-export const STUDENT_CSV_OPTIONAL_HEADERS = ['Remarks'];
+/**
+ * Columns that may be left blank on import rows.
+ * Photo URL is deprecated — profile photos are uploaded in the app (kept for template compat).
+ */
+export const STUDENT_CSV_OPTIONAL_HEADERS = ['Remarks', 'Photo URL'];
 
 /** Columns that must appear in the CSV header row. */
 export const STUDENT_CSV_REQUIRED_HEADERS = [
@@ -36,11 +38,11 @@ export const STUDENT_CSV_REQUIRED_HEADERS = [
   'Internship Status',
   'Verified',
   'Sections',
-  'Photo URL',
 ];
 
 export const STUDENT_CSV_HEADERS = [
   ...STUDENT_CSV_REQUIRED_HEADERS,
+  'Photo URL',
   'Remarks',
 ];
 
@@ -77,7 +79,8 @@ export function validateStudentCsvHeaders(headers) {
 const OPTIONAL_HEADER_KEYS = new Set(STUDENT_CSV_OPTIONAL_HEADERS.map(normKey));
 
 /**
- * Every required column must have a non-empty cell. Only Remarks may be blank.
+ * Every required column must have a non-empty cell.
+ * Remarks and Photo URL may be blank (photos are uploaded in the app).
  * @param {string[]} cells
  * @param {Record<string, number>} idx
  * @param {number} line — 1-based row number in the file (for errors)
@@ -95,7 +98,7 @@ export function validateStudentCsvRowNoBlanks(cells, idx, line) {
   if (missing.length) {
     return {
       ok: false,
-      error: `Row ${line}: Missing required value(s): ${missing.join(', ')}. Only Remarks may be left blank.`,
+      error: `Row ${line}: Missing required value(s): ${missing.join(', ')}. Remarks and Photo URL may be left blank.`,
     };
   }
   return { ok: true };
@@ -277,7 +280,8 @@ export function parseStudentRow(cells, idx, line, options = {}) {
   const gender = g('Gender');
   const disabilityStatus = g('Disability Status');
   const diversityCategory = g('Diversity Category');
-  const photo = g('Photo URL');
+  // Photo URL column is ignored — profile photos are uploaded in the app.
+  void g('Photo URL');
   const sectionsCell = g('Sections');
 
   if (strictNoBlanks) {
@@ -286,7 +290,6 @@ export function parseStudentRow(cells, idx, line, options = {}) {
     if (!gender) return { ok: false, error: `Line ${line}: Gender is required` };
     if (!disabilityStatus) return { ok: false, error: `Line ${line}: Disability Status is required` };
     if (!diversityCategory) return { ok: false, error: `Line ${line}: Diversity Category is required` };
-    if (!photo) return { ok: false, error: `Line ${line}: Photo URL is required` };
     if (!sectionsCell) return { ok: false, error: `Line ${line}: Sections is required` };
   }
 
@@ -352,11 +355,8 @@ export function parseStudentRow(cells, idx, line, options = {}) {
       jobStatus,
       internshipStatus,
       verified,
-      photo: (() => {
-        const fallback = `https://i.pravatar.cc/64?u=${encodeURIComponent(roll)}`;
-        const candidate = photo || fallback;
-        return isBrowserLoadableAssetUrl(candidate) ? candidate : fallback;
-      })(),
+      // Photos are uploaded in-app; CSV Photo URL column is ignored (template compat).
+      photo: null,
       importRemarks: remarks,
       sectionsCell,
     },

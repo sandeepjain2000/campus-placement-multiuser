@@ -23,4 +23,12 @@ describe('validationErrorCode', () => {
   it('buildValidationErrorCode is stable', () => {
     expect(buildValidationErrorCode(FIELD_IDS.EMPLOYER_MIN_CGPA, 'CGPA must be greater than 0 and at most 10.')).toBe('VAL-EMP-CGPA-RNG');
   });
+
+  it('prefixes student photo and college form messages', () => {
+    expect(formatValidationError('student.photo', 'No file selected.')).toMatch(/^\[VAL-STU-PHOTO-REQ\]/);
+    expect(formatValidationError('student.photo', 'Cloud storage not configured')).toMatch(/^\[VAL-STU-PHOTO-S3\]/);
+    expect(formatValidationError('student.program', 'Select an academic program or department.')).toMatch(
+      /^\[VAL-STU-PROG-REQ\]/,
+    );
+  });
 });

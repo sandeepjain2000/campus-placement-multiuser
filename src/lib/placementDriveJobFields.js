@@ -18,7 +18,7 @@ import {
   resolveEligibleBranchesInput,
   resolveMaxBacklogsInput,
 } from '@/lib/internshipPostingMeta';
-import { formatSalaryRange } from '@/lib/utils';
+import { formatSalaryRangeParts } from '@/lib/utils';
 
 export const PLACEMENT_DRIVE_JOB_TYPES = new Set(['full_time', 'internship', 'contract', 'ppo']);
 
@@ -188,6 +188,10 @@ export function mapStudentDriveListRow(row) {
   const branches = row.eligible_branches;
   const branchList =
     Array.isArray(branches) && branches.length > 0 ? branches : ['All eligible branches'];
+  const salaryParts = formatSalaryRangeParts(
+    row.salary_min != null ? Number(row.salary_min) : null,
+    row.salary_max != null ? Number(row.salary_max) : null,
+  );
   return {
     id: row.id,
     company: row.company,
@@ -198,10 +202,8 @@ export function mapStudentDriveListRow(row) {
     venue: row.venue || 'TBD',
     description: row.description?.trim() || null,
     offCampusCity: null,
-    salary: formatSalaryRange(
-      row.salary_min != null ? Number(row.salary_min) : null,
-      row.salary_max != null ? Number(row.salary_max) : null,
-    ),
+    salary: salaryParts.numeric,
+    salaryWords: salaryParts.words,
     status: row.status,
     branch: branchList,
     cgpa: normalizeEmployerMinCgpa(row.min_cgpa ?? row.minCgpa),

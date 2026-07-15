@@ -2,14 +2,17 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
+import { assertCollegeWriter } from '@/lib/collegeAccess';
+import { resolveCollegeStaffTenantFromSession } from '@/lib/sessionTenant';
+import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
 import { isS3Configured, uploadStudentAvatarBuffer, describeStorageError } from '@/lib/s3';
 import { toSignedViewUrl } from '@/lib/clientAssetUrl';
 import {
-  normalizeStudentAvatarContentType,
   validateStudentAvatarBuffer,
   validateStudentAvatarFile,
 } from '@/lib/studentAvatarUpload';
 import { formatValidationError } from '@/lib/validationErrorCode';
+import { withApiHandlers } from '@/lib/platformErrorRoute';
 
 function buildAvatarViewUrl(fileUrl) {
   return toSignedViewUrl(fileUrl) || String(fileUrl || '').trim();
@@ -20,19 +23,20 @@ function storageErr(message) {
 }
 
 export const dynamic = 'force-dynamic';
-import { withApiHandlers } from '@/lib/platformErrorRoute';
 export const revalidate = 0;
-
-
-
-
 export const runtime = 'nodejs';
 
-async function __platform_POST(req) {
+async function __platform_POST(req, { params }) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'student') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const gate = assertCollegeWriter(session);
+    if (!gate.ok) {
+      return NextResponse.json({ error: gate.error }, { status: gate.status });
+    }
+
+    const tenantId = await resolveCollegeStaffTenantFromSession(session);
+    if (!tenantId) {
+      return NextResponse.json({ error: 'Tenant context missing' }, { status: 400 });
     }
 
     if (!isS3Configured()) {
@@ -43,6 +47,27 @@ async function __platform_POST(req) {
         },
         { status: 503 },
       );
+    }
+
+    const { id: studentId } = await params;
+    if (!studentId) {
+      return NextResponse.json({ error: storageErr('Student id is required.') }, { status: 400 });
+    }
+
+    const studentRes = await query(
+      `SELECT sp.id, sp.user_id
+       FROM student_profiles sp
+       JOIN users u ON u.id = sp.user_id
+       WHERE sp.tenant_id = $1::uuid
+         AND sp.id = $2::uuid
+         AND u.role = 'student'
+         AND ${SP_ACTIVE_CLAUSE}
+       LIMIT 1`,
+      [tenantId, studentId],
+    );
+    const student = studentRes.rows[0];
+    if (!student?.user_id) {
+      return NextResponse.json({ error: storageErr('Student not found.') }, { status: 404 });
     }
 
     const formData = await req.formData();
@@ -60,11 +85,6 @@ async function __platform_POST(req) {
       return NextResponse.json({ error: meta.error }, { status: 400 });
     }
 
-    const userId = session.user.id || session.user.sub;
-    if (!userId) {
-      return NextResponse.json({ error: storageErr('Session user id missing.') }, { status: 401 });
-    }
-
     const buffer = Buffer.from(await file.arrayBuffer());
     const validated = validateStudentAvatarBuffer(buffer, meta.contentType);
     if (!validated.ok) {
@@ -72,15 +92,17 @@ async function __platform_POST(req) {
     }
 
     const uploaded = await uploadStudentAvatarBuffer({
-      userId,
+      userId: student.user_id,
       fileName: file.name || 'photo',
       contentType: validated.contentType,
       body: buffer,
     });
 
     const upd = await query(
-      `UPDATE users SET avatar_url = $1, updated_at = NOW() WHERE id = $2 AND role = 'student' RETURNING avatar_url`,
-      [uploaded.fileUrl, userId],
+      `UPDATE users SET avatar_url = $1, updated_at = NOW()
+       WHERE id = $2::uuid AND role = 'student'
+       RETURNING avatar_url`,
+      [uploaded.fileUrl, student.user_id],
     );
 
     if (!upd.rows[0]) {
@@ -91,12 +113,13 @@ async function __platform_POST(req) {
       avatar_url: upd.rows[0].avatar_url,
       fileUrl: uploaded.fileUrl,
       viewUrl: buildAvatarViewUrl(upd.rows[0].avatar_url),
+      studentId,
       storage: 's3',
       bucket: uploaded.bucket,
       key: uploaded.key,
     });
   } catch (e) {
-    console.error('POST /api/student/profile/avatar/upload', e);
+    console.error('POST /api/college/students/[id]/avatar/upload', e);
     const msg = String(e?.message || '');
     if (msg.includes('S3 is not configured')) {
       return NextResponse.json({ error: storageErr('Cloud storage not configured'), hint: msg }, { status: 503 });
@@ -105,8 +128,10 @@ async function __platform_POST(req) {
   }
 }
 
-
-const __platformApiHandlers = withApiHandlers({
-  POST: __platform_POST,
-}, { context: 'api_student_profile_avatar_upload' });
+const __platformApiHandlers = withApiHandlers(
+  {
+    POST: __platform_POST,
+  },
+  { context: 'api_college_student_avatar_upload' },
+);
 export const POST = __platformApiHandlers.POST;

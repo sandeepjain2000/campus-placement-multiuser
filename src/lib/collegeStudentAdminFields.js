@@ -12,12 +12,17 @@ import {
   parseStudentPercentageOrNull,
   parseStudentFullName,
   resolveStudentRollNumber,
-  validatePhone,
+  getEmailValidationError,
+  getPhoneValidationError,
   validateURL,
 } from '@/lib/validators';
 import { parseJoiningBatch, reconcileBatchFields } from '@/lib/studentBatch';
 import { validateFieldOrError, FIELD_IDS, validateStudentBacklogPair } from '@/lib/inputConstraints';
-import { isBrowserLoadableAssetUrl } from '@/lib/clientAssetUrl';
+import { formatValidationError } from '@/lib/validationErrorCode';
+
+function val(fieldId, message) {
+  return formatValidationError(fieldId, message);
+}
 
 export const ADD_STUDENT_DEPARTMENTS = [
   'Computer Science', 'Electrical Engineering', 'Mechanical Engineering',
@@ -93,39 +98,37 @@ function parseOptionalPercent(raw, label) {
   return parseStudentPercentageOrNull(raw, label);
 }
 
-function parseOptionalInt(raw, label, { min = 0, max = 999 } = {}) {
+function parseOptionalInt(raw, label, { min = 0, max = 999, fieldId = 'student.percent' } = {}) {
   const s = String(raw ?? '').trim();
   if (!s) return { value: null };
   const n = parseInt(s, 10);
   if (Number.isNaN(n) || n < min || n > max) {
-    return { error: `${label} must be between ${min} and ${max}.` };
+    return { error: val(fieldId, `${label} must be between ${min} and ${max}.`) };
   }
   return { value: n };
 }
 
-function parseOptionalSalary(raw, label) {
+function parseOptionalSalary(raw, label, fieldId = FIELD_IDS.STUDENT_SALARY_MIN) {
   const s = String(raw ?? '').trim();
   if (!s) return { value: null };
   const n = Number(s);
-  if (Number.isNaN(n) || n < 0) return { error: `${label} must be a positive number.` };
+  if (Number.isNaN(n) || n < 0) return { error: val(fieldId, `${label} must be a positive number.`) };
   return { value: n };
 }
 
-function parseOptionalUrl(raw, label) {
+function parseOptionalUrl(raw, label, fieldId) {
   const s = String(raw ?? '').trim();
   if (!s) return { value: null };
-  if (!validateURL(s)) return { error: `${label} must be a valid URL.` };
+  if (!validateURL(s)) return { error: val(fieldId, `${label} must be a valid URL.`) };
   return { value: s };
 }
 
-function parsePhotoUrl(raw) {
-  const s = String(raw ?? '').trim();
-  if (!s) return { value: null };
-  if (!validateURL(s)) return { error: 'Photo must be a valid URL.' };
-  if (!isBrowserLoadableAssetUrl(s)) {
-    return { error: 'Photo URL must be a public https link (not a local file path).' };
-  }
-  return { value: s };
+/**
+ * Profile photos are set only via file upload APIs — never by pasting a URL.
+ * Kept for form display of the already-uploaded avatar; ignored on write.
+ */
+function parsePhotoUrl(_raw) {
+  return { value: null };
 }
 
 export function buildAuxProfileFromForm(form, existingAux = {}) {
@@ -161,24 +164,23 @@ export function validateCollegeStudentForm(form, { isEdit = false, collegeShortC
   const errors = {};
 
   if (!isEdit) {
-    if (!form.name?.trim()) errors.name = 'Name is required.';
-    if (!form.email?.trim()) errors.email = 'Email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'Invalid email format.';
+    if (!form.name?.trim()) errors.name = val('student.name', 'Name is required.');
+    const emailErr = getEmailValidationError(form.email, { required: true });
+    if (emailErr) errors.email = emailErr;
     const rollErr = resolveStudentRollNumber(form.roll_number, collegeShortCode);
     if (rollErr.error) errors.roll_number = rollErr.error;
   }
 
-  const comm = String(form.communication_email || '').trim();
-  if (comm && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(comm)) {
-    errors.communication_email = 'Invalid communication email.';
+  const commErr = getEmailValidationError(form.communication_email, { required: false });
+  if (commErr) {
+    errors.communication_email = val('student.commEmail', 'Invalid communication email.');
   }
 
-  if (form.phone?.trim() && !validatePhone(form.phone)) {
-    errors.phone = 'Use international format, e.g. +91 9876543210.';
-  }
+  const phoneErr = getPhoneValidationError(form.phone, { required: false });
+  if (phoneErr) errors.phone = phoneErr;
 
   if (!form.academic_program_code?.trim() && !form.department?.trim()) {
-    errors.department = 'Select an academic program or department.';
+    errors.department = val('student.program', 'Select an academic program or department.');
   }
 
   const cgpaErr = validateStudentCgpa(form.cgpa);
@@ -186,14 +188,14 @@ export function validateCollegeStudentForm(form, { isEdit = false, collegeShortC
 
   const semester = String(form.semester || '').trim();
   if (semester && !SEMESTER_OPTIONS.includes(semester)) {
-    errors.semester = 'Semester must be 1–8.';
+    errors.semester = val('student.semester', 'Semester must be 1–8.');
   }
 
   const job = normalizeJobStatus(form.placement_status);
-  if (!job) errors.placement_status = 'Invalid placement status.';
+  if (!job) errors.placement_status = val('student.placementStatus', 'Invalid placement status.');
 
   const intern = normalizeInternshipStatus(form.internship_status);
-  if (!intern) errors.internship_status = 'Invalid internship status.';
+  if (!intern) errors.internship_status = val('student.internshipStatus', 'Invalid internship status.');
 
   const percentFields = [
     ['tenth_percentage', FIELD_IDS.STUDENT_PERCENT, 'Class X %'],
@@ -230,16 +232,19 @@ export function validateCollegeStudentForm(form, { isEdit = false, collegeShortC
 
   const batchText = String(form.batch || '').trim();
   if (!batchText) {
-    errors.batch = 'Batch year is required.';
+    errors.batch = val(FIELD_IDS.STUDENT_BATCH_YEAR, 'Batch year is required.');
   } else {
     const parsed = parseJoiningBatch(batchText);
-    if (!parsed.ok) errors.batch = parsed.error;
+    if (!parsed.ok) errors.batch = val(FIELD_IDS.STUDENT_BATCH_YEAR, parsed.error);
   }
 
   const by = form.batch_year ? parseInt(String(form.batch_year), 10) : null;
   const gy = form.graduation_year ? parseInt(String(form.graduation_year), 10) : null;
   if (by && gy && gy < by) {
-    errors.graduation_year = 'Graduation year must be on or after admission year.';
+    errors.graduation_year = val(
+      FIELD_IDS.STUDENT_GRAD_YEAR,
+      'Graduation year must be on or after admission year.',
+    );
   }
 
   const salMinErr = validateFieldOrError(FIELD_IDS.STUDENT_SALARY_MIN, form.expected_salary_min);
@@ -249,16 +254,13 @@ export function validateCollegeStudentForm(form, { isEdit = false, collegeShortC
   });
   if (salMaxErr) errors.expected_salary_max = salMaxErr;
 
-  const photoParsed = parsePhotoUrl(form.photo_url);
-  if (photoParsed.error) errors.photo_url = photoParsed.error;
-
-  for (const [key, label] of [
-    ['linkedin_url', 'LinkedIn'],
-    ['github_url', 'GitHub'],
-    ['portfolio_url', 'Portfolio'],
-    ['resume_url', 'Resume URL'],
+  for (const [key, label, fieldId] of [
+    ['linkedin_url', 'LinkedIn', 'student.linkedin'],
+    ['github_url', 'GitHub', 'student.github'],
+    ['portfolio_url', 'Portfolio', 'student.portfolio'],
+    ['resume_url', 'Resume URL', 'student.resumeUrl'],
   ]) {
-    const r = parseOptionalUrl(form[key], label);
+    const r = parseOptionalUrl(form[key], label, fieldId);
     if (r.error) errors[key] = r.error;
   }
 
@@ -337,10 +339,10 @@ export function parseCollegeStudentAdminPayload(body, { isEdit = false, collegeS
       backlogs_history: backHistory.value ?? 0,
       date_of_birth: form.date_of_birth?.trim() || null,
       bio: form.bio?.trim() || null,
-      linkedin_url: parseOptionalUrl(form.linkedin_url, 'LinkedIn').value,
-      github_url: parseOptionalUrl(form.github_url, 'GitHub').value,
-      portfolio_url: parseOptionalUrl(form.portfolio_url, 'Portfolio').value,
-      resume_url: parseOptionalUrl(form.resume_url, 'Resume').value,
+      linkedin_url: parseOptionalUrl(form.linkedin_url, 'LinkedIn', 'student.linkedin').value,
+      github_url: parseOptionalUrl(form.github_url, 'GitHub', 'student.github').value,
+      portfolio_url: parseOptionalUrl(form.portfolio_url, 'Portfolio', 'student.portfolio').value,
+      resume_url: parseOptionalUrl(form.resume_url, 'Resume URL', 'student.resumeUrl').value,
       expected_salary_min: salMin.value,
       expected_salary_max: salMax.value,
       preferred_locations: Array.isArray(form.preferred_locations)
@@ -351,6 +353,7 @@ export function parseCollegeStudentAdminPayload(body, { isEdit = false, collegeS
     user: {
       phone: form.phone?.trim() || null,
       communication_email: form.communication_email?.trim() || null,
+      // Avatar is written only by /api/college/students/[id]/avatar/upload
       avatar_url: parsePhotoUrl(form.photo_url).value,
     },
     auxProfile: buildAuxProfileFromForm({

@@ -133,6 +133,7 @@
     "test:guided:upload-profile-photos": "node qa/runners/guided/upload-profile-photos.mjs",
     "qa:verify:features": "node qa/runners/verify-feature-fixes.mjs",
     "qa:verify:recent-fixes": "node qa/runners/verify-recent-fixes.mjs",
+    "qa:verify:today-fixes": "node qa/runners/verify-today-fixes.mjs",
     "qa:verify:deploy": "node qa/runners/verify-deploy-fixes.mjs",
     "qa:uc": "node qa/runners/use-cases/run-use-case.mjs",
     "qa:uc:list": "node qa/runners/use-cases/run-use-case.mjs --list",
