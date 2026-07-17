@@ -17,6 +17,7 @@ import {
   validateEducationDetailsPayload,
   validateStudentProfileEmailsPayload,
 } from '@/lib/apiInputValidation';
+import { getPhonesListValidationError, sanitizePhoneInput } from '@/lib/validators';
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import ValidatedTextInput from '@/components/form/ValidatedTextInput';
 import ValidatedEmailInput from '@/components/form/ValidatedEmailInput';
@@ -241,7 +242,7 @@ export default function StudentProfilePage() {
         if (!silent) setProfileLoading(false);
       }
     },
-    [addToast, email, session?.user]
+    [addToast, email, session?.user?.id, session?.user?.role]
   );
 
   useEffect(() => {
@@ -251,7 +252,7 @@ export default function StudentProfilePage() {
       return;
     }
     loadProfileFromApi();
-  }, [status, session?.user?.role, loadProfileFromApi]);
+  }, [status, session?.user?.role, session?.user?.id, loadProfileFromApi]);
 
   const persist = useCallback((next) => {
     setProfile(next);
@@ -286,6 +287,11 @@ export default function StudentProfilePage() {
     });
     if (emailErr) {
       addToast(emailErr, 'warning');
+      return;
+    }
+    const phoneErr = getPhonesListValidationError(profile.phones);
+    if (phoneErr) {
+      addToast(phoneErr, 'warning');
       return;
     }
     const savedSummary = editingTab === 'header';
@@ -500,7 +506,10 @@ export default function StudentProfilePage() {
         } catch {
           // Profile state already has the new URL; session avatar may refresh on next login.
         }
-        await loadProfileFromApi({ silent: true });
+        // Do not reload the full profile while editing — that would wipe unsaved draft fields.
+        if (!editingTab) {
+          await loadProfileFromApi({ silent: true });
+        }
         addToast('Profile photo updated.', 'success');
         setAvatarPreviewBlobUrl((prev) => {
           if (prev) URL.revokeObjectURL(prev);
@@ -824,9 +833,12 @@ export default function StudentProfilePage() {
                     <input
                       className="form-input"
                       style={{ flex: '1 1 180px', minWidth: 0 }}
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       placeholder="+91 …"
                       value={row.value}
-                      onChange={(e) => updatePhone(i, { value: e.target.value })}
+                      onChange={(e) => updatePhone(i, { value: sanitizePhoneInput(e.target.value) })}
                     />
                     <button type="button" className="btn btn-ghost btn-sm" onClick={() => removePhone(i)} aria-label="Remove phone">
                       ✕
@@ -1257,9 +1269,12 @@ export default function StudentProfilePage() {
                       <input
                         className="form-input"
                         style={{ flex: 1 }}
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
                         placeholder="+91 …"
                         value={row.value}
-                        onChange={(e) => updatePhone(i, { value: e.target.value })}
+                        onChange={(e) => updatePhone(i, { value: sanitizePhoneInput(e.target.value) })}
                       />
                       <button type="button" className="btn btn-ghost btn-sm" onClick={() => removePhone(i)} aria-label="Remove phone">
                         ✕

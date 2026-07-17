@@ -201,7 +201,18 @@ export default function DashboardFullScreenHub({ role, session }) {
     <div className="dashboard-nav-hub">
       <header className="dashboard-nav-hub-topbar">
         <div className="dashboard-nav-hub-topbar-left">
-          <Link href={homePath} className="dashboard-nav-hub-brand">
+          <Link
+            href={homePath}
+            className="dashboard-nav-hub-brand"
+            onClick={() => {
+              setHubSearch('');
+              try {
+                window.dispatchEvent(new Event('placementhub-clear-search'));
+              } catch {
+                /* ignore */
+              }
+            }}
+          >
             <div className="sidebar-logo-icon">P</div>
             <div>
               <div className="dashboard-nav-hub-brand-title">PlacementHub</div>

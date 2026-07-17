@@ -400,7 +400,18 @@ export default function DashboardLayout({ children }) {
         aria-expanded={!sidebarCollapsed}
       >
         <div className="sidebar-toolbar">
-          <Link href={homePath} className="sidebar-logo">
+          <Link
+            href={homePath}
+            className="sidebar-logo"
+            onClick={() => {
+              try {
+                window.dispatchEvent(new Event('placementhub-clear-search'));
+              } catch {
+                /* ignore */
+              }
+              setMobileOpen(false);
+            }}
+          >
             <div className="sidebar-logo-icon">P</div>
             <span className="sidebar-logo-label">PlacementHub</span>
           </Link>

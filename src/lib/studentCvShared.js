@@ -44,6 +44,11 @@ export function validateCvLabel(label) {
 
 export function mapStudentCvRow(row) {
   if (!row) return null;
+  const fileUrl = String(row.file_url ?? '').trim();
+  const hasFile =
+    row.has_file != null
+      ? Boolean(row.has_file)
+      : Boolean(fileUrl);
   return {
     id: String(row.id),
     label: row.label,
@@ -56,5 +61,6 @@ export function mapStudentCvRow(row) {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     usedOnApplications: row.used_on_applications != null ? Number(row.used_on_applications) : undefined,
+    hasFile,
   };
 }

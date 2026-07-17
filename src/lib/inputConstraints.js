@@ -70,6 +70,7 @@ export const FIELD_IDS = {
   EMPLOYER_OFFER_JOINING: 'employer.offer.joining',
 
   ADMIN_NIRF_RANK: 'admin.nirfRank',
+  ADMIN_PINCODE: 'admin.pincode',
   ADMIN_SESSION_TIMEOUT: 'admin.sessionTimeout',
   ADMIN_SMTP_PORT: 'admin.smtpPort',
   ADMIN_MAX_UPLOAD_MB: 'admin.maxUploadMb',
@@ -423,6 +424,15 @@ export function validateField(fieldId, value, ctx = {}) {
       const { n } = parseNum(value);
       const warn = Number.isFinite(n) && n > 300 ? 'NIRF rank above 300 is uncommon.' : null;
       return ok(warn);
+    }
+
+    case FIELD_IDS.ADMIN_PINCODE: {
+      const s = String(value ?? '').trim();
+      if (!s) return ok();
+      if (!/^\d{6}$/.test(s)) {
+        return err('Enter a valid 6-digit Indian pincode.');
+      }
+      return ok();
     }
 
     case FIELD_IDS.COLLEGE_PATENT_COUNT:

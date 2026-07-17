@@ -136,6 +136,12 @@ async function __platform_PATCH(request, { params }) {
     const city = String(body?.city ?? '').trim();
     const state = String(body?.state ?? '').trim();
     const pincode = String(body?.pincode ?? '').trim();
+    if (pincode && !/^\d{6}$/.test(pincode)) {
+      return NextResponse.json(
+        { error: 'Enter a valid 6-digit Indian pincode.' },
+        { status: 400 },
+      );
+    }
     const website = String(body?.website ?? '').trim();
     const email = String(body?.email ?? '').trim();
     const phone = String(body?.phone ?? '').trim();

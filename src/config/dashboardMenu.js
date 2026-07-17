@@ -14,6 +14,7 @@ import {
   Building, Calendar, Settings, TrendingUp, Users, HelpCircle, ListChecks, Inbox,
   CalendarDays, PartyPopper, SlidersHorizontal, Handshake, KeyRound, Mic, Download, Map, Rocket,
   CalendarRange, Table2, Store,
+  Presentation,
   UserPlus,
   Mail,
   Archive,
@@ -345,7 +346,7 @@ export const menuConfig = {
           { label: 'Marketplace', href: '/dashboard/employer/marketplace', icon: Store },
           { label: 'Sponsorships', href: '/dashboard/employer/sponsorships', icon: Gem },
           { label: 'Startup Seed Funding', href: '/dashboard/employer/startup-funding', icon: Rocket },
-          { label: 'Campus Guest Needs', href: '/dashboard/employer/campus-guest-needs', icon: Mic },
+          { label: 'Campus Guest Needs', href: '/dashboard/employer/campus-guest-needs', icon: Presentation },
           {
             label: 'Student Mentorship Requests',
             href: '/dashboard/employer/mentorship-requests',

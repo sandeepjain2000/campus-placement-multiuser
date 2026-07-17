@@ -57,6 +57,7 @@ const FIELD_CODE_MAP = {
   'employer.offer.joining': 'EMP-OFF-JOIN',
 
   'admin.nirfRank': 'ADM-NIRF',
+  'admin.pincode': 'ADM-PIN',
   'admin.sessionTimeout': 'ADM-SESS',
   'admin.smtpPort': 'ADM-SMTP',
   'admin.maxUploadMb': 'ADM-UPL',

@@ -224,6 +224,11 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
         return;
       }
     }
+    const pinErr = validateFieldOrError(FIELD_IDS.ADMIN_PINCODE, form.pincode);
+    if (pinErr) {
+      addToast(pinErr, 'warning');
+      return;
+    }
     setSaving(true);
     try {
       const res = await fetch(`/api/admin/colleges/${collegeId}`, {
@@ -529,8 +534,16 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               <label className="form-label">Pincode</label>
               <input
                 className="form-input"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                maxLength={6}
                 value={form.pincode}
-                onChange={(e) => setForm((p) => ({ ...p, pincode: e.target.value }))}
+                onChange={(e) =>
+                  setForm((p) => ({
+                    ...p,
+                    pincode: e.target.value.replace(/\D/g, '').slice(0, 6),
+                  }))
+                }
               />
             </div>
             <div className="form-group">

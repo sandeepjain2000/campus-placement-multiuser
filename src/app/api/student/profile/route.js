@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { query, transaction } from '@/lib/db';
 import { profileFromDb, payloadToDbParts } from '@/lib/studentProfileDbMap';
 import { resolveStudentResumeUrl, resolveStudentResumeFileName } from '@/lib/studentResumeUrl';
-import { validateStudentAcademicScores } from '@/lib/validators';
+import { validateStudentAcademicScores, getPhonesListValidationError } from '@/lib/validators';
 import {
   validateStudentAcademicPayload,
   validateEducationDetailsPayload,
@@ -206,6 +206,11 @@ async function __platform_PUT(request) {
     const educationErr = validateEducationDetailsPayload(body.educationDetails);
     if (educationErr) {
       return NextResponse.json({ error: educationErr }, { status: 400 });
+    }
+
+    const phoneErr = getPhonesListValidationError(body.phones);
+    if (phoneErr) {
+      return NextResponse.json({ error: phoneErr }, { status: 400 });
     }
 
     const emailErr = validateStudentProfileEmailsPayload({

@@ -33,20 +33,34 @@ export async function handleStudentCvViewGet(cvId, request) {
     [id, studentId],
   );
   const row = r.rows[0];
-  if (!row?.file_url) {
+  if (!row) {
     return NextResponse.json({ error: 'CV not found' }, { status: 404 });
+  }
+  const fileUrl = String(row.file_url || '').trim();
+  if (!fileUrl) {
+    return NextResponse.json(
+      { error: 'This file is no longer available.' },
+      { status: 410 },
+    );
   }
 
   try {
     const mode = isCvDownloadRequest(request) ? 'download' : 'view';
     const { downloadUrl } = await presignStudentCvFile({
-      fileUrl: row.file_url,
+      fileUrl,
       label: row.label,
       fileExtension: row.file_extension,
       mode,
     });
     return NextResponse.redirect(downloadUrl);
   } catch (e) {
-    return NextResponse.json({ error: e.message || 'Could not open CV' }, { status: 503 });
+    const msg = e?.message || 'Could not open CV';
+    const gone =
+      /no longer available/i.test(msg) ||
+      /invalid file location/i.test(msg);
+    return NextResponse.json(
+      { error: gone ? 'This file is no longer available.' : msg },
+      { status: gone ? 410 : 503 },
+    );
   }
 }

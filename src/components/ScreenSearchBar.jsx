@@ -54,6 +54,24 @@ export default function ScreenSearchBar() {
   }, [q]);
 
   useEffect(() => {
+    setOpen(false);
+    setQ('');
+    setAiNote('');
+    setAiMatches([]);
+  }, [pathname]);
+
+  useEffect(() => {
+    const clear = () => {
+      setOpen(false);
+      setQ('');
+      setAiNote('');
+      setAiMatches([]);
+    };
+    window.addEventListener('placementhub-clear-search', clear);
+    return () => window.removeEventListener('placementhub-clear-search', clear);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     const onDoc = (e) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);

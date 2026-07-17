@@ -43,6 +43,7 @@ export async function getStudentCvsListResponse(request) {
   async function fetchCvRows() {
     return query(
       `SELECT sc.id, sc.label, sc.file_size, sc.is_default, sc.archived_at, sc.created_at, sc.updated_at${verificationColumns},
+              (sc.file_url IS NOT NULL AND BTRIM(sc.file_url) <> '') AS has_file,
               ${usageCountSql}
        FROM student_cvs sc
        WHERE sc.student_id = $1::uuid

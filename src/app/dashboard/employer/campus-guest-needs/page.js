@@ -6,7 +6,7 @@ import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS } from '@/lib/tableQueryPresets';
 import { useToast } from '@/components/ToastProvider';
-import { Calendar, Info, LayoutGrid, List, Mic, Send, X } from 'lucide-react';
+import { Calendar, Info, LayoutGrid, List, Presentation, Send, X } from 'lucide-react';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 
 const KIND_LABEL = {
@@ -358,7 +358,7 @@ export default function EmployerCampusGuestNeedsPage() {
                 className="card"
                 style={{ padding: '2.5rem 1.5rem', textAlign: 'center' }}
               >
-                <Mic size={40} className="text-tertiary" style={{ margin: '0 auto 1rem', opacity: 0.45 }} />
+                <Presentation size={40} className="text-tertiary" style={{ margin: '0 auto 1rem', opacity: 0.45 }} />
                 <p className="text-secondary" style={{ margin: 0 }}>
                   No published campus needs right now. Guest needs are created by the college — not by employers.
                 </p>
@@ -401,7 +401,7 @@ export default function EmployerCampusGuestNeedsPage() {
                             flexShrink: 0,
                           }}
                         >
-                          <Mic size={18} className="text-primary-600" />
+                          <Presentation size={18} className="text-primary-600" />
                         </div>
                       </div>
                       <div

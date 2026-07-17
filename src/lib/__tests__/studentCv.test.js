@@ -2,6 +2,7 @@ import {
   buildCvDownloadFileName,
   CV_LABEL_MAX_LENGTH,
   extractFileExtension,
+  mapStudentCvRow,
   sanitizeCvDownloadBaseName,
   validateCvLabel,
 } from '../studentCvShared';
@@ -15,6 +16,14 @@ describe('validateCvLabel', () => {
 
   it('rejects unsafe characters', () => {
     expect(validateCvLabel('bad/name').error).toBeTruthy();
+  });
+});
+
+describe('mapStudentCvRow', () => {
+  it('marks hasFile false when SQL flag or URL is empty', () => {
+    expect(mapStudentCvRow({ id: '1', label: 'A', has_file: false }).hasFile).toBe(false);
+    expect(mapStudentCvRow({ id: '2', label: 'B', file_url: '   ' }).hasFile).toBe(false);
+    expect(mapStudentCvRow({ id: '3', label: 'C', has_file: true }).hasFile).toBe(true);
   });
 });
 

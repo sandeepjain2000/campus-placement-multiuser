@@ -246,10 +246,13 @@ export default function StudentMyCvsPage() {
                             Archive
                           </button>
                           <CvViewDownloadButtons
-                            viewUrl={studentCvViewUrl(cv.id)}
-                            downloadUrl={studentCvDownloadUrl(cv.id)}
+                            viewUrl={cv.hasFile === false ? null : studentCvViewUrl(cv.id)}
+                            downloadUrl={cv.hasFile === false ? null : studentCvDownloadUrl(cv.id)}
                             viewLabel="View"
                           />
+                          {cv.hasFile === false ? (
+                            <span className="text-xs text-tertiary">File unavailable</span>
+                          ) : null}
                         </>
                       )}
                     </div>
@@ -276,10 +279,14 @@ export default function StudentMyCvsPage() {
                           Archived
                         </span>
                       </div>
-                      <CvViewDownloadButtons
-                        viewUrl={studentCvViewUrl(cv.id)}
-                        downloadUrl={studentCvDownloadUrl(cv.id)}
-                      />
+                      {cv.hasFile === false ? (
+                        <span className="text-xs text-tertiary">File no longer available</span>
+                      ) : (
+                        <CvViewDownloadButtons
+                          viewUrl={studentCvViewUrl(cv.id)}
+                          downloadUrl={studentCvDownloadUrl(cv.id)}
+                        />
+                      )}
                     </div>
                   </div>
                 ))}

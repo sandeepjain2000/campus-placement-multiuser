@@ -31,4 +31,11 @@ describe('validationErrorCode', () => {
       /^\[VAL-STU-PROG-REQ\]/,
     );
   });
+
+  it('rejects invalid admin pincode', () => {
+    expect(validateFieldOrError(FIELD_IDS.ADMIN_PINCODE, 'abc')).toMatch(/pincode/i);
+    expect(validateFieldOrError(FIELD_IDS.ADMIN_PINCODE, '123')).toMatch(/pincode/i);
+    expect(validateFieldOrError(FIELD_IDS.ADMIN_PINCODE, '560001')).toBeNull();
+    expect(validateFieldOrError(FIELD_IDS.ADMIN_PINCODE, '')).toBeNull();
+  });
 });

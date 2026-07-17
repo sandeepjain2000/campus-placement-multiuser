@@ -254,6 +254,26 @@ export function getPhoneValidationError(phone, { required = false } = {}) {
   return '';
 }
 
+/** Strip letters, emoji, and other non-phone characters from typed input. */
+export function sanitizePhoneInput(raw) {
+  return String(raw ?? '').replace(/[^\d+\s()-]/g, '');
+}
+
+/**
+ * Validate a list of labelled phone rows (student profile).
+ * @returns {string} error message or empty string
+ */
+export function getPhonesListValidationError(phones) {
+  const rows = Array.isArray(phones) ? phones : [];
+  for (const row of rows) {
+    const value = String(row?.value || '').trim();
+    if (!value) continue;
+    const err = getPhoneValidationError(value, { required: false });
+    if (err) return err;
+  }
+  return '';
+}
+
 /** Build E.164 phone from registration form dial code + national number. */
 export function buildRegistrationPhoneE164({ phoneDialCode, phoneNational, PHONE_FULL_E164 = '__full__' }) {
   if (phoneDialCode === PHONE_FULL_E164) {
