@@ -1,9 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { mutate as globalMutate } from 'swr';
+import { useSession } from 'next-auth/react';
 import EntityLogo from '@/components/EntityLogo';
 import { appendClientDebugLog } from '@/lib/clientDebugLog';
 import { validateImageFileContent } from '@/lib/inferImageContentType';
+import { isBrowserLoadableAssetUrl } from '@/lib/clientAssetUrl';
+import { pickBrowserAssetUrl } from '@/lib/resolveBrandLogoUrl';
 import {
   IconTwitter,
   IconFacebook,
@@ -14,6 +18,8 @@ import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { getPasswordValidationError, PASSWORD_MIN_LENGTH, PASSWORD_REQUIREMENTS_HINT } from '@/lib/validators';
 import AcademicTaxonomySettingsPanel from '@/components/college/AcademicTaxonomySettingsPanel';
+import { useToast } from '@/components/ToastProvider';
+import { Camera } from 'lucide-react';
 
 function LabelWithIcon({ Icon, children }) {
   return (
@@ -27,6 +33,9 @@ function LabelWithIcon({ Icon, children }) {
 }
 
 export default function CollegeSettingsPage() {
+  const { update: updateSession } = useSession();
+  const { addToast } = useToast();
+  const logoInputRef = useRef(null);
   const [saving, setSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
@@ -105,20 +114,40 @@ export default function CollegeSettingsPage() {
   const setNested = (root, key, value) =>
     setForm((prev) => ({ ...prev, [root]: { ...prev[root], [key]: value } }));
 
+  const refreshBrandLogo = async (logoUrl) => {
+    const safe = pickBrowserAssetUrl(logoUrl);
+    await Promise.all([
+      globalMutate('/api/college/settings'),
+      safe ? updateSession?.({ brandLogoUrl: safe }) : updateSession?.({ brandLogoUrl: null }),
+    ]);
+  };
+
   const onSave = async () => {
     setSaving(true);
     setMessage('');
     try {
+      const logoUrlRaw = String(form.logoUrl || '').trim();
+      if (logoUrlRaw && !isBrowserLoadableAssetUrl(logoUrlRaw)) {
+        throw new Error(
+          'Logo URL must be a web address (https://…) or site path (/…). Use Upload college logo instead of a file path on your computer.',
+        );
+      }
+      const payload = { ...form, logoUrl: logoUrlRaw };
       const res = await fetch('/api/college/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Failed to save settings');
+      setForm((prev) => ({ ...prev, logoUrl: logoUrlRaw }));
+      await refreshBrandLogo(logoUrlRaw);
       setMessage('Settings saved successfully.');
+      addToast?.('Settings saved successfully.', 'success');
     } catch (e) {
-      setMessage(e.message || 'Failed to save settings');
+      const msg = e.message || 'Failed to save settings';
+      setMessage(msg);
+      addToast?.(msg, 'error');
     } finally {
       setSaving(false);
     }
@@ -260,12 +289,16 @@ export default function CollegeSettingsPage() {
       });
       if (!completeRes.ok) throw new Error(complete?.error || 'Failed to save uploaded logo URL to your college profile.');
 
-      setForm((prev) => ({ ...prev, logoUrl: presign.fileUrl }));
+      const nextLogoUrl = String(presign.fileUrl || '').trim();
+      setForm((prev) => ({ ...prev, logoUrl: nextLogoUrl || prev.logoUrl }));
+      await refreshBrandLogo(nextLogoUrl);
       setMessage('Logo uploaded successfully.');
-      appendClientDebugLog({ source: 'college_settings_logo', action: 'success', fileUrl: presign.fileUrl });
+      addToast?.('College logo updated.', 'success');
+      appendClientDebugLog({ source: 'college_settings_logo', action: 'success', fileUrl: nextLogoUrl });
     } catch (e2) {
       const msg = e2.message || 'Logo upload failed';
       setMessage(msg);
+      addToast?.(msg, 'error');
       appendClientDebugLog({ source: 'college_settings_logo', action: 'error', message: msg });
     } finally {
       setLogoUploading(false);
@@ -311,12 +344,31 @@ export default function CollegeSettingsPage() {
             <h3 className="card-title">🌐 Website &amp; social profile URLs</h3>
             <span className="badge badge-green">Live</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
             <EntityLogo name={form.institution.collegeName || 'College'} logoUrl={form.logoUrl} website={form.website} size="lg" shape="rounded" />
-            <label className={`btn btn-secondary btn-sm${logoUploading ? ' disabled' : ''}`} style={{ cursor: logoUploading ? 'wait' : 'pointer', margin: 0 }}>
-              {logoUploading ? 'Uploading logo…' : 'Upload college logo'}
-              <input type="file" accept="image/*" hidden disabled={logoUploading} onChange={onLogoChange} />
-            </label>
+            <div>
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                hidden
+                disabled={logoUploading}
+                onChange={onLogoChange}
+              />
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                disabled={logoUploading}
+                onClick={() => logoInputRef.current?.click()}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <Camera size={14} />
+                {logoUploading ? 'Uploading logo…' : 'Upload college logo'}
+              </button>
+              <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0' }}>
+                PNG, JPG, WebP, or GIF. Max 2MB. Upload saves immediately; pasted URLs need Save.
+              </p>
+            </div>
           </div>
           <p className="text-sm text-secondary" style={{ marginTop: 0 }}>
             Public website, optional API root for integrations, and official college accounts on X (Twitter), Facebook, Instagram, and LinkedIn.
@@ -328,7 +380,15 @@ export default function CollegeSettingsPage() {
             </div>
             <div className="form-group college-settings-inline">
               <label className="form-label">Logo URL (optional)</label>
-              <input className="form-input" type="url" placeholder="https://.../logo.png" value={form.logoUrl} onChange={(e) => setRoot('logoUrl', e.target.value)} />
+              <input
+                className="form-input"
+                type="text"
+                inputMode="url"
+                autoComplete="off"
+                placeholder="https://…/logo.png or /logos/…"
+                value={form.logoUrl}
+                onChange={(e) => setRoot('logoUrl', e.target.value)}
+              />
             </div>
             <div className="form-group college-settings-inline">
               <label className="form-label">Website API base URL</label>

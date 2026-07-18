@@ -3,34 +3,48 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { CV_LABEL_MAX_LENGTH } from '@/lib/studentCvShared';
+import {
+  STUDENT_CV_LOAD,
+  STUDENT_CV_LOAD_MESSAGES,
+  fetchStudentCvListClassified,
+} from '@/lib/studentCvLoadClient';
 
 async function loadEligibleCvs() {
-  let res = await fetch('/api/student/cv-list');
-  if (res.status === 404) {
-    res = await fetch('/api/student/cvs');
-  }
-  const json = await res.json().catch(() => ({}));
+  const result = await fetchStudentCvListClassified();
 
-  if (res.status === 503 || res.status === 404) {
-    return { kind: 'legacy', items: [], legacyResumeAvailable: true, verificationRequired: false };
-  }
-  if (!res.ok) {
-    return { kind: 'error', error: json.error || 'Could not load your CVs' };
+  if (result.status === STUDENT_CV_LOAD.REQUEST_FAILED) {
+    return {
+      kind: 'request_failed',
+      error: result.message || STUDENT_CV_LOAD_MESSAGES.REQUEST_FAILED,
+    };
   }
 
-  const items = Array.isArray(json.items) ? json.items.filter((c) => !c.archivedAt) : [];
-  const verificationRequired = Boolean(json.cvVerification?.required);
+  if (result.status === STUDENT_CV_LOAD.UNAVAILABLE || result.legacy) {
+    return {
+      kind: 'legacy',
+      items: [],
+      legacyResumeAvailable: true,
+      verificationRequired: false,
+      message: result.message || null,
+    };
+  }
+
+  const items = Array.isArray(result.items) ? result.items.filter((c) => !c.archivedAt) : [];
+  const verificationRequired = Boolean(result.cvVerification?.required);
   const eligible = verificationRequired ? items.filter((c) => c.isVerified) : items;
 
   if (!items.length) {
-    if (json.legacyResumeAvailable) {
+    if (result.legacyResumeAvailable) {
       return { kind: 'legacy', items: [], legacyResumeAvailable: true, verificationRequired };
     }
-    return { kind: 'error', error: 'Upload a labelled CV before applying.' };
+    return {
+      kind: 'empty',
+      error: STUDENT_CV_LOAD_MESSAGES.EMPTY,
+    };
   }
   if (verificationRequired && !eligible.length) {
     return {
-      kind: 'error',
+      kind: 'empty',
       error: 'Your college requires a verified CV before applying to drives and internships.',
     };
   }
@@ -75,6 +89,18 @@ export function StudentApplyWithCvModal({
     void (async () => {
       const result = await loadEligibleCvs();
       if (cancelled) return;
+
+      if (result.kind === 'request_failed') {
+        setLoadError(result.error);
+        setLoading(false);
+        return;
+      }
+
+      if (result.kind === 'empty') {
+        setLoadError(result.error);
+        setLoading(false);
+        return;
+      }
 
       if (result.kind === 'error') {
         setLoadError(result.error);

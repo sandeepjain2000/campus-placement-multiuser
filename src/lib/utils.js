@@ -200,7 +200,7 @@ export function getRoleDisplayName(role, optionsOrIsAlumni) {
   if (role === 'student' && isAlumni) return 'Alumni';
 
   const names = {
-    super_admin: 'Super Admin',
+    super_admin: 'Platform Admin',
     college_admin: 'College Admin',
     placement_committee: 'Placement Committee',
     employer: 'Employer',

@@ -22,6 +22,12 @@ export const PLATFORM_ERROR_CONTEXT = {
   SESSION_STALE_SIGNOUT: 'session_stale_signout',
   EMPLOYER_ASSESSMENT_ONLINE_UPDATE: 'employer_assessment_online_update',
   EMPLOYER_ASSESSMENT_CSV_COMMIT: 'employer_assessment_csv_commit',
+  AUDIT_LOG_ENTRIES: 'api_audit_log_entries',
+  AUDIT_REPORTS: 'api_audit_reports',
+  COLLEGE_STUDENT_CV_LIST: 'api_college_student_cv_list',
+  STUDENT_CV_LIST: 'api_student_cv_list',
+  STUDENT_CV_VIEW: 'api_student_cv_view',
+  COLLEGE_STUDENT_CV_VIEW: 'api_college_student_cv_view',
 };
 
 /** Human-readable labels for super-admin Error logs filters and detail panel. */
@@ -48,4 +54,10 @@ export const PLATFORM_ERROR_CONTEXT_LABELS = {
   [PLATFORM_ERROR_CONTEXT.SESSION_STALE_SIGNOUT]: 'Session — stale sign-out',
   [PLATFORM_ERROR_CONTEXT.EMPLOYER_ASSESSMENT_ONLINE_UPDATE]: 'Employer — online grades update',
   [PLATFORM_ERROR_CONTEXT.EMPLOYER_ASSESSMENT_CSV_COMMIT]: 'Employer — CSV assessment upload commit',
+  [PLATFORM_ERROR_CONTEXT.AUDIT_LOG_ENTRIES]: 'Audit — log entries',
+  [PLATFORM_ERROR_CONTEXT.AUDIT_REPORTS]: 'Audit — export history',
+  [PLATFORM_ERROR_CONTEXT.COLLEGE_STUDENT_CV_LIST]: 'College — student CV list',
+  [PLATFORM_ERROR_CONTEXT.STUDENT_CV_LIST]: 'Student — My CVs list',
+  [PLATFORM_ERROR_CONTEXT.STUDENT_CV_VIEW]: 'Student — open CV file (S3)',
+  [PLATFORM_ERROR_CONTEXT.COLLEGE_STUDENT_CV_VIEW]: 'College — open student CV file (S3)',
 };

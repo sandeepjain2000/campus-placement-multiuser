@@ -69,14 +69,14 @@ export async function buildStudentCvUsageCountSelect() {
 }
 
 const STUDENT_CV_SELECT =
-  'id, label, file_size, is_default, archived_at, cv_verified_at, cv_verified_by, created_at, updated_at';
+  'id, label, file_url, file_size, is_default, archived_at, cv_verified_at, cv_verified_by, created_at, updated_at';
 
 async function selectStudentCvs(whereSql, params, client = null) {
   const q = client ? client.query.bind(client) : query;
   const verificationReady = await isStudentCvVerificationReady();
   const columns = verificationReady
     ? STUDENT_CV_SELECT
-    : 'id, label, file_size, is_default, archived_at, created_at, updated_at';
+    : 'id, label, file_url, file_size, is_default, archived_at, created_at, updated_at';
   const r = await q(
     `SELECT ${columns}
      FROM student_cvs

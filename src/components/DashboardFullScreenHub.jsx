@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { signOut } from '@/lib/clientSignOut';
 import { Search } from 'lucide-react';
 import NotificationDropdown from '@/components/NotificationDropdown';
@@ -109,6 +110,7 @@ function syncNavSection(sectionId) {
  * Matches the multi-column hub layout (see globals .dashboard-nav-hub-*).
  */
 export default function DashboardFullScreenHub({ role, session }) {
+  const router = useRouter();
   const menu = getDashboardMenu(role, session?.user);
   const isAlumni = role === 'student' && isAlumniStudent(session?.user);
   const homePath = ROLE_HOME_PATHS[role] || ROLE_HOME_PATHS.student;
@@ -253,6 +255,15 @@ export default function DashboardFullScreenHub({ role, session }) {
             className="dashboard-identity-link dashboard-identity-link--hub"
             aria-label={`${getRoleProfileLabel(role)} — ${session?.user?.name}`}
             title={getRoleProfileLabel(role)}
+            onClick={(e) => {
+              const dest = getRoleProfilePath(role);
+              if (!dest) {
+                e.preventDefault();
+                return;
+              }
+              e.preventDefault();
+              router.push(dest);
+            }}
           >
             <div style={{ flexShrink: 0 }}>
               <EntityLogo

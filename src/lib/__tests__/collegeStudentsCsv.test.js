@@ -7,6 +7,8 @@ const {
   CURRENT_JOINING_BATCH,
   CURRENT_ADMISSION_YEAR,
   CURRENT_GRADUATION_YEAR,
+  buildStudentsImportTemplateCsv,
+  studentCsvTemplateExampleRow,
 } = require('../collegeStudentsCsv');
 
 function fullRow(overrides = {}) {
@@ -81,4 +83,14 @@ describe('collegeStudentsCsv strict import', () => {
     expect(parsed.ok).toBe(false);
     expect(parsed.error).toMatch(/Department/i);
   });
+
+  it('builds import template with same headers as export and one example row', () => {
+    const csv = buildStudentsImportTemplateCsv();
+    const lines = csv.split('\n');
+    expect(lines[0]).toBe(STUDENT_CSV_HEADERS.join(','));
+    expect(studentCsvTemplateExampleRow()).toHaveLength(STUDENT_CSV_HEADERS.length);
+    expect(lines[1].split(',').length).toBeGreaterThanOrEqual(STUDENT_CSV_HEADERS.length - 2);
+    expect(csv).toContain('Sample Student');
+  });
 });
+

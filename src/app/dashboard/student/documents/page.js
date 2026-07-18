@@ -258,7 +258,7 @@ export default function StudentDocumentsPage() {
             />
           ) : null}
           <div className="table-container">
-            <table className="data-table">
+            <table className="data-table data-table-mobile-cards">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -282,13 +282,13 @@ export default function StudentDocumentsPage() {
                   const dtype = docTypes[doc.document_type] || docTypes.other;
                   return (
                     <tr key={doc.id}>
-                      <td className="font-semibold">{doc.document_name}</td>
-                      <td>{dtype.label}</td>
-                      <td>—</td>
-                      <td>{formatSize(doc.file_size)}</td>
-                      <td>{formatDate(doc.uploaded_at)}</td>
-                      <td>{doc.is_verified ? 'Yes' : 'Pending'}</td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
+                      <td className="font-semibold" data-label="Name">{doc.document_name}</td>
+                      <td data-label="Type">{dtype.label}</td>
+                      <td data-label="Role">—</td>
+                      <td data-label="Size">{formatSize(doc.file_size)}</td>
+                      <td data-label="Uploaded">{formatDate(doc.uploaded_at)}</td>
+                      <td data-label="Verified">{doc.is_verified ? 'Yes' : 'Pending'}</td>
+                      <td data-label="Actions" style={{ whiteSpace: 'nowrap' }}>
                         <a
                           className="btn btn-ghost btn-sm"
                           href={`/api/student/documents/view?id=${encodeURIComponent(doc.id)}`}

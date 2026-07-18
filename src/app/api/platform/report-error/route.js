@@ -42,12 +42,31 @@ async function __platform_POST(request) {
     const userId = session.user.id || session.user.sub || null;
     const employerId =
       session.user.role === 'employer' ? await resolveEmployerId(userId) : null;
+    const errorCode =
+      body.errorCode != null
+        ? String(body.errorCode).slice(0, 50)
+        : statusCode === 404
+          ? 'PH-HTTP-404'
+          : null;
+
+    // Missing API routes (404) never hit a server handler — treat as error so they
+    // surface in Platform error logs alongside 5xx failures.
+    const severity =
+      body.severity === 'error' || body.severity === 'warning' || body.severity === 'info'
+        ? body.severity
+        : (statusCode ?? 0) >= 500 || statusCode === 404
+          ? 'error'
+          : 'warning';
+
+    const loggedError = new Error(message);
+    if (errorCode) loggedError.code = errorCode;
 
     const id = await writePlatformErrorLog({
       context,
-      error: new Error(message),
+      error: loggedError,
+      errorCode,
       statusCode,
-      severity: (statusCode ?? 0) >= 500 ? 'error' : 'warning',
+      severity,
       userId,
       employerId,
       userMessage: message,
@@ -56,6 +75,7 @@ async function __platform_POST(request) {
         source: 'client_report',
         actorEmail: session.user.email || null,
         route: body.route ? String(body.route).slice(0, 500) : null,
+        systemErrorCode: errorCode,
         clientDetails: sanitizePayloadForLog(body.details),
       },
     });

@@ -98,7 +98,7 @@ export default function ScreenSearchBar() {
   if (status === 'loading' || !role) return null;
 
   return (
-    <div className="screen-search-bar" ref={wrapRef} style={{ position: 'relative' }}>
+    <div className={`screen-search-bar${open || q ? ' is-open' : ''}`} ref={wrapRef} style={{ position: 'relative' }}>
       <div
         className="screen-search-inline"
         style={{

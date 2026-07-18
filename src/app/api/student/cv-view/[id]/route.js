@@ -11,7 +11,10 @@ async function __platform_GET(request, { params }) {
     return await handleStudentCvViewGet(id, request);
   } catch (e) {
     console.error('GET /api/student/cv-view/[id]', e);
-    return NextResponse.json({ error: 'Could not open CV' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Could not open this CV right now. Try again in a moment.', code: 'PH-CV-VIEW' },
+      { status: 503 },
+    );
   }
 }
 

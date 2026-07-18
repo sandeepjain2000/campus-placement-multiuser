@@ -183,12 +183,27 @@ export default function StudentProfilePage() {
     calendarFetcher,
   );
   const { data: cvData, mutate: mutateCvs } = useSWR('/api/student/cv-list', async () => {
-    let res = await fetch('/api/student/cv-list');
-    if (res.status === 404) res = await fetch('/api/student/cvs');
-    const json = await res.json().catch(() => ({}));
-    if (res.status === 503) return { items: [], legacy: true };
-    if (!res.ok) throw new Error(json.error || 'Failed to load CVs');
-    return { items: json.items || [], legacy: false };
+    const { fetchStudentCvListClassified, STUDENT_CV_LOAD } = await import('@/lib/studentCvLoadClient');
+    const result = await fetchStudentCvListClassified();
+    if (
+      result.status === STUDENT_CV_LOAD.UNAVAILABLE
+      || result.status === STUDENT_CV_LOAD.REQUEST_FAILED
+      || result.legacy
+    ) {
+      // Page still loads — CV card shows empty/legacy state instead of throwing
+      return {
+        items: [],
+        legacy: true,
+        loadStatus: result.status,
+        loadMessage: result.message,
+      };
+    }
+    return {
+      items: result.items || [],
+      legacy: false,
+      loadStatus: result.status,
+      loadMessage: result.message,
+    };
   });
   const defaultCv = useMemo(() => {
     const items = Array.isArray(cvData?.items) ? cvData.items.filter((c) => !c.archivedAt) : [];
@@ -1310,7 +1325,7 @@ export default function StudentProfilePage() {
                       })
                     }
                   />
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                     <input
                       className="form-input"
                       placeholder="City"

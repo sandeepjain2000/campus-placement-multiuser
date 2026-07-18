@@ -289,7 +289,7 @@ export default function StudentInternshipsPage() {
                     : '—';
                 return (
                 <tr key={row.id}>
-                  <td className="student-opportunities-col-company" style={{ paddingLeft: '1rem' }}>
+                  <td className="student-opportunities-col-company" data-label="Company" style={{ paddingLeft: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
                       <EntityLogo name={row.companyName} size="sm" shape="rounded" />
                       <span className="cell-truncate font-semibold" title={row.companyName || undefined}>
@@ -297,8 +297,8 @@ export default function StudentInternshipsPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="cell-truncate" title={row.title || undefined}>{row.title}</td>
-                  <td className="text-sm cell-truncate" title={stipendText !== '—' ? stipendText : undefined}>
+                  <td className="cell-truncate" data-label="Role" title={row.title || undefined}>{row.title}</td>
+                  <td className="text-sm cell-truncate" data-label="Stipend" title={stipendText !== '—' ? stipendText : undefined}>
                     {row.salaryMin != null || row.salaryMax != null ? (
                       <>
                         {formatCurrency(row.salaryMin || row.salaryMax)}
@@ -309,15 +309,16 @@ export default function StudentInternshipsPage() {
                       </>
                     ) : '—'}
                   </td>
-                  <td className="text-sm">{row.minCgpa != null ? row.minCgpa : '—'}</td>
-                  <td className="text-sm">{row.vacancies ?? '—'}</td>
+                  <td className="text-sm" data-label="CGPA">{row.minCgpa != null ? row.minCgpa : '—'}</td>
+                  <td className="text-sm" data-label="Openings">{row.vacancies ?? '—'}</td>
                   <td
                     className="text-sm cell-truncate"
+                    data-label="Period"
                     title={formatInternshipPeriodLabel(row.startDate, row.endDate, formatDate) || undefined}
                   >
                     {formatInternshipPeriodLabel(row.startDate, row.endDate, formatDate) || '—'}
                   </td>
-                  <td>
+                  <td data-label="Status">
                     {row.hasApplied ? (
                       <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
                         {formatStatus(row.applicationStatus)}
@@ -326,7 +327,7 @@ export default function StudentInternshipsPage() {
                       <span className="badge badge-gray">Open</span>
                     )}
                   </td>
-                  <td style={{ textAlign: 'right', paddingRight: '1rem', whiteSpace: 'nowrap' }}>
+                  <td className="student-opportunities-col-actions" data-label="Actions" style={{ textAlign: 'right', paddingRight: '1rem', whiteSpace: 'nowrap' }}>
                     <div style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center', justifyContent: 'flex-end' }}>
                       <StandardTableIconAction action="view" showLabel={false} onClick={() => setSelectedRow(row)} />
                       {!row.hasApplied && (

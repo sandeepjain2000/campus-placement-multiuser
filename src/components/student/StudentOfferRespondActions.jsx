@@ -7,6 +7,10 @@ import { useToast } from '@/components/ToastProvider';
 import { formatDate } from '@/lib/utils';
 import { isOfferDeadlinePassed } from '@/lib/offerDeadline';
 import { isPendingOfferStatus, normalizeOfferStatus } from '@/lib/offerStatusNormalize';
+import {
+  STUDENT_OFFER_LETTER_ERRORS,
+  resolveStudentOfferRespondErrorMessage,
+} from '@/lib/studentOfferLetter';
 
 /**
  * Accept / decline controls for a single pending student offer.
@@ -51,17 +55,26 @@ export default function StudentOfferRespondActions({
   const respond = async (action) => {
     setResponding(true);
     try {
-      const res = await fetch('/api/student/offers', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: offerId, action }),
-      });
+      let res;
+      try {
+        res = await fetch('/api/student/offers', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: offerId, action }),
+        });
+      } catch {
+        addToast(STUDENT_OFFER_LETTER_ERRORS.NETWORK, 'error');
+        return;
+      }
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || 'Failed to update offer');
+      if (!res.ok) {
+        addToast(resolveStudentOfferRespondErrorMessage(res.status, json?.error), 'error');
+        return;
+      }
       await onUpdated?.();
       addToast(action === 'accept' ? 'Offer accepted.' : 'Offer declined.', 'success');
-    } catch (e) {
-      addToast(e.message || 'Failed to update offer', 'error');
+    } catch {
+      addToast(STUDENT_OFFER_LETTER_ERRORS.RESPOND_FAILED, 'error');
     } finally {
       setResponding(false);
       setConfirmAction(null);

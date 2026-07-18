@@ -5,6 +5,9 @@ import { CheckCircle2, CircleAlert, FileText } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
 import { collegeStudentCvDownloadUrl, collegeStudentCvViewUrl } from '@/lib/studentCvApiPaths';
+import { studentCvRowMissingFile } from '@/lib/studentCvLoadClient';
+import { reportClientApiFailure } from '@/lib/clientPlatformErrorReport';
+import { formatErrorReference } from '@/lib/errorReference';
 
 function formatVerifiedAt(value) {
   if (!value) return '';
@@ -18,10 +21,25 @@ function formatVerifiedAt(value) {
   }
 }
 
+/** Strip platform-ops boilerplate from API errors before showing college users. */
+function cleanCollegeCvError(raw) {
+  const cleaned = String(raw || '')
+    .replace(/\s*Full details were saved for the platform administrator\.?/gi, '')
+    .replace(/\s*Reference:\s*\S+/gi, '')
+    .replace(/\s*\[Ref:[^\]]+\]/gi, '')
+    .trim();
+  return cleaned || 'We could not load student CVs right now.';
+}
+
+const EMPTY_HINT = 'No labelled CVs uploaded yet.';
+const REQUEST_FAILED_HINT = 'We could not load student CVs right now. Try again in a moment.';
+
 export default function CollegeStudentCvsPanel({ studentId }) {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
+  const [emptyHint, setEmptyHint] = useState('');
+  const [loadKind, setLoadKind] = useState('ok'); // ok | empty | request_failed | unavailable
   const [meta, setMeta] = useState({
     requireCvVerification: false,
     canVerify: false,
@@ -31,25 +49,77 @@ export default function CollegeStudentCvsPanel({ studentId }) {
   const load = useCallback(async () => {
     if (!studentId) return;
     setLoading(true);
+    setEmptyHint('');
+    setLoadKind('ok');
     try {
       let res = await fetch(`/api/college/students/${studentId}/student-cv-list`);
       if (res.status === 404) {
         res = await fetch(`/api/college/students/${studentId}/cvs`);
       }
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || 'Failed to load CVs');
-      setItems(Array.isArray(json.items) ? json.items : []);
+      const ensureLogged = async (message, statusCode) => {
+        const existing = json.reference || formatErrorReference(json.referenceId);
+        if (existing) return existing;
+        return reportClientApiFailure({
+          context: 'client_college_student_cv_list',
+          route: `/api/college/students/${studentId}/student-cv-list`,
+          statusCode,
+          message,
+          responseBody: json,
+          severity: 'error',
+          errorCode: json.errorCode || null,
+          details: { source: 'college_student_cvs_panel' },
+        });
+      };
+
+      if (!res.ok) {
+        setItems([]);
+        setLoadKind(res.status === 404 ? 'unavailable' : 'request_failed');
+        const hint = cleanCollegeCvError(
+          json.error
+            || json.userMessage
+            || (res.status === 404 ? 'CV management is not available yet.' : REQUEST_FAILED_HINT),
+        );
+        setEmptyHint(hint);
+        void ensureLogged(hint, res.status);
+        return;
+      }
+      const nextItems = Array.isArray(json.items) ? json.items : [];
+      setItems(nextItems);
       setMeta({
         requireCvVerification: Boolean(json.requireCvVerification),
         canVerify: Boolean(json.canVerify),
       });
-    } catch (e) {
-      addToast(e.message || 'Failed to load CVs', 'error');
+      if (json.warning || json.unavailable) {
+        setLoadKind('request_failed');
+        const hint = cleanCollegeCvError(json.warning || json.error || REQUEST_FAILED_HINT);
+        setEmptyHint(hint);
+        void ensureLogged(hint, res.status);
+      } else if (json.cvManagementAvailable === false) {
+        setLoadKind('unavailable');
+        setEmptyHint(EMPTY_HINT);
+      } else if (!nextItems.length) {
+        setLoadKind('empty');
+        setEmptyHint(EMPTY_HINT);
+      } else {
+        setLoadKind('ok');
+      }
+    } catch {
       setItems([]);
+      setLoadKind('request_failed');
+      setEmptyHint(REQUEST_FAILED_HINT);
+      void reportClientApiFailure({
+        context: 'client_college_student_cv_list',
+        route: `/api/college/students/${studentId}/student-cv-list`,
+        message: REQUEST_FAILED_HINT,
+        severity: 'error',
+        errorCode: 'PH-CLIENT-NETWORK',
+        details: { source: 'college_student_cvs_panel' },
+      });
     } finally {
       setLoading(false);
     }
-  }, [addToast, studentId]);
+  }, [studentId]);
 
   useEffect(() => {
     load();
@@ -75,13 +145,13 @@ export default function CollegeStudentCvsPanel({ studentId }) {
         });
       }
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || 'Failed to update verification');
+      if (!res.ok) throw new Error(cleanCollegeCvError(json.error || 'Failed to update verification'));
       setItems((prev) =>
         prev.map((item) => (item.id === cvId ? { ...item, ...json.item } : item)),
       );
       addToast(verified ? 'CV marked as verified' : 'CV verification cleared', 'success');
     } catch (e) {
-      addToast(e.message || 'Failed to update verification', 'error');
+      addToast(cleanCollegeCvError(e.message) || 'Failed to update verification', 'error');
     } finally {
       setUpdatingId(null);
     }
@@ -92,10 +162,18 @@ export default function CollegeStudentCvsPanel({ studentId }) {
   }
 
   if (!items.length) {
+    const isFailed = loadKind === 'request_failed' || loadKind === 'unavailable';
     return (
-      <p className="text-sm text-secondary" style={{ margin: 0 }}>
-        No labelled CVs uploaded yet.
-        {meta.requireCvVerification
+      <p
+        className="text-sm"
+        style={{
+          margin: 0,
+          color: isFailed ? 'var(--warning-800, #92400e)' : 'var(--text-secondary)',
+        }}
+        role={isFailed ? 'status' : undefined}
+      >
+        {emptyHint || EMPTY_HINT}
+        {loadKind === 'empty' && meta.requireCvVerification
           ? ' When CV verification is enabled, students need a verified CV before applying to drives and internships.'
           : ''}
       </p>
@@ -133,7 +211,9 @@ export default function CollegeStudentCvsPanel({ studentId }) {
                 ) : null}
               </div>
               <div className="student-list-meta">
-                {cv.isVerified ? (
+                {studentCvRowMissingFile(cv) ? (
+                  'File missing — ask the student to re-upload'
+                ) : cv.isVerified ? (
                   <>
                     <CheckCircle2 size={13} style={{ display: 'inline', verticalAlign: 'text-bottom' }} aria-hidden />
                     {' '}
@@ -151,11 +231,13 @@ export default function CollegeStudentCvsPanel({ studentId }) {
               </div>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' }}>
-              <CvViewDownloadButtons
-                viewUrl={collegeStudentCvViewUrl(studentId, cv.id)}
-                downloadUrl={collegeStudentCvDownloadUrl(studentId, cv.id)}
-              />
-              {meta.canVerify ? (
+              {!studentCvRowMissingFile(cv) ? (
+                <CvViewDownloadButtons
+                  viewUrl={collegeStudentCvViewUrl(studentId, cv.id)}
+                  downloadUrl={collegeStudentCvDownloadUrl(studentId, cv.id)}
+                />
+              ) : null}
+              {meta.canVerify && !studentCvRowMissingFile(cv) ? (
                 cv.isVerified ? (
                   <button
                     type="button"

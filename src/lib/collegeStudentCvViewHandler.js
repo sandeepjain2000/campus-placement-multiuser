@@ -6,7 +6,35 @@ import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
 import { resolveCollegeStaffTenantFromSession } from '@/lib/sessionTenant';
 import { assertCollegeStaff } from '@/lib/collegeAccess';
 import { isStudentCvsTableReady } from '@/lib/studentCv';
-import { isCvDownloadRequest, presignStudentCvFile } from '@/lib/studentCvPresign';
+import { classifyCvStorageFailure, isCvDownloadRequest, presignStudentCvFile } from '@/lib/studentCvPresign';
+import {
+  formatErrorReference,
+  getRequestIp,
+  writePlatformErrorLog,
+} from '@/lib/platformErrorLog';
+import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
+import { CV_SYSTEM_ERROR_CODES } from '@/lib/cvSystemErrorCodes';
+
+async function logCollegeCvViewFailure(request, session, error, classified) {
+  const referenceId = await writePlatformErrorLog({
+    context: PLATFORM_ERROR_CONTEXT.COLLEGE_STUDENT_CV_VIEW,
+    error,
+    errorCode: classified.errorCode,
+    statusCode: classified.status,
+    severity: classified.gone ? 'warning' : 'error',
+    userId: session?.user?.id || session?.user?.sub || null,
+    tenantId: session?.user?.tenantId || session?.user?.tenant_id || null,
+    userMessage: classified.message,
+    ipAddress: getRequestIp(request),
+    details: {
+      source: 'cv_s3_view',
+      route: '/api/college/students/.../student-cv-view',
+      systemErrorCode: classified.errorCode,
+      actorEmail: session?.user?.email || null,
+    },
+  });
+  return formatErrorReference(referenceId);
+}
 
 export async function handleCollegeStudentCvViewGet(studentId, cvId, request) {
   const session = await getServerSession(authOptions);
@@ -47,8 +75,17 @@ export async function handleCollegeStudentCvViewGet(studentId, cvId, request) {
     [id, profileId],
   );
   const row = r.rows[0];
-  if (!row?.file_url) {
+  if (!row) {
     return NextResponse.json({ error: 'CV not found' }, { status: 404 });
+  }
+  if (!String(row.file_url || '').trim()) {
+    return NextResponse.json(
+      {
+        error: 'This file is no longer available. Ask the student to re-upload the CV.',
+        errorCode: CV_SYSTEM_ERROR_CODES.S3_MISSING,
+      },
+      { status: 410 },
+    );
   }
 
   try {
@@ -61,6 +98,15 @@ export async function handleCollegeStudentCvViewGet(studentId, cvId, request) {
     });
     return NextResponse.redirect(downloadUrl);
   } catch (e) {
-    return NextResponse.json({ error: e.message || 'Could not open CV' }, { status: 503 });
+    const classified = classifyCvStorageFailure(e);
+    const reference = await logCollegeCvViewFailure(request, session, e, classified);
+    return NextResponse.json(
+      {
+        error: classified.message,
+        errorCode: classified.errorCode,
+        ...(reference ? { reference } : {}),
+      },
+      { status: classified.status },
+    );
   }
 }

@@ -69,8 +69,13 @@ function ErrorLogDetailPanel({ row }) {
           Overview
         </h3>
         <div style={{ display: 'grid', gap: '0.65rem' }}>
-          <DetailField label="Reference (share with user)">
+          <DetailField label="System Defined Unique Code">
             <strong>{ref || '—'}</strong>
+            {row.error_code ? (
+              <span className="text-xs text-tertiary" style={{ display: 'block', marginTop: '0.15rem' }}>
+                Catalog code: {row.error_code}
+              </span>
+            ) : null}
             <span className="text-xs text-tertiary" style={{ display: 'block', marginTop: '0.15rem' }}>
               Full ID: {row.id}
             </span>
@@ -85,7 +90,7 @@ function ErrorLogDetailPanel({ row }) {
           </DetailField>
           <DetailField label="HTTP status">
             {row.status_code ?? '—'}
-            {row.error_code ? (
+            {row.error_code && !String(row.error_code).startsWith('PH-') ? (
               <span className="text-xs text-tertiary" style={{ display: 'block' }}>
                 Postgres / driver code: {row.error_code}
               </span>
@@ -131,6 +136,16 @@ function ErrorLogDetailPanel({ row }) {
         <div style={{ display: 'grid', gap: '0.65rem' }}>
           <DetailField label="User-facing message">{row.user_message || '—'}</DetailField>
           <DetailField label="Technical message">{row.error_message || '—'}</DetailField>
+          {details.technicalMessage && details.technicalMessage !== row.error_message ? (
+            <DetailField label="Caught exception" mono>
+              {details.technicalMessage}
+            </DetailField>
+          ) : null}
+          {details.systemErrorCode ? (
+            <DetailField label="Catalog code" mono>
+              {details.systemErrorCode}
+            </DetailField>
+          ) : null}
           {pgHint ? (
             <div
               style={{
@@ -384,7 +399,7 @@ export default function AdminErrorLogsPage() {
               <thead>
                 <tr>
                   <th>When</th>
-                  <th>Ref</th>
+                  <th>Unique Code</th>
                   <th>Severity</th>
                   <th>Functionality</th>
                   <th>Route</th>
@@ -398,7 +413,12 @@ export default function AdminErrorLogsPage() {
                 {logs.map((row) => (
                   <tr key={row.id}>
                     <td className="text-sm" style={{ whiteSpace: 'nowrap' }}>{formatDateTime(row.created_at)}</td>
-                    <td className="font-mono text-xs">{row.reference || formatLogReference(row.id)}</td>
+                    <td className="font-mono text-xs">
+                      <div>{row.reference || formatLogReference(row.id)}</div>
+                      {row.error_code ? (
+                        <div className="text-xs text-tertiary">{row.error_code}</div>
+                      ) : null}
+                    </td>
                     <td className="text-sm">
                       <span className={`badge ${severityBadgeClass(row.severity)}`}>
                         {(row.severity || 'error').toUpperCase()}
@@ -418,7 +438,7 @@ export default function AdminErrorLogsPage() {
                       <span className={`badge ${severityBadgeClass(row.severity)}`} style={{ marginBottom: '0.2rem' }}>
                         {row.status_code ?? '—'}
                       </span>
-                      {row.error_code ? (
+                      {row.error_code && !String(row.error_code).startsWith('PH-') ? (
                         <div className="text-xs text-tertiary font-mono">{row.error_code}</div>
                       ) : null}
                     </td>

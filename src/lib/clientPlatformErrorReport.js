@@ -14,6 +14,8 @@ export async function reportClientApiFailure({
   message,
   details = null,
   responseBody = null,
+  severity = null,
+  errorCode = null,
 }) {
   if (typeof window === 'undefined') return null;
 
@@ -29,6 +31,8 @@ export async function reportClientApiFailure({
     message: message || responseBody?.userMessage || responseBody?.error || 'Request failed',
     alreadyLogged: false,
     details: details || (responseBody ? { response: responseBody } : null),
+    ...(severity ? { severity } : {}),
+    ...(errorCode ? { errorCode } : {}),
   };
 
   try {

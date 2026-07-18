@@ -50,6 +50,10 @@ export default function AlertsEmailPage() {
             sender: n.type ? `System ${n.type}` : 'Placement Portal',
             subject: n.title || 'Notification',
             snippet: n.message || '',
+            preview:
+              String(n.message || '').length > 50
+                ? `${String(n.message).slice(0, 50)}…`
+                : String(n.message || ''),
             time: timeAgo(n.created_at),
             read: Boolean(n.is_read),
             starred: Boolean(n.is_starred),
@@ -231,7 +235,11 @@ export default function AlertsEmailPage() {
             }}
           >
             📥 Inbox{' '}
-            <span className="badge badge-accent" style={{ marginLeft: 'auto' }}>
+            <span
+              className="badge badge-accent"
+              style={{ marginLeft: 'auto' }}
+              aria-label={`${Number(data?.unreadCount || 0)} unread`}
+            >
               {Number(data?.unreadCount || 0)}
             </span>
           </button>
@@ -255,8 +263,12 @@ export default function AlertsEmailPage() {
               style={{ marginRight: '0.35rem', verticalAlign: 'text-bottom' }}
               fill={mailbox === 'starred' ? 'currentColor' : 'none'}
             />
-            Starred{' '}
-            <span className="badge badge-gray" style={{ marginLeft: 'auto' }}>
+            Starred
+            <span
+              className="badge badge-gray"
+              style={{ marginLeft: '0.35rem' }}
+              aria-label={`${Number(data?.starredCount || 0)} starred`}
+            >
               {Number(data?.starredCount || 0)}
             </span>
           </button>
@@ -280,9 +292,38 @@ export default function AlertsEmailPage() {
         </div>
 
         <div className="alerts-inbox-list">
+          <div className="alerts-inbox-list-summary">
+            {mailbox === 'trash' ? (
+              <span>
+                <strong>{Number(data?.trashCount || 0)}</strong> total
+              </span>
+            ) : (
+              <>
+                <span>
+                  <strong>
+                    {mailbox === 'starred'
+                      ? Number(data?.starredUnreadCount || 0)
+                      : Number(data?.unreadCount || 0)}
+                  </strong>{' '}
+                  unread
+                </span>
+                <span aria-hidden style={{ color: 'var(--text-tertiary)' }}>
+                  ·
+                </span>
+                <span>
+                  <strong>
+                    {mailbox === 'starred'
+                      ? Number(data?.starredCount || 0)
+                      : Number(data?.inboxCount || 0)}
+                  </strong>{' '}
+                  total
+                </span>
+              </>
+            )}
+          </div>
           <div className="alerts-inbox-list-inner">
           {emails.map((email) => (
-            <div key={email.id}>
+            <div key={email.id} style={{ minWidth: 0, maxWidth: '100%' }}>
               <div
                 className="alerts-inbox-row"
                 data-unread={mailbox !== 'trash' && !email.read ? 'true' : 'false'}
@@ -306,7 +347,7 @@ export default function AlertsEmailPage() {
                   <div className="alerts-inbox-row-sender">{email.sender}</div>
                   <div className="alerts-inbox-row-preview">
                     <strong>{email.subject}</strong>
-                    <span className="alerts-inbox-row-snippet">{email.snippet}</span>
+                    <span className="alerts-inbox-row-snippet">{email.preview}</span>
                   </div>
                 </div>
                 <div className="alerts-inbox-row-actions">

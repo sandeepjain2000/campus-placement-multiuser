@@ -86,7 +86,7 @@ export default function StudentInterviewsPage() {
             />
           ) : null}
           <div className="table-container">
-          <table className="data-table">
+          <table className="data-table data-table-mobile-cards">
             <thead>
               <tr>
                 <th>Company</th>
@@ -108,17 +108,17 @@ export default function StudentInterviewsPage() {
               ) : null}
               {displayInterviews.map((i) => (
                 <tr key={i.id}>
-                  <td className="font-semibold">
+                  <td className="font-semibold" data-label="Company">
                     <CompanyNameLink name={i.company} website={i.website} />
                   </td>
-                  <td>{i.round}</td>
-                  <td>{formatDate(i.date)}</td>
-                  <td>{i.time}</td>
-                  <td>{i.mode}</td>
-                  <td className="text-sm" style={{ maxWidth: '280px' }}>
+                  <td data-label="Round">{i.round}</td>
+                  <td data-label="Date">{formatDate(i.date)}</td>
+                  <td data-label="Time">{i.time}</td>
+                  <td data-label="Mode">{i.mode}</td>
+                  <td className="text-sm" data-label="Location" style={{ maxWidth: '280px' }}>
                     {i.location}
                   </td>
-                  <td>
+                  <td data-label="Status">
                     <span className={`badge ${i.status === 'Completed' ? 'badge-green' : 'badge-blue'}`}>{i.status}</span>
                   </td>
                 </tr>

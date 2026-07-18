@@ -6,12 +6,11 @@ import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import { getDashboardPath } from '@/lib/utils';
 import { DEMO_LOGINS, DEMO_SEED_PASSWORD, isDemoLoginsEnabled, SEEDED_EMPLOYER_CREDENTIALS } from '@/lib/demoLogins';
-import { ArrowRight, ChevronDown, ChevronUp, KeyRound, GraduationCap, Building2, School, ShieldCheck, Users, Eye, EyeOff, MessageCircleQuestion, FlaskConical, BookOpen, ClipboardList } from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronUp, KeyRound, GraduationCap, Building2, School, ShieldCheck, Users, Eye, EyeOff, MessageCircleQuestion, BookOpen, ClipboardList } from 'lucide-react';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
 import LoginSupportContact from '@/components/auth/LoginSupportContact';
 import DevScreenTag from '@/components/DevScreenTag';
-import { showSandboxLoginBanner } from '@/lib/sandboxBanner';
 import {
   consumeLoginPrefillEmail,
   readLoginFormValues,
@@ -462,7 +461,6 @@ function LoginPageInner() {
   }
 
   const showDemoLogins = isDemoLoginsEnabled();
-  const showSandboxBanner = showSandboxLoginBanner();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -605,34 +603,6 @@ function LoginPageInner() {
       <div style={{ position: 'fixed', top: '0.65rem', right: '0.75rem', zIndex: 100000 }}>
         <DevScreenTag />
       </div>
-      {showSandboxBanner ? (
-        <div
-          role="status"
-          className="login-sandbox-banner"
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            gap: '0.75rem',
-            padding: '0.875rem clamp(1rem, 4vw, 2rem)',
-            background: 'var(--warning-50, #fffbeb)',
-            borderBottom: '1px solid var(--warning-200, #fde68a)',
-            color: 'var(--warning-800, #92400e)',
-            boxSizing: 'border-box',
-          }}
-        >
-          <FlaskConical size={20} style={{ flexShrink: 0, marginTop: '0.1rem' }} aria-hidden />
-          <div style={{ width: '100%', maxWidth: '72rem' }}>
-            <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, lineHeight: 1.35 }}>
-              Sandbox environment — not production
-            </p>
-            <p style={{ margin: '0.35rem 0 0', fontSize: '0.8125rem', fontWeight: 500, lineHeight: 1.5, opacity: 0.95 }}>
-              This site is for demonstration and testing only. Do not rely on it for real placements or enter confidential personal data.
-            </p>
-          </div>
-        </div>
-      ) : null}
 
       <div
         style={{

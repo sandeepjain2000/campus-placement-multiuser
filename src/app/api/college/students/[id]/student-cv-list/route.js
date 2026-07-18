@@ -1,19 +1,26 @@
-import { NextResponse } from 'next/server';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
-import { getCollegeStudentCvListResponse } from '@/lib/collegeStudentCvListGet';
+import {
+  collegeCvListSoftEmptyResponse,
+  getCollegeStudentCvListResponse,
+} from '@/lib/collegeStudentCvListGet';
+import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 async function __platform_GET(request, { params }) {
   try {
-    const { id } = await params;
+    const resolved = await params;
+    const id = resolved?.id;
     return await getCollegeStudentCvListResponse(request, id);
   } catch (e) {
-    console.error('GET /api/college/students/[id]/student-cv-list', e);
-    return NextResponse.json({ error: 'Failed to load student CVs' }, { status: 500 });
+    // Always soft-empty — never HTTP 500 (that produced empty api_response logs with no stack).
+    return collegeCvListSoftEmptyResponse(request, e);
   }
 }
 
-const __platformApiHandlers = withApiHandlers({ GET: __platform_GET }, { context: 'api_college_student_cv_list' });
+const __platformApiHandlers = withApiHandlers(
+  { GET: __platform_GET },
+  { context: PLATFORM_ERROR_CONTEXT.COLLEGE_STUDENT_CV_LIST },
+);
 export const GET = __platformApiHandlers.GET;

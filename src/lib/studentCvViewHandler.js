@@ -4,7 +4,35 @@ import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { getOrCreateStudentProfileId } from '@/lib/studentServer';
 import { isStudentCvsTableReady } from '@/lib/studentCv';
-import { isCvDownloadRequest, presignStudentCvFile } from '@/lib/studentCvPresign';
+import { classifyCvStorageFailure, isCvDownloadRequest, presignStudentCvFile } from '@/lib/studentCvPresign';
+import {
+  formatErrorReference,
+  getRequestIp,
+  writePlatformErrorLog,
+} from '@/lib/platformErrorLog';
+import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
+import { CV_SYSTEM_ERROR_CODES } from '@/lib/cvSystemErrorCodes';
+
+async function logCvViewFailure(request, session, error, classified) {
+  const referenceId = await writePlatformErrorLog({
+    context: PLATFORM_ERROR_CONTEXT.STUDENT_CV_VIEW,
+    error,
+    errorCode: classified.errorCode,
+    statusCode: classified.status,
+    severity: classified.gone ? 'warning' : 'error',
+    userId: session?.user?.id || session?.user?.sub || null,
+    tenantId: session?.user?.tenantId || session?.user?.tenant_id || null,
+    userMessage: classified.message,
+    ipAddress: getRequestIp(request),
+    details: {
+      source: 'cv_s3_view',
+      route: '/api/student/cv-view',
+      systemErrorCode: classified.errorCode,
+      actorEmail: session?.user?.email || null,
+    },
+  });
+  return formatErrorReference(referenceId);
+}
 
 export async function handleStudentCvViewGet(cvId, request) {
   const session = await getServerSession(authOptions);
@@ -39,7 +67,10 @@ export async function handleStudentCvViewGet(cvId, request) {
   const fileUrl = String(row.file_url || '').trim();
   if (!fileUrl) {
     return NextResponse.json(
-      { error: 'This file is no longer available.' },
+      {
+        error: 'This file is no longer available. Re-upload the CV to replace it.',
+        errorCode: CV_SYSTEM_ERROR_CODES.S3_MISSING,
+      },
       { status: 410 },
     );
   }
@@ -54,13 +85,15 @@ export async function handleStudentCvViewGet(cvId, request) {
     });
     return NextResponse.redirect(downloadUrl);
   } catch (e) {
-    const msg = e?.message || 'Could not open CV';
-    const gone =
-      /no longer available/i.test(msg) ||
-      /invalid file location/i.test(msg);
+    const classified = classifyCvStorageFailure(e);
+    const reference = await logCvViewFailure(request, session, e, classified);
     return NextResponse.json(
-      { error: gone ? 'This file is no longer available.' : msg },
-      { status: gone ? 410 : 503 },
+      {
+        error: classified.message,
+        errorCode: classified.errorCode,
+        ...(reference ? { reference } : {}),
+      },
+      { status: classified.status },
     );
   }
 }

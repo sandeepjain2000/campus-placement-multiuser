@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import useSWR from 'swr';
 import { formatDate, formatCurrency } from '@/lib/utils';
 import { isOfferDeadlinePassed, parseOfferDeadline } from '@/lib/offerDeadline';
@@ -7,11 +8,36 @@ import { canStudentRespondToOffer, normalizeOfferStatus } from '@/lib/offerStatu
 import CompanyNameLink from '@/components/CompanyNameLink';
 import PageLoading from '@/components/PageLoading';
 import StudentOfferRespondActions from '@/components/student/StudentOfferRespondActions';
+import { FileText } from 'lucide-react';
+import {
+  STUDENT_OFFER_LETTER_ERRORS,
+} from '@/lib/studentOfferLetter';
+
+const STUDENT_OFFERS_LIST_ERRORS = Object.freeze({
+  LOAD_FAILED: 'We could not load your offers right now. Please try again in a moment.',
+  NETWORK: STUDENT_OFFER_LETTER_ERRORS.NETWORK,
+  UNAUTHORIZED: STUDENT_OFFER_LETTER_ERRORS.UNAUTHORIZED,
+});
 
 const fetcher = async (url) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || 'Failed to load offers');
+  let res;
+  try {
+    res = await fetch(url);
+  } catch {
+    const err = new Error(STUDENT_OFFERS_LIST_ERRORS.NETWORK);
+    err.status = 0;
+    throw err;
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const message =
+      res.status === 401
+        ? STUDENT_OFFERS_LIST_ERRORS.UNAUTHORIZED
+        : STUDENT_OFFERS_LIST_ERRORS.LOAD_FAILED;
+    const err = new Error(message);
+    err.status = res.status;
+    throw err;
+  }
   return data;
 };
 
@@ -31,7 +57,9 @@ function formatTimeLeft(deadline, now) {
 }
 
 export default function StudentOffersPage() {
-  const { data: offers, isLoading, mutate } = useSWR('/api/student/offers', fetcher);
+  const { data: offers, error, isLoading, mutate } = useSWR('/api/student/offers', fetcher, {
+    shouldRetryOnError: false,
+  });
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 60000); // update every minute
@@ -39,6 +67,32 @@ export default function StudentOffersPage() {
   }, []);
 
   if (isLoading) return <PageLoading message="Loading your offers…" variant="skeleton-card" />;
+
+  if (error) {
+    const known = Object.values(STUDENT_OFFERS_LIST_ERRORS);
+    const message = known.includes(error?.message)
+      ? error.message
+      : STUDENT_OFFERS_LIST_ERRORS.LOAD_FAILED;
+    return (
+      <div className="animate-fadeIn">
+        <div className="page-header">
+          <div className="page-header-left">
+            <h1>My Offers</h1>
+          </div>
+        </div>
+        <div
+          className="card"
+          role="alert"
+          style={{ padding: '1.25rem 1.5rem', borderColor: 'var(--danger-200)', background: 'var(--danger-50)' }}
+        >
+          <p style={{ margin: '0 0 0.75rem', color: 'var(--danger-800)', lineHeight: 1.55 }}>{message}</p>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => mutate()}>
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fadeIn">
@@ -134,39 +188,16 @@ export default function StudentOffersPage() {
                 </div>
               </div>
 
-              {(offer.renderedLetterHtml || offer.offerLetterUrl) && (
-                <div style={{ margin: '0 0 1.25rem' }}>
-                  {offer.renderedLetterHtml ? (
-                    <div
-                      style={{
-                        padding: '1rem 1.25rem',
-                        background: 'var(--bg-secondary)',
-                        border: '1px solid var(--border-default)',
-                        borderRadius: 'var(--radius-lg)',
-                        fontSize: '0.9rem',
-                        lineHeight: 1.65,
-                        whiteSpace: 'pre-wrap',
-                        color: 'var(--text-primary)',
-                      }}
-                    >
-                      <div style={{ fontWeight: 600, marginBottom: '0.5rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-                        Offer letter
-                      </div>
-                      {offer.renderedLetterHtml}
-                    </div>
-                  ) : (
-                    <a
-                      href={offer.offerLetterUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-secondary btn-sm"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-                    >
-                      📄 Open Offer Letter
-                    </a>
-                  )}
-                </div>
-              )}
+              <div style={{ margin: '0 0 1.25rem' }}>
+                <Link
+                  href={`/dashboard/student/offers/${encodeURIComponent(offerId)}/letter`}
+                  className="btn btn-secondary btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                >
+                  <FileText size={14} />
+                  Open Offer Letter
+                </Link>
+              </div>
 
               {canRespond ? (
                 <StudentOfferRespondActions offer={offer} onUpdated={() => mutate()} />

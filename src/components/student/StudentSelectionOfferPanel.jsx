@@ -65,23 +65,15 @@ export default function StudentSelectionOfferPanel({
         <p style={{ margin: '0 0 0.75rem', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
           Your formal offer letter has been published. Download the letter below, then accept or decline before the deadline.
         </p>
-        {offer.offerLetterUrl ? (
-          <p style={{ margin: '0 0 0.75rem' }}>
-            <a
-              href={offer.offerLetterUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-secondary btn-sm"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-            >
-              Download offer letter
-            </a>
-          </p>
-        ) : (
-          <p style={{ margin: '0 0 0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-            Offer letter link not attached yet — check your email or contact the placement office.
-          </p>
-        )}
+        <p style={{ margin: '0 0 0.75rem' }}>
+          <Link
+            href={`/dashboard/student/offers/${encodeURIComponent(String(offer.id))}/letter`}
+            className="btn btn-secondary btn-sm"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+          >
+            Open offer letter
+          </Link>
+        </p>
         <StudentOfferRespondActions offer={offer} compact onUpdated={onOfferUpdated} />
       </div>
     );

@@ -128,4 +128,61 @@ describe('platformErrorLog CRUD failure logging', () => {
     expect(body.error).toMatch(/\[Ref: 11111111\]/);
     expect(query).toHaveBeenCalledTimes(1);
   });
+
+  it('logApiResponseIfFailure logs soft HTTP 200 unavailable bodies', async () => {
+    const { NextResponse } = require('next/server');
+    const {
+      isSoftApiFailureBody,
+      isAlreadyLoggedErrorBody,
+    } = require('@/lib/platformErrorLog');
+
+    expect(isSoftApiFailureBody({ unavailable: true, error: 'CV list failed' })).toBe(true);
+    expect(isSoftApiFailureBody({ items: [] })).toBe(false);
+    expect(isAlreadyLoggedErrorBody({ reference: 'ABCDEF12' })).toBe(true);
+
+    const request = new Request('https://example.com/api/college/students/1/student-cv-list', {
+      method: 'GET',
+    });
+    const response = NextResponse.json(
+      { items: [], unavailable: true, error: 'Failed to load student CVs' },
+      { status: 200 },
+    );
+
+    const out = await logApiResponseIfFailure(request, response, {
+      context: 'api_college_student_cv_list',
+    });
+
+    expect(out.status).toBe(200);
+    const body = await out.json();
+    expect(body.unavailable).toBe(true);
+    expect(body.reference).toBe(formatErrorReference('11111111-2222-3333-4444-555555555555'));
+    expect(query).toHaveBeenCalledTimes(1);
+    const details = JSON.parse(query.mock.calls[0][1][9]);
+    expect(details.source).toBe('api_soft_failure');
+    expect(details.softFailure).toBe(true);
+  });
+
+  it('logApiResponseIfFailure skips soft failures that already have a reference', async () => {
+    const { NextResponse } = require('next/server');
+    const request = new Request('https://example.com/api/student/cv-list', { method: 'GET' });
+    const response = NextResponse.json(
+      {
+        items: [],
+        unavailable: true,
+        error: 'Failed to load CVs. [Ref: AABBCCDD]',
+        reference: 'AABBCCDD',
+        referenceId: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+      },
+      { status: 200 },
+    );
+
+    const out = await logApiResponseIfFailure(request, response, {
+      context: 'api_student_cv_list',
+    });
+
+    expect(out.status).toBe(200);
+    expect(query).not.toHaveBeenCalled();
+    const body = await out.json();
+    expect(body.reference).toBe('AABBCCDD');
+  });
 });

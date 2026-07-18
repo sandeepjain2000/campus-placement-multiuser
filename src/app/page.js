@@ -17,6 +17,7 @@ import {
 import { appendClientDebugLog } from '@/lib/clientDebugLog';
 import ThemeToggleButton from '@/components/ThemeToggleButton';
 import DevScreenTag from '@/components/DevScreenTag';
+import SandboxEnvironmentBanner from '@/components/SandboxEnvironmentBanner';
 export default function LandingPage() {
   const router = useRouter();
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION || '?';
@@ -77,7 +78,8 @@ export default function LandingPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', display: 'flex', flexDirection: 'column' }}>
-      
+      <SandboxEnvironmentBanner />
+
       {/* Demo Email Banner */}
       <div style={{ backgroundColor: 'var(--primary-50)', borderBottom: '1px solid var(--primary-200)', padding: '0.75rem 1.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-primary)', zIndex: 60, position: 'relative' }}>
         <strong>Demo Emails:</strong> All System emails can be checked on this disposable mail id: <strong>placementhub@yopmail.com</strong> at{' '}

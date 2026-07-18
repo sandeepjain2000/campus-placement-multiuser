@@ -34,7 +34,7 @@ export default function AuditReportsMobile() {
     setTo(toYmd(end));
   };
 
-  const logsUrl = useMemo(() => `/api/audit/logs?from=${from}&to=${to}&limit=50`, [from, to]);
+  const logsUrl = useMemo(() => `/api/audit/log-entries?from=${from}&to=${to}&limit=50`, [from, to]);
 
   const { data: logsData, isLoading: logsLoading, mutate: mutateLogs } = useSWR(
     logsUrl,

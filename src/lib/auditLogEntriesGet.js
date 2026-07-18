@@ -1,9 +1,25 @@
-import { withApiHandlers } from '@/lib/platformErrorRoute';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { resolveAuditScope } from '@/lib/auditScope';
+import {
+  formatErrorReference,
+  getRequestIp,
+  writePlatformErrorLog,
+} from '@/lib/platformErrorLog';
+import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
+import { appendErrorReference } from '@/lib/errorReference';
+import { AUDIT_SYSTEM_ERROR_CODES } from '@/lib/auditSystemErrorCodes';
+
+/** Predefined user-facing messages — no stack traces or SQL details. */
+export const AUDIT_LOG_ERRORS = Object.freeze({
+  UNAUTHORIZED: 'You do not have permission to view audit logs.',
+  TENANT_MISSING: 'College context is missing. Sign in again or contact support.',
+  UNAVAILABLE: 'Audit log entries could not be loaded right now. Please try again.',
+  MIGRATION_REQUIRED:
+    'Audit log storage is not available on this environment. Ask your administrator to finish setup.',
+});
 
 function parseDate(value, fallback) {
   const s = String(value || '').trim();
@@ -30,11 +46,16 @@ function formatAuditDetails(row) {
   return fallback.length ? fallback.join(' · ') : null;
 }
 
-async function __platform_GET(request) {
+/**
+ * GET handler for audit log entries (shared by /api/audit/log-entries).
+ * Soft-fails with HTTP 200 + unavailable so the UI can show a friendly empty state,
+ * while still writing platform_error_logs with the original exception/stack.
+ */
+export async function getAuditLogEntries(request) {
+  const session = await getServerSession(authOptions);
   try {
-    const session = await getServerSession(authOptions);
     if (!session?.user || !['super_admin', 'college_admin'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: AUDIT_LOG_ERRORS.UNAUTHORIZED }, { status: 401 });
     }
 
     const url = new URL(request.url);
@@ -46,7 +67,14 @@ async function __platform_GET(request) {
     const requestedTenant = String(url.searchParams.get('tenantId') || '').trim();
     const scopeResult = resolveAuditScope(session.user, requestedTenant);
     if (!scopeResult.ok) {
-      return NextResponse.json({ error: scopeResult.error }, { status: scopeResult.status });
+      const status = scopeResult.status || 400;
+      const error =
+        status === 401
+          ? AUDIT_LOG_ERRORS.UNAUTHORIZED
+          : status === 400
+            ? AUDIT_LOG_ERRORS.TENANT_MISSING
+            : AUDIT_LOG_ERRORS.UNAVAILABLE;
+      return NextResponse.json({ error }, { status });
     }
 
     const params = scopeResult.scope === 'tenant' ? [scopeResult.tenantId, from, to] : [from, to];
@@ -95,26 +123,48 @@ async function __platform_GET(request) {
 
     return NextResponse.json({ logs, scope: scopeResult.scope });
   } catch (error) {
-    console.error('GET /api/audit/logs failed:', error);
+    console.error('GET audit log entries failed:', error);
     const code = error?.code;
     const message = String(error?.message || '');
-    const migrationHint =
-      code === '42P01' || message.includes('audit_logs')
-        ? 'Apply database migration 013_audit_exports_and_assessment_uploads.sql (audit_logs table).'
-        : code === '42P01' || message.includes('audit_report_exports')
-          ? 'Apply database migration 013_audit_exports_and_assessment_uploads.sql.'
-          : '';
-    return NextResponse.json({
-      logs: [],
-      scope: 'platform',
-      unavailable: true,
-      error: migrationHint || 'Audit logs are temporarily unavailable.',
+    const needsMigration =
+      code === '42P01' || /audit_logs|audit_report_exports/i.test(message);
+    const userMessage = needsMigration
+      ? AUDIT_LOG_ERRORS.MIGRATION_REQUIRED
+      : AUDIT_LOG_ERRORS.UNAVAILABLE;
+    const systemCode = needsMigration
+      ? AUDIT_SYSTEM_ERROR_CODES.MIGRATION
+      : AUDIT_SYSTEM_ERROR_CODES.UNAVAILABLE;
+    const referenceId = await writePlatformErrorLog({
+      context: PLATFORM_ERROR_CONTEXT.AUDIT_LOG_ENTRIES,
+      error,
+      errorCode: systemCode,
+      statusCode: needsMigration ? 503 : 500,
+      severity: 'error',
+      userId: session?.user?.id || session?.user?.sub || null,
+      userMessage,
+      ipAddress: getRequestIp(request),
+      details: {
+        source: 'audit_soft_failure',
+        route: '/api/audit/log-entries',
+        unavailable: true,
+        needsMigration: Boolean(needsMigration),
+        pgCode: code || null,
+        systemErrorCode: systemCode,
+        actorEmail: session?.user?.email || null,
+      },
     });
+    const ref = formatErrorReference(referenceId);
+    const errorWithRef = appendErrorReference(userMessage, { reference: ref, referenceId });
+    return NextResponse.json(
+      {
+        logs: [],
+        scope: 'platform',
+        unavailable: true,
+        error: errorWithRef,
+        errorCode: systemCode,
+        ...(ref ? { referenceId, reference: ref } : {}),
+      },
+      { status: 200 },
+    );
   }
 }
-
-
-const __platformApiHandlers = withApiHandlers({
-  GET: __platform_GET,
-}, { context: 'api_audit_logs' });
-export const GET = __platformApiHandlers.GET;

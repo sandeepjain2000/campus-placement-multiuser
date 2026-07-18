@@ -365,9 +365,10 @@ export default function EmployerCampusGuestNeedsPage() {
               </div>
             ) : (
               <div
+                className="responsive-card-grid"
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
                   gap: '1.25rem',
                 }}
               >

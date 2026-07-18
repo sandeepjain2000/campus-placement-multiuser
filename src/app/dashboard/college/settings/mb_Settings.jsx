@@ -1,19 +1,28 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { mutate as globalMutate } from 'swr';
+import { useSession } from 'next-auth/react';
 import MobileHeader from '@/components/mobile/MobileHeader';
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { useToast } from '@/components/ToastProvider';
-import { Save, Building2, MapPin, Award, UserCircle, Globe, Image as ImageIcon, Shield } from 'lucide-react';
+import { Save, Building2, MapPin, Award, UserCircle, Globe, Shield, Camera } from 'lucide-react';
 import AcademicTaxonomySettingsPanel from '@/components/college/AcademicTaxonomySettingsPanel';
 import EntityLogo from '@/components/EntityLogo';
+import { appendClientDebugLog } from '@/lib/clientDebugLog';
+import { validateImageFileContent } from '@/lib/inferImageContentType';
+import { isBrowserLoadableAssetUrl } from '@/lib/clientAssetUrl';
+import { pickBrowserAssetUrl } from '@/lib/resolveBrandLogoUrl';
 import { getPasswordValidationError, PASSWORD_MIN_LENGTH, PASSWORD_REQUIREMENTS_HINT } from '@/lib/validators';
 
 export default function mb_Settings() {
+  const { update: updateSession } = useSession();
   const { addToast } = useToast();
+  const logoInputRef = useRef(null);
   const [activeSection, setActiveSection] = useState('general');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [logoUploading, setLogoUploading] = useState(false);
   const [form, setForm] = useState({
     website: '', logoUrl: '', websiteApi: '', placementSeasonLabel: '',
     social: { twitter: '', facebook: '', instagram: '', linkedin: '' },
@@ -60,20 +69,94 @@ export default function mb_Settings() {
   const setRoot = (key, value) => setForm(p => ({ ...p, [key]: value }));
   const setNested = (root, key, value) => setForm(p => ({ ...p, [root]: { ...p[root], [key]: value } }));
 
+  const refreshBrandLogo = async (logoUrl) => {
+    const safe = pickBrowserAssetUrl(logoUrl);
+    await Promise.all([
+      globalMutate('/api/college/settings'),
+      safe ? updateSession?.({ brandLogoUrl: safe }) : updateSession?.({ brandLogoUrl: null }),
+    ]);
+  };
+
   const onSave = async () => {
     setSaving(true);
     try {
+      const logoUrlRaw = String(form.logoUrl || '').trim();
+      if (logoUrlRaw && !isBrowserLoadableAssetUrl(logoUrlRaw)) {
+        throw new Error(
+          'Logo URL must be a web address (https://…) or site path (/…). Use Upload college logo instead of a file path on your computer.',
+        );
+      }
       const res = await fetch('/api/college/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, logoUrl: logoUrlRaw }),
       });
-      if (!res.ok) throw new Error('Failed to save settings');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json?.error || 'Failed to save settings');
+      setForm((prev) => ({ ...prev, logoUrl: logoUrlRaw }));
+      await refreshBrandLogo(logoUrlRaw);
       addToast('Settings saved successfully', 'success');
     } catch (e) {
       addToast(e.message || 'Failed to save settings', 'error');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const onLogoChange = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    const imageCheck = await validateImageFileContent(file);
+    if (!imageCheck.ok) {
+      addToast(imageCheck.error, 'warning');
+      return;
+    }
+    const contentType = imageCheck.contentType;
+    if (file.size > 2 * 1024 * 1024) {
+      addToast('Logo image too large (max 2MB).', 'warning');
+      return;
+    }
+    setLogoUploading(true);
+    try {
+      const presignRes = await fetch('/api/college/settings/logo/presign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: file.name, contentType, fileSize: file.size }),
+      });
+      const presign = await presignRes.json().catch(() => ({}));
+      if (presignRes.status === 503) {
+        throw new Error(
+          presign?.error
+            ? `${presign.error}. Add AWS_REGION, S3_BUCKET_NAME, and IAM keys to your env, then redeploy.`
+            : 'Logo storage is not configured.',
+        );
+      }
+      if (!presignRes.ok) throw new Error(presign?.error || 'Could not start upload.');
+
+      const ph = {};
+      if (presign.contentType) ph['Content-Type'] = String(presign.contentType).split(';')[0].trim();
+      const putRes = await fetch(presign.uploadUrl, { method: 'PUT', headers: ph, body: file });
+      if (!putRes.ok) throw new Error('Upload to storage failed.');
+
+      const completeRes = await fetch('/api/college/settings/logo/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_url: presign.fileUrl }),
+      });
+      const complete = await completeRes.json().catch(() => ({}));
+      if (!completeRes.ok) throw new Error(complete?.error || 'Failed to save uploaded logo.');
+
+      const nextLogoUrl = String(presign.fileUrl || '').trim();
+      setForm((prev) => ({ ...prev, logoUrl: nextLogoUrl || prev.logoUrl }));
+      await refreshBrandLogo(nextLogoUrl);
+      addToast('College logo updated.', 'success');
+      appendClientDebugLog({ source: 'college_settings_logo_mobile', action: 'success', fileUrl: nextLogoUrl });
+    } catch (err) {
+      addToast(err?.message || 'Logo upload failed', 'error');
+      appendClientDebugLog({ source: 'college_settings_logo_mobile', action: 'error', message: err?.message });
+    } finally {
+      setLogoUploading(false);
     }
   };
 
@@ -155,12 +238,41 @@ export default function mb_Settings() {
             
             {activeSection === 'general' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                   <EntityLogo name={form.institution.collegeName || 'College'} logoUrl={form.logoUrl} website={form.website} size="lg" shape="rounded" />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', flex: 1, minWidth: 0 }}>
                     <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>College Logo</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>Upload via Desktop</span>
+                    <input
+                      ref={logoInputRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      hidden
+                      disabled={logoUploading}
+                      onChange={onLogoChange}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      disabled={logoUploading}
+                      onClick={() => logoInputRef.current?.click()}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', alignSelf: 'flex-start' }}
+                    >
+                      <Camera size={14} />
+                      {logoUploading ? 'Uploading…' : 'Upload logo'}
+                    </button>
                   </div>
+                </div>
+                <div className="form-group mb-0">
+                  <label className="text-xs text-secondary mb-1 block">Logo URL (optional)</label>
+                  <input
+                    className="form-input"
+                    type="text"
+                    inputMode="url"
+                    autoComplete="off"
+                    placeholder="https://… or /logos/…"
+                    value={form.logoUrl}
+                    onChange={(e) => setRoot('logoUrl', e.target.value)}
+                  />
                 </div>
 
                 <div className="form-group mb-0">

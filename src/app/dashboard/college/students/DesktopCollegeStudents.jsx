@@ -6,18 +6,19 @@ import { useState, useCallback, useEffect } from 'react';
 import { formatStatus, getStatusColor } from '@/lib/utils';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { ImportCsvSplitButton } from '@/components/import/ImportCsvSplitButton';
-import { downloadCsvFromRows } from '@/lib/csvExport';
 import {
   CURRENT_SEMESTER, STUDENT_CSV_HEADERS,
-  studentToCsvRow, studentCsvTemplateExampleRow,
+  studentToCsvRow,
+  STUDENTS_IMPORT_TEMPLATE_FILENAME,
 } from '@/lib/collegeStudentsCsv';
+import { downloadCsvFromApi } from '@/lib/downloadCsvFromApi';
 import { getCurrentAcademicYear } from '@/lib/academicYear';
 import {
   academicYearQueryString,
   readActiveAcademicYearContext,
 } from '@/lib/collegeAcademicYearContext';
 import { useToast } from '@/components/ToastProvider';
-import { GraduationCap, Download, CheckCircle2, CircleAlert, UserPlus } from 'lucide-react';
+import { GraduationCap, CheckCircle2, CircleAlert, UserPlus } from 'lucide-react';
 import StudentQuickViewModal from './StudentQuickViewModal';
 import StudentListFiltersPanel from './StudentListFiltersPanel';
 import StudentSectionSummaryCards from './StudentSectionSummaryCards';
@@ -41,6 +42,7 @@ export default function DesktopCollegeStudents() {
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [importBusy, setImportBusy] = useState(false);
+  const [templateBusy, setTemplateBusy] = useState(false);
   const [sessionMeta, setSessionMeta] = useState(null);
   const [requireCvVerification, setRequireCvVerification] = useState(false);
   const [quickViewStudent, setQuickViewStudent] = useState(null);
@@ -154,9 +156,20 @@ export default function DesktopCollegeStudents() {
     return { headers: [...STUDENT_CSV_HEADERS], rows: list.map((s) => studentToCsvRow(s)) };
   }, [filtered, students]);
 
-  const downloadTemplate = useCallback(() => {
-    downloadCsvFromRows('students_import_template', [...STUDENT_CSV_HEADERS], [studentCsvTemplateExampleRow()]);
-  }, []);
+  const downloadTemplate = useCallback(async () => {
+    setTemplateBusy(true);
+    try {
+      await downloadCsvFromApi(
+        '/api/college/students/import-template',
+        STUDENTS_IMPORT_TEMPLATE_FILENAME,
+      );
+      addToast('Import template downloaded.', 'success');
+    } catch (e) {
+      addToast(e?.message || 'Import template is unavailable. Please try again.', 'error');
+    } finally {
+      setTemplateBusy(false);
+    }
+  }, [addToast]);
 
   const onImportFile = useCallback(async (file) => {
     setImportBusy(true);
@@ -228,10 +241,31 @@ export default function DesktopCollegeStudents() {
         <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
           {!readOnly ? (
             <>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={downloadTemplate} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid var(--border-default)', fontSize: '0.85rem' }}>
-                <Download size={14} /> Template
-              </button>
-              <ImportCsvSplitButton onFileSelected={onImportFile} busy={importBusy} />
+              <div className="export-csv-wrap">
+                <div className="export-csv-split-inner export-csv-split-inner--single">
+                  <button
+                    type="button"
+                    className="btn export-csv-primary btn-sm"
+                    onClick={downloadTemplate}
+                    disabled={templateBusy}
+                    title="Download CSV import template (same columns as Export CSV)"
+                  >
+                    {templateBusy ? (
+                      <span className="export-csv-preparing">Preparing…</span>
+                    ) : (
+                      <>
+                        <span className="export-csv-icon" aria-hidden>⬇</span>
+                        Template
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+              <ImportCsvSplitButton
+                onFileSelected={onImportFile}
+                onDownloadTemplate={downloadTemplate}
+                busy={importBusy || templateBusy}
+              />
             </>
           ) : null}
           <ExportCsvSplitButton filenameBase="students" currentCount={filtered.length} fullCount={students.length} getRows={getStudentCsv} />

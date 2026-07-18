@@ -50,17 +50,18 @@ async function __platform_GET(request) {
       [session.user.id, LIMIT],
     );
 
-    const unread = await query(
-      `SELECT COUNT(*)::int AS c FROM notifications
-       WHERE user_id = $1::uuid AND is_read = false AND deleted_at IS NULL`,
+    const counts = await query(
+      `SELECT
+         COUNT(*) FILTER (WHERE deleted_at IS NULL)::int AS inbox_total,
+         COUNT(*) FILTER (WHERE deleted_at IS NULL AND is_read = false)::int AS inbox_unread,
+         COUNT(*) FILTER (WHERE deleted_at IS NULL AND is_starred = true)::int AS starred_total,
+         COUNT(*) FILTER (WHERE deleted_at IS NULL AND is_starred = true AND is_read = false)::int AS starred_unread,
+         COUNT(*) FILTER (WHERE deleted_at IS NOT NULL)::int AS trash_total
+       FROM notifications
+       WHERE user_id = $1::uuid`,
       [session.user.id],
     );
-
-    const starred = await query(
-      `SELECT COUNT(*)::int AS c FROM notifications
-       WHERE user_id = $1::uuid AND deleted_at IS NULL AND is_starred = true`,
-      [session.user.id],
-    );
+    const c = counts.rows[0] || {};
 
     const settingsRes = await query(
       `SELECT
@@ -73,8 +74,11 @@ async function __platform_GET(request) {
 
     return NextResponse.json({
       notifications: res.rows,
-      unreadCount: unread.rows[0]?.c ?? 0,
-      starredCount: starred.rows[0]?.c ?? 0,
+      unreadCount: c.inbox_unread ?? 0,
+      inboxCount: c.inbox_total ?? 0,
+      starredCount: c.starred_total ?? 0,
+      starredUnreadCount: c.starred_unread ?? 0,
+      trashCount: c.trash_total ?? 0,
       notificationSenderEmail,
       mailbox,
     });

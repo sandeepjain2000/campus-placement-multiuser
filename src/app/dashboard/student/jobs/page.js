@@ -345,7 +345,7 @@ export default function StudentJobsPage() {
                     : '—';
                 return (
                 <tr key={row.id} className={selection.isSelected(row) ? 'is-row-selected' : undefined}>
-                  <td className="student-opportunities-col-select" style={{ paddingLeft: '0.75rem' }}>
+                  <td className="student-opportunities-col-select" data-label="" style={{ paddingLeft: '0.75rem' }}>
                     <input
                       type="checkbox"
                       aria-label={`Select ${row.title || 'job'} at ${row.companyName || 'company'}`}
@@ -353,7 +353,7 @@ export default function StudentJobsPage() {
                       onChange={() => selection.toggle(row)}
                     />
                   </td>
-                  <td className="student-opportunities-col-company" style={{ paddingLeft: '1rem' }}>
+                  <td className="student-opportunities-col-company" data-label="Company" style={{ paddingLeft: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
                       <EntityLogo name={row.companyName} size="sm" shape="rounded" />
                       <span className="cell-truncate font-semibold" title={row.companyName || undefined}>
@@ -361,8 +361,8 @@ export default function StudentJobsPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="cell-truncate" title={row.title || undefined}>{row.title}</td>
-                  <td className="text-sm cell-truncate" title={salaryText !== '—' ? salaryText : undefined}>
+                  <td className="cell-truncate" data-label="Role" title={row.title || undefined}>{row.title}</td>
+                  <td className="text-sm cell-truncate" data-label="Salary" title={salaryText !== '—' ? salaryText : undefined}>
                     {row.salaryMin != null || row.salaryMax != null ? (
                       <>
                         {formatCurrency(row.salaryMin || row.salaryMax)}
@@ -373,12 +373,12 @@ export default function StudentJobsPage() {
                       </>
                     ) : '—'}
                   </td>
-                  <td className="text-sm">{row.minCgpa != null ? row.minCgpa : '—'}</td>
-                  <td className="text-sm">{row.vacancies ?? '—'}</td>
-                  <td className="text-sm cell-truncate" title={row.applicationDeadline ? formatDate(row.applicationDeadline) : undefined}>
+                  <td className="text-sm" data-label="CGPA">{row.minCgpa != null ? row.minCgpa : '—'}</td>
+                  <td className="text-sm" data-label="Openings">{row.vacancies ?? '—'}</td>
+                  <td className="text-sm cell-truncate" data-label="Deadline" title={row.applicationDeadline ? formatDate(row.applicationDeadline) : undefined}>
                     {row.applicationDeadline ? formatDate(row.applicationDeadline) : '—'}
                   </td>
-                  <td>
+                  <td data-label="Status">
                     {row.hasApplied ? (
                       <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
                         {formatStatus(row.applicationStatus)}
@@ -387,7 +387,7 @@ export default function StudentJobsPage() {
                       <span className="badge badge-gray">Open</span>
                     )}
                   </td>
-                  <td className="student-opportunities-col-actions" style={{ textAlign: 'right', paddingRight: '1rem' }}>
+                  <td className="student-opportunities-col-actions" data-label="Actions" style={{ textAlign: 'right', paddingRight: '1rem' }}>
                     <StudentOpportunityRowActions
                       row={row}
                       kind="job"

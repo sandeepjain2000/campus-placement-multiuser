@@ -187,6 +187,28 @@ export function studentCsvTemplateExampleRow() {
   ];
 }
 
+/** Browser download filename for the college students import template. */
+export const STUDENTS_IMPORT_TEMPLATE_FILENAME = 'students_import_template.csv';
+
+/**
+ * Sample import CSV (header + one example row). Same columns as export.
+ * @returns {string} CSV body without BOM (caller may prepend BOM)
+ */
+export function buildStudentsImportTemplateCsv() {
+  const headers = [...STUDENT_CSV_HEADERS];
+  const example = studentCsvTemplateExampleRow();
+  if (example.length !== headers.length) {
+    throw new Error('Import template columns are misaligned');
+  }
+  const escape = (value) => {
+    if (value == null || value === '') return '';
+    const s = String(value);
+    if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    return s;
+  };
+  return [headers.map(escape).join(','), example.map(escape).join(',')].join('\n');
+}
+
 /**
  * @param {string[]} cells
  * @param {Record<string, number>} idx — normalized header → column index

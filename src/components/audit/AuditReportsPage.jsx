@@ -8,7 +8,7 @@ import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS } from '@/lib/tableQueryPresets';
 import { useToast } from '@/components/ToastProvider';
 import { formatDate } from '@/lib/utils';
-import { auditReportsFetcher } from '@/lib/auditReportsFetcher';
+import { auditReportsFetcher, AUDIT_CLIENT_ERRORS } from '@/lib/auditReportsFetcher';
 import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 
@@ -59,7 +59,7 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
     if (action.trim()) p.set('action', action.trim());
     if (entityType.trim()) p.set('entityType', entityType.trim());
     if (tenantFilter.trim()) p.set('tenantId', tenantFilter.trim());
-    return `/api/audit/logs?${p.toString()}`;
+    return `/api/audit/log-entries?${p.toString()}`;
   }, [from, to, action, entityType, tenantFilter]);
 
   const exportsUrl = useMemo(
@@ -250,7 +250,10 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
         </div>
       </div>
 
-      {(logsData?.unavailable || exportsData?.unavailable) && (
+      {(logsData?.unavailable ||
+        exportsData?.unavailable ||
+        logsData?.error ||
+        exportsData?.error) && (
         <div
           className="card"
           style={{
@@ -261,9 +264,27 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
           }}
         >
           <p style={{ margin: 0, color: 'var(--warning-800)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-            {logsData?.error ||
-              exportsData?.error ||
-              'Audit data could not be loaded. Ensure audit migrations are applied and S3 is configured for exports.'}
+            {(() => {
+              const raw = logsData?.error || exportsData?.error || '';
+              const code = logsData?.errorCode || exportsData?.errorCode;
+              // Never surface raw HTTP status codes from older clients/bundles.
+              let message = raw;
+              if (!raw || /\(\d{3}\)/.test(raw) || /Could not load audit data/i.test(raw)) {
+                message = AUDIT_CLIENT_ERRORS.LOAD_FAILED;
+                const refMatch = String(raw).match(/\[Ref:\s*[A-Z0-9]+\]/i);
+                if (refMatch) message = `${message} ${refMatch[0]}`;
+              }
+              return (
+                <>
+                  {message}
+                  {code ? (
+                    <span style={{ display: 'block', marginTop: '0.35rem', fontSize: '0.8rem', opacity: 0.9 }}>
+                      Code: {code}
+                    </span>
+                  ) : null}
+                </>
+              );
+            })()}
           </p>
         </div>
       )}

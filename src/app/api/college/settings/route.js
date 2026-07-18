@@ -15,6 +15,7 @@ import {
   AND_JP_NOT_DELETED,
 } from '@/lib/softDeleteSql';
 import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
+import { isBrowserLoadableAssetUrl } from '@/lib/clientAssetUrl';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -194,7 +195,17 @@ async function __platform_POST(request) {
 
     const body = await request.json();
     const website = body?.website || '';
-    const logoUrl = body?.logoUrl || '';
+    const logoUrlRaw = String(body?.logoUrl || '').trim();
+    if (logoUrlRaw && !isBrowserLoadableAssetUrl(logoUrlRaw)) {
+      return NextResponse.json(
+        {
+          error:
+            'Logo URL must be a web address (https://…) or site path (/…). Use Upload college logo instead of a file path on your computer.',
+        },
+        { status: 400 },
+      );
+    }
+    const logoUrl = logoUrlRaw;
     const websiteApi = body?.websiteApi || '';
     const social = body?.social || {};
     const institution = body?.institution || {};

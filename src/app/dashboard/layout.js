@@ -26,7 +26,7 @@ import NotificationDropdown from '@/components/NotificationDropdown';
 import DevScreenTag from '@/components/DevScreenTag';
 import ScreenSearchBar from '@/components/ScreenSearchBar';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
-import { Menu, Mail, Home, PanelLeft, PanelLeftClose } from 'lucide-react';
+import { Menu, Mail, Home, PanelLeft, PanelLeftClose, LogOut, ChevronRight, ArrowLeft } from 'lucide-react';
 import { getAcademicYearOptions, getCurrentAcademicYear } from '@/lib/academicYear';
 import {
   ACTIVE_ACADEMIC_YEAR_KEY,
@@ -462,7 +462,21 @@ export default function DashboardLayout({ children }) {
           <Link
             href={getRoleProfilePath(role)}
             className="dashboard-identity-link"
-            onClick={() => setMobileOpen(false)}
+            onClick={(e) => {
+              setMobileOpen(false);
+              const dest = getRoleProfilePath(role);
+              if (!dest) {
+                e.preventDefault();
+                return;
+              }
+              // Use client navigation explicitly so the footer identity card always works
+              e.preventDefault();
+              if (pathname === dest) {
+                router.refresh();
+              } else {
+                router.push(dest);
+              }
+            }}
             aria-label={`${getRoleProfileLabel(role)} — ${session.user.name}`}
             title={getRoleProfileLabel(role)}
           >
@@ -492,6 +506,12 @@ export default function DashboardLayout({ children }) {
                   {getRoleDisplayName(role, { isAlumni: Boolean(session.user?.isAlumni) })}
                 </div>
               </div>
+              <ChevronRight
+                size={16}
+                aria-hidden="true"
+                className="sidebar-footer-chevron"
+                style={{ flexShrink: 0, color: 'var(--text-tertiary)' }}
+              />
             </div>
           </Link>
         </div>
@@ -508,6 +528,15 @@ export default function DashboardLayout({ children }) {
             >
               <Menu size={18} aria-hidden="true" />
             </button>
+            <Link
+              href="/"
+              className="btn btn-ghost btn-sm dashboard-mobile-landing-link"
+              title="Back to landing page"
+              aria-label="Back to landing page"
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+              <span>Landing</span>
+            </Link>
 
             <div
               style={{
@@ -647,9 +676,10 @@ export default function DashboardLayout({ children }) {
             {role === 'student' && (
               <Link
                 href="/dashboard/student/reminders"
-                className="btn btn-ghost btn-sm"
+                className="btn btn-ghost btn-sm topbar-label-hide-mobile"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600 }}
                 title="Reminders & email preview"
+                aria-label="Email reminders"
               >
                 <Mail size={16} aria-hidden="true" /> Email
               </Link>
@@ -661,10 +691,13 @@ export default function DashboardLayout({ children }) {
             <div className="dropdown" style={{ position: 'relative' }}>
               <button
                 type="button"
-                className="btn btn-ghost btn-sm"
+                className="btn btn-ghost btn-sm topbar-label-hide-mobile"
                 onClick={() => signOut({ callbackUrl: '/login?force=1' })}
-                style={{ color: 'var(--text-secondary)' }}
+                style={{ color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                title="Sign out"
+                aria-label="Sign out"
               >
+                <LogOut size={16} aria-hidden="true" />
                 Sign Out
               </button>
             </div>

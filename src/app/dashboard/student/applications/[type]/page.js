@@ -393,7 +393,7 @@ export default function StudentApplicationsPage({ params }) {
         {!isLoading && tabTotalCount > 0 && (
           <div className="card card-table-shell">
             <div className="table-container">
-            <table className={`data-table${isJobApplications ? ' student-opportunities-table' : ''}`}>
+            <table className={`data-table data-table-mobile-cards${isJobApplications ? ' student-opportunities-table' : ''}`}>
               <thead>
                 <tr>
                   {isJobApplications ? (
@@ -437,7 +437,7 @@ export default function StudentApplicationsPage({ params }) {
                     className={isJobApplications && selection.isSelected(app) ? 'is-row-selected' : undefined}
                   >
                     {isJobApplications ? (
-                      <td className="student-opportunities-col-select" style={{ paddingLeft: '0.75rem' }}>
+                      <td className="student-opportunities-col-select" data-label="" style={{ paddingLeft: '0.75rem' }}>
                         <input
                           type="checkbox"
                           aria-label={`Select ${app.role || 'job application'} at ${app.company || 'company'}`}
@@ -446,21 +446,22 @@ export default function StudentApplicationsPage({ params }) {
                         />
                       </td>
                     ) : null}
-                    <td style={{ paddingLeft: isJobApplications ? '0.5rem' : '1rem' }}>
+                    <td data-label="Company" style={{ paddingLeft: isJobApplications ? '0.5rem' : '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <EntityLogo name={app.company} size="sm" shape="rounded" />
                         <CompanyNameLink name={app.company} website={app.website} className="font-semibold" />
                       </div>
                     </td>
-                    <td className="text-sm">{app.role}</td>
-                    <td>
+                    <td className="text-sm" data-label="Role">{app.role}</td>
+                    <td data-label="Status">
                       <span className={`badge badge-${getStatusColor(app.status)} badge-dot`}>{formatStatus(app.status)}</span>
                     </td>
-                    <td className="text-sm">{roundLabel(app)}</td>
-                    <td className="text-sm">{formatDate(app.appliedAt)}</td>
-                    {type === 'jobs' && <td className="text-sm">{formatDate(app.driveDate)}</td>}
+                    <td className="text-sm" data-label="Stage">{roundLabel(app)}</td>
+                    <td className="text-sm" data-label="Applied">{formatDate(app.appliedAt)}</td>
+                    {type === 'jobs' && <td className="text-sm" data-label="Drive date">{formatDate(app.driveDate)}</td>}
                     <td
                       className={isJobApplications ? 'student-opportunities-col-actions' : undefined}
+                      data-label="Actions"
                       style={{ textAlign: isJobApplications ? 'right' : 'center', paddingRight: isJobApplications ? '1rem' : undefined }}
                     >
                       {isJobApplications ? (
@@ -591,7 +592,7 @@ export default function StudentApplicationsPage({ params }) {
           onClick={() => setSelectedApp(null)}
         >
           <div
-            className="animate-fadeIn"
+            className="animate-fadeIn app-detail-drawer"
             style={{
               width: '480px', maxWidth: '95vw', height: '100vh',
               background: 'var(--bg-surface)', boxShadow: 'var(--shadow-xl)',
@@ -641,6 +642,7 @@ export default function StudentApplicationsPage({ params }) {
 
             {/* Details grid */}
             <div
+              className="form-grid-2"
               style={{
                 display: 'grid', gridTemplateColumns: '1fr 1fr',
                 gap: '1rem', padding: '1.25rem',

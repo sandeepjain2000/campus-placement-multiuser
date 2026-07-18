@@ -15,6 +15,9 @@ export function isS3Configured() {
 export function describeStorageError(error) {
   const name = String(error?.name || error?.Code || '');
   const message = String(error?.message || '');
+  if (/not configured|missing aws env/i.test(message)) {
+    return 'File storage is not configured on the server. Set AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and S3_BUCKET_NAME.';
+  }
   if (
     name === 'InvalidAccessKeyId'
     || name === 'InvalidClientTokenId'
@@ -26,8 +29,8 @@ export function describeStorageError(error) {
   if (name === 'SignatureDoesNotMatch' || /signature we calculated does not match/i.test(message)) {
     return 'File storage credentials are misconfigured (secret key mismatch). Check AWS_SECRET_ACCESS_KEY on the server.';
   }
-  if (name === 'AccessDenied' || name === 'AccessDeniedException') {
-    return 'File storage access denied. The AWS IAM user needs s3:PutObject and s3:GetObject on the documents bucket.';
+  if (name === 'AccessDenied' || name === 'AccessDeniedException' || /access denied/i.test(message)) {
+    return 'File storage access denied. The AWS IAM user needs s3:PutObject, s3:GetObject, and s3:HeadObject on the documents bucket.';
   }
   if (
     name === 'NotFound'
@@ -35,10 +38,44 @@ export function describeStorageError(error) {
     || name === 'NoSuchBucket'
     || error?.$metadata?.httpStatusCode === 404
     || /nosuchkey/i.test(message)
+    || /no longer available/i.test(message)
   ) {
     return 'This file is no longer available.';
   }
-  return message || 'Upload failed';
+  if (/invalid file location/i.test(message)) {
+    return 'This file location is invalid. Re-upload the CV.';
+  }
+  return message || 'File storage request failed';
+}
+
+/** True when the error is bad/missing AWS credentials (ops must fix env). */
+export function isStorageCredentialError(error) {
+  const name = String(error?.name || error?.Code || '');
+  const message = String(error?.message || '');
+  return (
+    name === 'InvalidAccessKeyId'
+    || name === 'InvalidClientTokenId'
+    || name === 'SignatureDoesNotMatch'
+    || /access key id you provided does not exist/i.test(message)
+    || /security token included in the request is invalid/i.test(message)
+    || /signature we calculated does not match/i.test(message)
+    || /not configured|missing aws env/i.test(message)
+  );
+}
+
+/** True when the object is missing (not a credential/config problem). */
+export function isStorageMissingObjectError(error) {
+  const name = String(error?.name || error?.Code || '');
+  const message = String(error?.message || '');
+  return (
+    name === 'NotFound'
+    || name === 'NoSuchKey'
+    || name === 'NoSuchBucket'
+    || error?.$metadata?.httpStatusCode === 404
+    || /nosuchkey/i.test(message)
+    || /no longer available/i.test(message)
+    || /invalid file location/i.test(message)
+  );
 }
 
 /** True when the object exists in the configured bucket. Missing keys return false (never throw). */

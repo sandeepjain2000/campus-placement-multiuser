@@ -29,7 +29,8 @@ export async function respondPlatformError(error, opts) {
 
 /**
  * Wrap App Router route handlers so thrown errors and unlogged error responses
- * are persisted to platform_error_logs.
+ * are persisted to platform_error_logs (including soft HTTP 2xx failures such as
+ * `{ unavailable: true }` when no reference was already attached).
  *
  * @param {Record<string, Function | undefined>} handlers
  * @param {{ context?: string }} [options]

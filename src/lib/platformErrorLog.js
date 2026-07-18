@@ -90,6 +90,7 @@ function logPlatformFailureFallback(payload, dbErr) {
  *   userId?: string | null;
  *   tenantId?: string | null;
  *   employerId?: string | null;
+ *   errorCode?: string | null;
  *   details?: Record<string, unknown> | null;
  *   ipAddress?: string | null;
  *   severity?: 'info' | 'warning' | 'error';
@@ -107,7 +108,8 @@ export async function writePlatformErrorLog(payload) {
   const err = payload.error;
   const errorMessage = truncate(errorMessageFromUnknown(err));
   const errorCode =
-    err && typeof err === 'object' && err.code != null ? String(err.code).slice(0, 50) : null;
+    (payload.errorCode != null ? String(payload.errorCode).slice(0, 50) : null)
+    || (err && typeof err === 'object' && err.code != null ? String(err.code).slice(0, 50) : null);
 
   const details = {
     ...(payload.details || {}),
@@ -172,29 +174,62 @@ export function inferApiErrorContext(pathname, method = '') {
 }
 
 /**
+ * True when the JSON body already carries a platform_error_logs reference.
+ * @param {Record<string, unknown> | null | undefined} body
+ */
+export function isAlreadyLoggedErrorBody(body) {
+  if (!body || typeof body !== 'object') return false;
+  if (body.referenceId || body.reference) return true;
+  const fields = [body.error, body.userMessage, body.warning];
+  return fields.some(
+    (v) => typeof v === 'string' && (v.includes('[Ref:') || v.includes('Reference:')),
+  );
+}
+
+/**
+ * Soft HTTP 2xx payloads that still represent a failed operation
+ * (UI shows empty/unavailable while the real failure must hit Error logs).
+ * @param {Record<string, unknown> | null | undefined} body
+ */
+export function isSoftApiFailureBody(body) {
+  if (!body || typeof body !== 'object') return false;
+  if (body.unavailable === true) return true;
+  if (body.success === false && (body.error || body.userMessage || body.warning)) return true;
+  if (body.ok === false && (body.error || body.userMessage || body.warning)) return true;
+  return false;
+}
+
+/**
  * Log an HTTP error response that did not already persist a platform_error_logs row.
- * Attaches a support reference id to all 4xx/5xx JSON bodies when not already present.
+ * Covers:
+ * - 4xx/5xx JSON responses
+ * - Soft HTTP 2xx failures (`unavailable`, `success: false`, etc.)
+ * Attaches a support reference id when not already present.
  * @param {Request} request
  * @param {Response} response
  * @param {{ context?: string; sessionUser?: object }} [opts]
  * @returns {Promise<Response>}
  */
 export async function logApiResponseIfFailure(request, response, opts = {}) {
-  if (!response || response.status < 400) return response;
+  if (!response) return response;
+
+  const statusCode = response.status;
+  const isHardFailure = statusCode >= 400;
+  if (!isHardFailure && statusCode < 200) return response;
 
   let body = {};
+  let parsedJson = false;
   try {
     body = await response.clone().json();
+    parsedJson = true;
   } catch {
     body = {};
   }
 
-  if (
-    body.referenceId ||
-    body.reference ||
-    (typeof body.error === 'string' && body.error.includes('[Ref:')) ||
-    (typeof body.userMessage === 'string' && body.userMessage.includes('[Ref:'))
-  ) {
+  const isSoftFailure = !isHardFailure && parsedJson && isSoftApiFailureBody(body);
+  if (!isHardFailure && !isSoftFailure) return response;
+
+  if (isAlreadyLoggedErrorBody(body)) {
     return response;
   }
 
@@ -208,34 +243,41 @@ export async function logApiResponseIfFailure(request, response, opts = {}) {
   const context =
     opts.context
     || inferApiErrorContext(requestUrl?.pathname || '', request.method);
-  const statusCode = response.status;
   const message =
     (typeof body.error === 'string' && body.error)
     || (typeof body.userMessage === 'string' && body.userMessage)
-    || `HTTP ${statusCode}`;
+    || (typeof body.warning === 'string' && body.warning)
+    || (isSoftFailure ? 'Request failed (soft failure)' : `HTTP ${statusCode}`);
 
   const err = new Error(message);
-  err.statusCode = statusCode;
+  err.statusCode = isSoftFailure ? (Number(body.statusCode) || 500) : statusCode;
+  if (body.errorCode != null) err.code = String(body.errorCode);
 
+  const logStatus = isSoftFailure ? (Number(body.statusCode) || 500) : statusCode;
   const referenceId = await writePlatformErrorLog({
     context,
     error: err,
-    statusCode,
-    severity: statusCode >= 500 ? 'error' : statusCode === 401 ? 'info' : 'warning',
+    errorCode: body.errorCode != null ? String(body.errorCode) : null,
+    statusCode: logStatus,
+    severity: logStatus >= 500 ? 'error' : logStatus === 401 ? 'info' : 'warning',
     userId: opts.sessionUser?.id || opts.sessionUser?.sub || null,
     tenantId: opts.tenantId || null,
     employerId: opts.employerId || null,
     userMessage: message,
     ipAddress: getRequestIp(request),
     details: {
-      source: 'api_response',
+      source: isSoftFailure ? 'api_soft_failure' : 'api_response',
+      softFailure: isSoftFailure || undefined,
       route: requestUrl?.pathname || null,
       requestMethod: request?.method || null,
       requestQuery: requestUrl?.search || null,
+      httpStatus: statusCode,
+      systemErrorCode: body.errorCode || null,
       userAgent: (request && request.headers && typeof request.headers.get === 'function')
         ? truncate(request.headers.get('user-agent'), 300)
         : null,
       responseBody: sanitizePayloadForLog(body),
+      technicalMessage: message,
     },
   });
 
@@ -247,25 +289,27 @@ export async function logApiResponseIfFailure(request, response, opts = {}) {
     headers.set('content-type', 'application/json');
   }
 
-  const baseMessage = body.userMessage || body.error || message;
+  const baseMessage = body.userMessage || body.error || body.warning || message;
   const userMessage =
-    statusCode >= 500
+    logStatus >= 500
       ? (body.userMessage || appendErrorReference(
         [baseMessage, 'Full details were saved for the platform administrator.'].filter(Boolean).join(' '),
         { reference: ref, referenceId },
       ))
       : appendErrorReference(baseMessage, { reference: ref, referenceId });
 
-  return NextResponse.json(
-    {
-      ...body,
-      error: userMessage,
-      userMessage,
-      referenceId,
-      reference: ref,
-    },
-    { status: statusCode, headers },
-  );
+  const nextBody = {
+    ...body,
+    error: body.error ? appendErrorReference(String(body.error), { reference: ref, referenceId }) : userMessage,
+    userMessage,
+    referenceId,
+    reference: ref,
+  };
+  if (body.warning && typeof body.warning === 'string') {
+    nextBody.warning = appendErrorReference(body.warning, { reference: ref, referenceId });
+  }
+
+  return NextResponse.json(nextBody, { status: statusCode, headers });
 }
 
 /** @param {Request} request */

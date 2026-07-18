@@ -48,23 +48,28 @@ const nextConfig = {
       },
     ];
   },
-  // Vercel omits App Router routes whose path contains a `cvs/` segment (introduced with multi-CV).
-  // Rewrite legacy URLs to production-safe aliases so bookmarks and older clients keep working.
+  // Vercel omits App Router routes whose path contains a `cvs/` or `logs/` segment.
+  // beforeFiles: rewrite before filesystem routes so legacy paths never 404 as missing handlers.
   async rewrites() {
-    return [
-      { source: '/api/student/cvs', destination: '/api/student/cv-list' },
-      { source: '/api/student/cvs/upload', destination: '/api/student/cv-upload' },
-      { source: '/api/student/cvs/:id/view', destination: '/api/student/cv-view/:id' },
-      { source: '/api/student/cvs/:id', destination: '/api/student/cv-item/:id' },
-      {
-        source: '/api/college/students/:id/cvs/:cvId/verify',
-        destination: '/api/college/students/:id/student-cv-verify/:cvId',
-      },
-      {
-        source: '/api/college/students/:id/cvs',
-        destination: '/api/college/students/:id/student-cv-list',
-      },
-    ];
+    return {
+      beforeFiles: [
+        { source: '/api/student/cvs', destination: '/api/student/cv-list' },
+        { source: '/api/student/cvs/upload', destination: '/api/student/cv-upload' },
+        { source: '/api/student/cvs/:id/view', destination: '/api/student/cv-view/:id' },
+        { source: '/api/student/cvs/:id', destination: '/api/student/cv-item/:id' },
+        {
+          source: '/api/college/students/:id/cvs/:cvId/verify',
+          destination: '/api/college/students/:id/student-cv-verify/:cvId',
+        },
+        {
+          source: '/api/college/students/:id/cvs',
+          destination: '/api/college/students/:id/student-cv-list',
+        },
+        { source: '/api/audit/logs', destination: '/api/audit/log-entries' },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
   async headers() {
     return [

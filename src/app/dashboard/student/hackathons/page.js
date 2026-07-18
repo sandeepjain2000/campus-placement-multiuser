@@ -143,7 +143,7 @@ export default function StudentHackathonsPage() {
                   </div>
                 ) : null}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', minWidth: '11rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', minWidth: 'min(11rem, 100%)', flex: '1 1 10rem' }}>
                 {row.hasApplied ? (
                   <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
                     {formatStatus(row.applicationStatus)}

@@ -8,19 +8,68 @@ import { CvLabelInput } from '@/components/student/StudentCvApply';
 import { CV_LABEL_MAX_LENGTH } from '@/lib/studentCvShared';
 import { patchStudentCv, postStudentCvUpload, studentCvDownloadUrl, studentCvViewUrl } from '@/lib/studentCvApiPaths';
 import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
+import {
+  STUDENT_CV_LOAD,
+  STUDENT_CV_LOAD_MESSAGES,
+  fetchStudentCvListClassified,
+  studentCvRowMissingFile,
+} from '@/lib/studentCvLoadClient';
 import { Archive, CheckCircle2, CircleAlert, FileText, Star, Upload } from 'lucide-react';
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error || 'Failed to load CVs');
-  return json;
-};
+const fetcher = async () => fetchStudentCvListClassified('?includeArchived=1');
+
+function CvLoadBanner({ result }) {
+  if (!result || result.status === STUDENT_CV_LOAD.OK) return null;
+
+  if (result.status === STUDENT_CV_LOAD.EMPTY) {
+    return null; // empty state is shown in the Active CVs section
+  }
+
+  const isRequest = result.status === STUDENT_CV_LOAD.REQUEST_FAILED;
+  const isUnavailable = result.status === STUDENT_CV_LOAD.UNAVAILABLE;
+  if (!isRequest && !isUnavailable) return null;
+
+  return (
+    <div
+      className="card"
+      role="status"
+      style={{
+        padding: '1rem',
+        marginBottom: '1rem',
+        borderColor: isRequest ? 'var(--warning-300)' : 'var(--border-default)',
+        background: isRequest ? 'var(--warning-50, #fffbeb)' : undefined,
+      }}
+    >
+      <p style={{ margin: 0, display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+        <CircleAlert size={18} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden />
+        <span>
+          {result.message
+            || (isUnavailable
+              ? STUDENT_CV_LOAD_MESSAGES.UNAVAILABLE
+              : STUDENT_CV_LOAD_MESSAGES.REQUEST_FAILED)}
+        </span>
+      </p>
+      {result.errorCode || result.reference ? (
+        <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0 1.75rem' }}>
+          {result.errorCode ? `Code: ${result.errorCode}` : null}
+          {result.errorCode && result.reference ? ' · ' : null}
+          {result.reference ? `Ref: ${result.reference}` : null}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
 export default function StudentMyCvsPage() {
   const { addToast } = useToast();
-  const { data, error, isLoading, mutate } = useSWR('/api/student/cv-list?includeArchived=1', fetcher);
+  const { data, isLoading, mutate } = useSWR('student-cv-list-archived', fetcher, {
+    shouldRetryOnError: false,
+    revalidateOnFocus: false,
+  });
   const items = Array.isArray(data?.items) ? data.items : [];
+  const loadFailed =
+    data?.status === STUDENT_CV_LOAD.REQUEST_FAILED
+    || data?.status === STUDENT_CV_LOAD.UNAVAILABLE;
 
   const [label, setLabel] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -98,13 +147,9 @@ export default function StudentMyCvsPage() {
         </div>
       </div>
 
-      {error && (
-        <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
-          <p style={{ margin: 0 }}>{error.message}</p>
-        </div>
-      )}
+      {data ? <CvLoadBanner result={data} /> : null}
 
-      {cvVerification.required && !cvVerification.hasVerifiedCv ? (
+      {cvVerification.required && !cvVerification.hasVerifiedCv && !loadFailed ? (
         <div className="card" style={{ padding: '1rem', marginBottom: '1rem', borderColor: 'var(--warning-300)' }}>
           <p style={{ margin: 0, display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
             <CircleAlert size={18} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden />
@@ -135,7 +180,11 @@ export default function StudentMyCvsPage() {
           <h2 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Active CVs ({active.length})</h2>
           {active.length === 0 ? (
             <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
-              <p style={{ margin: 0, color: 'var(--text-secondary)' }}>No CVs yet. Upload one to apply to opportunities.</p>
+              <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+                {loadFailed
+                  ? 'CV list could not be refreshed. Upload is still available — try again in a moment.'
+                  : STUDENT_CV_LOAD_MESSAGES.EMPTY}
+              </p>
             </div>
           ) : (
             <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -177,6 +226,18 @@ export default function StudentMyCvsPage() {
                           Used on {cv.usedOnApplications} application{cv.usedOnApplications === 1 ? '' : 's'}
                         </p>
                       )}
+                      {studentCvRowMissingFile(cv) ? (
+                        <p
+                          style={{
+                            margin: '0.35rem 0 0',
+                            fontSize: '0.8rem',
+                            color: 'var(--warning-700, #b45309)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {STUDENT_CV_LOAD_MESSAGES.MISSING_FILE}
+                        </p>
+                      ) : null}
                     </div>
                     <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                       {editingId === cv.id ? (
@@ -246,11 +307,11 @@ export default function StudentMyCvsPage() {
                             Archive
                           </button>
                           <CvViewDownloadButtons
-                            viewUrl={cv.hasFile === false ? null : studentCvViewUrl(cv.id)}
-                            downloadUrl={cv.hasFile === false ? null : studentCvDownloadUrl(cv.id)}
+                            viewUrl={studentCvRowMissingFile(cv) ? null : studentCvViewUrl(cv.id)}
+                            downloadUrl={studentCvRowMissingFile(cv) ? null : studentCvDownloadUrl(cv.id)}
                             viewLabel="View"
                           />
-                          {cv.hasFile === false ? (
+                          {studentCvRowMissingFile(cv) ? (
                             <span className="text-xs text-tertiary">File unavailable</span>
                           ) : null}
                         </>
