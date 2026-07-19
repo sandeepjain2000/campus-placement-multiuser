@@ -331,8 +331,20 @@ export function getRequestIp(request) {
 function buildErrorBody(statusCode, rawMessage, defaultMessage, hint, referenceId) {
   const ref = formatErrorReference(referenceId);
   const baseMessage = rawMessage || defaultMessage || 'Request failed';
+
+  // Never put schema/migration SQL hints in the user-facing payload — they belong in Error logs only.
+  const isSchemaNoise =
+    /column .+ does not exist/i.test(baseMessage)
+    || /relation .+ does not exist/i.test(baseMessage)
+    || /database column is missing/i.test(String(hint || ''))
+    || /run pending migrations/i.test(String(hint || ''))
+    || /run pending migrations/i.test(baseMessage);
+
   if (statusCode < 500) {
-    const displayed = appendErrorReference(baseMessage, { reference: ref, referenceId });
+    const safeBase = isSchemaNoise
+      ? (defaultMessage || 'Request failed')
+      : baseMessage;
+    const displayed = appendErrorReference(safeBase, { reference: ref, referenceId });
     const body = {
       error: displayed,
       userMessage: displayed,
@@ -346,7 +358,10 @@ function buildErrorBody(statusCode, rawMessage, defaultMessage, hint, referenceI
 
   const base = defaultMessage || 'Something went wrong';
   const parts = [base];
-  if (hint) parts.push(hint);
+  // Skip postgres schema hints in the client-visible message.
+  if (hint && !isSchemaNoise && !/column is missing|table is missing|migrations/i.test(hint)) {
+    parts.push(hint);
+  }
   if (ref) {
     parts.push(`Reference: ${ref}. Full details were saved for the platform administrator.`);
   } else {

@@ -1,0 +1,542 @@
+Index
+PlacementHub — Test Case Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6
+Click a module name to open that tab. Source: docs/product/placementhub-functionality.md + in-app modules (sandbox / pre-launch).,,,,,,
+,,,,,,
+#,Module / Tab (click to open),Case Count,P0,P1,P2+,Link
+0,Coverage Matrix,Checklist,—,—,—,Open >
+1,01 Auth & Access,23,13,8,2,Open >
+2,02 Student,30,15,12,3,Open >
+3,03 Employer,37,17,14,6,Open >
+4,04 College Admin,40,19,17,4,Open >
+5,05 Super Admin,19,10,8,1,Open >
+6,06 Partnerships,5,3,2,0,Open >
+7,07 Drives,5,1,2,2,Open >
+8,08 Jobs Internships Projects,5,3,2,0,Open >
+9,09 Applications Pipeline,5,1,3,1,Open >
+10,10 Assessments,6,2,3,1,Open >
+11,11 Interviews,4,0,2,2,Open >
+12,12 Offers,4,1,2,1,Open >
+13,13 Placement Rules FCFS,5,2,2,1,Open >
+14,14 Alerts Notifications,11,1,9,1,Open >
+15,15 Communication,5,0,3,2,Open >
+16,16 Mentorship,4,2,1,1,Open >
+17,17 Alumni,3,2,1,0,Open >
+18,18 Engagement Calendar,4,0,1,3,Open >
+19,19 Reports Audit Export,5,1,1,3,Open >
+20,20 CVs Documents Storage,5,0,5,0,Open >
+21,21 Multi-tenant Security,6,6,0,0,Open >
+22,22 Mobile UI,5,0,2,3,Open >
+23,23 Error Handling Logging,5,2,2,1,Open >
+24,24 Marketplace Help Feedback,5,0,2,3,Open >
+25,25 Sandbox Demo QA,5,0,3,2,Open >
+,TOTAL,251,101,107,43,
+,,,,,,
+Priority legend,,,,,,
+P0 = Critical path / security / data integrity,,,,,,
+P1 = High — core role workflows,,,,,,
+"P2/P3 = Medium/Low — engagement, polish, edge",,,,,,
+,,,,,,
+Columns on each module tab,,,,,,
+"TC ID, Module, Feature, Title, Priority, Type, Role(s), Preconditions, Test Steps, Expected Result, Test Data / Notes, Automation, Status",,,,,,
+,,,,,,
+Tip: Use Open > or click the module name. Each module tab has a << Back to Index link.,,,,,,
+
+
+Coverage Matrix
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6
+Role x capability coverage checklist (mark during planning),,,,,,
+,,,,,,
+Capability,Student,Employer,College Admin,Placement Committee,Super Admin,Public
+Sign-in / session,Y,Y,Y,Y,Y,Y
+Profile / settings,Y,Y,Y,Y,Y,—
+Browse opportunities,Y,—,—,—,—,—
+Apply / withdraw,Y,—,—,—,—,—
+Publish listings / drives,—,Y,—,—,—,—
+Approve partnerships / visibility,—,—,Y,Y,—,—
+Assessments / hiring results,—,Y,Y,—,—,—
+Interviews,Y,Y,Y,—,—,—
+Offers accept/create,Y,Y,Y,—,—,—
+Placement rules / FCFS,Y,Y,Y,—,—,—
+Students master / CSV,—,—,Y,Y,—,—
+Alerts inbox,Y,Y,Y,Y,Y,—
+Clarifications,Y,Y,Y,—,—,—
+Mentorship requests,Y,Y,Y,—,—,—
+Alumni jobs,Y,Y,—,—,—,—
+Reports / audit,—,—,Y,—,Y,—
+Error / email logs,—,—,—,—,Y,—
+Platform tenant admin,—,—,—,—,Y,—
+
+
+01 Auth & Access
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-01-001,01 Auth & Access,Sign-in,Valid student credentials land on student dashboard,P0,Functional,Student,Provisioned student account,"1. Open /sign-in
+2. Enter valid email/password
+3. Complete captcha if shown
+4. Submit",Redirect to student dashboard; session cookie set; role menus visible,Seed student@placementhub.test,Candidate,
+TC-01-002,01 Auth & Access,Sign-in,Valid employer credentials land on employer dashboard,P0,Functional,Employer,Approved employer account,"1. Sign in as employer
+2. Observe home",Employer dashboard and partnership-scoped menus load,,Candidate,
+TC-01-003,01 Auth & Access,Sign-in,Valid college admin credentials land on college dashboard,P0,Functional,College Admin,College admin account for tenant,1. Sign in as college admin,College dashboard loads; tenant branding/name shown,,Candidate,
+TC-01-004,01 Auth & Access,Sign-in,Valid super admin credentials land on admin dashboard,P0,Functional,Super Admin,Super admin provisioned,1. Sign in as super admin,Admin dashboard and platform menus load,,Candidate,
+TC-01-005,01 Auth & Access,Sign-in,Invalid password shows error and does not create session,P0,Negative,All,Existing account,"1. Enter correct email, wrong password
+2. Submit",Error message; remain on sign-in; no dashboard access,,Candidate,
+TC-01-006,01 Auth & Access,Sign-in,Unknown email rejected,P1,Negative,All,,"1. Enter non-existent email
+2. Submit",Generic auth failure; no user enumeration leak preferred,,Manual,
+TC-01-007,01 Auth & Access,Sign-in,Empty email/password blocked by validation,P1,Negative,All,,1. Submit blank form,Client/server validation; no request or 400,,Candidate,
+TC-01-008,01 Auth & Access,Sign-in,Captcha required when enabled,P1,Security,All,Captcha configured,1. Attempt sign-in without captcha token,Blocked with verification message,,Manual,
+TC-01-009,01 Auth & Access,Sign-in,Account pending approval cannot access dashboard,P0,Negative,"Employer, College Admin",Registration pending super-admin approval,1. Sign in with pending account,Denied or pending message; no protected routes,,Manual,
+TC-01-010,01 Auth & Access,Sign-out,Sign out clears session and returns to public area,P0,Functional,All,Signed in,1. Click Sign out,Session ended; protected /dashboard redirects to sign-in,,Candidate,
+TC-01-011,01 Auth & Access,Password reset,Request reset email for valid account,P1,Functional,All,SMTP configured,"1. Open forgot password
+2. Enter registered email
+3. Submit",Success acknowledgement; email logged; reset link works,Check Email logs / yopmail in sandbox,Manual,
+TC-01-012,01 Auth & Access,Password reset,Reset with expired/invalid token fails,P1,Negative,All,Expired token,"1. Open reset URL with bad token
+2. Submit new password",Error; password unchanged,,Manual,
+TC-01-013,01 Auth & Access,Password reset,Successful reset allows new password login,P0,Functional,All,Valid reset token,"1. Set new password
+2. Sign in with new password",Login succeeds; old password fails,,Manual,
+TC-01-014,01 Auth & Access,Registration,Employer can register via /register,P0,Functional,Employer,Captcha available,"1. Open /register
+2. Complete employer form
+3. Submit",Registration created; pending or approved per config; confirmation shown,,Manual,
+TC-01-015,01 Auth & Access,Registration,College can register via /register,P0,Functional,College Admin,Captcha available,1. Register as college,Tenant/registration row created; pending approval if required,,Manual,
+TC-01-016,01 Auth & Access,Registration,Student cannot self-register on public register,P0,Security,Student,,1. Inspect /register for student self-signup,No public student self-registration path; college provisioning only,Product rule Jun 2026,Manual,
+TC-01-017,01 Auth & Access,Registration,Duplicate email rejected,P1,Negative,"Employer, College Admin",Email already exists,1. Register with existing email,Clear error; no duplicate user,,Candidate,
+TC-01-018,01 Auth & Access,Session,Unauthenticated /dashboard request redirects to sign-in,P0,Security,All,Logged out,1. Open /dashboard/student directly,Redirect to sign-in with return awareness,,Candidate,
+TC-01-019,01 Auth & Access,Session,Role cannot open another role's dashboard routes,P0,Security,Student,Student session,1. Open /dashboard/admin and /dashboard/employer URLs,403/redirect; no data leak,,Candidate,
+TC-01-020,01 Auth & Access,Session,Browser back after sign-out does not resurrect session,P1,Security,All,Just signed out,"1. Sign out
+2. Browser Back",Still unauthenticated or forced re-auth,,Manual,
+TC-01-021,01 Auth & Access,Landing,Landing page loads with Sign In and Register,P1,UI,Public,,"1. Open /
+2. Click Sign In and Register",Pages load; marketing links work,,Candidate,
+TC-01-022,01 Auth & Access,Landing,Sandbox banner visible on landing when enabled,P2,UI,Public,NEXT_PUBLIC_SANDBOX_BANNER not false,1. Open /,Sandbox environment line shown at top,,Manual,
+TC-01-023,01 Auth & Access,Mobile nav,Mobile Landing link from dashboard returns to /,P2,UI,All,Signed in; viewport ≤768px,"1. Open any dashboard screen
+2. Tap Landing beside menu",Navigates to landing page,Mobile only,Manual,
+
+
+02 Student
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-02-001,02 Student,Dashboard,Student home loads without fatal errors,P0,Functional,Student,Active student,"1. Sign in as student
+2. Open home",Dashboard widgets load; no 500 toast,,Candidate,
+TC-02-002,02 Student,Profile,View My Profile with academic fields,P0,Functional,Student,Student profile exists,1. Open My Profile,"Name, department, CGPA, skills visible/editable per rules",,Candidate,
+TC-02-003,02 Student,Profile,Update profile and save successfully,P0,Functional,Student,Editable fields allowed,"1. Change skills/phone
+2. Save",Success toast; persisted on reload,,Candidate,
+TC-02-004,02 Student,Profile,Invalid CGPA rejected,P1,Negative,Student,Editable CGPA,"1. Enter CGPA > 10 or negative
+2. Save",Validation error; no save,,Candidate,
+TC-02-005,02 Student,Documents,Upload resume/CV when feature available,P0,Functional,Student,CV management migrated,"1. Open My CVs / documents
+2. Upload PDF within size limit",CV listed with label; default flag works,,Manual,
+TC-02-006,02 Student,Documents,Missing CV file shows missing-file state not crash,P1,Edge,Student,CV row without S3 object,"1. Open My CVs
+2. Try view missing file",Friendly missing-file message; page still usable,PH-CV-S3-MISSING,Manual,
+TC-02-007,02 Student,Documents,CV list soft-failure still loads page,P1,Edge,Student,Force CV API failure in sandbox,1. Open My CVs when API soft-fails,Empty/unavailable state with Ref; rest of page works; Error log entry,,Manual,
+TC-02-008,02 Student,Browse drives,Browse placement drives shows approved visible drives,P0,Functional,Student,Approved drive for tenant,1. Open Browse drives,Drive cards/list; eligibility hints; apply CTA when eligible,,Candidate,
+TC-02-009,02 Student,Browse drives,Ineligible student blocked from apply (CGPA/backlogs),P0,Negative,Student,Drive min CGPA above student,1. Attempt Apply,Blocked with clear eligibility reason,,Manual,
+TC-02-010,02 Student,Browse jobs,Browse jobs shows approved published jobs only,P0,Functional,Student,Approved job visibility,1. Open Browse jobs,Only approved listings for campus; pending not shown,,Candidate,
+TC-02-011,02 Student,Browse internships,Browse internships lists approved internships,P0,Functional,Student,Approved internship,1. Open internships browse,List loads; apply available before deadline,,Candidate,
+TC-02-012,02 Student,Browse projects,Browse short projects,P1,Functional,Student,Approved short project,1. Open projects,Listings visible; apply flow works,,Manual,
+TC-02-013,02 Student,Browse hackathons,Browse hackathons,P1,Functional,Student,Approved hackathon,1. Open hackathons,Listings visible; apply flow works,,Manual,
+TC-02-014,02 Student,Apply,Apply to drive before deadline succeeds,P0,Functional,Student,Eligible; not already applied,"1. Apply with required CV
+2. Confirm",Application created; status Applied; alert/email as configured,,Candidate,
+TC-02-015,02 Student,Apply,Apply after deadline rejected,P0,Negative,Student,Past deadline drive,1. Attempt apply,Rejected with deadline message,,Manual,
+TC-02-016,02 Student,Apply,Duplicate apply prevented,P1,Negative,Student,Already applied,1. Apply again,Idempotent block; no duplicate rows,,Candidate,
+TC-02-017,02 Student,Apply,Withdraw application when allowed,P1,Functional,Student,Applied; withdrawal enabled,1. Withdraw,Status updated; employer sees withdrawn,,Manual,
+TC-02-018,02 Student,My Applications,Applications listed per type tabs,P0,Functional,Student,Mixed applications,"1. Open My Applications
+2. Switch type tabs",Correct apps per tab; status badges accurate,,Candidate,
+TC-02-019,02 Student,Interviews,My Interviews shows scheduled interviews,P0,Functional,Student,Interview scheduled,1. Open My Interviews,Date/time/mode visible; no crash,,Manual,
+TC-02-020,02 Student,Offers,View offer and accept,P0,Functional,Student,Pending offer,"1. Open My Offers
+2. Accept",Offer accepted; rules enforced (limits),,Manual,
+TC-02-021,02 Student,Offers,Decline offer,P1,Functional,Student,Pending offer,1. Decline,Offer declined; confirmation,,Manual,
+TC-02-022,02 Student,Offers,Offer letter view when attached,P1,Functional,Student,Offer with letter file,1. Open offer letter,File opens or download works; unavailable state if missing,,Manual,
+TC-02-023,02 Student,Calendar,Placement calendar shows relevant events,P1,Functional,Student,Campus events exist,1. Open calendar,Events render; navigation works,,Manual,
+TC-02-024,02 Student,Mentorship,Student can post mentorship request,P1,Functional,Student,Feature enabled,"1. Create mentorship need
+2. Submit",Request pending college approval,,Manual,
+TC-02-025,02 Student,Mentorship,Student sees approval/volunteer status,P2,Functional,Student,Request approved; employer volunteered,1. Open mentorship requests,Status reflects college + volunteers,,Manual,
+TC-02-026,02 Student,Clarifications,Student can read published clarifications,P1,Functional,Student,College published batch,1. Open clarifications,Q&A visible read-only,,Manual,
+TC-02-027,02 Student,Alerts,Student receives and opens alerts,P0,Functional,Student,Notification exists,"1. Open Inbox & Alerts
+2. Open unread",Marked read; unread count decreases,,Candidate,
+TC-02-028,02 Student,Data export,My data export downloads when supported,P2,Functional,Student,Export enabled,1. Request data export,File downloads or job queued; no 500,,Manual,
+TC-02-029,02 Student,Alumni,Alumni student sees alumni jobs not campus drives menu,P0,Functional,Student (Alumni),isAlumni flag set,"1. Sign in as alumni
+2. Inspect nav",Alumni browse/my jobs; campus drive browse hidden/replaced,,Manual,
+TC-02-030,02 Student,Feedback,Student can submit product feedback,P2,Functional,Student,,"1. Open Feedback
+2. Submit",Success; appears in admin inbox,,Manual,
+
+
+03 Employer
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-03-001,03 Employer,Dashboard,Employer home loads,P0,Functional,Employer,Approved employer,1. Sign in,Dashboard loads; campus context shown,,Candidate,
+TC-03-002,03 Employer,Profile,Update company profile,P0,Functional,Employer,Employer profile,"1. Edit company name/website
+2. Save",Persisted; logo upload if supported,,Manual,
+TC-03-003,03 Employer,Partnerships,Request campus partnership,P0,Functional,Employer,College visible in directory,"1. Campus Partnerships
+2. Request college",Pending request created; college sees it,,Candidate,
+TC-03-004,03 Employer,Partnerships,Cannot publish to campus without approval,P0,Security,Employer,No approval for campus A,1. Attempt create drive targeting A,Blocked or campus not selectable,,Manual,
+TC-03-005,03 Employer,Partnerships,Approved campus available for publishing,P0,Functional,Employer,Approved partnership,1. Create internship selecting approved campus,Campus selectable; save succeeds,,Candidate,
+TC-03-006,03 Employer,Drives,Request new placement drive,P0,Functional,Employer,Approved campus,"1. Create drive with required fields
+2. Submit",Drive pending college approval,,Candidate,
+TC-03-007,03 Employer,Drives,Edit draft/pending drive,P1,Functional,Employer,Own pending drive,"1. Edit title/dates
+2. Save",Updates persisted,,Manual,
+TC-03-008,03 Employer,Drives,Cancel drive when allowed,P1,Functional,Employer,Cancellable drive,1. Cancel,Status cancelled; students cannot apply,,Manual,
+TC-03-009,03 Employer,Internships,Publish internship to campuses,P0,Functional,Employer,Approved campuses,"1. Create internship
+2. Select campuses
+3. Publish",Visibility rows pending/approved per campus,,Candidate,
+TC-03-010,03 Employer,Jobs,Publish job listing,P0,Functional,Employer,Approved campuses,"1. Create job
+2. Publish",Job created with campus visibility,,Manual,
+TC-03-011,03 Employer,Projects,Publish short project,P1,Functional,Employer,Approved campus,1. Create short project,Listing created,,Manual,
+TC-03-012,03 Employer,Hackathons,Publish hackathon,P1,Functional,Employer,Approved campus,1. Create hackathon,Listing created,,Manual,
+TC-03-013,03 Employer,Applications,View applications list with filters,P0,Functional,Employer,Applications exist,"1. Open Applications
+2. Filter by status/campus",Correct filtered rows,,Candidate,
+TC-03-014,03 Employer,Applications,Update application status,P0,Functional,Employer,Applied candidate,1. Change status,Status saved; student sees update where exposed,,Manual,
+TC-03-015,03 Employer,Assessments CSV,Export assessment CSV for campus target,P0,Functional,Employer,Campus + drive/job,"1. Assessment uploads
+2. Export CSV",CSV downloads with expected headers,,Manual,
+TC-03-016,03 Employer,Assessments CSV,Upload valid hiring_result CSV commits rows,P0,Functional,Employer,Valid export filled,"1. Upload CSV
+2. Confirm commit",Results stored; dashboard reflects Shortlist/Reject/Select,hiring_result values,Manual,
+TC-03-017,03 Employer,Assessments CSV,Invalid CSV rows show import review errors,P0,Negative,Employer,Malformed CSV,1. Upload bad CSV,Row-level errors; no partial corrupt commit without review,,Manual,
+TC-03-018,03 Employer,Assessments CSV,Submit results locks further edits,P0,Functional,Employer,Committed results,1. Submit results,Locked; further upload blocked or read-only,,Manual,
+TC-03-019,03 Employer,Assessments Online,Assessment Update Online edits hiring_result,P0,Functional,Employer,Online assessment screen,"1. Edit result inline
+2. Save",Same data model as CSV path,,Manual,
+TC-03-020,03 Employer,Assessments,FCFS unavailable students listed when enabled,P1,Functional,Employer,College FCFS on; student claimed,1. Open FCFS unavailable,Claimed students listed; cannot select them,,Manual,
+TC-03-021,03 Employer,Hiring Results,Hiring Results Dashboard read view,P1,Functional,Employer,Results exist,1. Open dashboard,Aggregated results visible,,Manual,
+TC-03-022,03 Employer,Interviews,Schedule interview for candidate,P0,Functional,Employer,Shortlisted student,"1. Schedule interview
+2. Save",Student sees interview; calendar entry,,Manual,
+TC-03-023,03 Employer,Interviews,Reschedule / cancel interview,P1,Functional,Employer,Existing interview,1. Reschedule then cancel,Updates propagate to student,,Manual,
+TC-03-024,03 Employer,Offers,Create offer for selected student,P0,Functional,Employer,Selected student; partnership ok,"1. Create offer
+2. Submit",Offer visible to student/college; rules checked,,Manual,
+TC-03-025,03 Employer,Offers,Upload offers CSV,P1,Functional,Employer,Valid offers CSV,1. Upload from Offers page,Offers created or validation errors listed,,Manual,
+TC-03-026,03 Employer,Offers,Attach offer letter file,P1,Functional,Employer,Offer exists,1. Attach PDF,Student can open letter,,Manual,
+TC-03-027,03 Employer,Alumni jobs,Publish alumni job,P1,Functional,Employer,Alumni feature,1. Create alumni job,Visible to alumni students,,Manual,
+TC-03-028,03 Employer,Alumni assessment,Alumni Job Assessment Online updates,P2,Functional,Employer,Alumni applications,1. Update results online,Statuses saved,,Manual,
+TC-03-029,03 Employer,Mentorship,Volunteer on approved mentorship request,P1,Functional,Employer,Approved request; partnership,1. Volunteer,Student/college see volunteer,,Manual,
+TC-03-030,03 Employer,Guest needs,Respond to campus guest lecture need,P2,Functional,Employer,College listed need,1. Confirm/respond,Status updates,,Manual,
+TC-03-031,03 Employer,Sponsorships,Create sponsorship offer,P2,Functional,Employer,Feature enabled,1. Submit sponsorship,College can view,,Manual,
+TC-03-032,03 Employer,Seed funding,Submit startup seed funding interest,P2,Functional,Employer,Feature enabled,1. Submit,Tracked for college review,,Manual,
+TC-03-033,03 Employer,Calendar,Employer calendar shows events,P1,Functional,Employer,Events exist,1. Open calendar,Events load,,Manual,
+TC-03-034,03 Employer,Clarifications,Employer participates in clarification threads,P1,Functional,Employer,College published,"1. Open clarifications
+2. Respond if allowed",Responses saved,,Manual,
+TC-03-035,03 Employer,Templates,Email/message templates CRUD,P2,Functional,Employer,Templates feature,"1. Create template
+2. Edit
+3. Delete",CRUD works,,Manual,
+TC-03-036,03 Employer,Alerts,Employer alerts inbox works,P1,Functional,Employer,Notifications,1. Open Alerts,"List, star, trash work",,Manual,
+TC-03-037,03 Employer,Marketplace,Marketplace orders/browse if enabled,P2,Functional,Employer,Marketplace on,1. Open marketplace,Pages load without 500,,Manual,
+
+
+04 College Admin
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-04-001,04 College Admin,Dashboard,College home loads with tenant context,P0,Functional,College Admin,College admin session,1. Sign in,Tenant name/logo; academic year selector works,,Candidate,
+TC-04-002,04 College Admin,Settings,Update college settings / season label,P0,Functional,College Admin,Settings access,"1. Change setting
+2. Save",Persisted; affects season scoping,,Manual,
+TC-04-003,04 College Admin,Academic year,Switch active academic year,P0,Functional,College Admin,Multiple years,1. Change year in topbar,Lists filter to selected year,,Manual,
+TC-04-004,04 College Admin,Students list,Master student list loads with search/filter,P0,Functional,College Admin,Students exist,"1. Open Students
+2. Search by name/email",Correct rows; pagination if any,,Candidate,
+TC-04-005,04 College Admin,Students import,Download students CSV import template,P0,Functional,College Admin,,1. Download template,Headers match export; example row present,Remarks optional; Photo URL blank ok,Candidate,
+TC-04-006,04 College Admin,Students import,Import valid students CSV,P0,Functional,College Admin,Valid template filled,1. Import CSV,Students created/updated; success count,,Manual,
+TC-04-007,04 College Admin,Students import,Import rejects blank required CGPA,P0,Negative,College Admin,CSV with blank CGPA,1. Import,Row error; no partial bad row,collegeStudentsCsv tests,Candidate,
+TC-04-008,04 College Admin,Students import,Import rejects blank Department,P0,Negative,College Admin,CSV blank dept,1. Import,Row rejected,,Candidate,
+TC-04-009,04 College Admin,Students import,Blank Remarks and Photo URL allowed,P1,Edge,College Admin,CSV with blanks,1. Import,Accepted; photo not imported when blank,,Candidate,
+TC-04-010,04 College Admin,Students,Add single student,P0,Functional,College Admin,,"1. Add student form
+2. Save",Student created; login email sent if SMTP on,,Manual,
+TC-04-011,04 College Admin,Students,Verify / unverify student profile,P1,Functional,College Admin,Unverified student,1. Mark verified,Flag persisted; apply gates respect setting,,Manual,
+TC-04-012,04 College Admin,Students,View student CVs panel,P1,Functional,College Admin,Student with CVs,1. Open student detail CVs,List loads; verify toggle if permitted,,Manual,
+TC-04-013,04 College Admin,Students,College CV list failure soft-empty + error log,P1,Edge,College Admin,Induce CV list failure,1. Open student CVs,Friendly empty; Ref; platform_error_logs row,,Manual,
+TC-04-014,04 College Admin,Enrollment key,Rotate enrollment key if exposed,P2,Functional,College Admin,Legacy key UI,1. Rotate key,New key stored; old invalid,Legacy,Manual,
+TC-04-015,04 College Admin,Employers,Approve employer partnership request,P0,Functional,College Admin,Pending request,1. Approve,Employer can publish to campus,,Candidate,
+TC-04-016,04 College Admin,Employers,Reject employer partnership request,P0,Functional,College Admin,Pending request,1. Reject,Employer remains blocked for campus,,Candidate,
+TC-04-017,04 College Admin,Employers,Employer directory lists partners,P1,Functional,College Admin,Approved employers,1. Open employers,Directory accurate,,Manual,
+TC-04-018,04 College Admin,Drives,Approve placement drive,P0,Functional,College Admin,Pending drive,1. Approve drive,Students can see/apply when published,,Candidate,
+TC-04-019,04 College Admin,Drives,Reject placement drive,P1,Functional,College Admin,Pending drive,1. Reject,Not visible to students,,Manual,
+TC-04-020,04 College Admin,Visibility,Approve job/internship visibility,P0,Functional,College Admin,Pending visibility,1. Approve listing,Students see listing,,Candidate,
+TC-04-021,04 College Admin,Visibility,Reject job/internship visibility,P1,Functional,College Admin,Pending visibility,1. Reject,Hidden from students,,Manual,
+TC-04-022,04 College Admin,Applications,Campus applications board monitors pipeline,P0,Functional,College Admin,Applications exist,1. Open Applications,Filters/status work; export if present,,Manual,
+TC-04-023,04 College Admin,Offers,Monitor offers board,P0,Functional,College Admin,Offers exist,1. Open Offers,Offers listed; statuses correct,,Manual,
+TC-04-024,04 College Admin,Hiring Assessment,Read-only hiring assessment mirror,P1,Functional,College Admin,Employer submitted results,1. Open Hiring Assessment,Read-only; matches employer results,,Manual,
+TC-04-025,04 College Admin,Interviews,College interview scheduling coordination,P1,Functional,College Admin,Permission,1. Schedule/view interviews,Works without overwriting employer data incorrectly,,Manual,
+TC-04-026,04 College Admin,Placement rules,Configure CGPA minimum,P0,Functional,College Admin,Rules UI,"1. Set min CGPA
+2. Save",Apply blocked for lower CGPA students,,Manual,
+TC-04-027,04 College Admin,Placement rules,Configure offer limits,P0,Functional,College Admin,Rules UI,"1. Set max offers
+2. Student with limit tries accept",Blocked per rule,,Manual,
+TC-04-028,04 College Admin,Placement rules,Enable FCFS,P0,Functional,College Admin,Rules UI,"1. Enable FCFS
+2. Two employers select same student track",First wins; second blocked; unavailable list updates,,Manual,
+TC-04-029,04 College Admin,Placement rules,Season date windows enforce,P1,Functional,College Admin,Season dates set,1. Act outside window,Blocked or warned per design,,Manual,
+TC-04-030,04 College Admin,Reports,Generate/export placement reports,P1,Functional,College Admin,Season data,"1. Open Reports
+2. Export",File downloads; numbers plausible,,Manual,
+TC-04-031,04 College Admin,Audit,Audit reports load log entries,P0,Functional,College Admin,Audit data,1. Open Audit Reports,Logs load; soft-fail shows Ref + Error log if fails,log-entries path,Candidate,
+TC-04-032,04 College Admin,Audit,Audit export downloads,P1,Functional,College Admin,Logs exist,1. Export,File generated,,Manual,
+TC-04-033,04 College Admin,Clarifications,Publish clarification batch,P1,Functional,College Admin,,"1. Create Q&A batch
+2. Publish",Employers/students see content,,Manual,
+TC-04-034,04 College Admin,Mentorship,Approve student mentorship request,P1,Functional,College Admin,Pending request,1. Approve,Visible to partnered employers,,Manual,
+TC-04-035,04 College Admin,Mentorship,Reject mentorship request,P2,Functional,College Admin,Pending request,1. Reject,Not visible to employers,,Manual,
+TC-04-036,04 College Admin,Calendar/Events,Create campus calendar event,P1,Functional,College Admin,,1. Create event,Visible on calendars,,Manual,
+TC-04-037,04 College Admin,Guest faculty,List campus guest needs,P2,Functional,College Admin,,1. Create guest need,Employers can respond,,Manual,
+TC-04-038,04 College Admin,Sponsorships,View employer sponsorships,P2,Functional,College Admin,Sponsorship exists,1. Open sponsorships,List loads,,Manual,
+TC-04-039,04 College Admin,Logo,Upload college logo,P1,Functional,College Admin,Settings,1. Upload logo,Topbar/sidebar show logo,,Manual,
+TC-04-040,04 College Admin,Committee,Placement committee role sees scoped college menus,P1,Security,Placement Committee,Committee account,1. Sign in,College ops menus; no super-admin,,Manual,
+
+
+05 Super Admin
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-05-001,05 Super Admin,Dashboard,Admin dashboard loads,P0,Functional,Super Admin,Super admin,1. Sign in,Platform overview loads,,Candidate,
+TC-05-002,05 Super Admin,Colleges,List colleges,P0,Functional,Super Admin,Tenants exist,1. Open Colleges,Directory loads; search works,,Candidate,
+TC-05-003,05 Super Admin,Colleges,Add college,P0,Functional,Super Admin,,"1. Add college form
+2. Save",Tenant created,,Manual,
+TC-05-004,05 Super Admin,Colleges,View/edit college profile,P1,Functional,Super Admin,College exists,"1. Open profile
+2. Edit
+3. Save",Changes persisted,,Manual,
+TC-05-005,05 Super Admin,Employers,List employers,P0,Functional,Super Admin,Employers exist,1. Open Employers,List loads,,Candidate,
+TC-05-006,05 Super Admin,Users,Manage users list/search,P0,Functional,Super Admin,Users exist,"1. Open Manage Users
+2. Search",Users found; roles shown,,Candidate,
+TC-05-007,05 Super Admin,Users,Update user role/status carefully,P1,Functional,Super Admin,Target user,"1. Change allowed field
+2. Save",Persisted; user can/cannot access per role,,Manual,
+TC-05-008,05 Super Admin,Onboarding,Approve pending college registration,P0,Functional,Super Admin,Pending college,1. Approve,College can sign in,,Manual,
+TC-05-009,05 Super Admin,Onboarding,Approve pending employer registration,P0,Functional,Super Admin,Pending employer,1. Approve,Employer can sign in,,Manual,
+TC-05-010,05 Super Admin,Onboarding,Reject pending registration,P1,Functional,Super Admin,Pending registration,1. Reject,Cannot access dashboard,,Manual,
+TC-05-011,05 Super Admin,Listings,Admin placement listings overview,P1,Functional,Super Admin,Listings exist,1. Open listings,Cross-tenant view loads,,Manual,
+TC-05-012,05 Super Admin,Archived students,View archived students,P2,Functional,Super Admin,Archived exist,1. Open archived,List loads,,Manual,
+TC-05-013,05 Super Admin,Error logs,Platform error logs list and detail,P0,Functional,Super Admin,Errors logged,"1. Open Error logs
+2. Open row","Ref, context, stack/details visible; System Defined Unique Code shown",,Manual,
+TC-05-014,05 Super Admin,Error logs,Soft API failures appear in error logs,P0,Functional,Super Admin,Trigger soft-fail API,"1. Cause soft failure
+2. Check Error logs",Entry with Ref and technical details,api_soft_failure / cv_soft_failure,Manual,
+TC-05-015,05 Super Admin,Email logs,Email logs list delivery attempts,P1,Functional,Super Admin,Emails sent,1. Open Email logs,Entries with status,,Manual,
+TC-05-016,05 Super Admin,Audit,Super-admin audit reports,P1,Functional,Super Admin,Audit events,1. Open Audit,Logs/filter/export,,Manual,
+TC-05-017,05 Super Admin,Feedback,Feedback inbox lists submissions,P1,Functional,Super Admin,Feedback exists,1. Open Feedback inbox,Items listed,,Manual,
+TC-05-018,05 Super Admin,Settings,Platform settings SMTP/branding save,P0,Functional,Super Admin,Settings access,"1. Update setting
+2. Save",Persisted; affects outbound mail/branding,,Manual,
+TC-05-019,05 Super Admin,Isolation,Super admin actions audit-logged,P1,Security,Super Admin,Audit on,1. Perform sensitive update,Audit row created,,Manual,
+
+
+06 Partnerships
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-06-001,06 Partnerships,Lifecycle,Request → Pending → Approved end-to-end,P0,Integration,"Employer, College Admin",Both accounts,"1. Employer requests
+2. College approves
+3. Employer publishes",Full path succeeds,,Manual,
+TC-06-002,06 Partnerships,Lifecycle,Request → Rejected blocks publishing,P0,Integration,"Employer, College Admin",Both accounts,"1. Request
+2. Reject
+3. Employer tries publish",Blocked,,Manual,
+TC-06-003,06 Partnerships,Directory,Employer sees all colleges for requests,P1,Functional,Employer,Multiple tenants,1. Open partnerships directory,All colleges listed for request,,Manual,
+TC-06-004,06 Partnerships,Scope,API denies cross-campus data without approval,P0,Security,Employer,Token for employer,1. Call sensitive API for unapproved tenant,403/empty,,Candidate,
+TC-06-005,06 Partnerships,Multi-campus,Employer with multiple approvals works across campuses,P1,Functional,Employer,≥2 approvals,1. Publish selecting two campuses,Visibility per campus independent,Campus switcher disabled; all campuses scope,Manual,
+
+
+07 Drives
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-07-001,07 Drives,Create,Required fields validation on drive create,P1,Negative,Employer,Approved campus,1. Submit empty required fields,Validation errors,,Candidate,
+TC-07-002,07 Drives,Lifecycle,Scheduled → In progress → Completed transitions,P1,Functional,"Employer, College Admin",Drive exists,1. Advance statuses per UI,Status badges update; students see correct state,,Manual,
+TC-07-003,07 Drives,Venue,Venue warning when date near and venue unconfirmed,P2,UI,"Employer, College Admin",Drive soon; venue empty,1. Open drive,Warning surfaced,,Manual,
+TC-07-004,07 Drives,Eligibility,Branch/dept display without false apply block until taxonomy,P2,Edge,Student,Drive with branch display,1. View drive,Branch shown; apply uses implemented eligibility only,Product note,Manual,
+TC-07-005,07 Drives,Apply window,Students cannot apply to cancelled drive,P0,Negative,Student,Cancelled drive,1. Attempt apply,Blocked,,Manual,
+
+
+08 Jobs Internships Projects
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-08-001,08 Jobs Internships Projects,Visibility,Pending visibility not shown to students,P0,Security,Student,Pending job,1. Browse jobs,Job absent,,Candidate,
+TC-08-002,08 Jobs Internships Projects,Visibility,Rejected visibility not shown to students,P0,Security,Student,Rejected job,1. Browse,Job absent,,Manual,
+TC-08-003,08 Jobs Internships Projects,Edit,Employer edits published listing,P1,Functional,Employer,Own listing,"1. Edit description
+2. Save",Updates visible after college rules,,Manual,
+TC-08-004,08 Jobs Internships Projects,Deadline,Internship application closed after deadline,P0,Negative,Student,Past deadline,1. Apply,Blocked,,Manual,
+TC-08-005,08 Jobs Internships Projects,Campus multi,Same listing different campus visibility states,P1,Edge,Student A/B,"Approved on A, pending on B","1. Student A browses
+2. Student B browses",Only A sees listing,,Manual,
+
+
+09 Applications Pipeline
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-09-001,09 Applications Pipeline,Status,Applied → Shortlisted → Selected happy path,P0,Integration,"Student, Employer",Eligible student,"1. Apply
+2. Employer shortlist
+3. Select",Statuses sync both sides,,Manual,
+TC-09-002,09 Applications Pipeline,Status,Reject application,P1,Functional,Employer,Applied,1. Reject,Student sees rejected where exposed,,Manual,
+TC-09-003,09 Applications Pipeline,Filters,Filter by type/status/date,P1,Functional,"Employer, College Admin",Mixed data,1. Apply filters,Result set correct,,Manual,
+TC-09-004,09 Applications Pipeline,Export,Export applications CSV,P1,Functional,"Employer, College Admin",Apps exist,1. Export,CSV opens; columns sensible,,Manual,
+TC-09-005,09 Applications Pipeline,Concurrency,Two tabs updating same application,P2,Edge,Employer,Same app,1. Update in two browsers,Last write wins or conflict handled; no crash,,Manual,
+
+
+10 Assessments
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-10-001,10 Assessments,CSV,Unknown hiring_result value rejected,P0,Negative,Employer,CSV with bad enum,1. Upload,Validation error,"Shortlist,Reject,Select,Decline,Withdraw",Manual,
+TC-10-002,10 Assessments,CSV,Student ID mismatch handled,P1,Negative,Employer,Wrong student id,1. Upload,Row error,,Manual,
+TC-10-003,10 Assessments,Online,Decline and Withdraw results,P1,Functional,Employer,Online screen,"1. Set Decline
+2. Set Withdraw",Stored correctly,,Manual,
+TC-10-004,10 Assessments,Lock,Post-submit cannot change results,P0,Negative,Employer,Submitted,1. Try edit/upload,Blocked,,Manual,
+TC-10-005,10 Assessments,College mirror,College view matches employer after submit,P1,Integration,"College Admin, Employer",Submitted,1. Compare both screens,Parity,,Manual,
+TC-10-006,10 Assessments,No email,Assessment update does not email by default,P2,Functional,Employer,SMTP on,"1. Update result
+2. Check email logs",No student email unless configured otherwise,Product doc,Manual,
+
+
+11 Interviews
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-11-001,11 Interviews,Create,Required datetime validation,P1,Negative,Employer,Candidate,1. Save without time,Validation error,,Manual,
+TC-11-002,11 Interviews,Notify,Student alert on interview scheduled,P1,Functional,"Student, Employer",Alerts on,"1. Schedule
+2. Check student alerts",Alert present,,Manual,
+TC-11-003,11 Interviews,Timezone,Interview time displays consistently,P2,Edge,"Student, Employer",Different TZ browsers,1. Compare displayed times,Consistent institution policy,,Manual,
+TC-11-004,11 Interviews,Past,Scheduling in the past warned or blocked,P2,Negative,Employer,,1. Pick past datetime,Warning/block,,Manual,
+
+
+12 Offers
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-12-001,12 Offers,Create,Offer requires package/role fields per form,P1,Negative,Employer,Selected student,1. Submit incomplete,Validation,,Manual,
+TC-12-002,12 Offers,Rules,College offer limit blocks extra accept,P0,Integration,"Student, College Admin",Limit=1; one accepted,1. Accept second offer,Blocked,,Manual,
+TC-12-003,12 Offers,Letter,Missing offer letter file graceful,P1,Edge,Student,Broken file_url,1. Open letter,Unavailable message; no 500,,Manual,
+TC-12-004,12 Offers,CSV,Offers CSV duplicate rows handled,P2,Negative,Employer,Dup CSV,1. Upload,Errors or upsert rules clear,,Manual,
+
+
+13 Placement Rules FCFS
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-13-001,13 Placement Rules FCFS,FCFS,First select locks student on track,P0,Integration,"Employer A/B, College",FCFS enabled,"1. A selects
+2. B tries select same track",B blocked; unavailable list,,Manual,
+TC-13-002,13 Placement Rules FCFS,FCFS,Different tracks independent,P1,Edge,Employer,FCFS on,"1. Select internship
+2. Other employer selects placement track",Allowed if tracks differ per rules,,Manual,
+TC-13-003,13 Placement Rules FCFS,CGPA,Apply-time CGPA enforcement,P0,Functional,Student,Min CGPA set,1. Low CGPA apply,Blocked,,Manual,
+TC-13-004,13 Placement Rules FCFS,Backlogs,Backlog rule enforcement,P1,Functional,Student,Max backlogs=0; student has backlog,1. Apply,Blocked,,Manual,
+TC-13-005,13 Placement Rules FCFS,Season,Postings outside season handled,P2,Functional,"Employer, College",Season closed,1. Publish/apply,Per configured behavior,,Manual,
+
+
+14 Alerts Notifications
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-14-001,14 Alerts Notifications,Inbox,Unread and total shown at top of list,P1,UI,All,Alerts exist,1. Open Inbox & Alerts,Summary shows unread · total,,Manual,
+TC-14-002,14 Alerts Notifications,Inbox,Starred shows total beside Starred,P1,UI,All,Starred alerts,1. View nav,Count beside Starred label,,Manual,
+TC-14-003,14 Alerts Notifications,Inbox,Preview snippet max 50 characters,P1,UI,All,Long message,1. View list row,Preview ≤50 chars + ellipsis; full on open,,Manual,
+TC-14-004,14 Alerts Notifications,Inbox,Delete and date visible without horizontal scroll,P1,UI,All,Mobile/desktop,1. View list,Actions/time visible without scroll,,Manual,
+TC-14-005,14 Alerts Notifications,Inbox,Star / unstar persists,P1,Functional,All,Alert,"1. Star
+2. Open Starred
+3. Unstar",Lists update,,Candidate,
+TC-14-006,14 Alerts Notifications,Inbox,Move to trash and restore,P1,Functional,All,Alert,"1. Trash
+2. Restore",Back in inbox,,Candidate,
+TC-14-007,14 Alerts Notifications,Inbox,Delete forever from trash,P1,Functional,All,Trashed alert,1. Delete permanently,Gone; empty trash works,,Manual,
+TC-14-008,14 Alerts Notifications,Inbox,Opening unread marks read,P0,Functional,All,Unread,1. Open message,Unread count decrements,,Candidate,
+TC-14-009,14 Alerts Notifications,Bell,Notification dropdown unread badge,P1,UI,All,Unread >0,1. View topbar bell,Badge shows count; Open alerts inbox link works,,Manual,
+TC-14-010,14 Alerts Notifications,Bell,Mark all read,P1,Functional,All,Unread,1. Mark all read,Badge clears,,Manual,
+TC-14-011,14 Alerts Notifications,Mobile back,Browser back leaves Alerts to previous screen,P2,UI,All,Navigated from another page,"1. Open Alerts
+2. System Back",Returns to previous route (open message not history),,Manual,
+
+
+15 Communication
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-15-001,15 Communication,Clarifications,College publish → employer/student read,P1,Integration,"College, Employer, Student",Accounts,"1. Publish
+2. Others open",Content visible,,Manual,
+TC-15-002,15 Communication,Discussions,Create and moderate discussion if enabled,P2,Functional,College Admin,Feature on,1. Create thread,Visible to allowed roles,,Manual,
+TC-15-003,15 Communication,Templates,College templates CRUD,P2,Functional,College Admin,Feature,1. CRUD template,Works,,Manual,
+TC-15-004,15 Communication,Email,Transactional welcome email on student create,P1,Functional,College Admin,SMTP,"1. Add student
+2. Check mail/logs",Email sent or logged,yopmail sandbox,Manual,
+TC-15-005,15 Communication,Email,Password reset email delivered,P1,Functional,All,SMTP,1. Request reset,Email + log entry,,Manual,
+
+
+16 Mentorship
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-16-001,16 Mentorship,Flow,Post → Approve → Volunteer E2E,P1,Integration,"Student, College, Employer",Partnership,"1. Student posts
+2. College approves
+3. Employer volunteers",All statuses update; no offer side effects,,Manual,
+TC-16-002,16 Mentorship,Scope,Unapproved request hidden from employers,P0,Security,Employer,Pending request,1. Browse mentorship,Not listed,,Manual,
+TC-16-003,16 Mentorship,Scope,Non-partnered employer cannot see campus requests,P0,Security,Employer,No partnership,1. Browse,Empty/blocked,,Manual,
+TC-16-004,16 Mentorship,Contrast,Formal mentorship job still uses apply pipeline,P2,Functional,"Employer, Student",Mentorship program listing,"1. Publish as opportunity
+2. Student apply",Tracked as application not volunteer,,Manual,
+
+
+17 Alumni
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-17-001,17 Alumni,Nav,Alumni menus replace campus drives,P0,Functional,Student (Alumni),Alumni flag,1. Inspect nav,Alumni jobs browse/my jobs,,Manual,
+TC-17-002,17 Alumni,Apply,Alumni applies to alumni job,P0,Functional,"Student (Alumni), Employer",Published alumni job,1. Apply,Application created,,Manual,
+TC-17-003,17 Alumni,Non-alumni,Regular student does not see alumni jobs as primary,P1,Security,Student,Non-alumni,1. Inspect menus,Campus placement menus; not alumni primary,,Manual,
+
+
+18 Engagement Calendar
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-18-001,18 Engagement Calendar,Calendar,College creates event visible to students,P1,Integration,"College, Student",,"1. Create event
+2. Student calendar",Event visible,,Manual,
+TC-18-002,18 Engagement Calendar,Guest,College need → employer response,P2,Integration,"College, Employer",Partnership,"1. Create need
+2. Employer respond",Status sync,,Manual,
+TC-18-003,18 Engagement Calendar,Sponsorship,Employer offer visible to college,P2,Integration,"Employer, College",,"1. Create
+2. College view",Visible,,Manual,
+TC-18-004,18 Engagement Calendar,Seed funding,Employer submission tracked,P2,Functional,"Employer, College",Feature,"1. Submit
+2. College review screen",Listed,,Manual,
+
+
+19 Reports Audit Export
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-19-001,19 Reports Audit Export,Reports,College reports empty season shows empty state,P2,Edge,College Admin,No data,1. Open reports,Friendly empty; no 500,,Manual,
+TC-19-002,19 Reports Audit Export,Audit,Filter by action DEMO_PURGE,P2,Functional,"College, Super Admin",Demo purge events,1. Filter DEMO_PURGE,Matching rows,,Manual,
+TC-19-003,19 Reports Audit Export,Audit,404 log-entries path not used; log-entries works,P0,Regression,College Admin,,1. Load Audit Reports network,Calls /api/audit/log-entries; 200,Vercel logs/ quirk,Candidate,
+TC-19-004,19 Reports Audit Export,Export,My data export authorization,P1,Security,Student,Other user id,1. Attempt export another user via API,Denied,,Candidate,
+TC-19-005,19 Reports Audit Export,CSV,Large export performance acceptable,P2,Performance,College Admin,Large dataset,1. Export,Completes within reasonable time or streams,,Manual,
+
+
+20 CVs Documents Storage
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-20-001,20 CVs Documents Storage,Upload,Reject non-PDF/oversize CV,P1,Negative,Student,CV upload UI,1. Upload exe/huge file,Rejected,,Manual,
+TC-20-002,20 CVs Documents Storage,S3,Misconfigured S3 surfaces PH-CV-S3-CONFIG in logs,P1,Edge,"Student, Super Admin",Bad AWS config,"1. View CV
+2. Check Error logs",System code + details,,Manual,
+TC-20-003,20 CVs Documents Storage,S3,AccessDenied not treated as missing file,P1,Regression,Student,HeadObject AccessDenied,1. View CV,Access error code; not missing-file copy,PH-CV-S3-ACCESS,Manual,
+TC-20-004,20 CVs Documents Storage,Verify,College verify CV when setting requires,P1,Functional,"College Admin, Student",Verification required,"1. Unverified CV
+2. Student try apply
+3. College verify
+4. Apply",Blocked then allowed,,Manual,
+TC-20-005,20 CVs Documents Storage,Default,Set default CV used on apply,P1,Functional,Student,Multiple CVs,"1. Set default
+2. Apply",Default attached,,Manual,
+
+
+21 Multi-tenant Security
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-21-001,21 Multi-tenant Security,Isolation,College A cannot see College B students,P0,Security,College Admin,Two tenants,1. API/UI as A for B ids,Denied/empty,,Candidate,
+TC-21-002,21 Multi-tenant Security,Isolation,Student of A cannot apply as B,P0,Security,Student,Two tenants,1. Tamper tenant in request,Denied,,Candidate,
+TC-21-003,21 Multi-tenant Security,Isolation,Employer cannot read other employer applications,P0,Security,Employer,Two employers,1. Access other employer app id,Denied,,Candidate,
+TC-21-004,21 Multi-tenant Security,RBAC,Student cannot open college students API,P0,Security,Student,Student session,1. GET college students API,401/403,,Candidate,
+TC-21-005,21 Multi-tenant Security,RBAC,Employer cannot open platform error logs,P0,Security,Employer,Employer session,1. Open admin error logs,Denied,,Candidate,
+TC-21-006,21 Multi-tenant Security,CSRF/Auth,Mutating API without session fails,P0,Security,Public,Logged out,1. PATCH notifications,401,,Candidate,
+
+
+22 Mobile UI
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-22-001,22 Mobile UI,Layout,Dashboard usable at 375px width,P1,UI,Student,Mobile viewport,1. Open key student flows,No clipped primary actions; hamburger works,,Manual,
+TC-22-002,22 Mobile UI,Layout,College students table usable on mobile,P1,UI,College Admin,Mobile,1. Open Students,Stacked/cards or scroll intentional; actions reachable,,Manual,
+TC-22-003,22 Mobile UI,Landing link,Landing link hidden on desktop topbar,P2,UI,All,Desktop >768,1. Inspect topbar,Landing link not shown,,Manual,
+TC-22-004,22 Mobile UI,Theme,Dark mode toggle persists,P2,UI,All,,"1. Toggle theme
+2. Reload",Theme persists,,Manual,
+TC-22-005,22 Mobile UI,Search,Screen search Ctrl+K / mobile search,P2,UI,All,Dashboard,1. Search 'alerts',Navigates to matching screen,,Manual,
+
+
+23 Error Handling Logging
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-23-001,23 Error Handling Logging,API,Thrown 500 persists platform_error_logs + Ref,P0,Functional,Super Admin,Induce 500,"1. Trigger
+2. Check toast Ref
+3. Error logs",Matching row with stack,withApiHandlers,Manual,
+TC-23-002,23 Error Handling Logging,API,Soft 200 unavailable auto-logged if no Ref,P0,Functional,Super Admin,Soft fail without prior log,"1. Trigger
+2. Error logs",api_soft_failure source,,Manual,
+TC-23-003,23 Error Handling Logging,Client,fetchJson network failure reports client error,P1,Functional,Super Admin,Offline,1. Break network mid-fetch,Client report in logs,,Manual,
+TC-23-004,23 Error Handling Logging,Client,404 missing route reports PH-HTTP-404,P1,Functional,Super Admin,,1. Hit missing API from UI,Error log with 404 code,,Manual,
+TC-23-005,23 Error Handling Logging,UX,User-facing message strips ops boilerplate,P2,UI,College Admin,CV failure,1. View CV error,No 'Full details were saved…' in college panel,,Manual,
+
+
+24 Marketplace Help Feedback
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-24-001,24 Marketplace Help Feedback,Help,Help widget answers from docs,P2,Functional,All,Help knowledge synced,1. Ask known question,Relevant answer,,Manual,
+TC-24-002,24 Marketplace Help Feedback,Feedback,Feedback reaches admin inbox,P1,Integration,"Student, Super Admin",,"1. Submit feedback
+2. Admin inbox",Present,,Manual,
+TC-24-003,24 Marketplace Help Feedback,Marketplace,College marketplace browse,P2,Functional,College Admin,Feature on,1. Open marketplace,Loads,,Manual,
+TC-24-004,24 Marketplace Help Feedback,Developer,Developer notes password gate,P1,Security,Public,,1. Open /developer without auth,Password/gate required,,Manual,
+TC-24-005,24 Marketplace Help Feedback,Guided runner,Guided runner hidden when env disables,P2,UI,All,HIDE_GUIDED_RUNNER=true,1. Load dashboard,Runner not shown,,Manual,
+
+
+25 Sandbox Demo QA
+<< Back to Index,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-25-001,25 Sandbox Demo QA,Demo logins,Demo login chips work when enabled,P1,Functional,Public,Demo logins enabled,1. Use demo login on sign-in,Signs into correct role,,Manual,
+TC-25-002,25 Sandbox Demo QA,Demo purge,Demo purge removes sandbox rows only,P1,Functional,Developer,Demo data present,"1. Run purge
+2. Verify seed untouched",Only sandbox markers removed; audit DEMO_PURGE,,Manual,
+TC-25-003,25 Sandbox Demo QA,Data tester,Data Tester API creates sandbox entities,P2,Functional,Developer,DEMO_DATA_API_ENABLED,1. Create via tester,Entities usable on screens,,Manual,
+TC-25-004,25 Sandbox Demo QA,Screen IDs,Dev screen ID pills show when enabled,P2,UI,All,SHOW_DEV_SCREEN_IDS,1. Visit screens,S-xx pills visible,,Manual,
+TC-25-005,25 Sandbox Demo QA,Banner,Sandbox banner only on landing,P1,UI,Public,Banner enabled,"1. Open /
+2. Open /dashboard",Banner on landing only,,Manual,
+
+

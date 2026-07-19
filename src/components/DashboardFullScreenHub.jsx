@@ -24,12 +24,12 @@ function getHubPageTitle(session, role, menu) {
   if (role === 'super_admin') return 'Platform Administration';
   if (role === 'student') {
     const first = session?.user?.name?.split(' ')?.[0];
-    return first ? `${first} — Dashboard` : 'Student Dashboard';
+    return first ? `${first} — Home` : 'Student Home';
   }
   if (session?.user?.tenantName && (role === 'employer' || role === 'college_admin' || role === 'placement_committee')) {
-    return `${session.user.tenantName} Dashboard`;
+    return `${session.user.tenantName} Home`;
   }
-  return `${menu.title} Dashboard`;
+  return `${menu.title} Home`;
 }
 
 function getQuickActions(role, employerHasCampus, isAlumni) {

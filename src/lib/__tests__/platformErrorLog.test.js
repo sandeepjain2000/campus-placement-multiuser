@@ -35,7 +35,8 @@ describe('platformErrorLog CRUD failure logging', () => {
     expect(String(query.mock.calls[0][0])).toContain('INSERT INTO platform_error_logs');
     expect(body.reference).toBe(formatErrorReference('11111111-2222-3333-4444-555555555555'));
     expect(body.userMessage).toMatch(/Failed to load placement drives/);
-    expect(body.userMessage).toMatch(/migration/i);
+    expect(body.userMessage).not.toMatch(/column d\.is_deleted does not exist/i);
+    expect(body.userMessage).not.toMatch(/run pending migrations/i);
     const details = JSON.parse(query.mock.calls[0][1][9]);
     expect(details.route).toBe('/api/employer/drives');
     expect(details.requestMethod).toBe('GET');

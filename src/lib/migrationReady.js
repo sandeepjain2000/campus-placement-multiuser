@@ -78,3 +78,22 @@ export async function placementDriveNotDeletedSql(alias = 'd') {
   }
   return '';
 }
+
+/**
+ * Migration 080 copies campus job fields onto placement_drives.
+ * Sandbox DBs that have not applied 080 lack salary_min / job_type, etc.
+ */
+export async function hasPlacementDriveJobFields() {
+  return hasColumn('placement_drives', 'salary_min');
+}
+
+/**
+ * SELECT fragment for drive salary band — NULL aliases when migration 080 missing.
+ * @param {string} [alias='d']
+ */
+export async function placementDriveSalarySelectSql(alias = 'd') {
+  if (await hasPlacementDriveJobFields()) {
+    return `${alias}.salary_min, ${alias}.salary_max`;
+  }
+  return `NULL::decimal AS salary_min, NULL::decimal AS salary_max`;
+}

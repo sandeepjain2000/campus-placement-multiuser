@@ -28,6 +28,7 @@ export const PLATFORM_ERROR_CONTEXT = {
   STUDENT_CV_LIST: 'api_student_cv_list',
   STUDENT_CV_VIEW: 'api_student_cv_view',
   COLLEGE_STUDENT_CV_VIEW: 'api_college_student_cv_view',
+  STUDENT_DASHBOARD: 'api_student_dashboard',
 };
 
 /** Human-readable labels for super-admin Error logs filters and detail panel. */
@@ -60,4 +61,5 @@ export const PLATFORM_ERROR_CONTEXT_LABELS = {
   [PLATFORM_ERROR_CONTEXT.STUDENT_CV_LIST]: 'Student — My CVs list',
   [PLATFORM_ERROR_CONTEXT.STUDENT_CV_VIEW]: 'Student — open CV file (S3)',
   [PLATFORM_ERROR_CONTEXT.COLLEGE_STUDENT_CV_VIEW]: 'College — open student CV file (S3)',
+  [PLATFORM_ERROR_CONTEXT.STUDENT_DASHBOARD]: 'Student — overview dashboard',
 };

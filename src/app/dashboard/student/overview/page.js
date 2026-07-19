@@ -22,7 +22,15 @@ export default function StudentOverviewPage() {
   const { data: session } = useSession();
   const { data, error, isLoading, mutate } = useSWR('/api/student/dashboard', fetcher);
 
-  if (error) return <PageError error={error} reset={() => mutate()} />;
+  if (error) {
+    return (
+      <PageError
+        error={error}
+        reset={() => mutate()}
+        fallbackMessage="Unable to load dashboard statistics at this time. Please try again."
+      />
+    );
+  }
 
   if (isLoading || !data) {
     return <PageLoading message="Loading your overview…" variant="skeleton-dashboard" />;

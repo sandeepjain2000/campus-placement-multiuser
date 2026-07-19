@@ -2,20 +2,23 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
-import {
-  AND_APP_NOT_DELETED,
-  AND_DRIVE_NOT_DELETED,
-} from '@/lib/softDeleteSql';
 import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
-import { jobPostingNotDeletedSql, programApplicationNotDeletedSql } from '@/lib/migrationReady';
+import {
+  jobPostingNotDeletedSql,
+  programApplicationNotDeletedSql,
+  placementDriveSalarySelectSql,
+  applicationNotDeletedSql,
+  placementDriveNotDeletedSql,
+} from '@/lib/migrationReady';
 import { resolveAlumniStudentFlag } from '@/lib/studentAlumniServer';
 import { ALUMNI_JOB_TYPES } from '@/lib/studentAlumni';
 import { evaluateStudentOverviewCompletion } from '@/lib/studentProfileCompletion';
 import { countStudentVisibleOffers } from '@/lib/studentOffersCount';
 import { formatSalaryRangeParts } from '@/lib/utils';
+import { respondPlatformError, withApiHandlers } from '@/lib/platformErrorRoute';
+import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
 
 export const dynamic = 'force-dynamic';
-import { withApiHandlers } from '@/lib/platformErrorRoute';
 export const revalidate = 0;
 
 async function __platform_GET(request) {
@@ -30,6 +33,9 @@ async function __platform_GET(request) {
     const isAlumni = await resolveAlumniStudentFlag(userId, session.user);
     const paNotDeletedSql = await programApplicationNotDeletedSql('pa');
     const jpNotDeletedSql = await jobPostingNotDeletedSql('jp');
+    const appNotDeletedSql = await applicationNotDeletedSql('a');
+    const driveNotDeletedSql = await placementDriveNotDeletedSql('d');
+    const driveSalarySql = await placementDriveSalarySelectSql('d');
 
     let statsQuery;
     let drivesQuery;
@@ -117,7 +123,7 @@ async function __platform_GET(request) {
           COALESCE(SUM(CASE WHEN status IN ('shortlisted', 'in_progress', 'selected') THEN 1 ELSE 0 END), 0) AS "shortlisted"
         FROM applications a
         JOIN student_profiles sp ON sp.id = a.student_id
-        WHERE sp.user_id = $1 AND ${SP_ACTIVE_CLAUSE} ${AND_APP_NOT_DELETED}`,
+        WHERE sp.user_id = $1 AND ${SP_ACTIVE_CLAUSE} ${appNotDeletedSql}`,
         [userId],
       );
 
@@ -130,11 +136,10 @@ async function __platform_GET(request) {
           d.drive_date AS date,
           d.drive_type AS type,
           d.status,
-          d.salary_min,
-          d.salary_max
+          ${driveSalarySql}
         FROM placement_drives d
         JOIN employer_profiles ep ON d.employer_id = ep.id
-        WHERE d.tenant_id = $1 AND d.status IN ('approved', 'scheduled') ${AND_DRIVE_NOT_DELETED}
+        WHERE d.tenant_id = $1 AND d.status IN ('approved', 'scheduled') ${driveNotDeletedSql}
         ORDER BY d.drive_date ASC
         LIMIT 3`,
         [session.user.tenantId],
@@ -155,7 +160,7 @@ async function __platform_GET(request) {
         JOIN employer_profiles ep ON d.employer_id = ep.id
         JOIN student_profiles sp ON a.student_id = sp.id
         WHERE sp.user_id = $1 AND ${SP_ACTIVE_CLAUSE}
-          ${AND_APP_NOT_DELETED} ${AND_DRIVE_NOT_DELETED}
+          ${appNotDeletedSql} ${driveNotDeletedSql}
         ORDER BY a.applied_at DESC
         LIMIT 3`,
         [userId],
@@ -224,12 +229,12 @@ async function __platform_GET(request) {
       })),
     });
   } catch (error) {
-    console.error('GET /api/student/dashboard', error);
-    const msg = String(error?.message || '').trim();
-    return NextResponse.json(
-      { error: msg || 'Database unavailable' },
-      { status: 503 },
-    );
+    return respondPlatformError(error, {
+      context: PLATFORM_ERROR_CONTEXT.STUDENT_DASHBOARD,
+      request,
+      defaultMessage: 'Unable to load dashboard statistics at this time. Please try again.',
+      logLabel: 'GET /api/student/dashboard',
+    });
   }
 }
 
