@@ -1,0 +1,87 @@
+TC ID,Module,Feature,Title,Priority,Type,Role(s),Preconditions,Test Steps,Expected Result,Test Data / Notes,Automation,Status
+TC-D01-001,01 College Calendar ICS,ICS Import,College can open Import calendar and upload a valid .ics,P0,Functional,College Admin,Signed in as college admin; Calendar page open; sample file docs/sample-import-july26.ics available,"1. Open /dashboard/college/calendar
+2. Click Import (ICS)
+3. Select sample-import-july26.ics
+4. Keep default “from today onward”
+5. Confirm import",Import succeeds; events for Jul 26–28 2026 appear on calendar; toast/success confirmation shown,docs/sample-import-july26.ics,Manual,
+TC-D01-002,01 College Calendar ICS,ICS Import,Dry-run / preview shows clash warnings when imported dates overlap placement drives,P1,Functional,College Admin,Campus has a placement drive on/near Jul 26; sample ICS ready,"1. Open Import ICS
+2. Upload sample with Jul 26 events
+3. Review preview/clash section before confirm (if shown) or after import banner",Clash summary mentions imported/holiday/exam vs placement drive; import can still complete,Uses calendarClashDetection + import API warnings,Manual,
+TC-D01-003,01 College Calendar ICS,ICS Import,Re-import same UID does not create duplicate rows,P0,Regression,College Admin,Already imported sample ICS once,"1. Import the same .ics again
+2. Count events for those dates / check DB source_uid",No duplicate events for same source_uid; count stable or update-in-place only,source_uid unique per tenant (migration 112),Candidate,
+TC-D01-004,01 College Calendar ICS,ICS Import,Invalid / empty .ics is rejected with clear error,P1,Negative,College Admin,Calendar open,1. Attempt import of empty file or non-ICS text renamed .ics,Error message; no calendar rows created,,Manual,
+TC-D01-005,01 College Calendar ICS,ICS Export,Unified Export menu offers CSV and ICS for this month and full range,P0,Functional,College Admin,Calendar has at least one event,"1. Open calendar Export control
+2. Confirm options: CSV this month, CSV full, ICS this month, ICS full
+3. Download ICS this month
+4. Open file in text editor",File downloads; begins with BEGIN:VCALENDAR; contains VEVENT rows for selected range,ExportCollegeCalendarButton,Manual,
+TC-D01-006,01 College Calendar ICS,ICS Export,ICS full export includes imported events,P1,Functional,College Admin,Imported ICS events exist,"1. Export ICS full
+2. Search for an imported SUMMARY (e.g. Founders Day)",Imported event present in .ics output,,Manual,
+TC-D01-007,01 College Calendar ICS,Delete imported,Delete imported removes only source_uid rows in selected range,P0,Functional,College Admin,Mix of placement_drive calendar rows and imported (source_uid) rows,"1. Open Delete imported
+2. Choose date range covering Jul 26
+3. Confirm delete
+4. Refresh calendar",Imported events gone; manually created / placement_drive events remain,DELETE /api/college/calendar/imported,Manual,
+TC-D01-008,01 College Calendar ICS,Delete imported,Delete all imported clears every source_uid event for tenant,P1,Functional,College Admin,Multiple imported events across months,"1. Choose delete all imported
+2. Confirm
+3. Filter category Imported",Imported category empty; other categories still show events,,Manual,
+TC-D01-009,01 College Calendar ICS,Category filter,Filter All / Placement / Imported / Programs changes visible events,P0,Functional,College Admin,"Calendar has placement, imported, and program-type items (or at least two categories)","1. Select Imported — only imported rows
+2. Select Placement — drive-related
+3. Select All — union",List/month view matches filter; no crash; empty state when none match,CollegeCalendarCategoryFilter,Candidate,
+TC-D01-010,01 College Calendar ICS,Clash banner,Clash banner surfaces placement vs imported blocking dates,P1,Functional,College Admin,Imported blocking/holiday/exam overlaps a drive date,"1. Open calendar with overlapping data
+2. Observe clash banner / warnings",Banner lists clash with imported item labeled clearly; actionable or informational copy shown,CollegeCalendarClashBanner,Manual,
+TC-D01-011,01 College Calendar ICS,Auth,Non-college roles cannot call calendar import/export/imported APIs,P0,Security,"Student, Employer",Student and employer sessions,"1. POST /api/college/calendar/import as student
+2. GET /api/college/calendar/export as employer",401/403; no data mutation,,Candidate,
+TC-D02-001,02 Feature Ideas,Navigation,Feature Ideas appears under college Communication & Support and loads,P0,Functional,College Admin,Migration 114 applied; college admin session (e.g. admin@iitm.edu),"1. Sign in as college admin
+2. Open Communication & Support → Feature Ideas
+3. Or open /dashboard/college/feature-ideas","Page loads with status/topic filters, Submit Idea, and list (or empty state)",npm run db:migrate:114,Candidate,
+TC-D02-002,02 Feature Ideas,Submit,"Submit idea with title, description, and topic(s)",P0,Functional,College Admin,Feature Ideas page open,"1. Click + Submit Idea
+2. Enter title and description
+3. Select 1–3 topics
+4. Submit",Success dialog (“Idea submitted”); idea appears in list with Pending approval; author auto-upvoted (vote_count ≥ 1),,Manual,
+TC-D02-003,02 Feature Ideas,Submit,Submit blocked without topic or empty title/description,P1,Negative,College Admin,Submit modal open,"1. Clear topics
+2. Attempt submit
+3. Retry with blank title",Validation warning/error; no new row created,,Candidate,
+TC-D02-004,02 Feature Ideas,Vote,College admin can upvote and remove vote on another idea,P0,Functional,College Admin,At least one idea from another user (or second college admin),"1. Click vote chevron on an idea
+2. Observe count +1 and voted state
+3. Click again",Vote toggles; count increments then decrements; UI reflects voted_by_me,POST /api/college/feature-ideas/:id/vote,Manual,
+TC-D02-005,02 Feature Ideas,Filters,Status and topic filters narrow the list; search finds by title,P1,Functional,College Admin,Multiple ideas with varied topics/statuses,"1. Filter by New Feature topic
+2. Filter by Pending approval
+3. Search unique title fragment",Only matching ideas shown; counts in sidebar update from API aggregates,,Manual,
+TC-D02-006,02 Feature Ideas,Sort,Trending vs Newest sort order,P2,Functional,College Admin,≥2 ideas with different vote_count / created_at,"1. Sort Trending
+2. Sort Newest",Trending orders by votes then recency; Newest by created_at desc,,Manual,
+TC-D02-007,02 Feature Ideas,Auth,Student/employer cannot open Feature Ideas or APIs,P0,Security,"Student, Employer",Non-college sessions,"1. Open /dashboard/college/feature-ideas as student
+2. GET /api/college/feature-ideas as employer",Route blocked/redirect; API 401,College-only MVP,Candidate,
+TC-D02-008,02 Feature Ideas,Auth,Feature Ideas menu not shown for student/employer,P1,UI,"Student, Employer",Signed in as those roles,1. Inspect sidebar menus,No Feature Ideas entry; Feedback may still exist where shared,,Manual,
+TC-D03-001,03 Clear Placement Cleanup,Alerts,db:clear-placement deletes all notifications (Alerts),P0,Functional,Developer / QA,At least one in-app notification exists; .env.local DATABASE_URL set,"1. Note Alerts count in UI or DB
+2. Run npm run db:clear-placement
+3. Confirm terminal After: Alerts (notifications): 0
+4. Hard-refresh /dashboard/alerts",Inbox and trash empty; terminal lists Alerts line,scripts/clear_all_placement_data.js + SQL DELETE FROM notifications,Manual,
+TC-D03-002,03 Clear Placement Cleanup,Audit logs,db:clear-placement deletes audit_logs,P0,Functional,Developer / QA,audit_logs has rows; college Audit Reports previously showed activity,"1. Run npm run db:clear-placement
+2. Check After: Audit logs: 0
+3. Open college Audit Reports",Audit log list empty / zero rows,DELETE FROM audit_logs,Manual,
+TC-D03-003,03 Clear Placement Cleanup,Test colleges,Non-core college tenants deleted; seed campuses retained,P0,Functional,Developer / QA,At least one registration/test college exists besides seed slugs,"1. Run npm run db:clear-placement
+2. Read “Test colleges to delete” and “Remaining colleges”
+3. Verify seed campuses still present","Only core seed colleges remain (iit-madras, nit-trichy, bits-pilani, jadavpur, vit, dtu, iiith); test tenants gone",CORE_COLLEGE_SLUGS in clear_all_placement_data.js,Manual,
+TC-D03-004,03 Clear Placement Cleanup,Preserve,Core users/students/employers on seed campuses survive clear,P0,Regression,Developer / QA,Demo logins work before clear,"1. Run clear-placement
+2. Sign in as admin@iitm.edu and hr@techcorp.com",Login succeeds; jobs/drives cleared but accounts intact,May need restore demo tie-ups after wipe,Manual,
+TC-D03-005,03 Clear Placement Cleanup,Terminal,Before/After snapshot prints Alerts and Audit logs counts,P2,UI,Developer / QA,None,"1. Run npm run db:clear-placement
+2. Inspect console output",Lines include “Alerts (notifications)” and “Audit logs” in Before and After blocks,,Manual,
+TC-D04-001,04 Demo Naming Hub Titles,Demo suffix,Seed college tenant names end with (Demo),P0,Functional,"College Admin, Super Admin",Migration 113 applied,"1. Sign in as IITM college admin
+2. Observe hub/header tenant name
+3. Check college list / partnership UIs showing tenant name","Name shows e.g. “Indian Institute of Technology, Madras (Demo)” — not bare name",npm run db:migrate:113; seed.sql updated,Manual,
+TC-D04-002,04 Demo Naming Hub Titles,Demo suffix,Re-running migrate 113 does not double-suffix,P1,Regression,Developer / QA,Names already end with (Demo),"1. npm run db:migrate:113 again
+2. SELECT name FROM tenants WHERE slug='iit-madras'",Still a single “ (Demo)” suffix,Idempotent WHERE name !~* '(Demo)\s*$',Candidate,
+TC-D04-003,04 Demo Naming Hub Titles,Hub title,College hub browser/page title uses “{TenantName} Home”,P1,UI,College Admin,College admin with tenantName,"1. Open college full-screen hub / home
+2. Check document title or hub heading",Shows tenant name + Home (includes Demo suffix if present),DashboardFullScreenHub getHubPageTitle,Manual,
+TC-D04-004,04 Demo Naming Hub Titles,Hub title,Student hub title uses “{FirstName} — Home”,P1,UI,Student,Student session with first name,"1. Open student hub
+2. Check title",First name then — Home,,Manual,
+TC-D04-005,04 Demo Naming Hub Titles,Demo logins,Login demo chips for colleges show (Demo) in labels where updated,P2,UI,Public,Demo logins enabled on /login,"1. Open /login
+2. Inspect college admin / committee demo account names",Demo college labels include (Demo),src/lib/demoLogins.js,Manual,
+TC-D05-001,05 Developer Unlock,Show password,Internal tools unlock page has show/hide password toggle,P0,UI,Public / team,None,"1. Open /developer/unlock
+2. Type a password
+3. Click eye icon
+4. Click again",Password revealed as text then masked again; aria-label updates Show/Hide,Matches login page Eye/EyeOff pattern,Candidate,
+TC-D05-002,05 Developer Unlock,Unlock,Correct team password unlocks and navigates to developer notes,P0,Functional,Public / team,Known developer notes password,"1. Enter correct password
+2. Click Unlock",Full navigation to /developer (or from= target); subsequent visit allowed via cookie,Wolfe123@# / env override per team docs,Manual,
+TC-D05-003,05 Developer Unlock,Unlock,Wrong password shows error and does not grant access,P0,Negative,Public / team,None,"1. Enter wrong password
+2. Submit
+3. Open /developer",Incorrect password message; /developer still gated to unlock,,Manual,

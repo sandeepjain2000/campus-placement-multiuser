@@ -74,6 +74,7 @@
     "db:migrate:111": "node scripts/db_exec_sql_file.js db/migrations/111_ensure_placement_committee_demo_accounts.sql",
     "db:migrate:112": "node scripts/db_exec_sql_file.js db/migrations/112_college_calendar_source_uid.sql",
     "db:migrate:113": "node scripts/db_exec_sql_file.js db/migrations/113_demo_college_name_suffix.sql",
+    "db:migrate:114": "node scripts/db_exec_sql_file.js db/migrations/114_feature_ideas.sql",
     "db:seed:marketplace": "npm run db:migrate:108 && npm run db:migrate:109",
     "db:align-student-cvs": "npm run db:migrate:103 && npm run db:migrate:104",
     "db:clear-broken-seed-assets": "npm run db:migrate:110",

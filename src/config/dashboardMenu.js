@@ -28,6 +28,7 @@ import {
   UserCog,
   HandHeart,
   ScrollText,
+  Lightbulb,
   ClipboardCheck,
   Video,
 } from 'lucide-react';
@@ -479,6 +480,7 @@ export const menuConfig = {
           { label: 'Email Templates', href: '/dashboard/college/communication-templates', icon: Mail },
           { label: 'Custom Message Templates', href: '/dashboard/college/message-templates', icon: FileEdit },
           { label: 'Bulk Notifications', href: '/dashboard/college/bulk-notifications', icon: Megaphone },
+          { label: 'Feature Ideas', href: '/dashboard/college/feature-ideas', icon: Lightbulb },
           { label: 'Feedback', href: '/dashboard/feedback', icon: MessageSquare },
         ],
       },

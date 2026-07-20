@@ -20,6 +20,7 @@ const ROUTES_SORTED = [
   '/dashboard/college',
   '/dashboard/college/applications',
   '/dashboard/college/bulk-notifications',
+  '/dashboard/college/feature-ideas',
   '/dashboard/college/calendar',
   '/dashboard/college/clarifications',
   '/dashboard/college/discussions',
