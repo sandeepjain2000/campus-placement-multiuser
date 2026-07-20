@@ -12,6 +12,7 @@ export const COLLEGE_PROGRAM_EVENT_TYPES = [
 ];
 
 const ACTIVE_DRIVE_STATUSES = ['requested', 'approved', 'scheduled', 'in_progress'];
+const BLOCKING_EVENT_TYPES = new Set(['exam', 'holiday']);
 
 export function addDaysToYmd(ymd, days) {
   const d = parseYmdToLocalDate(String(ymd || '').slice(0, 10));
@@ -23,6 +24,14 @@ export function addDaysToYmd(ymd, days) {
 export function defaultBlockingForEventType(eventType) {
   const row = COLLEGE_PROGRAM_EVENT_TYPES.find((t) => t.value === eventType);
   return Boolean(row?.blocksDrives);
+}
+
+/** Whether a college_calendar row should warn against placement drives. */
+export function isDriveBlockingCalendarRow(row) {
+  if (!row) return false;
+  if (row.is_blocking === true || row.isBlocking === true) return true;
+  const type = String(row.event_type || row.eventType || row.type || '').toLowerCase();
+  return BLOCKING_EVENT_TYPES.has(type);
 }
 
 export async function loadBufferDays(dbQuery, tenantId) {
@@ -38,6 +47,10 @@ export async function loadBufferDays(dbQuery, tenantId) {
   }
 }
 
+/**
+ * Blocking academic / imported calendar events overlapping [startDate, endDate].
+ * Includes exams, holidays, explicitly blocking rows, and imported rows of those kinds.
+ */
 export async function findBlockingCalendarEvents(dbQuery, tenantId, startDate, endDate, { excludeCalendarId } = {}) {
   const params = [tenantId, startDate, endDate];
   let excludeClause = '';
@@ -45,17 +58,42 @@ export async function findBlockingCalendarEvents(dbQuery, tenantId, startDate, e
     params.push(excludeCalendarId);
     excludeClause = ` AND id <> $${params.length}::uuid`;
   }
-  const res = await dbQuery(
-    `SELECT id, title, event_type, start_date, end_date, is_blocking, description
-     FROM college_calendar
-     WHERE tenant_id = $1::uuid
-       AND (event_type = 'exam' OR is_blocking = true)
-       AND start_date <= $3::date
-       AND COALESCE(end_date, start_date) >= $2::date
-       ${excludeClause}
-     ORDER BY start_date ASC`,
-    params,
-  );
+
+  // source_uid may be missing before migration 112 — query without it first, then enrich.
+  let res;
+  try {
+    res = await dbQuery(
+      `SELECT id, title, event_type, start_date, end_date, is_blocking, description, source_uid
+       FROM college_calendar
+       WHERE tenant_id = $1::uuid
+         AND (
+           event_type IN ('exam', 'holiday')
+           OR is_blocking = true
+         )
+         AND start_date <= $3::date
+         AND COALESCE(end_date, start_date) >= $2::date
+         ${excludeClause}
+       ORDER BY start_date ASC`,
+      params,
+    );
+  } catch (err) {
+    if (!/source_uid/i.test(String(err?.message || ''))) throw err;
+    res = await dbQuery(
+      `SELECT id, title, event_type, start_date, end_date, is_blocking, description,
+              NULL::text AS source_uid
+       FROM college_calendar
+       WHERE tenant_id = $1::uuid
+         AND (
+           event_type IN ('exam', 'holiday')
+           OR is_blocking = true
+         )
+         AND start_date <= $3::date
+         AND COALESCE(end_date, start_date) >= $2::date
+         ${excludeClause}
+       ORDER BY start_date ASC`,
+      params,
+    );
+  }
   return res.rows;
 }
 
@@ -89,6 +127,7 @@ export async function findPlacementDrivesInRange(
 }
 
 function mapCalendarClash(row) {
+  const imported = Boolean(row.source_uid && String(row.source_uid).trim());
   return {
     kind: 'calendar',
     id: row.id,
@@ -96,7 +135,9 @@ function mapCalendarClash(row) {
     eventType: row.event_type,
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date || row.start_date),
-    isBlocking: Boolean(row.is_blocking),
+    isBlocking: Boolean(row.is_blocking) || isDriveBlockingCalendarRow(row),
+    imported,
+    source: imported ? 'imported' : 'program',
   };
 }
 
@@ -155,6 +196,48 @@ export async function detectCalendarProgramClashes(
   };
 }
 
+/**
+ * Detect drive clashes for a batch of calendar events (e.g. ICS import preview).
+ * Only checks events that would block placements (exam / holiday / isBlocking).
+ */
+export async function detectDriveClashesForEventBatch(dbQuery, tenantId, events) {
+  const blockers = (Array.isArray(events) ? events : []).filter((ev) =>
+    isDriveBlockingCalendarRow({
+      event_type: ev.eventType || ev.event_type,
+      is_blocking: ev.isBlocking ?? ev.is_blocking,
+    }),
+  );
+  if (!blockers.length) return { clashes: [], byEvent: [] };
+
+  /** @type {Map<string, object>} */
+  const driveMap = new Map();
+  const byEvent = [];
+
+  for (const ev of blockers) {
+    const start = toDateOnlyString(ev.startDate || ev.start_date);
+    const end = toDateOnlyString(ev.endDate || ev.end_date || start);
+    if (!start) continue;
+    const result = await detectCalendarProgramClashes(dbQuery, tenantId, start, end);
+    for (const d of result.clashes) {
+      driveMap.set(String(d.id), d);
+    }
+    if (result.clashes.length) {
+      byEvent.push({
+        title: ev.title,
+        startDate: start,
+        endDate: end,
+        eventType: ev.eventType || ev.event_type,
+        clashes: result.clashes,
+      });
+    }
+  }
+
+  return {
+    clashes: [...driveMap.values()],
+    byEvent,
+  };
+}
+
 /** True when a calendar event period overlaps any active drive dates in range. */
 export function eventRangeOverlapsDriveDates(eventStart, eventEnd, driveDates) {
   const end = toDateOnlyString(eventEnd || eventStart);
@@ -162,6 +245,46 @@ export function eventRangeOverlapsDriveDates(eventStart, eventEnd, driveDates) {
   return (Array.isArray(driveDates) ? driveDates : []).some((d) =>
     periodsOverlap(start, end, d, d),
   );
+}
+
+/**
+ * Client-side: find placement vs blocking/imported overlaps from calendar grid items.
+ * @param {Array<{ id: unknown, date: string, title: string, type?: string, category?: string, isBlocking?: boolean }>} items
+ */
+export function findPlacementImportedClashesFromItems(items) {
+  const list = Array.isArray(items) ? items : [];
+  const placements = list.filter((i) => i.category === 'placement' || i.type === 'placement_drive');
+  const blockers = list.filter((i) => {
+    if (i.category === 'placement' || i.type === 'placement_drive') return false;
+    return isDriveBlockingCalendarRow({
+      event_type: i.type,
+      is_blocking: i.isBlocking,
+    });
+  });
+
+  /** @type {Array<{ driveId: unknown, driveTitle: string, driveDate: string, eventId: unknown, eventTitle: string, eventDate: string, imported: boolean, eventType: string }>} */
+  const clashes = [];
+  for (const drive of placements) {
+    const driveDate = toDateOnlyString(drive.date);
+    if (!driveDate) continue;
+    for (const ev of blockers) {
+      const start = toDateOnlyString(ev.date);
+      const end = toDateOnlyString(ev.endDate || ev.date);
+      if (!start) continue;
+      if (!periodsOverlap(start, end || start, driveDate, driveDate)) continue;
+      clashes.push({
+        driveId: drive.id,
+        driveTitle: drive.title || 'Placement drive',
+        driveDate,
+        eventId: ev.id,
+        eventTitle: ev.title || 'Calendar event',
+        eventDate: start === (end || start) ? start : `${start} – ${end}`,
+        imported: ev.category === 'imported' || Boolean(ev.imported),
+        eventType: ev.type || 'other',
+      });
+    }
+  }
+  return clashes;
 }
 
 export function formatClashSummary(clashes, { bufferDays = 0 } = {}) {
@@ -172,7 +295,10 @@ export function formatClashSummary(clashes, { bufferDays = 0 } = {}) {
     }
     const range =
       c.startDate === c.endDate ? c.startDate : `${c.startDate} – ${c.endDate}`;
-    return `${c.title} (${range})`;
+    const importedTag = c.imported ? 'Imported ' : '';
+    const typeTag =
+      c.eventType === 'exam' ? 'exam' : c.eventType === 'holiday' ? 'holiday' : 'blocked date';
+    return `${importedTag}${typeTag}: ${c.title} (${range})`;
   });
   const suffix = clashes.length > 3 ? ` and ${clashes.length - 3} more` : '';
   const bufferNote =

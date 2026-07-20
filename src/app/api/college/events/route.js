@@ -11,6 +11,7 @@ import {
   detectCalendarProgramClashes,
   formatClashSummary,
 } from '@/lib/calendarClashDetection';
+import { hasColumn } from '@/lib/migrationReady';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -28,13 +29,16 @@ async function __platform_GET() {
     const tenantId = session.user.tenantId || session.user.tenant_id;
     if (!tenantId) return NextResponse.json({ error: 'Tenant context missing' }, { status: 400 });
 
+    const hasSourceUid = await hasColumn('college_calendar', 'source_uid');
+    const sourceSelect = hasSourceUid ? ', source_uid' : ', NULL::text AS source_uid';
+
     const [calendarRes, drivesRes] = await Promise.all([
       query(
-        `SELECT id, title, event_type, start_date, end_date, is_blocking, description
+        `SELECT id, title, event_type, start_date, end_date, is_blocking, description${sourceSelect}
          FROM college_calendar
          WHERE tenant_id = $1::uuid
          ORDER BY start_date DESC, created_at DESC
-         LIMIT 500`,
+         LIMIT 2000`,
         [tenantId],
       ),
       query(
@@ -50,6 +54,15 @@ async function __platform_GET() {
       ),
     ]);
 
+    const calendarEvents = calendarRes.rows.map((row) => {
+      const imported = Boolean(row.source_uid && String(row.source_uid).trim());
+      return {
+        ...row,
+        source: imported ? 'imported' : 'program',
+        category: imported ? 'imported' : 'program',
+      };
+    });
+
     const driveEvents = drivesRes.rows.map((d) => ({
       id: `drive-${d.id}`,
       title: d.company_name ? `${d.company_name} — ${d.title}` : d.title,
@@ -59,9 +72,11 @@ async function __platform_GET() {
       is_blocking: false,
       description: `Placement drive · ${d.status || 'scheduled'}`,
       source: 'placement_drive',
+      category: 'placement',
+      source_uid: null,
     }));
 
-    return NextResponse.json({ events: [...calendarRes.rows, ...driveEvents] });
+    return NextResponse.json({ events: [...calendarEvents, ...driveEvents] });
   } catch (error) {
     console.error('GET /api/college/events', error);
     return NextResponse.json({ error: 'Failed to load events' }, { status: 500 });

@@ -63,13 +63,13 @@ RESTART IDENTITY CASCADE;
 
 -- 1. Create Tenants (Colleges)
 INSERT INTO tenants (id, name, slug, type, city, state, email, communication_email, accreditation, naac_grade, established_year) VALUES
-('a1000000-0000-0000-0000-000000000001', 'Indian Institute of Technology, Madras', 'iit-madras', 'college', 'Chennai', 'Tamil Nadu', 'placement@iitm.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A++', 1958),
-('a1000000-0000-0000-0000-000000000002', 'National Institute of Technology, Trichy', 'nit-trichy', 'college', 'Tiruchirappalli', 'Tamil Nadu', 'placement@nitt.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964),
-('a1000000-0000-0000-0000-000000000003', 'Birla Institute of Technology, Pilani', 'bits-pilani', 'college', 'Pilani', 'Rajasthan', 'placement@bits.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964),
-('a1000000-0000-0000-0000-000000000004', 'Jadavpur University', 'jadavpur-university', 'college', 'Kolkata', 'West Bengal', 'placement@jadavpur.seed', 'sandeepjain200019@gmail.com', 'UGC', 'A', 1955),
-('a1000000-0000-0000-0000-000000000005', 'Vellore Institute of Technology', 'vit-vellore', 'college', 'Vellore', 'Tamil Nadu', 'placement@vit.seed', 'sandeepjain200019@gmail.com', 'NAAC', 'A++', 1984),
-('a1000000-0000-0000-0000-000000000006', 'Delhi Technological University', 'dtu-delhi', 'college', 'New Delhi', 'Delhi', 'placement@dtu.seed', 'sandeepjain200019@gmail.com', 'UGC', 'A', 1941),
-('a1000000-0000-0000-0000-000000000007', 'Indian Institute of Information Technology Hyderabad', 'iiit-hyderabad', 'college', 'Hyderabad', 'Telangana', 'placement@iiith.seed', 'sandeepjain200019@gmail.com', 'MoE', 'A++', 1998);
+('a1000000-0000-0000-0000-000000000001', 'Indian Institute of Technology, Madras (Demo)', 'iit-madras', 'college', 'Chennai', 'Tamil Nadu', 'placement@iitm.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A++', 1958),
+('a1000000-0000-0000-0000-000000000002', 'National Institute of Technology, Trichy (Demo)', 'nit-trichy', 'college', 'Tiruchirappalli', 'Tamil Nadu', 'placement@nitt.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964),
+('a1000000-0000-0000-0000-000000000003', 'Birla Institute of Technology, Pilani (Demo)', 'bits-pilani', 'college', 'Pilani', 'Rajasthan', 'placement@bits.edu', 'sandeepjain200019@gmail.com', 'AICTE', 'A+', 1964),
+('a1000000-0000-0000-0000-000000000004', 'Jadavpur University (Demo)', 'jadavpur-university', 'college', 'Kolkata', 'West Bengal', 'placement@jadavpur.seed', 'sandeepjain200019@gmail.com', 'UGC', 'A', 1955),
+('a1000000-0000-0000-0000-000000000005', 'Vellore Institute of Technology (Demo)', 'vit-vellore', 'college', 'Vellore', 'Tamil Nadu', 'placement@vit.seed', 'sandeepjain200019@gmail.com', 'NAAC', 'A++', 1984),
+('a1000000-0000-0000-0000-000000000006', 'Delhi Technological University (Demo)', 'dtu-delhi', 'college', 'New Delhi', 'Delhi', 'placement@dtu.seed', 'sandeepjain200019@gmail.com', 'UGC', 'A', 1941),
+('a1000000-0000-0000-0000-000000000007', 'Indian Institute of Information Technology Hyderabad (Demo)', 'iiit-hyderabad', 'college', 'Hyderabad', 'Telangana', 'placement@iiith.seed', 'sandeepjain200019@gmail.com', 'MoE', 'A++', 1998);
 
 -- 1b. College public profile + logos + settings (replaces former hard-coded EntityLogo / defaults)
 UPDATE tenants SET

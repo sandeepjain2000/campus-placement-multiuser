@@ -10,7 +10,7 @@ export const DEV_NOTES_SESSION_MAX_AGE_SEC = 7 * 24 * 60 * 60;
  */
 export const DEV_NOTES_PASSWORD_HASH =
   process.env.DEVELOPER_NOTES_PASSWORD_HASH ||
-  '$2b$12$U1Wht5mwGrYu0vyednBfuO8NpvKRwLKZYTBAybtaw.NaRwtaWN6VC';
+  '$2b$12$OocdTDGqmPUhuC36skoLH.ce.dDtzhHrFzBRVG4N4/S39EJXgInF6';
 
 export function getDevNotesAuthSecret() {
   return (
@@ -43,8 +43,16 @@ export function requiresDevNotesUnlock(pathname) {
 }
 
 function bytesToBase64Url(bytes) {
+  const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(arr)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  }
   let binary = '';
-  for (const b of bytes) binary += String.fromCharCode(b);
+  for (let i = 0; i < arr.length; i += 1) binary += String.fromCharCode(arr[i]);
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
@@ -89,7 +97,9 @@ export async function verifyDevNotesSessionToken(token, secret = getDevNotesAuth
 
 
 export function devNotesCookieOptions() {
-  const secure = process.env.NODE_ENV === 'production';
+  // Prefer Secure on HTTPS hosts (Vercel). Avoid Secure on plain local http even if NODE_ENV=production.
+  const vercelHttps = Boolean(process.env.VERCEL);
+  const secure = vercelHttps || process.env.NODE_ENV === 'production';
   return {
     httpOnly: true,
     secure,

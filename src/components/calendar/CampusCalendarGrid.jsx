@@ -33,6 +33,9 @@ export function getCalendarEventColor(type) {
   if (t === 'exam') {
     return { bg: 'var(--danger-100)', text: 'var(--danger-600)', border: 'var(--danger-500)' };
   }
+  if (t === 'imported') {
+    return { bg: 'var(--warning-100)', text: 'var(--warning-700)', border: 'var(--warning-500)' };
+  }
   if (t === 'off_campus') {
     return { bg: 'var(--warning-100)', text: 'var(--warning-600)', border: 'var(--warning-500)' };
   }

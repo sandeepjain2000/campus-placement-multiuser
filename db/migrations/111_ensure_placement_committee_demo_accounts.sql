@@ -7,10 +7,10 @@ BEGIN;
 
 INSERT INTO tenants (id, name, slug, type, city, state, email, communication_email, accreditation, is_active)
 VALUES
-  ('a1000000-0000-0000-0000-000000000004', 'Jadavpur University', 'jadavpur-university', 'college', 'Kolkata', 'West Bengal', 'placement@jadavpur.seed', 'sandeepjain200019@gmail.com', 'UGC', true),
-  ('a1000000-0000-0000-0000-000000000005', 'Vellore Institute of Technology', 'vit-vellore', 'college', 'Vellore', 'Tamil Nadu', 'placement@vit.seed', 'sandeepjain200019@gmail.com', 'NAAC', true),
-  ('a1000000-0000-0000-0000-000000000006', 'Delhi Technological University', 'dtu-delhi', 'college', 'New Delhi', 'Delhi', 'placement@dtu.seed', 'sandeepjain200019@gmail.com', 'UGC', true),
-  ('a1000000-0000-0000-0000-000000000007', 'Indian Institute of Information Technology Hyderabad', 'iiit-hyderabad', 'college', 'Hyderabad', 'Telangana', 'placement@iiith.seed', 'sandeepjain200019@gmail.com', 'MoE', true)
+  ('a1000000-0000-0000-0000-000000000004', 'Jadavpur University (Demo)', 'jadavpur-university', 'college', 'Kolkata', 'West Bengal', 'placement@jadavpur.seed', 'sandeepjain200019@gmail.com', 'UGC', true),
+  ('a1000000-0000-0000-0000-000000000005', 'Vellore Institute of Technology (Demo)', 'vit-vellore', 'college', 'Vellore', 'Tamil Nadu', 'placement@vit.seed', 'sandeepjain200019@gmail.com', 'NAAC', true),
+  ('a1000000-0000-0000-0000-000000000006', 'Delhi Technological University (Demo)', 'dtu-delhi', 'college', 'New Delhi', 'Delhi', 'placement@dtu.seed', 'sandeepjain200019@gmail.com', 'UGC', true),
+  ('a1000000-0000-0000-0000-000000000007', 'Indian Institute of Information Technology Hyderabad (Demo)', 'iiit-hyderabad', 'college', 'Hyderabad', 'Telangana', 'placement@iiith.seed', 'sandeepjain200019@gmail.com', 'MoE', true)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   slug = EXCLUDED.slug,

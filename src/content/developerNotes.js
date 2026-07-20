@@ -839,7 +839,7 @@ export const EMAIL_DEMO_NOTES = [
 
 /** Full reset + restore — primary cleanup path (documented on /developer#cleanup). */
 export const CLEANUP_OVERVIEW =
-  'After testing, wipe all jobs, internships, and placement drives, then restore demo tie-ups. Core logins (IITM / NITT / BITS + TechCorp) stay intact.';
+  'After testing, wipe all jobs, internships, and placement drives, clear Alerts/Audit logs, and remove non-core test colleges. Core seed campuses (IITM / NITT / BITS + Jadavpur / VIT / DTU / IIIT-H) and demo employer logins stay intact.';
 
 export const CLEANUP_COMMANDS = [
   {
@@ -847,7 +847,7 @@ export const CLEANUP_COMMANDS = [
     command: 'npm run db:clear-placement',
     alt: 'node scripts/clear_all_placement_data.js',
     detail:
-      'Hard-deletes every job posting (jobs + internships + projects + hackathons), all placement drives, applications, campus visibility, offers, and assessment uploads. Includes items created by demo accounts and Guided Runner GT-* posts. Does not remove colleges, users, students, or employers.',
+      'Hard-deletes every job posting (jobs + internships + projects + hackathons), all placement drives, applications, campus visibility, offers, assessment uploads, Alerts, and Audit logs. Also deletes non-core colleges created for testing (keeps seed campuses: IITM, NITT, BITS, Jadavpur, VIT, DTU, IIIT-H). Does not remove core users, students, or employers.',
     when: 'Clean slate before a demo or after a long QA session.',
   },
   {
@@ -867,12 +867,12 @@ export const CLEANUP_COMMANDS = [
     when: 'Remove one bad test row without wiping everything.',
   },
   {
-    title: 'Remove test college tenants (registration QA)',
+    title: 'Remove test college tenants only (registration QA)',
     command: 'py -3 scripts/delete_test_college_tenants.py --dry-run',
     alt: 'py -3 scripts/delete_test_college_tenants.py',
     detail:
-      'Deletes colleges created during registration tests (MIT WPU, COEP, duplicate IITM, etc.). Keeps iit-madras, nit-trichy, bits-pilani only. Cascades users, visibility, and drives for those tenants.',
-    when: 'College admin list is cluttered with test campuses.',
+      'Standalone college cleanup (also included in npm run db:clear-placement). Deletes non-seed campuses from registration tests. Keeps seed campuses. Cascades users, visibility, and drives for those tenants.',
+    when: 'College admin list is cluttered and you do not want a full placement wipe.',
   },
   {
     title: 'Remove test employers (keep 5 demo logins)',

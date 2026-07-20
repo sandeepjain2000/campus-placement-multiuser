@@ -11,7 +11,7 @@ export async function approveCollegeDriveWithClashCheck(driveId, { force = false
   const json = await res.json().catch(() => ({}));
 
   if (res.status === 409 && json.code === 'CALENDAR_CLASH' && !force) {
-    const summary = json.summary || 'This drive clashes with a college exam or blocked date.';
+    const summary = json.summary || 'This drive clashes with a college exam, holiday, or imported blocked date.';
     const proceed = window.confirm(
       `${summary}\n\nApprove this drive anyway?`,
     );

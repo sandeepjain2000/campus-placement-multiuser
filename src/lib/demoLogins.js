@@ -4,26 +4,26 @@ export const DEMO_SEED_PASSWORD = 'Admin@123';
 
 export const DEMO_LOGINS = [
   // Students
-  { label: 'Student (IITM)', email: 'arjun.verma@iitm.edu',  icon: '🎓', name: 'Arjun Verma · IIT Madras' },
-  { label: 'Student (NITT)', email: 'sneha.rao@nitt.edu',    icon: '🎓', name: 'Sneha Rao · NIT Trichy' },
-  { label: 'Student (BITS)', email: 'rohan.mehta@bits.edu',  icon: '🎓', name: 'Rohan Mehta · BITS Pilani' },
-  { label: 'Alumni (IITM)', email: 'priya.sharma.alumni@iitm.edu', icon: '🎓', group: 'alumni', name: 'Priya Sharma · IIT Madras Alumni' },
+  { label: 'Student (IITM)', email: 'arjun.verma@iitm.edu',  icon: '🎓', name: 'Arjun Verma · IIT Madras (Demo)' },
+  { label: 'Student (NITT)', email: 'sneha.rao@nitt.edu',    icon: '🎓', name: 'Sneha Rao · NIT Trichy (Demo)' },
+  { label: 'Student (BITS)', email: 'rohan.mehta@bits.edu',  icon: '🎓', name: 'Rohan Mehta · BITS Pilani (Demo)' },
+  { label: 'Alumni (IITM)', email: 'priya.sharma.alumni@iitm.edu', icon: '🎓', group: 'alumni', name: 'Priya Sharma · IIT Madras (Demo) Alumni' },
   // Employers
   { label: 'Employer (TechCorp)',    email: 'hr@techcorp.com',          icon: '🏢', name: 'TechCorp Solutions' },
   { label: 'Employer (GlobalSoft)', email: 'hr@globalsoft.com',         icon: '🏢', name: 'GlobalSoft Technologies' },
   { label: 'Employer (Infosys)',    email: 'hr@infosys.com',            icon: '🏢', name: 'Infosys Limited' },
   // College Admins
-  { label: 'Admin (IITM)',  email: 'admin@iitm.edu', icon: '🏫', name: 'IIT Madras' },
-  { label: 'Admin (NITT)',  email: 'admin@nitt.edu', icon: '🏫', name: 'NIT Trichy' },
-  { label: 'Admin (BITS)',  email: 'admin@bits.edu', icon: '🏫', name: 'BITS Pilani' },
+  { label: 'Admin (IITM)',  email: 'admin@iitm.edu', icon: '🏫', name: 'IIT Madras (Demo)' },
+  { label: 'Admin (NITT)',  email: 'admin@nitt.edu', icon: '🏫', name: 'NIT Trichy (Demo)' },
+  { label: 'Admin (BITS)',  email: 'admin@bits.edu', icon: '🏫', name: 'BITS Pilani (Demo)' },
   // Placement committee (read-only student data per college)
-  { label: 'Placement Committee (IITM)', email: 'committee@iitm.edu', icon: '📋', group: 'placement_committee', name: 'IIT Madras — read-only' },
-  { label: 'Placement Committee (NITT)', email: 'committee@nitt.edu', icon: '📋', group: 'placement_committee', name: 'NIT Trichy — read-only' },
-  { label: 'Placement Committee (BITS)', email: 'committee@bits.edu', icon: '📋', group: 'placement_committee', name: 'BITS Pilani — read-only' },
-  { label: 'Placement Committee (Jadavpur)', email: 'committee.jadavpur@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'Jadavpur University — read-only' },
-  { label: 'Placement Committee (VIT)', email: 'committee.vit@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'VIT Vellore — read-only' },
-  { label: 'Placement Committee (DTU)', email: 'committee.dtu@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'DTU — read-only' },
-  { label: 'Placement Committee (IIIT-H)', email: 'committee.iiith@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'IIIT Hyderabad — read-only' },
+  { label: 'Placement Committee (IITM)', email: 'committee@iitm.edu', icon: '📋', group: 'placement_committee', name: 'IIT Madras (Demo) — read-only' },
+  { label: 'Placement Committee (NITT)', email: 'committee@nitt.edu', icon: '📋', group: 'placement_committee', name: 'NIT Trichy (Demo) — read-only' },
+  { label: 'Placement Committee (BITS)', email: 'committee@bits.edu', icon: '📋', group: 'placement_committee', name: 'BITS Pilani (Demo) — read-only' },
+  { label: 'Placement Committee (Jadavpur)', email: 'committee.jadavpur@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'Jadavpur University (Demo) — read-only' },
+  { label: 'Placement Committee (VIT)', email: 'committee.vit@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'VIT Vellore (Demo) — read-only' },
+  { label: 'Placement Committee (DTU)', email: 'committee.dtu@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'DTU (Demo) — read-only' },
+  { label: 'Placement Committee (IIIT-H)', email: 'committee.iiith@campus-placement.work', icon: '📋', group: 'placement_committee', name: 'IIIT Hyderabad (Demo) — read-only' },
   // Platform
   { label: 'Super Admin', email: 'admin@placementhub.com', icon: '⚙️', name: 'PlacementHub' },
 ];

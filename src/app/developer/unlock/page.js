@@ -1,15 +1,15 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { Lock } from 'lucide-react';
+import { Eye, EyeOff, Lock } from 'lucide-react';
 
 function UnlockForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || '/developer';
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,19 +21,21 @@ function UnlockForm() {
       const res = await fetch('/api/developer-notes/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ password }),
       });
       if (!res.ok) {
-        setError('Incorrect password');
+        const json = await res.json().catch(() => ({}));
+        setError(json?.error === 'Invalid password' ? 'Incorrect password' : (json?.error || 'Incorrect password'));
         return;
       }
       const safeFrom =
         from.startsWith('/developer') || from.startsWith('/data-entry') ? from : '/developer';
-      router.replace(safeFrom);
-      router.refresh();
+      // Full navigation so the unlock cookie is always sent on the next request
+      // (client soft-nav can race ahead of Set-Cookie).
+      window.location.assign(safeFrom);
     } catch {
       setError('Could not verify password. Try again.');
-    } finally {
       setLoading(false);
     }
   }
@@ -50,16 +52,29 @@ function UnlockForm() {
         </p>
         <form onSubmit={onSubmit} className="dev-notes-unlock-form">
           <label htmlFor="dev-notes-password">Password</label>
-          <input
-            id="dev-notes-password"
-            type="password"
-            className="form-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            required
-            autoFocus
-          />
+          <div className="dev-notes-unlock-password-wrap">
+            <input
+              id="dev-notes-password"
+              type={showPassword ? 'text' : 'password'}
+              className="form-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+              autoFocus
+              disabled={loading}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              title={showPassword ? 'Hide password' : 'Show password'}
+              disabled={loading}
+              className="btn btn-ghost btn-sm dev-notes-unlock-password-toggle"
+            >
+              {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          </div>
           {error ? <p className="dev-notes-unlock-error">{error}</p> : null}
           <button type="submit" className="btn btn-primary" disabled={loading || !password}>
             {loading ? 'Checking…' : 'Unlock'}
@@ -117,9 +132,31 @@ function UnlockForm() {
           margin-bottom: 0.35rem;
           color: var(--text-secondary);
         }
+        .dev-notes-unlock-password-wrap {
+          position: relative;
+          margin-bottom: 0.85rem;
+        }
         .dev-notes-unlock-form .form-input {
           width: 100%;
-          margin-bottom: 0.85rem;
+          padding-right: 2.4rem;
+          margin-bottom: 0;
+        }
+        .dev-notes-unlock-password-toggle {
+          position: absolute;
+          right: 0.45rem;
+          top: 50%;
+          transform: translateY(-50%);
+          min-width: 28px;
+          width: 28px;
+          height: 28px;
+          padding: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-secondary);
+        }
+        .dev-notes-unlock-password-toggle:hover:not(:disabled) {
+          color: var(--text-primary);
         }
         .dev-notes-unlock-error {
           margin: 0 0 0.75rem;

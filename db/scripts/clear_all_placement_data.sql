@@ -1,6 +1,8 @@
 -- =============================================================================
 -- Hard-delete ALL job postings, internships/programs, placement drives, and
--- dependent pipeline data. Keeps tenants, users, students, employers, partnerships.
+-- dependent pipeline data. Also clears notifications + audit_logs.
+-- Non-core (test) college tenants are deleted by clear_all_placement_data.js
+-- (keeps seed campuses: iit-madras, nit-trichy, bits-pilani, jadavpur, vit, dtu, iiith).
 --
 -- Run: npm run db:clear-placement
 -- =============================================================================
@@ -52,3 +54,6 @@ WHERE placement_status = 'placed';
 
 -- All in-app alerts (inbox + trash) — purge must leave Alerts empty
 DELETE FROM notifications;
+
+-- Audit reports trail — purge must leave Audit logs empty
+DELETE FROM audit_logs;

@@ -693,11 +693,13 @@ CREATE TABLE college_calendar (
     end_date DATE,
     is_blocking BOOLEAN DEFAULT false,
     description TEXT,
+    source_uid TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE INDEX idx_calendar_tenant ON college_calendar(tenant_id);
 CREATE INDEX idx_calendar_dates ON college_calendar(start_date, end_date);
+CREATE UNIQUE INDEX idx_college_calendar_tenant_source_uid ON college_calendar(tenant_id, source_uid);
 
 -- ============================================
 -- 18. COLLEGE FACILITIES
