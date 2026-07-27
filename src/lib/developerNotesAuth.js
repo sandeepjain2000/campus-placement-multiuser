@@ -4,14 +4,6 @@ export const DEV_NOTES_COOKIE = 'ph_dev_notes_auth';
 /** Session lifetime (7 days). */
 export const DEV_NOTES_SESSION_MAX_AGE_SEC = 7 * 24 * 60 * 60;
 
-/**
- * Bcrypt hash for the developer-notes gate password.
- * Override in production via DEVELOPER_NOTES_PASSWORD_HASH (never store plaintext).
- */
-export const DEV_NOTES_PASSWORD_HASH =
-  process.env.DEVELOPER_NOTES_PASSWORD_HASH ||
-  '$2b$12$OocdTDGqmPUhuC36skoLH.ce.dDtzhHrFzBRVG4N4/S39EJXgInF6';
-
 export function getDevNotesAuthSecret() {
   return (
     process.env.DEVELOPER_NOTES_AUTH_SECRET ||

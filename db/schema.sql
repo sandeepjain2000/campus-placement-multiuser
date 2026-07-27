@@ -1022,6 +1022,26 @@ CREATE TABLE email_template_overrides (
 
 CREATE INDEX idx_email_tpl_override_scope ON email_template_overrides(scope_type, scope_id);
 
+CREATE TABLE system_email_template_versions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    template_key VARCHAR(64) NOT NULL,
+    version_number INTEGER NOT NULL,
+    label VARCHAR(120),
+    subject_template TEXT NOT NULL,
+    body_template TEXT NOT NULL,
+    is_baseline BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    CONSTRAINT uq_system_email_tpl_version UNIQUE (template_key, version_number)
+);
+
+CREATE UNIQUE INDEX uq_system_email_tpl_baseline
+  ON system_email_template_versions (template_key)
+  WHERE is_baseline = true;
+
+CREATE INDEX idx_system_email_tpl_versions_key
+  ON system_email_template_versions (template_key, version_number DESC);
+
 -- ============================================
 -- 29. CAMPUS GUEST NEED — EMPLOYER CONFIRMATION EMAILS
 -- ============================================
@@ -1094,6 +1114,7 @@ CREATE TABLE mail_delivery_logs (
     error_code VARCHAR(100),
     message_id TEXT,
     smtp_response TEXT,
+    zeptomail_request_id VARCHAR(200),
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     recipient_login_email VARCHAR(255),
     recipient_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -1107,3 +1128,5 @@ CREATE INDEX idx_mail_delivery_logs_status ON mail_delivery_logs (status);
 CREATE INDEX idx_mail_delivery_logs_context ON mail_delivery_logs (context);
 CREATE INDEX idx_mail_delivery_logs_recipient_user ON mail_delivery_logs (recipient_user_id);
 CREATE INDEX idx_mail_delivery_logs_recipient_login ON mail_delivery_logs (LOWER(recipient_login_email));
+CREATE INDEX idx_mail_delivery_logs_zepto_request ON mail_delivery_logs (zeptomail_request_id)
+  WHERE zeptomail_request_id IS NOT NULL;

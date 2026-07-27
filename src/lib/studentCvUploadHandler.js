@@ -12,6 +12,7 @@ import {
   syncDefaultCvOnProfile,
   validateCvLabel,
 } from '@/lib/studentCv';
+import { clearStudentCollegeProfileVerification } from '@/lib/studentCollegeProfileVerification';
 
 export async function handleStudentCvUploadPost(req) {
   const session = await getServerSession(authOptions);
@@ -108,6 +109,9 @@ export async function handleStudentCvUploadPost(req) {
     if (makeDefault) {
       await syncDefaultCvOnProfile(client, studentId, uploaded.fileUrl);
     }
+
+    // New CV upload clears college Verified badge until staff re-confirm.
+    await clearStudentCollegeProfileVerification(studentId, client);
 
     return ins.rows[0];
   });

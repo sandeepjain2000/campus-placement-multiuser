@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
+import { clearStudentCollegeProfileVerificationByUserId } from '@/lib/studentCollegeProfileVerification';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -37,6 +38,8 @@ async function __platform_POST(req) {
     if (!upd.rows[0]) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
+
+    await clearStudentCollegeProfileVerificationByUserId(userId);
 
     return NextResponse.json({ avatar_url: upd.rows[0].avatar_url });
   } catch (e) {

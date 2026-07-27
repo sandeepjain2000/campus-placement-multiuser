@@ -144,7 +144,7 @@ export default function StudentQuickViewModal({ student, onClose, onVerify, read
             background: 'var(--bg-secondary)',
           }}
         >
-          {onVerify && !readOnly ? (
+          {onVerify ? (
             student.verified ? (
               <button type="button" className="btn btn-ghost" onClick={() => onVerify(student.id, false)}>
                 Clear Verification
@@ -156,7 +156,7 @@ export default function StudentQuickViewModal({ student, onClose, onVerify, read
                 onClick={() => onVerify(student.id, true)}
                 style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
               >
-                <CheckCircle2 size={16} /> Approve & Verify
+                <CheckCircle2 size={16} /> Mark Verified
               </button>
             )
           ) : null}

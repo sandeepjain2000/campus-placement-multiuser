@@ -15,6 +15,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  CheckCircle2,
   UserRound,
   X,
 } from 'lucide-react';
@@ -296,7 +297,23 @@ export default function EmployerStudentProfileModal({
               className="employer-student-profile-avatar employer-student-profile-avatar-img"
             />
             <div className="employer-student-profile-identity-text">
-              <h2 id="employer-student-profile-title">{student?.name || 'Student profile'}</h2>
+              <h2 id="employer-student-profile-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span>{student?.name || 'Student profile'}</span>
+                {student?.collegeVerified ? (
+                  <span
+                    className="badge badge-green"
+                    title={
+                      student.collegeVerifiedAt
+                        ? `College verified ${new Date(student.collegeVerifiedAt).toLocaleString()}`
+                        : 'College or placement committee verified this profile'
+                    }
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 600 }}
+                  >
+                    <CheckCircle2 size={13} aria-hidden />
+                    Verified
+                  </span>
+                ) : null}
+              </h2>
               <p>
                 {student?.collegeName || 'College'}
                 {student?.systemId ? ` · ${student.systemId}` : ''}

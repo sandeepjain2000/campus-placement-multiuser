@@ -88,10 +88,34 @@ export default function EmployerCommunicationTemplatesPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Reset failed');
-      addToast('Reverted to platform default wording.', 'success');
+      addToast('Reverted to current platform default wording.', 'success');
       await load();
     } catch (e) {
       addToast(e.message || 'Reset failed', 'error');
+    } finally {
+      setSavingKey(null);
+    }
+  };
+
+  const restoreSystemVersion = async (templateKey, versionId) => {
+    if (!versionId) return;
+    setSavingKey(templateKey);
+    try {
+      const res = await fetch('/api/employer/email-templates', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateKey, restoreSystemVersionId: versionId }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || 'Restore failed');
+      const v = json.restoredVersion;
+      const label = v?.is_baseline
+        ? 'system baseline'
+        : (v?.label || `system v${v?.version_number || ''}`);
+      addToast(`Restored ${label}.`, 'success');
+      await load();
+    } catch (e) {
+      addToast(e.message || 'Restore failed', 'error');
     } finally {
       setSavingKey(null);
     }
@@ -189,7 +213,7 @@ export default function EmployerCommunicationTemplatesPage() {
                     style={{ fontFamily: 'var(--font-mono, ui-monospace, monospace)', fontSize: '0.85rem' }}
                   />
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -210,9 +234,34 @@ export default function EmployerCommunicationTemplatesPage() {
                     >
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
                         <RotateCcw size={16} />
-                        Use platform default
+                        Current platform default
                       </span>
                     </button>
+                  ) : null}
+                  {Array.isArray(row.versions) && row.versions.length > 0 ? (
+                    <label className="text-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span className="text-secondary">Restore system version</span>
+                      <select
+                        className="form-select"
+                        style={{ width: 'auto', minWidth: 180 }}
+                        defaultValue=""
+                        disabled={savingKey === row.template_key}
+                        onChange={(e) => {
+                          const id = e.target.value;
+                          e.target.value = '';
+                          if (id) void restoreSystemVersion(row.template_key, id);
+                        }}
+                      >
+                        <option value="">Choose…</option>
+                        {row.versions.map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}
+                            {v.is_current ? ' (current)' : ''}
+                            {` — v${v.version_number}`}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   ) : null}
                 </div>
               </div>

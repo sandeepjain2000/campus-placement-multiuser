@@ -3,13 +3,14 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { EDITABLE_SYSTEM_EMAIL_TEMPLATE_KEY_SET } from '@/lib/systemEmailTemplates';
+import {
+  listSystemEmailTemplateVersions,
+  publishSystemEmailTemplateVersion,
+} from '@/lib/emailTemplateVersions';
+import { withApiHandlers } from '@/lib/platformErrorRoute';
 
 export const dynamic = 'force-dynamic';
-import { withApiHandlers } from '@/lib/platformErrorRoute';
 export const revalidate = 0;
-
-
-
 
 async function __platform_GET() {
   try {
@@ -34,7 +35,13 @@ async function __platform_GET() {
       );
     }
 
-    return NextResponse.json({ templates: rows });
+    const templates = [];
+    for (const row of rows) {
+      const versions = await listSystemEmailTemplateVersions(row.template_key);
+      templates.push({ ...row, versions });
+    }
+
+    return NextResponse.json({ templates });
   } catch (e) {
     console.error('GET /api/admin/email-templates', e);
     return NextResponse.json({ error: 'Failed to load templates' }, { status: 500 });
@@ -52,6 +59,7 @@ async function __platform_PATCH(request) {
     const templateKey = String(body.templateKey || '').trim();
     const subjectTemplate = body.subjectTemplate != null ? String(body.subjectTemplate) : '';
     const bodyTemplate = body.bodyTemplate != null ? String(body.bodyTemplate) : '';
+    const label = body.label != null ? String(body.label) : '';
 
     if (!templateKey) {
       return NextResponse.json({ error: 'templateKey is required' }, { status: 400 });
@@ -67,28 +75,32 @@ async function __platform_PATCH(request) {
       return NextResponse.json({ error: 'Unknown template key' }, { status: 400 });
     }
 
-    const r = await query(
-      `UPDATE system_email_templates
-       SET subject_template = $2,
-           body_template = $3,
-           updated_at = NOW(),
-           updated_by = $4::uuid
-       WHERE template_key = $1
-       RETURNING template_key, description, subject_template, body_template, updated_at`,
-      [templateKey, subjectTemplate, bodyTemplate, session.user.id],
-    );
-
-    if (r.rowCount === 0) {
-      return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+    try {
+      const published = await publishSystemEmailTemplateVersion({
+        templateKey,
+        subjectTemplate,
+        bodyTemplate,
+        userId: session.user.id,
+        label,
+      });
+      const versions = await listSystemEmailTemplateVersions(templateKey);
+      return NextResponse.json({
+        template: published.template,
+        version: published.version,
+        unchanged: published.unchanged,
+        versions,
+      });
+    } catch (e) {
+      if (e.status === 404) {
+        return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+      }
+      throw e;
     }
-
-    return NextResponse.json({ template: r.rows[0] });
   } catch (e) {
     console.error('PATCH /api/admin/email-templates', e);
     return NextResponse.json({ error: 'Failed to save template' }, { status: 500 });
   }
 }
-
 
 const __platformApiHandlers = withApiHandlers({
   GET: __platform_GET,

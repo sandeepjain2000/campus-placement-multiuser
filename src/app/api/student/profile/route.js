@@ -16,6 +16,7 @@ import {
   checkStudentCollegeFieldViolations,
   mergeStudentAuxProfilePreservingCollegeFields,
 } from '@/lib/studentCollegeControlledFields';
+import { clearStudentCollegeProfileVerification } from '@/lib/studentCollegeProfileVerification';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -331,6 +332,9 @@ async function __platform_PUT(request) {
         parts.user_communication_email,
         session.user.id,
       ]);
+
+      // Student-edited fields require college/committee to re-mark Verified (informational only).
+      await clearStudentCollegeProfileVerification(String(studentProfileId), client);
 
       await client.query(`DELETE FROM student_skills WHERE student_id = $1::uuid`, [studentProfileId]);
       for (const skill of parts.skills) {

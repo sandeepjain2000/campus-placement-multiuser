@@ -47,6 +47,7 @@ export default function AdminSettingsPage() {
   const [storageProvider, setStorageProvider] = useState('');
   const [maxUploadSizeMb, setMaxUploadSizeMb] = useState(5);
   const [sessionAdsEnabled, setSessionAdsEnabled] = useState(false);
+  const [testEnvironment, setTestEnvironment] = useState(true);
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordMessage, setPasswordMessage] = useState('');
 
@@ -94,6 +95,7 @@ export default function AdminSettingsPage() {
         setStorageProvider(json.storageProvider ?? '');
         setMaxUploadSizeMb(Number(json.maxUploadSizeMb ?? 5));
         setSessionAdsEnabled(Boolean(json.sessionAdsEnabled));
+        setTestEnvironment(json.testEnvironment !== false);
       } catch (e) {
         addToast(e.message || 'Failed to load settings', 'error');
       } finally {
@@ -138,6 +140,7 @@ export default function AdminSettingsPage() {
         storageProvider,
         maxUploadSizeMb,
         sessionAdsEnabled,
+        testEnvironment,
       };
       const res = await fetch('/api/admin/settings', {
         method: 'POST',
@@ -176,6 +179,7 @@ export default function AdminSettingsPage() {
       storageProvider,
       maxUploadSizeMb,
       sessionAdsEnabled,
+      testEnvironment,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -355,8 +359,25 @@ export default function AdminSettingsPage() {
         <div className="card">
           <div className="card-header"><h3 className="card-title">📧 Email Configuration</h3></div>
           <p className="text-xs text-tertiary" style={{ marginBottom: '0.75rem' }}>
-            Outbound mail uses your SMTP environment. The system notification inbox is where operational emails are delivered (links, drive events, etc.); leave blank to fall back to support email only.
+            Outbound mail uses ZeptoMail (primary) / SMTP. When Test environment is Yes, every message is sent only to
+            the safe test inboxes — registration and account emails are ignored for delivery.
           </p>
+          <div className="form-group">
+            <label className="form-label">Test environment</label>
+            <select
+              className="form-select"
+              value={testEnvironment ? 'Yes' : 'No'}
+              onChange={(e) => setTestEnvironment(e.target.value === 'Yes')}
+            >
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
+              Yes → send only to <code>placementhub@yopmail.com</code> and{' '}
+              <code>sandeepjain200019@gmail.com</code> (avoids Zepto hard bounces from dummy addresses). No → deliver to
+              the real recipient (subject to system notification inbox override below).
+            </p>
+          </div>
           <div className="form-group">
             <label className="form-label">System notification inbox</label>
             <input

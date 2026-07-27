@@ -21,7 +21,18 @@ export const PLATFORM_SETTINGS_DEFAULTS = {
   maxUploadSizeMb: 5,
   /** Dashboard sponsored banner (super admin → Platform Settings). */
   sessionAdsEnabled: false,
+  /**
+   * When true, all outbound mail is forced to TEST_ENVIRONMENT_MAIL_RECIPIENTS
+   * (ignores account/registration emails — protects ZeptoMail bounce rate).
+   */
+  testEnvironment: true,
 };
+
+/** Fixed recipients when platform `testEnvironment` is Yes. */
+export const TEST_ENVIRONMENT_MAIL_RECIPIENTS = [
+  'placementhub@yopmail.com',
+  'sandeepjain200019@gmail.com',
+];
 
 /** Max CSV upload size in bytes (client-side guard; server enforces separately). */
 export const MAX_CSV_UPLOAD_BYTES = PLATFORM_SETTINGS_DEFAULTS.maxUploadSizeMb * 1024 * 1024;

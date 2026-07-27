@@ -14,8 +14,12 @@ export const CURRENT_GRADUATION_YEAR = '2026';
 /**
  * Columns that may be left blank on import rows.
  * Photo URL is deprecated — profile photos are uploaded in the app (kept for template compat).
+ * Verified may be blank — defaults to No (unverified).
  */
 export const STUDENT_CSV_OPTIONAL_HEADERS = ['Remarks', 'Photo URL'];
+
+/** Required header columns whose cells may be blank (parser applies a default). */
+export const STUDENT_CSV_BLANKABLE_HEADERS = ['Verified'];
 
 /** Columns that must appear in the CSV header row. */
 export const STUDENT_CSV_REQUIRED_HEADERS = [
@@ -77,9 +81,10 @@ export function validateStudentCsvHeaders(headers) {
 }
 
 const OPTIONAL_HEADER_KEYS = new Set(STUDENT_CSV_OPTIONAL_HEADERS.map(normKey));
+const BLANKABLE_HEADER_KEYS = new Set(STUDENT_CSV_BLANKABLE_HEADERS.map(normKey));
 
 /**
- * Every required column must have a non-empty cell.
+ * Every required column must have a non-empty cell (except blankable columns like Verified).
  * Remarks and Photo URL may be blank (photos are uploaded in the app).
  * @param {string[]} cells
  * @param {Record<string, number>} idx
@@ -89,6 +94,7 @@ export function validateStudentCsvRowNoBlanks(cells, idx, line) {
   const missing = [];
   for (const col of STUDENT_CSV_REQUIRED_HEADERS) {
     const key = normKey(col);
+    if (BLANKABLE_HEADER_KEYS.has(key)) continue;
     const colIdx = idx[key];
     if (colIdx === undefined) continue;
     if (!String(cells[colIdx] ?? '').trim()) {
@@ -104,11 +110,22 @@ export function validateStudentCsvRowNoBlanks(cells, idx, line) {
   return { ok: true };
 }
 
-function parseVerified(raw, { allowEmpty = false } = {}) {
-  const v = String(raw ?? '').trim().toLowerCase();
-  if (!v) return allowEmpty ? null : null;
-  if (['yes', 'y', 'true', '1'].includes(v)) return true;
-  if (['no', 'n', 'false', '0'].includes(v)) return false;
+/**
+ * Parse Verified cell. Blank → false (No). Accepts common Yes/No aliases from Excel.
+ * @param {unknown} raw
+ * @param {{ allowEmpty?: boolean }} [opts] — allowEmpty true: blank → false; false: blank → null (invalid)
+ * @returns {boolean | null}
+ */
+function parseVerified(raw, { allowEmpty = true } = {}) {
+  let v = String(raw ?? '')
+    .replace(/^\uFEFF/, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim()
+    .toLowerCase();
+  if (!v) return allowEmpty ? false : null;
+  v = v.replace(/[\s._-]+/g, '');
+  if (['yes', 'y', 'true', '1', 'verified', 'ok', 'done'].includes(v)) return true;
+  if (['no', 'n', 'false', '0', 'unverified', 'pending', 'none'].includes(v)) return false;
   return null;
 }
 
@@ -260,11 +277,11 @@ export function parseStudentRow(cells, idx, line, options = {}) {
   }
 
   const verifiedRaw = g('Verified');
-  const verified = parseVerified(verifiedRaw);
+  const verified = parseVerified(verifiedRaw, { allowEmpty: true });
   if (verified === null) {
     return {
       ok: false,
-      error: `Line ${line}: Verified must be Yes or No${verifiedRaw === '' ? ' (cannot be blank)' : ''}`,
+      error: `Line ${line}: Verified must be Yes or No (got "${String(verifiedRaw).slice(0, 40)}")`,
     };
   }
 

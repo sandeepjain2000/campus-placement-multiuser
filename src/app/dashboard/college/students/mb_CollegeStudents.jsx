@@ -303,7 +303,7 @@ export default function CollegeStudentsMobile() {
       <StudentQuickViewModal
         student={quickViewStudent}
         onClose={() => setQuickViewStudent(null)}
-        onVerify={readOnly ? null : setStudentVerified}
+        onVerify={setStudentVerified}
         readOnly={readOnly}
       />
 

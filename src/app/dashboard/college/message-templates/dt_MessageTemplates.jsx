@@ -6,9 +6,10 @@ import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS } from '@/lib/tableQueryPresets';
 import { useToast } from '@/components/ToastProvider';
-import { variablesToFormText } from '@/lib/messageTemplateUtils';
-import { FileEdit, Mail, Plus, Trash2, Pencil, X } from 'lucide-react';
+import { variablesToFormText, previewMessageTemplateWithSample } from '@/lib/messageTemplateUtils';
+import { FileEdit, Mail, Plus, Eye, X } from 'lucide-react';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import MessageTemplateSamplePreviewModal from '@/components/college/MessageTemplateSamplePreviewModal';
 
 const TYPE_OPTIONS = [
   { value: 'email', label: 'Email' },
@@ -35,6 +36,12 @@ export default function CollegeMessageTemplatesPage() {
   const [form, setForm] = useState(() => emptyForm());
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [preview, setPreview] = useState(null);
+
+  const openSamplePreview = (opts) => {
+    const rendered = previewMessageTemplateWithSample(opts);
+    setPreview(rendered);
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -268,6 +275,25 @@ export default function CollegeMessageTemplatesPage() {
             </span>
           )}
         </button>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          style={{ marginLeft: '0.5rem' }}
+          disabled={!form.body.trim()}
+          onClick={() =>
+            openSamplePreview({
+              name: form.name || (editingId ? 'Edit template' : 'New template'),
+              subject: form.subject,
+              body: form.body,
+              variables: form.variablesText,
+            })
+          }
+        >
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <Eye size={16} />
+            Preview with sample data
+          </span>
+        </button>
       </div>
 
       {loading ? (
@@ -320,6 +346,19 @@ export default function CollegeMessageTemplatesPage() {
                   </td>
                   <td>{t.is_active ? <span className="badge badge-green">Active</span> : <span className="badge badge-gray">Off</span>}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>
+                    <StandardTableIconAction
+                      action="view"
+                      variant="ghost"
+                      tooltip="Preview with sample data"
+                      onClick={() =>
+                        openSamplePreview({
+                          name: t.name,
+                          subject: t.subject,
+                          body: t.body,
+                          variables: t.variables,
+                        })
+                      }
+                    />
                     <StandardTableIconAction action="edit" variant="ghost" onClick={() => startEdit(t)} />
                     <StandardTableIconAction action="delete" variant="danger" onClick={() => void remove(t.id)} />
                   </td>
@@ -337,6 +376,15 @@ export default function CollegeMessageTemplatesPage() {
         </div>
         </>
       )}
+
+      <MessageTemplateSamplePreviewModal
+        open={Boolean(preview)}
+        onClose={() => setPreview(null)}
+        title={preview?.name ? `Preview — ${preview.name}` : 'Preview with sample data'}
+        subject={preview?.subject}
+        body={preview?.body}
+        sampleVars={preview?.sampleVars}
+      />
     </div>
   );
 }

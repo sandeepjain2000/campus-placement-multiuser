@@ -58,3 +58,20 @@ export function buildEmployerInterviewApplicantEmailBody(slot, ctx = {}) {
     .filter((line) => line !== '')
     .join('\n');
 }
+
+/** Shared props for React Email interview template (server-only senders). */
+export function buildInterviewInviteTemplateProps(slot, ctx = {}) {
+  return {
+    recipientName: ctx.recipientName,
+    companyName: ctx.companyName || slot.companyName || 'the employer',
+    campusName: ctx.campusName || slot.campus || 'your campus',
+    openingTitle: slot.opportunityTitle || interviewTabLabel(slot.opportunityKind),
+    kindLabel: interviewTabLabel(slot.opportunityKind),
+    round: slot.round || 'Interview',
+    dateLabel: slot.date ? formatDate(slot.date) : 'To be confirmed',
+    timeLabel: slot.time ? formatTimeDisplay(slot.time) : 'To be confirmed',
+    mode: slot.mode || 'Virtual',
+    panelNames: slot.panelNames || undefined,
+    disclaimer: INTERVIEW_TIMEFRAME_DISCLAIMER,
+  };
+}

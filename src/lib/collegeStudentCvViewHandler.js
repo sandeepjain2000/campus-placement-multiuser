@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
-import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
+import { STUDENT_PROFILE_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
 import { resolveCollegeStaffTenantFromSession } from '@/lib/sessionTenant';
 import { assertCollegeStaff } from '@/lib/collegeAccess';
 import { isStudentCvsTableReady } from '@/lib/studentCv';
@@ -60,7 +60,7 @@ export async function handleCollegeStudentCvViewGet(studentId, cvId, request) {
 
   const check = await query(
     `SELECT id FROM student_profiles
-     WHERE id = $1::uuid AND tenant_id = $2::uuid AND ${SP_ACTIVE_CLAUSE}
+     WHERE id = $1::uuid AND tenant_id = $2::uuid AND ${STUDENT_PROFILE_ACTIVE_CLAUSE}
      LIMIT 1`,
     [profileId, tenantId],
   );

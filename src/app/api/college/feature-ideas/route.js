@@ -175,5 +175,9 @@ async function __platform_POST(request) {
   }
 }
 
-export const GET = withApiHandlers(__platform_GET, { context: 'api_college_feature_ideas' });
-export const POST = withApiHandlers(__platform_POST, { context: 'api_college_feature_ideas' });
+const __platformApiHandlers = withApiHandlers(
+  { GET: __platform_GET, POST: __platform_POST },
+  { context: 'api_college_feature_ideas' },
+);
+export const GET = __platformApiHandlers.GET;
+export const POST = __platformApiHandlers.POST;

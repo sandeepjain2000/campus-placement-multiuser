@@ -3,8 +3,6 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { getSessionTenantId } from '@/lib/tenantContext';
 import {
-
-
   COLLEGE_EMAIL_TEMPLATE_KEY_SET,
   COLLEGE_EMAIL_TEMPLATE_KEYS,
   deleteEmailTemplateOverride,
@@ -12,12 +10,15 @@ import {
   loadResolvedEmailTemplate,
   upsertEmailTemplateOverride,
 } from '@/lib/emailTemplateResolve';
+import {
+  listSystemEmailTemplateVersions,
+  restoreOrgEmailTemplateToSystemVersion,
+} from '@/lib/emailTemplateVersions';
 import { SYSTEM_EMAIL_TEMPLATE_META } from '@/lib/systemEmailTemplates';
+import { withApiHandlers } from '@/lib/platformErrorRoute';
 
 export const dynamic = 'force-dynamic';
-import { withApiHandlers } from '@/lib/platformErrorRoute';
 export const revalidate = 0;
-
 
 async function __platform_GET() {
   try {
@@ -39,6 +40,7 @@ async function __platform_GET() {
       });
       const override = await loadEmailTemplateOverride('college', tenantId, templateKey);
       if (!resolved) continue;
+      const versions = await listSystemEmailTemplateVersions(templateKey);
       templates.push({
         template_key: templateKey,
         title: meta?.title || templateKey,
@@ -50,6 +52,7 @@ async function __platform_GET() {
         updated_at: resolved.updated_at || null,
         source: resolved.source || 'system',
         has_override: Boolean(override),
+        versions,
       });
     }
 
@@ -82,6 +85,9 @@ async function __platform_PATCH(request) {
     const subjectTemplate = body.subjectTemplate != null ? String(body.subjectTemplate) : '';
     const bodyTemplate = body.bodyTemplate != null ? String(body.bodyTemplate) : '';
     const resetToPlatform = body.resetToPlatform === true;
+    const restoreSystemVersionId = body.restoreSystemVersionId
+      ? String(body.restoreSystemVersionId).trim()
+      : '';
 
     if (!templateKey) {
       return NextResponse.json({ error: 'templateKey is required' }, { status: 400 });
@@ -97,6 +103,28 @@ async function __platform_PATCH(request) {
         scopeId: tenantId,
       });
       return NextResponse.json({ template: resolved, reset: true });
+    }
+
+    if (restoreSystemVersionId) {
+      try {
+        const restored = await restoreOrgEmailTemplateToSystemVersion({
+          scopeType: 'college',
+          scopeId: tenantId,
+          templateKey,
+          versionId: restoreSystemVersionId,
+          userId: session.user.id,
+        });
+        return NextResponse.json({
+          template: restored.template,
+          restoredVersion: restored.version,
+          restoreMode: restored.mode,
+        });
+      } catch (e) {
+        if (e.status === 404 || e.status === 400) {
+          return NextResponse.json({ error: e.message }, { status: e.status });
+        }
+        throw e;
+      }
     }
 
     if (!subjectTemplate.trim()) {
@@ -129,7 +157,6 @@ async function __platform_PATCH(request) {
     return NextResponse.json({ error: 'Failed to save template' }, { status: 500 });
   }
 }
-
 
 const __platformApiHandlers = withApiHandlers({
   GET: __platform_GET,

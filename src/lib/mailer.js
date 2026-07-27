@@ -1,7 +1,16 @@
 import nodemailer from 'nodemailer';
 import { getPlatformSettings } from '@/lib/platformSettings';
+import {
+  TEST_ENVIRONMENT_MAIL_RECIPIENTS,
+} from '@/lib/platformSettingsDefaults';
 import { query } from '@/lib/db';
 import { getSmtpDailyLimitState } from '@/lib/mailDailyLimit';
+import { hasColumn } from '@/lib/migrationReady';
+import {
+  getZeptoFrom,
+  isZeptoConfigured,
+  sendViaZeptoMail,
+} from '@/lib/zeptomail';
 
 function createTransport() {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
@@ -23,12 +32,16 @@ function createTransport() {
 }
 
 /**
- * Resolve final recipients. Env wins for emergency override; else super-admin "system notification inbox"
- * (when set); otherwise the original address(es).
+ * Resolve final recipients.
+ * Test environment (platform setting) always wins — both safe inboxes, ignore provided To.
+ * Else: env OUTBOUND_EMAIL_OVERRIDE → system notification inbox → original.
  * @param {string | string[]} originalTo
  * @param {Awaited<ReturnType<typeof getPlatformSettings>>} platform
  */
 function resolveRecipients(originalTo, platform, { skipRecipientRedirect = false } = {}) {
+  if (platform?.testEnvironment === true) {
+    return [...TEST_ENVIRONMENT_MAIL_RECIPIENTS];
+  }
   if (skipRecipientRedirect) {
     return originalTo;
   }
@@ -204,6 +217,42 @@ async function persistMailDeliveryLog(row) {
     const afterCommunicationTo = row.afterCommunicationTo
       ? normalizeTo(row.afterCommunicationTo).slice(0, 2000)
       : null;
+    const zeptoRequestId = row.zeptomailRequestId
+      ? String(row.zeptomailRequestId).slice(0, 200)
+      : null;
+    const includeZeptoCol = await hasColumn('mail_delivery_logs', 'zeptomail_request_id');
+
+    if (includeZeptoCol) {
+      await query(
+        `INSERT INTO mail_delivery_logs (
+          context, status, skip_reason, original_to, after_communication_to, resolved_to,
+          subject_truncated, error_message, error_code, message_id, smtp_response, zeptomail_request_id, user_id,
+          recipient_login_email, recipient_user_id, recipient_role, recipient_tenant_id, recipient_name
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13::uuid, $14, $15::uuid, $16, $17::uuid, $18)`,
+        [
+          row.context || 'unspecified',
+          row.status,
+          row.skipReason || null,
+          row.originalTo ? normalizeTo(row.originalTo).slice(0, 2000) : null,
+          afterCommunicationTo,
+          row.resolvedTo ? normalizeTo(row.resolvedTo).slice(0, 2000) : null,
+          row.subject ? String(row.subject).slice(0, 500) : null,
+          row.errorMessage ? String(row.errorMessage).slice(0, 4000) : null,
+          row.errorCode ? String(row.errorCode).slice(0, 100) : null,
+          row.messageId ? String(row.messageId).slice(0, 500) : null,
+          row.smtpResponse ? String(row.smtpResponse).slice(0, 2000) : null,
+          zeptoRequestId,
+          row.userId || null,
+          audit.recipientLoginEmail,
+          audit.recipientUserId,
+          audit.recipientRole,
+          audit.recipientTenantId,
+          audit.recipientName,
+        ],
+      );
+      return;
+    }
+
     await query(
       `INSERT INTO mail_delivery_logs (
         context, status, skip_reason, original_to, after_communication_to, resolved_to,
@@ -221,7 +270,15 @@ async function persistMailDeliveryLog(row) {
         row.errorMessage ? String(row.errorMessage).slice(0, 4000) : null,
         row.errorCode ? String(row.errorCode).slice(0, 100) : null,
         row.messageId ? String(row.messageId).slice(0, 500) : null,
-        row.smtpResponse ? String(row.smtpResponse).slice(0, 2000) : null,
+        row.smtpResponse
+          ? String(
+              zeptoRequestId
+                ? `${row.smtpResponse}|request_id=${zeptoRequestId}`
+                : row.smtpResponse,
+            ).slice(0, 2000)
+          : zeptoRequestId
+            ? `request_id=${zeptoRequestId}`
+            : null,
         row.userId || null,
         audit.recipientLoginEmail,
         audit.recipientUserId,
@@ -235,140 +292,17 @@ async function persistMailDeliveryLog(row) {
   }
 }
 
-/** Subject line for new-student account email (form + CSV import). */
-export const STUDENT_WELCOME_SUBJECT = 'Your PlacementHub Account is Ready';
-
-/**
- * Plain-text body for new student welcome (temporary password + system ID).
- * @param {{ firstName?: string | null, email: string, tempPass: string, systemId: string }} p
- */
-export function studentWelcomeEmailBody({ firstName, email, tempPass, systemId, collegeName }) {
-  const fn = (firstName && String(firstName).trim()) || 'Student';
-  const campus = collegeName ? ` at ${collegeName}` : '';
-  return (
-    `Hello ${fn},\n\n` +
-    `Your college has added you to PlacementHub${campus}. Student self-registration is not used — your profile details come from the campus master list.\n\n` +
-    `Sign in at the PlacementHub login page with:\n` +
-    `  Login email: ${email}\n` +
-    `  Password: ${tempPass}\n\n` +
-    `You may keep this password; changing it is optional.\n\n` +
-    `Roll / system ID: ${systemId}\n\n` +
-    `If you did not expect this message, contact your placement office.\n\n` +
-    `Best regards,\nPlacementHub Team`
-  );
-}
-
-/**
- * Welcome email to the student's login address and a copy to the platform notification inbox (YOPmail in demo).
- * @param {{ loginEmail: string, firstName?: string, tempPass: string, systemId: string, collegeName?: string, userId?: string }} p
- */
-export async function sendStudentWelcomeEmails(p) {
-  const { loginEmail, firstName, tempPass, systemId, collegeName, userId } = p;
-  const text = studentWelcomeEmailBody({
-    firstName,
-    email: loginEmail,
-    tempPass,
-    systemId,
-    collegeName,
-  });
-  const platform = await getPlatformSettings();
-  const yopInbox = String(platform?.systemNotificationInboxEmail || '').trim();
-
-  await sendMail({
-    to: loginEmail,
-    subject: STUDENT_WELCOME_SUBJECT,
-    text,
-    context: 'student_welcome',
-    userId,
-    recipientUserId: userId,
-    skipRecipientRedirect: true,
-  });
-
-  if (yopInbox) {
-    const copyText =
-      `Demo inbox copy — student welcome for ${loginEmail}\n` +
-      `(Original recipient: ${loginEmail})\n\n` +
-      text;
-    await sendMail({
-      to: yopInbox,
-      subject: `[Student welcome] ${loginEmail} — ${STUDENT_WELCOME_SUBJECT}`,
-      text: copyText,
-      context: 'student_welcome_yop_copy',
-      userId,
-      skipRecipientRedirect: true,
-      skipCommunicationRouting: true,
-    });
-  }
-}
-
-export const PASSWORD_RESET_SUBJECT = '[PlacementHub] Reset your password';
-
-/**
- * @param {{ firstName?: string | null, resetLink: string }} p
- */
-export function passwordResetEmailBodies({ firstName, resetLink }) {
-  const fn = (firstName && String(firstName).trim()) || 'there';
-  const text =
-    `Hi ${fn},\n\n` +
-    `Click the link below to reset your PlacementHub password:\n\n` +
-    `${resetLink}\n\n` +
-    `This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.`;
-  const html = `
-      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-        <div style="background-color: #f3f4f6; padding: 20px; border-bottom: 1px solid #e5e7eb;">
-          <h2 style="margin: 0; color: #1f2937;">Password Reset Request</h2>
-        </div>
-        <div style="padding: 20px;">
-          <p>Hi ${fn},</p>
-          <p>We received a request to reset your PlacementHub password. Click the button below to choose a new password.</p>
-          <a href="${resetLink}" style="display: inline-block; background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; margin-bottom: 15px;">Reset Password</a>
-          <p>This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.</p>
-        </div>
-      </div>
-    `;
-  return { text, html };
-}
-
-/**
- * Password reset to the user's login email plus a demo inbox copy (YOPmail when configured).
- * @param {{ loginEmail: string, firstName?: string | null, resetLink: string, userId?: string }} p
- */
-export async function sendPasswordResetEmail(p) {
-  const { loginEmail, firstName, resetLink, userId } = p;
-  const { text, html } = passwordResetEmailBodies({ firstName, resetLink });
-  const platform = await getPlatformSettings();
-  const yopInbox = String(platform?.systemNotificationInboxEmail || '').trim();
-
-  await sendMail({
-    to: loginEmail,
-    subject: PASSWORD_RESET_SUBJECT,
-    text,
-    html,
-    context: 'password_reset',
-    userId,
-    recipientUserId: userId,
-    skipRecipientRedirect: true,
-  });
-
-  if (yopInbox) {
-    const copyText =
-      `Demo inbox copy — password reset for ${loginEmail}\n` +
-      `(Original recipient: ${loginEmail})\n\n` +
-      text;
-    const copyHtml = `<p style="font-family:sans-serif;color:#6b7280;font-size:13px;">Demo inbox copy — password reset for ${loginEmail}</p>${html}`;
-    await sendMail({
-      to: yopInbox,
-      subject: `[Password reset] ${loginEmail} — ${PASSWORD_RESET_SUBJECT}`,
-      text: copyText,
-      html: copyHtml,
-      context: 'password_reset_yop_copy',
-      userId,
-      recipientUserId: userId,
-      skipRecipientRedirect: true,
-      skipCommunicationRouting: true,
-    });
-  }
-}
+/** Re-exported from React Email layer — transport remains sendMail below. */
+export {
+  STUDENT_WELCOME_SUBJECT,
+  studentWelcomeEmailBody,
+  sendStudentWelcomeEmails,
+} from '@/lib/email/sendStudentWelcome';
+export {
+  PASSWORD_RESET_SUBJECT,
+  passwordResetEmailBodies,
+  sendPasswordResetEmail,
+} from '@/lib/email/sendPasswordReset';
 
 /**
  * @param {{ to: string | string[], subject: string, text: string, html?: string, context?: string, userId?: string, recipientUserId?: string, replyTo?: string, skipCommunicationRouting?: boolean }} opts
@@ -376,7 +310,7 @@ export async function sendPasswordResetEmail(p) {
  * @param {string} [opts.userId] — acting user who triggered the send (stored in `mail_delivery_logs.user_id`)
  * @param {string} [opts.recipientUserId] — intended recipient user when known (survives account deletion via `recipient_login_email`)
  * @param {boolean} [opts.skipCommunicationRouting] — send to `to` as-is (e.g. YOPmail disposable inbox)
- * @param {boolean} [opts.skipRecipientRedirect] — do not apply OUTBOUND_EMAIL_OVERRIDE / system inbox redirect
+ * @param {boolean} [opts.skipRecipientRedirect] — do not apply OUTBOUND_EMAIL_OVERRIDE / system inbox redirect (ignored when Test environment is Yes)
  */
 export async function sendMail(opts) {
   const {
@@ -386,12 +320,16 @@ export async function sendMail(opts) {
     skipCommunicationRouting,
     skipRecipientRedirect,
     replyTo,
-    ...mailOpts
+    ...restMailOpts
   } = opts;
+  let mailOpts = restMailOpts;
   const logCtx = context ? `[mail:${context}]` : '[mail]';
   const originalTo = mailOpts.to;
   const platform = await getPlatformSettings();
-  const from = formatFrom(platform);
+  const zeptoReady = isZeptoConfigured();
+  const zeptoFrom = zeptoReady ? getZeptoFrom(platform) : null;
+  const gmailFrom = formatFrom(platform);
+  const transport = createTransport();
   const logBase = {
     context: context || 'unspecified',
     originalTo,
@@ -399,8 +337,9 @@ export async function sendMail(opts) {
     userId,
     recipientUserId,
   };
-  if (!from) {
-    console.warn(`${logCtx} skip: EMAIL_FROM / SMTP_USER not set (no From address)`);
+
+  if (!zeptoFrom && !gmailFrom) {
+    console.warn(`${logCtx} skip: no From address (set ZEPTOMAIL_FROM_EMAIL or EMAIL_FROM / SMTP_USER)`);
     console.warn(`${logCtx} would-send to=%s subject=%s`, String(originalTo), mailOpts.subject);
     await persistMailDeliveryLog({
       ...logBase,
@@ -411,9 +350,8 @@ export async function sendMail(opts) {
     return { skipped: true, reason: 'no_from' };
   }
 
-  const transport = createTransport();
-  if (!transport) {
-    console.warn(`${logCtx} skip: SMTP_USER / SMTP_PASS not set (no transport)`);
+  if (!zeptoReady && !transport) {
+    console.warn(`${logCtx} skip: no mail provider (set ZEPTOMAIL_* or SMTP_USER / SMTP_PASS)`);
     console.warn(`${logCtx} would-send to=%s subject=%s`, String(originalTo), mailOpts.subject);
     await persistMailDeliveryLog({
       ...logBase,
@@ -441,10 +379,37 @@ export async function sendMail(opts) {
     String(normalizeTo(afterCommunication)) !== String(Array.isArray(to) ? to.join(',') : to);
   if (redirected) {
     console.info(
-      `${logCtx} recipient redirect active: beforePlatformOverride=%s resolvedTo=%s (OUTBOUND_EMAIL_OVERRIDE or systemNotificationInboxEmail)`,
+      `${logCtx} recipient redirect active: beforePlatformOverride=%s resolvedTo=%s (%s)`,
       String(normalizeTo(afterCommunication)),
-      String(to),
+      String(Array.isArray(to) ? to.join(', ') : to),
+      platform?.testEnvironment
+        ? 'testEnvironment'
+        : 'OUTBOUND_EMAIL_OVERRIDE or systemNotificationInboxEmail',
     );
+  }
+
+  if (platform?.testEnvironment === true) {
+    const intended = String(normalizeTo(originalTo) || '(none)').slice(0, 500);
+    const banner =
+      `[PlacementHub Test environment]\n`
+      + `Intended recipient (ignored for delivery): ${intended}\n`
+      + `Delivered to: ${TEST_ENVIRONMENT_MAIL_RECIPIENTS.join(', ')}\n\n`;
+    if (mailOpts.text) {
+      mailOpts = { ...mailOpts, text: `${banner}${mailOpts.text}` };
+    }
+    if (mailOpts.html) {
+      const htmlBanner =
+        `<p style="font-size:12px;color:#64748b;border:1px solid #e2e8f0;padding:8px 10px;border-radius:6px;">`
+        + `<strong>Test environment</strong> — intended recipient (ignored): `
+        + `${intended.replace(/</g, '&lt;')}<br/>Delivered to: ${TEST_ENVIRONMENT_MAIL_RECIPIENTS.join(', ')}`
+        + `</p>`;
+      mailOpts = { ...mailOpts, html: `${htmlBanner}${mailOpts.html}` };
+    } else if (mailOpts.text) {
+      mailOpts = {
+        ...mailOpts,
+        html: banner.replace(/\n/g, '<br/>') + String(mailOpts.text).replace(/\n/g, '<br/>'),
+      };
+    }
   }
 
   const dailyLimit = await getSmtpDailyLimitState();
@@ -470,17 +435,86 @@ export async function sendMail(opts) {
     };
   }
 
+  const html = mailOpts.html || (mailOpts.text ? mailOpts.text.replace(/\n/g, '<br/>') : '');
+  let zeptoError = null;
+
+  if (zeptoReady && zeptoFrom) {
+    try {
+      const info = await sendViaZeptoMail({
+        to,
+        subject: mailOpts.subject,
+        html,
+        text: mailOpts.text,
+        replyTo,
+        from: zeptoFrom,
+        platform,
+      });
+      console.info(
+        `${logCtx} sent ok via=zeptomail to=%s subject=%s messageId=%s response=%s`,
+        String(to),
+        mailOpts.subject,
+        info.messageId ?? '(none)',
+        info.response ?? '(none)',
+      );
+      await persistMailDeliveryLog({
+        ...logBase,
+        status: 'sent',
+        afterCommunicationTo,
+        resolvedTo: to,
+        messageId: info.messageId,
+        zeptomailRequestId: info.requestId,
+        smtpResponse: `zeptomail|${info.response}${info.requestId ? `|request_id=${info.requestId}` : ''}`,
+      });
+      return {
+        sent: true,
+        provider: 'zeptomail',
+        messageId: info.messageId,
+        requestId: info.requestId,
+        response: info.response,
+      };
+    } catch (err) {
+      zeptoError = err && typeof err === 'object' ? err : new Error(String(err));
+      console.warn(
+        `${logCtx} ZeptoMail failed (%s); falling back to Gmail SMTP if configured`,
+        zeptoError.message,
+      );
+      if (zeptoError.code) console.warn(`${logCtx} zepto code: %s`, zeptoError.code);
+      if (zeptoError.response) {
+        console.warn(`${logCtx} zepto response: %s`, String(zeptoError.response).slice(0, 500));
+      }
+    }
+  }
+
+  if (!transport || !gmailFrom) {
+    const e = zeptoError || new Error('No Gmail SMTP backup available after ZeptoMail failure');
+    console.error(`${logCtx} SEND FAILED to=%s subject=%s`, String(to), mailOpts.subject);
+    console.error(`${logCtx} error: %s`, e.message);
+    await persistMailDeliveryLog({
+      ...logBase,
+      status: 'failed',
+      afterCommunicationTo,
+      resolvedTo: to,
+      errorMessage: e.message,
+      errorCode: e.code != null ? String(e.code) : 'zepto_no_gmail_fallback',
+      zeptomailRequestId: e.requestId || null,
+      smtpResponse: e.response != null ? String(e.response).slice(0, 2000) : null,
+    });
+    throw e;
+  }
+
   try {
     const info = await transport.sendMail({
-      from,
+      from: gmailFrom,
       to,
       ...(replyTo ? { replyTo } : {}),
       subject: mailOpts.subject,
       text: mailOpts.text,
-      html: mailOpts.html || mailOpts.text.replace(/\n/g, '<br/>'),
+      html,
     });
+    const via = zeptoError ? 'gmail_smtp_fallback' : 'gmail_smtp';
     console.info(
-      `${logCtx} sent ok to=%s subject=%s messageId=%s response=%s`,
+      `${logCtx} sent ok via=%s to=%s subject=%s messageId=%s response=%s`,
+      via,
       String(to),
       mailOpts.subject,
       info.messageId ?? '(none)',
@@ -492,13 +526,23 @@ export async function sendMail(opts) {
       afterCommunicationTo,
       resolvedTo: to,
       messageId: info.messageId,
-      smtpResponse: info.response,
+      zeptomailRequestId: zeptoError?.requestId || null,
+      smtpResponse: zeptoError
+        ? `gmail_smtp_fallback|zepto_error=${String(zeptoError.message).slice(0, 200)}|${info.response ?? ''}`
+        : info.response,
     });
-    return { sent: true, messageId: info.messageId, response: info.response };
+    return {
+      sent: true,
+      provider: via,
+      messageId: info.messageId,
+      response: info.response,
+      zeptoError: zeptoError ? String(zeptoError.message) : undefined,
+    };
   } catch (err) {
     const e = err && typeof err === 'object' ? err : new Error(String(err));
     console.error(`${logCtx} SEND FAILED to=%s subject=%s`, String(to), mailOpts.subject);
     console.error(`${logCtx} error: %s`, e.message);
+    if (zeptoError) console.error(`${logCtx} prior ZeptoMail error: %s`, zeptoError.message);
     if (e.code) console.error(`${logCtx} code: %s`, e.code);
     if (e.command) console.error(`${logCtx} smtp command: %s`, e.command);
     if (e.response) console.error(`${logCtx} smtp response: %s`, String(e.response).slice(0, 500));
@@ -511,8 +555,11 @@ export async function sendMail(opts) {
       status: 'failed',
       afterCommunicationTo,
       resolvedTo: to,
-      errorMessage: e.message,
+      errorMessage: zeptoError
+        ? `zepto: ${zeptoError.message}; gmail: ${e.message}`
+        : e.message,
       errorCode: e.code != null ? String(e.code) : null,
+      zeptomailRequestId: zeptoError?.requestId || null,
       smtpResponse: e.response != null ? String(e.response).slice(0, 2000) : null,
     });
     throw err;

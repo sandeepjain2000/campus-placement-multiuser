@@ -83,4 +83,8 @@ async function __platform_POST(_request, { params }) {
   }
 }
 
-export const POST = withApiHandlers(__platform_POST, { context: 'api_college_feature_ideas_vote' });
+const __platformApiHandlers = withApiHandlers(
+  { POST: __platform_POST },
+  { context: 'api_college_feature_ideas_vote' },
+);
+export const POST = __platformApiHandlers.POST;

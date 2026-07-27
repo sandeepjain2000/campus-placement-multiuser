@@ -16,7 +16,7 @@ async function __platform_POST(request) {
   }
 
   const password = body?.password;
-  const ok = await verifyDevNotesPassword(password);
+  const ok = verifyDevNotesPassword(password);
   if (!ok) {
     return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
   }

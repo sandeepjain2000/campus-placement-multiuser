@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
+import { hasColumn } from '@/lib/migrationReady';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,7 @@ async function __platform_GET(request) {
     const statusFilter = String(searchParams.get('status') || '').trim();
     const limit = Math.min(Number(searchParams.get('limit') || 200), 1000);
     const offset = Math.max(Number(searchParams.get('offset') || 0), 0);
+    const hasZeptoCol = await hasColumn('mail_delivery_logs', 'zeptomail_request_id');
 
     const params = [];
     const clauses = [];
@@ -34,7 +36,10 @@ async function __platform_GET(request) {
         m.recipient_name ILIKE $${params.length} OR
         m.recipient_role ILIKE $${params.length} OR
         m.subject_truncated ILIKE $${params.length} OR
-        m.error_message ILIKE $${params.length}
+        m.error_message ILIKE $${params.length} OR
+        m.message_id ILIKE $${params.length} OR
+        m.smtp_response ILIKE $${params.length}
+        ${hasZeptoCol ? `OR m.zeptomail_request_id ILIKE $${params.length}` : ''}
       )`);
     }
 
@@ -52,11 +57,12 @@ async function __platform_GET(request) {
     const totalCount = countRes.rows[0]?.count || 0;
 
     params.push(limit, offset);
+    const zeptoSelect = hasZeptoCol ? 'm.zeptomail_request_id,' : 'NULL::varchar AS zeptomail_request_id,';
     const sql = `
       SELECT
         m.id, m.created_at, m.context, m.status, m.skip_reason,
         m.original_to, m.after_communication_to, m.resolved_to, m.subject_truncated,
-        m.error_message, m.error_code, m.message_id, m.smtp_response, m.user_id,
+        m.error_message, m.error_code, m.message_id, m.smtp_response, ${zeptoSelect} m.user_id,
         m.recipient_login_email, m.recipient_user_id, m.recipient_role,
         m.recipient_tenant_id, m.recipient_name,
         u.email AS acting_user_email,

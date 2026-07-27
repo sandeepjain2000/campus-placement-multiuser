@@ -139,10 +139,10 @@ module.exports = {
     super_admin: 'admin@placementhub.com',
   },
   ROLE_HOME: {
-    student: //dashboard/student/,
-    employer: //dashboard/employer/,
-    college_admin: //dashboard/college/,
-    super_admin: //dashboard/admin/,
+    student: /\/dashboard\/student/,
+    employer: /\/dashboard\/employer/,
+    college_admin: /\/dashboard\/college/,
+    super_admin: /\/dashboard\/admin/,
   },
   ROUTES_BY_ROLE: {
     student: studentRoutes,

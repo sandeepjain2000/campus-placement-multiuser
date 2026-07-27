@@ -162,6 +162,9 @@ async function __platform_GET(request) {
         rollNumber: sp.roll_number || '',
         systemId: formatStudentSystemId(sp.short_code, sp.roll_number),
         enrollmentNumber: sp.enrollment_number || '',
+        /** College/committee Verified badge — informational only; does not affect hiring. */
+        collegeVerified: Boolean(sp.is_verified),
+        collegeVerifiedAt: sp.verified_at || null,
         profile: {
           ...profile,
           resumeUrl,

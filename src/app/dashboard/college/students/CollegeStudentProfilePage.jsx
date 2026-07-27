@@ -87,7 +87,7 @@ export default function CollegeStudentProfilePage({ mobile = false }) {
     return (
       <StudentProfileView
         student={student}
-        onVerify={readOnly ? null : setStudentVerified}
+        onVerify={setStudentVerified}
         readOnly={readOnly}
       />
     );

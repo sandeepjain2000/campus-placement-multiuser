@@ -370,7 +370,7 @@ export const USE_CASE_FLOWS_USER_TESTING = [
       'Super admin: Platform → Email delivery logs',
       'Search recipient login email (survives deleted QA accounts)',
       'Row shows Context, Recipient (login), Original → Final',
-      'Open detail: Original, After communication routing, Final SMTP',
+      'Open detail: Original, After communication routing, Final delivery (ZeptoMail primary, Gmail SMTP backup)',
       'Confirm recipient_login_email, role, name when user still exists',
       'Copy raw log JSON for ticket / regression notes',
     ],
@@ -828,6 +828,7 @@ export const DEVELOPER_PENDING_BACKLOG = {
 /** Demo email / notification pointers for QA (landing yopmail banner + in-app alerts). */
 export const EMAIL_DEMO_NOTES = [
   'Disposable inbox for system mail in demos: placementhub@yopmail.com — check at https://yopmail.com/',
+  'Super Admin demo credentials: admin@placementhub.com — password Admin@123.',
   'Data Tester seeded users use @placementhub.test (not YOPmail); password Admin@123.',
   'Student reminder / email copy preview (no mail sent): /dashboard/student/reminders after login.',
   'Super admin → Email delivery logs: search by recipient login email, context, or subject. Each row stores original → communication routing → final SMTP.',
@@ -839,7 +840,7 @@ export const EMAIL_DEMO_NOTES = [
 
 /** Full reset + restore — primary cleanup path (documented on /developer#cleanup). */
 export const CLEANUP_OVERVIEW =
-  'After testing, wipe all jobs, internships, and placement drives, clear Alerts/Audit logs, and remove non-core test colleges. Core seed campuses (IITM / NITT / BITS + Jadavpur / VIT / DTU / IIIT-H) and demo employer logins stay intact.';
+  'After testing, wipe all jobs, internships, and placement drives, clear Alerts/Audit logs, remove non-core test colleges, and delete tester-created students. Core seed campuses (IITM / NITT / BITS + Jadavpur / VIT / DTU / IIIT-H), core demo students/alumni (Arjun / Sneha / Rohan / Priya alumni), and demo employer logins stay intact.';
 
 export const CLEANUP_COMMANDS = [
   {
@@ -847,7 +848,7 @@ export const CLEANUP_COMMANDS = [
     command: 'npm run db:clear-placement',
     alt: 'node scripts/clear_all_placement_data.js',
     detail:
-      'Hard-deletes every job posting (jobs + internships + projects + hackathons), all placement drives, applications, campus visibility, offers, assessment uploads, Alerts, and Audit logs. Also deletes non-core colleges created for testing (keeps seed campuses: IITM, NITT, BITS, Jadavpur, VIT, DTU, IIIT-H). Does not remove core users, students, or employers.',
+      'Hard-deletes every job posting (jobs + internships + projects + hackathons), all placement drives, applications, campus visibility, offers, assessment uploads, Alerts, and Audit logs. Also deletes non-core colleges created for testing (keeps seed campuses: IITM, NITT, BITS, Jadavpur, VIT, DTU, IIIT-H) and every student except the four core demo accounts on /demo-accounts (Arjun Verma, Sneha Rao, Rohan Mehta, Priya Sharma alumni). Does not remove core college/employer logins.',
     when: 'Clean slate before a demo or after a long QA session.',
   },
   {

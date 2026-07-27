@@ -58,6 +58,9 @@ function EmailLogDetailPanel({ row }) {
           <DetailField label="Context">{row.context || '—'}</DetailField>
           <DetailField label="Subject">{row.subject_truncated || '—'}</DetailField>
           <DetailField label="Message ID" mono>{row.message_id || '—'}</DetailField>
+          <DetailField label="ZeptoMail Request ID" mono>
+            {row.zeptomail_request_id || '—'}
+          </DetailField>
         </div>
       </section>
 
@@ -177,7 +180,7 @@ export default function AdminEmailLogsPage() {
             <input
               id="email-log-search"
               className="form-input"
-              placeholder="Login email, recipient, subject, context..."
+              placeholder="Login email, recipient, subject, context, Zepto ID..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => {

@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-import { sendMail } from '@/lib/mailer';
 import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { studentApplicationsHrefForType } from '@/lib/studentSelectionOffer';
 
@@ -170,42 +169,15 @@ export async function sendStudentSelectionEmail(opts) {
     return;
   }
 
-  const html = `
-    <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-      <div style="background-color: #10b981; padding: 20px; border-bottom: 1px solid #e5e7eb; text-align: center;">
-        <h2 style="margin: 0; color: #ffffff;">Selection update</h2>
-      </div>
-      <div style="padding: 20px; line-height: 1.5;">
-        <p>Hi ${firstName || 'there'},</p>
-        <p>Congratulations — <strong>${companyName}</strong> has marked you <strong>selected</strong> for <strong>${roleTitle}</strong>.</p>
-        <p style="margin: 12px 0; padding: 12px 14px; background: #f0fdf4; border-radius: 6px; border: 1px solid #bbf7d0; color: #166534;">
-          This is your <strong>selection</strong> outcome, not the formal offer. When the employer or placement office publishes the drafted offer letter, you will receive a separate email and can accept or decline on <strong>My Offers</strong>.
-        </p>
-        <div style="margin: 24px 0; text-align: center;">
-          <a href="${applicationsLink}" style="display: inline-block; background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View My Applications</a>
-        </div>
-        <p style="font-size: 13px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 20px;">
-          PlacementHub — selection notification (formal offer will follow separately)${appRef ? ` · ${appRef}` : ''}.
-        </p>
-      </div>
-    </div>
-  `;
-
-  await sendMail({
+  const { sendApplicationSelected } = await import('@/lib/email/sendApplicationStatus');
+  await sendApplicationSelected({
     to: email,
     subject,
-    text: [
-      `Hi ${firstName || 'there'},`,
-      '',
-      `You were selected by ${companyName} for ${roleTitle}.`,
-      'This is a selection update only. A formal offer letter will be sent separately when published.',
-      `Track status: ${applicationsLink}`,
-      appRef ? `Reference: ${appRef}` : '',
-    ]
-      .filter(Boolean)
-      .join('\n'),
-    html,
-    context: 'student_selection',
+    firstName,
+    companyName,
+    roleTitle,
+    applicationsUrl: applicationsLink,
+    appRef,
     recipientUserId: studentUserId,
   });
 }

@@ -1,26 +1,19 @@
-import bcrypt from 'bcryptjs';
-import { DEV_NOTES_PASSWORD_HASH } from '@/lib/developerNotesAuth';
+/** Default team password for Developer Notes / data-entry unlock. */
+export const DEV_NOTES_PASSWORD = 'Wolfe123@#';
 
 /**
- * Verify the Developer Notes / data-entry gate password.
- * Uses bcrypt hash (DEVELOPER_NOTES_PASSWORD_HASH or built-in default).
- * Optional ops override: DEVELOPER_NOTES_PASSWORD (plaintext) for emergency unlock.
+ * Verify the Developer Notes / data-entry gate password (plain string compare).
+ * Override via DEVELOPER_NOTES_PASSWORD env if needed.
  */
-export async function verifyDevNotesPassword(password) {
+export function verifyDevNotesPassword(password) {
   const candidate = String(password || '');
   if (!candidate) return false;
 
-  const plainOverride = process.env.DEVELOPER_NOTES_PASSWORD;
-  if (typeof plainOverride === 'string' && plainOverride.length > 0 && candidate === plainOverride) {
-    return true;
-  }
+  const expected =
+    typeof process.env.DEVELOPER_NOTES_PASSWORD === 'string' &&
+    process.env.DEVELOPER_NOTES_PASSWORD.length > 0
+      ? process.env.DEVELOPER_NOTES_PASSWORD
+      : DEV_NOTES_PASSWORD;
 
-  const hash = String(process.env.DEVELOPER_NOTES_PASSWORD_HASH || DEV_NOTES_PASSWORD_HASH || '');
-  if (!hash.startsWith('$2')) return false;
-
-  try {
-    return await bcrypt.compare(candidate, hash);
-  } catch {
-    return false;
-  }
+  return candidate === expected;
 }

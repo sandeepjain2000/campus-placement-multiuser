@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-import { sendMail } from '@/lib/mailer';
 import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { isAlumniJobType } from '@/lib/studentAlumni';
 
@@ -123,43 +122,16 @@ export async function notifyStudentApplicationSubmitted({
   const to = String(email || '').trim();
   if (!to) return;
 
-  const greeting = firstName ? `Hi ${firstName},` : 'Hi there,';
-  const subject = `[PlacementHub] Application received — ${alert.role} at ${alert.company}`;
-
   try {
-    const html = `
-      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-        <div style="background-color: #4f46e5; padding: 20px; border-bottom: 1px solid #e5e7eb;">
-          <h2 style="margin: 0; color: #ffffff;">Application received</h2>
-        </div>
-        <div style="padding: 20px; line-height: 1.5;">
-          <p>${greeting}</p>
-          <p>We received your <strong>${alert.typeLabel.toLowerCase()}</strong> application.</p>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px;">
-            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; color: #6b7280; width: 120px;">Company</td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: 600;">${alert.company}</td></tr>
-            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; color: #6b7280;">Role</td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: 600;">${alert.role}</td></tr>
-            <tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; color: #6b7280;">Type</td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-weight: 600;">${alert.typeLabel}</td></tr>
-            ${applicationId ? `<tr><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; color: #6b7280;">Reference</td><td style="padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-family: monospace; font-size: 13px;">${String(applicationId).slice(0, 8)}</td></tr>` : ''}
-          </table>
-          <p>You can track status and updates in My Applications.</p>
-          <div style="margin: 24px 0; text-align: center;">
-            <a href="${absLink}" style="display: inline-block; background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View My Applications</a>
-          </div>
-          <p style="font-size: 13px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 20px;">
-            This is an automated confirmation from PlacementHub.
-          </p>
-        </div>
-      </div>
-    `;
-
-    const text = `${greeting}\n\nWe received your ${alert.typeLabel.toLowerCase()} application.\n\nCompany: ${alert.company}\nRole: ${alert.role}\nType: ${alert.typeLabel}${applicationId ? `\nReference: ${String(applicationId).slice(0, 8)}` : ''}\n\nTrack status: ${absLink}`;
-
-    await sendMail({
+    const { sendApplicationSubmitted } = await import('@/lib/email/sendApplicationStatus');
+    await sendApplicationSubmitted({
       to,
-      subject,
-      text,
-      html,
-      context: 'student_application_submitted',
+      firstName,
+      company: alert.company,
+      role: alert.role,
+      typeLabel: alert.typeLabel,
+      applicationId,
+      applicationsUrl: absLink,
       recipientUserId: studentUserId,
     });
   } catch (err) {

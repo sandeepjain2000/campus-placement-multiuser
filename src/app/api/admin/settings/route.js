@@ -105,6 +105,7 @@ async function __platform_POST(request) {
       storageProvider: String(payload?.storageProvider ?? PLATFORM_SETTINGS_DEFAULTS.storageProvider),
       maxUploadSizeMb: Number(payload?.maxUploadSizeMb || PLATFORM_SETTINGS_DEFAULTS.maxUploadSizeMb),
       sessionAdsEnabled: Boolean(payload?.sessionAdsEnabled),
+      testEnvironment: Boolean(payload?.testEnvironment),
     };
 
     const validation = validateAdminSettingsNormalized(normalized);

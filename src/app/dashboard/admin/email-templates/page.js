@@ -10,10 +10,10 @@ import {
 } from '@/lib/systemEmailTemplates';
 
 function emptyForms() {
-  /** @type {Record<string, { subject: string, body: string, description: string, updated_at: string | null }>} */
+  /** @type {Record<string, { subject: string, body: string, description: string, updated_at: string | null, versions: any[] }>} */
   const o = {};
   for (const key of EDITABLE_SYSTEM_EMAIL_TEMPLATE_KEYS) {
-    o[key] = { subject: '', body: '', description: '', updated_at: null };
+    o[key] = { subject: '', body: '', description: '', updated_at: null, versions: [] };
   }
   return o;
 }
@@ -38,6 +38,7 @@ export default function AdminEmailTemplatesPage() {
             body: row.body_template || '',
             description: row.description || '',
             updated_at: row.updated_at || null,
+            versions: Array.isArray(row.versions) ? row.versions : [],
           };
         }
       }
@@ -75,10 +76,29 @@ export default function AdminEmailTemplatesPage() {
       if (json.template?.updated_at) {
         setForms((prev) => ({
           ...prev,
-          [templateKey]: { ...prev[templateKey], updated_at: json.template.updated_at },
+          [templateKey]: {
+            ...prev[templateKey],
+            updated_at: json.template.updated_at,
+            versions: Array.isArray(json.versions) ? json.versions : prev[templateKey].versions,
+          },
         }));
       }
-      addToast('Template saved.', 'success');
+      addToast(
+        json.unchanged
+          ? 'No changes to publish.'
+          : (json.version
+            ? `Template saved as ${json.version.label || `v${json.version.version_number}`}. Baseline retained.`
+            : 'Template saved.'),
+        'success',
+      );
+      if (Array.isArray(json.versions)) {
+        setForms((prev) => ({
+          ...prev,
+          [templateKey]: { ...prev[templateKey], versions: json.versions },
+        }));
+      } else {
+        await load();
+      }
     } catch (e) {
       addToast(e.message || 'Save failed', 'error');
     } finally {
@@ -130,7 +150,8 @@ export default function AdminEmailTemplatesPage() {
           Email templates
         </h1>
         <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0, maxWidth: 720 }}>
-          Edit platform-wide email copy. Use <code className="text-xs">{`{{placeholder}}`}</code> in subject or body;
+          Edit platform-wide email copy. Each save keeps the original baseline and adds a system version so colleges can
+          undo their campus edits later. Use <code className="text-xs">{`{{placeholder}}`}</code> in subject or body;
           unknown placeholders are removed when a message is rendered.
         </p>
       </div>
@@ -208,6 +229,24 @@ export default function AdminEmailTemplatesPage() {
                     {savingKey === templateKey ? 'Saving…' : 'Save template'}
                   </span>
                 </button>
+                {Array.isArray(f.versions) && f.versions.length > 0 ? (
+                  <div style={{ marginTop: '1rem' }}>
+                    <div className="text-xs text-tertiary" style={{ textTransform: 'uppercase', marginBottom: '0.4rem' }}>
+                      Retained system versions
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                      {f.versions.map((v) => (
+                        <li key={v.id} style={{ marginBottom: '0.25rem' }}>
+                          <strong>
+                            {v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}
+                          </strong>
+                          {v.is_current ? ' · current live' : ''}
+                          {v.created_at ? ` · ${new Date(v.created_at).toLocaleString()}` : ''}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </div>
             );
           })}

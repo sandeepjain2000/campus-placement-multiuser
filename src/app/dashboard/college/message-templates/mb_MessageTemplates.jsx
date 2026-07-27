@@ -2,9 +2,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import MobileHeader from '@/components/mobile/MobileHeader';
 import { useToast } from '@/components/ToastProvider';
-import { variablesToFormText } from '@/lib/messageTemplateUtils';
+import { variablesToFormText, previewMessageTemplateWithSample } from '@/lib/messageTemplateUtils';
 import Link from 'next/link';
-import { FileEdit, Plus, Trash2, Pencil, X, Mail, MessageSquare, Bell } from 'lucide-react';
+import { FileEdit, Plus, Trash2, Pencil, X, Mail, MessageSquare, Bell, Eye } from 'lucide-react';
+import MessageTemplateSamplePreviewModal from '@/components/college/MessageTemplateSamplePreviewModal';
 
 const TYPE_OPTIONS = [
   { value: 'email', label: 'Email', icon: <Mail size={14} /> },
@@ -31,6 +32,11 @@ export default function mb_MessageTemplates() {
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [preview, setPreview] = useState(null);
+
+  const openSamplePreview = (opts) => {
+    setPreview(previewMessageTemplateWithSample(opts));
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -221,7 +227,7 @@ export default function mb_MessageTemplates() {
               />
             </div>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', gap: '0.5rem', flexWrap: 'wrap' }}>
               <label className="text-sm font-medium" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input
                   type="checkbox"
@@ -232,9 +238,27 @@ export default function mb_MessageTemplates() {
                 Active Template
               </label>
               
-              <button type="button" className="btn btn-primary" disabled={saving} onClick={save}>
-                {saving ? 'Saving…' : 'Save'}
-              </button>
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  disabled={!form.body.trim()}
+                  onClick={() =>
+                    openSamplePreview({
+                      name: form.name || (editingId ? 'Edit template' : 'New template'),
+                      subject: form.subject,
+                      body: form.body,
+                      variables: form.variablesText,
+                    })
+                  }
+                >
+                  <Eye size={14} style={{ marginRight: 4 }} />
+                  Preview
+                </button>
+                <button type="button" className="btn btn-primary" disabled={saving} onClick={save}>
+                  {saving ? 'Saving…' : 'Save'}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -280,6 +304,23 @@ export default function mb_MessageTemplates() {
                     </div>
                     
                     <div style={{ display: 'flex', gap: '0.25rem' }}>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        title="Preview with sample data"
+                        aria-label="Preview with sample data"
+                        onClick={() =>
+                          openSamplePreview({
+                            name: t.name,
+                            subject: t.subject,
+                            body: t.body,
+                            variables: t.variables,
+                          })
+                        }
+                        style={{ padding: '0.25rem 0.5rem' }}
+                      >
+                        <Eye size={14} />
+                      </button>
                       <button type="button" className="btn btn-ghost btn-sm" onClick={() => startEdit(t)} style={{ padding: '0.25rem 0.5rem' }}>
                         <Pencil size={14} />
                       </button>
@@ -294,6 +335,15 @@ export default function mb_MessageTemplates() {
           </div>
         )}
       </div>
+
+      <MessageTemplateSamplePreviewModal
+        open={Boolean(preview)}
+        onClose={() => setPreview(null)}
+        title={preview?.name ? `Preview — ${preview.name}` : 'Preview with sample data'}
+        subject={preview?.subject}
+        body={preview?.body}
+        sampleVars={preview?.sampleVars}
+      />
     </>
   );
 }

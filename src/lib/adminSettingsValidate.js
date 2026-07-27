@@ -121,5 +121,6 @@ export function adminSettingsAuditSummary(n) {
     webmailUrlSet: Boolean(String(n.systemNotificationWebmailUrl || '').trim()),
     marketingWebsiteConfigured: Boolean(String(n.marketingWebsiteUrl || '').trim()),
     sessionAdsEnabled: Boolean(n.sessionAdsEnabled),
+    testEnvironment: Boolean(n.testEnvironment),
   };
 }

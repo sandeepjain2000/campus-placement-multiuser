@@ -231,9 +231,14 @@ async function __platform_POST(req) {
       const adminEmail = session.user.communication_email || session.user.email;
       const emailSubject = `Student Import Complete — ${results.processed} success`;
       const emailText =
-        `Hello,\n\nYour student import for ${results.processed} students has been processed.\n` +
-        (results.errors.length ? `\nErrors found:\n${results.errors.join('\n')}` : '\nNo errors encountered.') +
-        ` \n\nThank you,\nPlacementHub Team`;
+        `Hello,\n\n` +
+        (results.processed > 0
+          ? `Your student import for ${results.processed} student(s) has been processed.\n`
+          : `Your student import finished but no students were imported.\n`) +
+        (results.errors.length
+          ? `\nErrors found:\n${results.errors.join('\n')}\n\nTip: Verified must be Yes or No (blank defaults to No). Use the latest import template from Students → Import.\n`
+          : '\nNo errors encountered.\n') +
+        `\nThank you,\nPlacementHub Team`;
 
       await query(
         `INSERT INTO notifications (user_id, title, message, type, is_read, created_at)

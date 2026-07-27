@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-import { sendMail } from '@/lib/mailer';
 import { mirrorInAppAlertToYopmail } from '@/lib/notificationService';
 import { formatCurrency } from '@/lib/utils';
 import { buildOfferEmailLetterSection } from '@/lib/offerTemplateRender';
@@ -147,55 +146,24 @@ export async function notifyStudentFormalOffer({
     console.error('Failed to create formal offer in-app notification:', err);
   }
 
-  const letterBlock = rendered
-    ? `<div style="margin: 16px 0; padding: 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${escapeHtml(buildOfferEmailLetterSection({ renderedLetter: rendered, salary }))}</div>`
-    : letterUrl
-      ? `<p style="margin: 16px 0;"><a href="${letterUrl}" style="display: inline-block; background-color: #0f766e; color: white; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: 600;">Download offer letter</a></p>`
-      : `<p style="margin: 16px 0; color: #4b5563;">Your offer letter is available on PlacementHub under My Offers.</p>`;
-
-  const html = `
-    <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-      <div style="background-color: #4f46e5; padding: 20px; text-align: center;">
-        <h2 style="margin: 0; color: #ffffff;">Formal offer issued</h2>
-      </div>
-      <div style="padding: 20px; line-height: 1.55;">
-        <p>Hi ${firstName || 'there'},</p>
-        <p><strong>${companyName}</strong> has issued a <strong>formal offer</strong> for <strong>${roleTitle}</strong>.</p>
-        <p style="margin: 12px 0; padding: 12px 14px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
-          This is separate from your earlier <em>selection</em> update. The formal offer includes compensation terms and requires your accept or decline response in PlacementHub.
-        </p>
-        ${rendered ? '' : `<p><strong>CTC:</strong> ${ctcLine}</p>`}
-        ${deadlineText ? `<p><strong>Respond by:</strong> ${deadlineText}</p>` : ''}
-        ${letterBlock}
-        <div style="margin: 24px 0; text-align: center;">
-          <a href="${offersLink}" style="display: inline-block; background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Review on My Offers</a>
-        </div>
-        <p style="font-size: 13px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 20px;">
-          PlacementHub — formal offer notification${offerId ? ` (ref ${offerId})` : ''}.
-        </p>
-      </div>
-    </div>
-  `;
-
-  const textLines = [
-    `Hi ${firstName || 'there'},`,
-    '',
-    `${companyName} has issued a formal offer for ${roleTitle}.`,
-    'This is separate from your selection update — review the offer letter and respond on My Offers.',
-    `CTC: ${ctcLine}`,
-    deadlineText ? `Respond by: ${deadlineText}` : '',
-    rendered ? `Offer letter:\n${buildOfferEmailLetterSection({ renderedLetter: rendered, salary })}` : '',
-    letterUrl ? `Offer letter: ${letterUrl}` : '',
-    `My Offers: ${offersLink}`,
-  ].filter(Boolean);
+  const letterText = rendered
+    ? buildOfferEmailLetterSection({ renderedLetter: rendered, salary })
+    : undefined;
 
   try {
-    await sendMail({
+    const { sendOfferLetter } = await import('@/lib/email/sendOfferLetter');
+    await sendOfferLetter({
       to: email,
       subject,
-      text: textLines.join('\n'),
-      html,
-      context: 'student_formal_offer',
+      firstName,
+      companyName,
+      roleTitle,
+      ctcLine: rendered ? undefined : ctcLine,
+      deadlineText: deadlineText || undefined,
+      letterText,
+      letterUrl: rendered ? undefined : letterUrl || undefined,
+      offersLink,
+      offerId,
       recipientUserId: studentUserId,
     });
     return { sent: true };
@@ -254,12 +222,4 @@ export async function notifyStudentFormalOfferByOfferId(offerId, { force = false
   });
 
   return result?.sent !== false;
-}
-
-function escapeHtml(text) {
-  return String(text || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }

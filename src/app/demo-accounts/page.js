@@ -1,7 +1,7 @@
 import { query } from '@/lib/db';
 import Link from 'next/link';
 import DemoAccountLoginLink from '@/components/auth/DemoAccountLoginLink';
-import { ArrowLeft, GraduationCap, Building2, School, ShieldCheck, Award, ClipboardList } from 'lucide-react';
+import { ArrowLeft, GraduationCap, Building2, School, Award, ClipboardList } from 'lucide-react';
 import { DEMO_SEED_PASSWORD } from '@/lib/demoLogins';
 import { demoAccountLine1, demoAccountRowStyles } from '@/lib/demoAccountDisplay';
 import { writePlatformErrorLog } from '@/lib/platformErrorLog';
@@ -109,7 +109,6 @@ export default async function DemoAccountsPage() {
     { key: 'employer', label: 'Employers', icon: Building2, bg: 'var(--success-50)', color: 'var(--success-700)', border: 'var(--success-200)' },
     { key: 'college_admin', label: 'College Admins', icon: School, bg: 'var(--warning-50)', color: 'var(--warning-700)', border: 'var(--warning-200)' },
     { key: 'placement_committee', label: 'Placement Committees', icon: ClipboardList, bg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' },
-    { key: 'super_admin', label: 'Super Admins', icon: ShieldCheck, bg: 'var(--danger-50)', color: 'var(--danger-700)', border: 'var(--danger-200)' },
   ];
 
   const students = users.filter((u) => u.role === 'student' && !u.is_alumni);
@@ -117,7 +116,6 @@ export default async function DemoAccountsPage() {
   const employers = users.filter((u) => u.role === 'employer');
   const collegeAdmins = users.filter((u) => u.role === 'college_admin');
   const placementCommittees = users.filter((u) => u.role === 'placement_committee');
-  const superAdmins = users.filter((u) => u.role === 'super_admin');
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-secondary)', padding: '2rem 1rem' }}>
@@ -179,7 +177,6 @@ export default async function DemoAccountsPage() {
           <DemoAccountGroup group={groups[1]} users={alumni} />
           <DemoAccountGroup group={groups[2]} users={employers} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <DemoAccountGroup group={groups[5]} users={superAdmins} />
             <DemoAccountGroup group={groups[3]} users={collegeAdmins} />
             <DemoAccountGroup group={groups[4]} users={placementCommittees} />
           </div>

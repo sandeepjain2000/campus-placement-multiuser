@@ -512,12 +512,12 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
         </div>
 
         <div className="modal-footer student-detail-footer">
-          {onVerify && !readOnly ? (
+          {onVerify ? (
             student.verified ? (
               <button type="button" className="btn btn-ghost" onClick={() => onVerify(student.id, false)}>Clear Verification</button>
             ) : (
               <button type="button" className="btn btn-primary" onClick={() => onVerify(student.id, true)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <CheckCircle2 size={16} /> Approve & Verify Student
+                <CheckCircle2 size={16} /> Mark Verified
               </button>
             )
           ) : null}

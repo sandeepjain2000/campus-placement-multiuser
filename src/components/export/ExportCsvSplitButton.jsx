@@ -106,7 +106,7 @@ export function ExportCsvSplitButton({
         {menuOpen && !preparing && (
           <div className="export-csv-menu" role="menu">
             <p className="export-csv-hint" role="note">
-              Choose a table. Large exports may be emailed in production.
+              Choose a table. The CSV downloads in your browser.
             </p>
             {exportMenus.map((item) => (
               <button
@@ -211,7 +211,7 @@ export function ExportCsvSplitButton({
             </span>
           </button>
           <p className="export-csv-footnote" role="note">
-            Very large exports may be emailed in production.
+            File downloads in your browser (no email is sent).
           </p>
         </div>
       )}

@@ -322,8 +322,9 @@ export default function DashboardLayout({ children }) {
           fontSize: '0.875rem',
         }}
       >
-        Your college has not verified your student profile yet. You can use the portal, but some placement steps may stay blocked until an administrator
-        approves you from the <strong>Students</strong> screen.
+        Your college has not marked your profile as <strong>Verified</strong> yet. You can still apply and use the portal —
+        this badge is informational for employers and does not block hiring. After you edit your profile or upload a CV,
+        college or placement committee staff need to re-verify you from the <strong>Students</strong> screen.
       </div>
     ) : null;
 
