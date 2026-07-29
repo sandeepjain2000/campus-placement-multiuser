@@ -178,6 +178,12 @@
     "swr": "^2.4.1",
     "uuid": "^13.0.0"
   },
+  "browserslist": [
+    "chrome >= 111",
+    "firefox >= 111",
+    "safari >= 16.4",
+    "edge >= 111"
+  ],
   "devDependencies": {
     "@aws-sdk/client-sts": "^3.1031.0",
     "@babel/core": "^7.26.0",

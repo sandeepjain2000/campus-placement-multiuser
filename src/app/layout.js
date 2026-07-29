@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import './globals.css';
 import AuthProvider from '@/components/AuthProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -12,19 +13,24 @@ export const metadata = {
   keywords: 'campus placement, recruitment, hiring, college placements, job portal, SaaS',
 };
 
+/** Allow user zoom (a11y). Do not set maximumScale or user-scalable=no. */
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
 };
 
 const themeInitScript = `(function(){try{var k='placementhub_theme',t=localStorage.getItem(k);if(t!=='dark'&&t!=='light')t='light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`;
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const nonce = (await headers()).get('x-nonce') || undefined;
+
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
         <AuthProvider>
           <ThemeProvider>
             <ToastProvider>

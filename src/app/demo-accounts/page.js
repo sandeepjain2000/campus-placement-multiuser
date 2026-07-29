@@ -182,11 +182,6 @@ export default async function DemoAccountsPage() {
           </div>
         </div>
       </div>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `.demo-account-row-hover:hover { background-color: var(--bg-secondary); }`,
-        }}
-      />
     </div>
   );
 }

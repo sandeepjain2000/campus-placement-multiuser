@@ -46,11 +46,11 @@
     },
     employer: {
       menuKey: 'employer',
-      userName: 'Rahul Mehta',
-      hubTitle: 'TechCorp India (Demo) Home',
-      initials: 'RM',
+      userName: 'Anita Desai',
+      hubTitle: 'TechCorp Solutions Home',
+      initials: 'AD',
       roleLabel: 'Employer',
-      orgTitle: 'TechCorp India (Demo)',
+      orgTitle: 'TechCorp Solutions',
       orgSubtitle: 'Corporate Partner',
       showFullNav: false,
       entityLogo: true,
@@ -116,7 +116,7 @@
       { label: 'Alerts', href: '/dashboard/alerts' },
     ],
     employer: [
-      { label: 'Campus Partnerships', href: '/dashboard/employer/select-campus' },
+      { label: 'Change campus', href: '/dashboard/employer/select-campus' },
       { label: 'Alumni job postings', href: '/dashboard/employer/alumni/jobs' },
       { label: 'Placement drives', href: '/dashboard/employer/drives' },
       { label: 'Applications', href: '/dashboard/employer/applications' },
@@ -171,8 +171,9 @@
   }
 
   function homeLink(profileKey) {
-    const file = ROLE_FILES[profileKey];
-    return isSubpage() ? `../../${file}` : file;
+    // Prefer pages/{role}/home.html so Home always opens the mega-menu landing.
+    if (isSubpage()) return 'home.html';
+    return ROLE_FILES[profileKey];
   }
 
   function iconEl(name, size) {
@@ -1087,7 +1088,22 @@
     </div>
   </header>
   <div class="dashboard-nav-hub-body">
-    <p class="dashboard-nav-hub-intro">Open any destination below. Inner pages use the sidebar for that category; use <strong>Home</strong> in the top bar to return here.</p>
+    ${profile.employerCampus ? `
+    <div class="wireframe-banner" role="status" style="margin-bottom:1rem;display:block;background:var(--bg-secondary);border-style:solid;border-color:var(--border-default)">
+      <strong>Active campus: Indian Institute of Technology, Madras</strong>
+      <p style="margin:0.35rem 0 0;font-size:0.875rem;color:var(--text-secondary);line-height:1.55">
+        Recruiting data and drives use this partnership.
+        <a href="${esc(pageLink(profileKey, '/dashboard/employer/select-campus'))}" style="font-weight:600">change campus</a>.
+      </p>
+    </div>` : ''}
+    ${profile.committeeBanner ? `
+    <div class="wireframe-banner" role="status" style="margin-bottom:1rem;display:block;background:var(--bg-secondary);border-style:solid;border-color:var(--border-default)">
+      <strong>Placement committee (read-only).</strong>
+      <p style="margin:0.35rem 0 0;font-size:0.875rem;color:var(--text-secondary);line-height:1.55">
+        You can browse students and applications for your college. Use Home to return to this map.
+      </p>
+    </div>` : ''}
+    <p class="dashboard-nav-hub-intro">Open any destination below. The sidebar on inner pages shows only that category; use <strong>Home</strong> in the top bar to return here.</p>
     ${renderHubFeed(profileKey)}
     ${
       filteredQuick.length

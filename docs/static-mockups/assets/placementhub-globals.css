@@ -7804,3 +7804,8 @@ a.company-name-link:hover {
   border-color: #2563eb;
 }
 
+/* Demo accounts list — hover via stylesheet (avoids inline <style> / CSP friction). */
+.demo-account-row-hover:hover {
+  background-color: var(--bg-secondary);
+}
+

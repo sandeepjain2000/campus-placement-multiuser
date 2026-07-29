@@ -13,7 +13,14 @@ function escapeHtml(text) {
 function inlineMarkdown(text) {
   let s = escapeHtml(text);
   s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
+    const safe = String(href || '').trim();
+    // Block javascript:/data: URLs in developer markdown links.
+    if (!/^(https?:\/\/|\/|#|mailto:)/i.test(safe)) {
+      return label;
+    }
+    return `<a href="${escapeHtml(safe)}">${label}</a>`;
+  });
   s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   return s;
 }

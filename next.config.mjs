@@ -1,6 +1,10 @@
 import path from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
+import {
+  buildContentSecurityPolicy,
+  buildSecurityHeaderList,
+} from './securityHeaders.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
@@ -31,34 +35,9 @@ function resolveAppOrigin() {
   return 'https://campus-placement-omega.vercel.app';
 }
 
-/**
- * Baseline CSP for PlacementHub (addresses ZAP “CSP Header Not Set”).
- * Allows Next.js + inline theme boot, S3/HTTPS media, and same-origin APIs.
- * Tighten further later with nonces if needed.
- */
-function buildContentSecurityPolicy() {
-  const directives = [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "object-src 'none'",
-    "frame-ancestors 'self'",
-    "form-action 'self'",
-    // Theme boot script + Next.js runtime; prefer nonces in a follow-up hardening pass.
-    "script-src 'self' 'unsafe-inline'",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https:",
-    "font-src 'self' data:",
-    "connect-src 'self' https: wss:",
-    "media-src 'self' blob: https:",
-    "worker-src 'self' blob:",
-    "manifest-src 'self'",
-    'upgrade-insecure-requests',
-  ];
-  return directives.join('; ');
-}
-
 const APP_ORIGIN = resolveAppOrigin();
-const CONTENT_SECURITY_POLICY = buildContentSecurityPolicy();
+/** Baseline CSP for static assets (no per-request nonce; no unsafe-inline / unsafe-eval in production). */
+const CONTENT_SECURITY_POLICY = buildContentSecurityPolicy({ isDev: !isProd });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -67,6 +46,10 @@ const nextConfig = {
         removeConsole: { exclude: ['error'] },
       }
     : undefined,
+  // Tree-shake lucide icon imports (reduces unused JS).
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version || '0.1.0',
     NEXT_PUBLIC_APP_GIT_SHA: gitShort,
@@ -120,20 +103,14 @@ const nextConfig = {
       fallback: [],
     };
   },
+  // Compress responses (gzip/brotli on Node/Vercel). Default is true; keep explicit for clarity.
+  compress: true,
+  // Do not expose X-Powered-By.
+  poweredByHeader: false,
   async headers() {
-    const securityHeaders = [
-      { key: 'X-Content-Type-Options', value: 'nosniff' },
-      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-      {
-        key: 'Permissions-Policy',
-        value: 'camera=(), microphone=(), geolocation=()',
-      },
-      { key: 'Content-Security-Policy', value: CONTENT_SECURITY_POLICY },
-      // Override Vercel CDN default Access-Control-Allow-Origin: * (ZAP Cross-Domain Misconfiguration).
-      // Fixed origin (not request reflection) — do not set Vary: Origin (would clobber Next.js RSC Vary).
-      { key: 'Access-Control-Allow-Origin', value: APP_ORIGIN },
-    ];
+    // Non-CSP headers on all routes. CSP for HTML documents is set per-request in
+    // middleware with a fresh nonce (two CSP headers would AND and break scripts).
+    const securityHeaders = buildSecurityHeaderList({ isProd, appOrigin: APP_ORIGIN });
 
     return [
       {
@@ -141,11 +118,22 @@ const nextConfig = {
         headers: securityHeaders,
       },
       {
-        // Explicit override for static chunks (where ZAP flagged the wildcard CORS).
+        // Static chunks: baseline CSP (no nonce) + CORS lock (ZAP flagged ACAO:*).
         source: '/_next/static/:path*',
         headers: [
           { key: 'Access-Control-Allow-Origin', value: APP_ORIGIN },
           { key: 'Content-Security-Policy', value: CONTENT_SECURITY_POLICY },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          ...(isProd
+            ? [
+                {
+                  key: 'Strict-Transport-Security',
+                  value: 'max-age=31536000; includeSubDomains; preload',
+                },
+              ]
+            : []),
         ],
       },
     ];
