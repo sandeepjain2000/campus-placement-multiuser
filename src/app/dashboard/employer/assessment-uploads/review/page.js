@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Briefcase, FolderDot, GraduationCap, Target } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const KIND_TABS = [
   { id: 'internship', label: 'Internship', icon: GraduationCap },
@@ -45,8 +50,8 @@ function ReviewListContent() {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Correct CSV import — {kindLabel}</h1>
           <p>
             Fix validation errors row by row, then <strong>Accept import</strong>. Or reject and upload a new CSV from{' '}
@@ -55,84 +60,53 @@ function ReviewListContent() {
         </div>
       </div>
 
-      <div
-        role="tablist"
-        aria-label="Opportunity type"
-        style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}
-      >
+      <Tabs value={activeKind} className="mb-6"><TabsList aria-label="Opportunity type">
         {KIND_TABS.map((t) => {
           const Icon = t.icon;
           const active = activeKind === t.id;
           return (
-            <Link
-              key={t.id}
-              href={`/dashboard/employer/assessment-uploads/review?kind=${t.id}`}
-              role="tab"
-              aria-selected={active}
-              className={active ? 'btn btn-primary' : 'btn btn-secondary'}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                borderRadius: '999px',
-                textDecoration: 'none',
-              }}
-            >
+            <TabsTrigger key={t.id} value={t.id} render={<Link href={`/dashboard/employer/assessment-uploads/review?kind=${t.id}`} />}>
               <Icon size={16} aria-hidden />
               {t.label}
-            </Link>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList></Tabs>
 
       {loading ? (
         <div className="skeleton skeleton-card" style={{ height: 200 }} />
       ) : sessions.length === 0 ? (
-        <div className="card">
-          <p className="text-secondary" style={{ margin: 0 }}>
+        <Card><CardContent className="py-10 text-center text-muted-foreground">
             No pending CSV imports for {kindLabel}. Upload a CSV on{' '}
             <Link href="/dashboard/employer/assessment-uploads">Assessment uploads</Link>. If the file has errors, it will appear here for correction.
-          </p>
-        </div>
+        </CardContent></Card>
       ) : (
-        <div className="card">
-          <div className="table-container" style={{ border: 'none' }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Uploaded</th>
-                  <th>File</th>
-                  <th>Rows</th>
-                  <th>Errors</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
+        <Card><CardHeader><CardTitle>Pending imports</CardTitle><CardDescription>Correct every invalid row before accepting an import.</CardDescription></CardHeader><CardContent>
+            <Table>
+              <TableHeader><TableRow>
+                  <TableHead>Uploaded</TableHead><TableHead>File</TableHead><TableHead>Rows</TableHead><TableHead>Errors</TableHead><TableHead />
+              </TableRow></TableHeader>
+              <TableBody>
                 {sessions.map((s) => (
-                  <tr key={s.id}>
-                    <td>{s.created_at ? new Date(s.created_at).toLocaleString() : '—'}</td>
-                    <td>{s.original_file_name || '—'}</td>
-                    <td>{s.row_count ?? '—'}</td>
-                    <td>
-                      <strong style={{ color: Number(s.invalid_count) > 0 ? 'var(--danger-600)' : undefined }}>
-                        {s.invalid_count ?? 0}
-                      </strong>
-                    </td>
-                    <td>
-                      <button
+                  <TableRow key={s.id}>
+                    <TableCell>{s.created_at ? new Date(s.created_at).toLocaleString() : '—'}</TableCell>
+                    <TableCell>{s.original_file_name || '—'}</TableCell>
+                    <TableCell>{s.row_count ?? '—'}</TableCell>
+                    <TableCell><StatusBadge tone={Number(s.invalid_count) > 0 ? 'red' : 'green'} showDot>{s.invalid_count ?? 0}</StatusBadge></TableCell>
+                    <TableCell>
+                      <Button
                         type="button"
-                        className="btn btn-primary btn-sm"
+                        size="sm"
                         onClick={() => router.push(`/dashboard/employer/assessment-uploads/import/${s.id}`)}
                       >
                         Review &amp; correct
-                      </button>
-                    </td>
-                  </tr>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+        </CardContent></Card>
       )}
     </div>
   );

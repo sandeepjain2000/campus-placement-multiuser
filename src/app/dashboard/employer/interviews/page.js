@@ -18,6 +18,15 @@ import InterviewSlotActions from '@/components/interviews/InterviewSlotActions';
 import { EMPLOYER_CAMPUS_INTERVIEW_TABS, interviewSlotMatchesKind, interviewTabLabel } from '@/lib/employerInterviewOpportunity';
 import { isEmployerAlumniDashboardPath } from '@/lib/employerAlumniRoutes';
 import { INTERVIEW_TIMEFRAME_DISCLAIMER } from '@/lib/employerInterviewEmail';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const EMPTY_EMPLOYER_FORM = {
   opportunityId: '',
@@ -396,268 +405,223 @@ export default function EmployerInterviewsPage() {
   );
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <CalendarCheck size={22} strokeWidth={1.75} style={{ color: 'var(--primary-500)', flexShrink: 0 }} />
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h1 className="m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <CalendarCheck className="text-muted-foreground size-7" strokeWidth={1.5} />
             {isAlumniScope ? 'Alumni Interview Scheduling' : 'Interview Scheduling'}
           </h1>
-          <p className="text-secondary" style={{ margin: 0 }}>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
             {isAlumniScope
               ? 'Schedule interview windows for a specific alumni job posting and notify alumni applicants by email.'
               : 'Map interview windows to internships, projects, or placement drives, then notify applicants by email.'}
           </p>
         </div>
-        <div className="page-header-actions">
-          <Link href="/dashboard/employer/hiring-assessment" className="btn btn-secondary">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" render={<Link href="/dashboard/employer/hiring-assessment" />} nativeButton={false}>
             Hiring Results Dashboard →
-          </Link>
+          </Button>
           <ExportCsvSplitButton
             filenameBase="employer_interview_schedule"
             currentCount={rows.length}
             fullCount={rows.length}
             getRows={getScheduleCsv}
           />
-          <div className="view-toggle" role="group" aria-label="Interview plan view">
-            <button type="button" className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>
+          <div className="bg-muted flex rounded-lg p-1" role="group" aria-label="Interview plan view">
+            <Button type="button" size="sm" variant={view === 'list' ? 'secondary' : 'ghost'} aria-pressed={view === 'list'} onClick={() => setView('list')}>
               List
-            </button>
-            <button type="button" className={view === 'calendar' ? 'active' : ''} onClick={() => setView('calendar')}>
+            </Button>
+            <Button type="button" size="sm" variant={view === 'calendar' ? 'secondary' : 'ghost'} aria-pressed={view === 'calendar'} onClick={() => setView('calendar')}>
               Calendar
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
-      <div
-        className="card"
-        style={{ marginBottom: '1rem', background: 'var(--bg-tertiary)', border: '1px solid var(--border-default)' }}
-      >
-        <p className="text-sm text-secondary" style={{ margin: 0 }}>
+      <Alert>
+        <AlertDescription>
           {INTERVIEW_TIMEFRAME_DISCLAIMER} Use the email action on a slot to notify applicants for that opening.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
-      <div
-        className="card"
-        style={{ marginBottom: '1rem', background: 'var(--bg-tertiary)', border: '1px solid var(--border-default)' }}
-      >
-        <p className="text-sm text-secondary" style={{ margin: 0 }}>
+      <Alert>
+        <AlertDescription>
           Round results are entered under{' '}
-          <Link href="/dashboard/employer/assessment-uploads" style={{ color: 'var(--text-link)', fontWeight: 600 }}>
+          <Link href="/dashboard/employer/assessment-uploads" className="text-primary font-semibold hover:underline">
             Assessment uploads (CSV)
           </Link>{' '}
           or{' '}
-          <Link href="/dashboard/employer/assessment-update-online" style={{ color: 'var(--text-link)', fontWeight: 600 }}>
+          <Link href="/dashboard/employer/assessment-update-online" className="text-primary font-semibold hover:underline">
             Assessment Update Online
           </Link>
           ;{' '}
-          <Link href="/dashboard/employer/hiring-assessment" style={{ color: 'var(--text-link)', fontWeight: 600 }}>
+          <Link href="/dashboard/employer/hiring-assessment" className="text-primary font-semibold hover:underline">
             Hiring Results Dashboard
           </Link>{' '}
           is the read-only campus summary and export of that data.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       {!campusesLoading && approvedCampuses.length === 0 && (
-        <div
-          className="card"
-          style={{ marginBottom: '1rem', background: 'var(--warning-50)', border: '1px solid var(--warning-200)' }}
-        >
-          <p className="text-sm" style={{ margin: 0, color: 'var(--text-primary)' }}>
+        <Alert>
+          <AlertTitle>No approved college partnerships yet</AlertTitle>
+          <AlertDescription>
             <strong>No approved college partnerships yet.</strong> Request campus access before scheduling interviews.{' '}
-            <Link
-              href="/dashboard/employer/select-campus"
-              className="btn btn-primary btn-sm"
-              style={{ marginLeft: '0.5rem', verticalAlign: 'middle' }}
-            >
+            <Link href="/dashboard/employer/select-campus" className="text-primary ml-1 font-semibold hover:underline">
               Manage campuses
             </Link>
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {interviewTabs.length > 0 ? (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem' }} role="tablist" aria-label="Hiring type">
+        <Tabs value={effectiveKind} onValueChange={handleKindChange}>
+        <TabsList aria-label="Hiring type">
           {interviewTabs.map((tab) => (
-            <button
+            <TabsTrigger
               key={tab.id}
               type="button"
-              role="tab"
-              aria-selected={effectiveKind === tab.id}
-              onClick={() => handleKindChange(tab.id)}
-              className={effectiveKind === tab.id ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'}
+              value={tab.id}
             >
               {tab.label}
-            </button>
+            </TabsTrigger>
           ))}
-        </div>
+        </TabsList>
+        </Tabs>
       ) : null}
 
-      <div
-        style={{
-          display: 'grid',
-          gap: '1rem',
-          gridTemplateColumns: view === 'calendar' ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))',
-          alignItems: 'start',
-          width: '100%',
-        }}
-      >
-        <div className="card" style={{ minWidth: 0 }}>
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', paddingBottom: '0.75rem' }}>
-            <h3 className="card-title" style={{ margin: 0 }}>{editingId ? 'Edit Slot' : 'Create Slot'}</h3>
+      <div className={view === 'calendar' ? 'grid gap-4' : 'grid items-start gap-4 xl:grid-cols-[minmax(20rem,0.75fr)_minmax(0,1.25fr)]'}>
+        <Card className="min-w-0">
+          <CardHeader className="flex-row items-start justify-between">
+            <div className="flex flex-col gap-1">
+              <CardTitle>{editingId ? 'Edit Slot' : 'Create Slot'}</CardTitle>
+              <CardDescription>Link each interview window to a campus opening.</CardDescription>
+            </div>
             {editingId ? (
-              <button type="button" className="btn btn-ghost btn-sm" onClick={cancelEdit}>
+              <Button type="button" variant="ghost" size="sm" onClick={cancelEdit}>
                 Cancel edit
-              </button>
+              </Button>
             ) : null}
-          </div>
-          <form
-            onSubmit={saveSlot}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.75rem',
-              opacity: selectedCampusId ? 1 : 0.55,
-            }}
-          >
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-campus-select">
-                College / campus
-              </label>
-              <select
+          </CardHeader>
+          <CardContent>
+          <form onSubmit={saveSlot}>
+            <FieldGroup className={!selectedCampusId ? 'opacity-60' : undefined}>
+            <Field>
+              <FieldLabel htmlFor="interview-campus-select">College / campus</FieldLabel>
+              <AdminFilterSelect
                 id="interview-campus-select"
-                className="form-select"
+                className="w-full"
                 value={selectedCampusId}
                 disabled={campusesLoading || approvedCampuses.length === 0}
-                onChange={(e) => handleCampusChange(e.target.value)}
-                required
-              >
-                {approvedCampuses.length === 0 ? (
-                  <option value="">{campusesLoading ? 'Loading colleges…' : 'No approved colleges'}</option>
-                ) : (
-                  approvedCampuses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                      {c.city ? ` (${c.city})` : ''}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-opening-select">
+                onValueChange={handleCampusChange}
+                emptyMapsToAll={approvedCampuses.length === 0}
+                items={
+                  approvedCampuses.length === 0
+                    ? [{ label: campusesLoading ? 'Loading colleges…' : 'No approved colleges', value: 'all' }]
+                    : approvedCampuses.map((c) => ({
+                        label: `${c.name}${c.city ? ` (${c.city})` : ''}`,
+                        value: String(c.id),
+                      }))
+                }
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-opening-select">
                 {isAlumniScope ? 'Alumni job' : `${interviewTabLabel(effectiveKind)} opening`}
-              </label>
-              <select
+              </FieldLabel>
+              <AdminFilterSelect
                 id="interview-opening-select"
-                className="form-select"
+                className="w-full"
                 value={form.opportunityId}
                 disabled={!selectedCampusId || targetsLoading || openingOptions.length === 0}
-                onChange={(e) => setForm((p) => ({ ...p, opportunityId: e.target.value }))}
-                required
-              >
-                <option value="">
-                  {targetsLoading
-                    ? 'Loading openings…'
-                    : openingOptions.length
-                      ? isAlumniScope
-                        ? 'Select alumni job…'
-                        : `Select ${interviewTabLabel(effectiveKind).toLowerCase()}…`
-                      : isAlumniScope
-                        ? 'No alumni jobs at this campus'
-                        : `No ${interviewTabLabel(effectiveKind).toLowerCase()} at this campus`}
-                </option>
-                {openingOptions.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-round">
-                Round name
-              </label>
-              <input
+                onValueChange={(opportunityId) => setForm((p) => ({ ...p, opportunityId }))}
+                items={[
+                  {
+                    label: targetsLoading
+                      ? 'Loading openings…'
+                      : openingOptions.length
+                        ? isAlumniScope
+                          ? 'Select alumni job…'
+                          : `Select ${interviewTabLabel(effectiveKind).toLowerCase()}…`
+                        : isAlumniScope
+                          ? 'No alumni jobs at this campus'
+                          : `No ${interviewTabLabel(effectiveKind).toLowerCase()} at this campus`,
+                    value: 'all',
+                  },
+                  ...openingOptions.map((o) => ({ label: o.label, value: o.id })),
+                ]}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-round">Round name</FieldLabel>
+              <Input
                 id="interview-round"
-                className="form-input"
-                placeholder="e.g. Round 1 — DSA"
+                name="round"
+                placeholder="E.g. Round 1 — DSA"
                 value={form.round}
                 onChange={(e) => setForm((p) => ({ ...p, round: e.target.value }))}
                 required
               />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-date">
-                Interview date
-              </label>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-date">Interview date</FieldLabel>
               <ValidatedDateInput
                 id="interview-date"
                 fieldId={FIELD_IDS.EMPLOYER_INTERVIEW_DATE}
-                className="form-input"
                 value={form.date}
                 onChange={(v) => setForm((p) => ({ ...p, date: v }))}
               />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-time">
-                Start time
-              </label>
-              <input
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-time">Start time</FieldLabel>
+              <Input
                 id="interview-time"
-                className="form-input"
+                name="startTime"
                 type="time"
                 value={form.time}
                 onChange={(e) => setForm((p) => ({ ...p, time: e.target.value }))}
                 required
               />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-assigned">
-                Students assigned (expected)
-              </label>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-assigned">Students assigned (expected)</FieldLabel>
               <ValidatedNumberInput
                 id="interview-assigned"
                 fieldId={FIELD_IDS.EMPLOYER_INTERVIEW_ASSIGNED}
-                className="form-input"
                 value={form.assigned}
                 onChange={(v) => setForm((p) => ({ ...p, assigned: v }))}
               />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-panel">
-                Interviewer / panel names
-              </label>
-              <input
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-panel">Interviewer / panel names</FieldLabel>
+              <Input
                 id="interview-panel"
-                className="form-input"
-                placeholder="Optional"
+                name="panelNames"
+                placeholder="Optional panel names…"
                 value={form.panelNames}
                 onChange={(e) => setForm((p) => ({ ...p, panelNames: e.target.value }))}
               />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" htmlFor="interview-mode">
-                Interview mode
-              </label>
-              <select
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="interview-mode">Interview mode</FieldLabel>
+              <AdminFilterSelect
                 id="interview-mode"
-                className="form-select"
+                className="w-full"
                 value={form.mode}
-                onChange={(e) => setForm((p) => ({ ...p, mode: e.target.value }))}
-              >
-                <option>Virtual</option>
-                <option>On-Campus</option>
-                <option>Hybrid</option>
-              </select>
-            </div>
-            <button
-              className="btn btn-primary"
+                onValueChange={(mode) => setForm((p) => ({ ...p, mode }))}
+                emptyMapsToAll={false}
+                items={[
+                  { label: 'Virtual', value: 'Virtual' },
+                  { label: 'On-Campus', value: 'On-Campus' },
+                  { label: 'Hybrid', value: 'Hybrid' },
+                ]}
+              />
+            </Field>
+            <Button
               type="submit"
               disabled={!selectedCampusId || approvedCampuses.length === 0 || saving}
-              style={{ alignSelf: 'flex-start', marginTop: '0.25rem' }}
+              className="w-fit"
               title={
                 !selectedCampusId || approvedCampuses.length === 0
                   ? 'Select an approved college partnership first'
@@ -665,38 +629,22 @@ export default function EmployerInterviewsPage() {
               }
             >
               {saving ? 'Saving…' : editingId ? 'Save changes' : 'Add Interview Slot'}
-            </button>
+            </Button>
+            </FieldGroup>
           </form>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div
-          className="card"
-          style={{
-            minWidth: 0,
-            width: '100%',
-            paddingBottom: rows.length === 0 && view === 'list' ? '0.75rem' : undefined,
-          }}
-        >
-          <div
-            className="card-header"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '0.75rem',
-              flexWrap: 'wrap',
-              paddingBottom: rows.length === 0 && view === 'list' ? '0.5rem' : undefined,
-              borderBottom: '1px solid var(--border-default)',
-              marginBottom: view === 'list' && rows.length === 0 ? '0.5rem' : undefined,
-            }}
-          >
-            <h3 className="card-title" style={{ margin: 0 }}>
-              {isAlumniScope ? 'Alumni job interviews' : `Interview Plan — ${interviewTabLabel(effectiveKind)}`}
-            </h3>
-            <span className="text-sm text-secondary">
-              {selectedCampus ? selectedCampus.name : 'No college selected'} · {rows.length} slots
-            </span>
-          </div>
+        <Card className="min-w-0 gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border flex-row items-center justify-between border-b px-4 py-3">
+            <div className="flex flex-col gap-1">
+              <CardTitle className="text-base">
+                {isAlumniScope ? 'Alumni Job Interviews' : `Interview Plan — ${interviewTabLabel(effectiveKind)}`}
+              </CardTitle>
+              <CardDescription>{selectedCampus ? selectedCampus.name : 'No college selected'} · {rows.length} slots</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
           {view === 'calendar' ? (
             <EmployerCalendarGrid
               items={calItems}
@@ -704,32 +652,43 @@ export default function EmployerInterviewsPage() {
               initialMonth={calendarCursor.initialMonth}
             />
           ) : (
-            <div style={{ display: 'grid', gap: rows.length ? '0.6rem' : 0 }}>
-              {!selectedCampusId ? (
-                <p className="text-sm text-secondary" style={{ margin: 0, padding: '0.25rem 0' }}>
-                  Select a college to view its interview schedule.
-                </p>
-              ) : rows.length === 0 ? (
-                <p className="text-sm text-secondary" style={{ margin: 0, padding: '0.25rem 0 0' }}>
-                  {isAlumniScope
-                    ? 'No alumni job interview slots at this college yet.'
-                    : `No interview slots for ${interviewTabLabel(effectiveKind).toLowerCase()} at this college yet.`}
-                </p>
-              ) : (
-                rows.map((r) => (
-                  <div
-                    key={r.id}
-                    style={{
-                      border: `1px solid ${editingId === r.id ? 'var(--primary-400)' : 'var(--border-default)'}`,
-                      borderRadius: 'var(--radius-md)',
-                      padding: '0.7rem',
-                      background: editingId === r.id ? 'var(--primary-50)' : undefined,
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
-                      <div className="font-semibold">
-                        {r.opportunityTitle || 'Unlinked opening'} • {r.round}
-                      </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Opening &amp; Round</TableHead>
+                  <TableHead>Date &amp; Time</TableHead>
+                  <TableHead>Mode</TableHead>
+                  <TableHead>Panel</TableHead>
+                  <TableHead>Assigned</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {!selectedCampusId || rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
+                      {!selectedCampusId
+                        ? 'Select a college to view its interview schedule.'
+                        : isAlumniScope
+                          ? 'No alumni job interview slots at this college yet.'
+                          : `No interview slots for ${interviewTabLabel(effectiveKind).toLowerCase()} at this college yet.`}
+                    </TableCell>
+                  </TableRow>
+                ) : rows.map((r) => (
+                  <TableRow key={r.id} data-state={editingId === r.id ? 'selected' : undefined}>
+                    <TableCell>
+                      <div className="font-semibold">{r.opportunityTitle || 'Unlinked opening'}</div>
+                      <div className="text-muted-foreground text-xs">{interviewTabLabel(r.opportunityKind)} · {r.round}</div>
+                    </TableCell>
+                    <TableCell>
+                      <div>{formatDate(r.date)}</div>
+                      <div className="text-muted-foreground text-xs">{formatTimeDisplay(r.time)}</div>
+                    </TableCell>
+                    <TableCell><StatusBadge tone={r.mode === 'Virtual' ? 'blue' : 'indigo'}>{r.mode || '—'}</StatusBadge></TableCell>
+                    <TableCell className="max-w-48 truncate">{r.panelNames || '—'}</TableCell>
+                    <TableCell className="tabular-nums">{r.assigned}</TableCell>
+                    <TableCell>
+                      <div className="flex justify-end">
                       <InterviewSlotActions
                         onEmail={() => notifyApplicants(r)}
                         onEdit={() => startEdit(r)}
@@ -737,21 +696,15 @@ export default function EmployerInterviewsPage() {
                         disabled={saving || notifyingId === r.id}
                         emailDisabled={!r.opportunityId}
                       />
-                    </div>
-                    <div className="text-xs text-tertiary" style={{ marginTop: '0.15rem' }}>
-                      {interviewTabLabel(r.opportunityKind)} · {r.campus}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {formatDate(r.date)} • {formatTimeDisplay(r.time)} • {r.mode}
-                    </div>
-                    {r.panelNames ? <div className="text-xs text-tertiary">{r.panelNames}</div> : null}
-                    <div className="text-xs text-tertiary">{r.assigned} assigned students</div>
-                  </div>
-                ))
-              )}
-            </div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           )}
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

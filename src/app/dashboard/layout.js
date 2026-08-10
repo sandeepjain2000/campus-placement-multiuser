@@ -6,7 +6,7 @@ import useSWR, { mutate as swrMutate } from 'swr';
 import Link from 'next/link';
 import { signOut } from '@/lib/clientSignOut';
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import { getInitials, getRoleDisplayName } from '@/lib/utils';
+import { cn, getInitials, getRoleDisplayName } from '@/lib/utils';
 import EntityLogo from '@/components/EntityLogo';
 import SessionAdBanner from '@/components/SessionAdBanner';
 import PageLoading from '@/components/PageLoading';
@@ -38,8 +38,12 @@ import {
 } from '@/lib/employerAcademicYearContext';
 import { resolveBrandLogoUrl } from '@/lib/resolveBrandLogoUrl';
 import { DEFAULT_ENTITY_LOGO_URL } from '@/lib/clientAssetUrl';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { isCollegeStaffRole } from '@/lib/collegeAccess';
 import DashboardErrorBoundary from '@/components/DashboardErrorBoundary';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const settingsFetcher = async (url) => {
   const res = await fetch(url);
@@ -313,62 +317,44 @@ export default function DashboardLayout({ children }) {
 
   const studentVerifyBanner =
     role === 'student' && session.user.studentPlacementVerified === false ? (
-      <div
-        className="card banner-verify-pending"
-        style={{
-          margin: isHub ? '1rem auto 0' : '0 0 1rem',
-          maxWidth: isHub ? '56rem' : undefined,
-          padding: '0.75rem 1rem',
-          fontSize: '0.875rem',
-        }}
-      >
-        Your college has not marked your profile as <strong>Verified</strong> yet. You can still apply and use the portal —
-        this badge is informational for employers and does not block hiring. After you edit your profile or upload a CV,
-        college or placement committee staff need to re-verify you from the <strong>Students</strong> screen.
-      </div>
+      <Alert className={cn('mb-4', isHub && 'mx-auto mt-4 max-w-4xl')}>
+        <AlertTitle>Profile verification pending</AlertTitle>
+        <AlertDescription>
+          Your college has not marked your profile as <strong>Verified</strong> yet. You can still apply and use the
+          portal — this badge is informational for employers and does not block hiring. After you edit your profile or
+          upload a CV, college or placement committee staff need to re-verify you from the <strong>Students</strong>{' '}
+          screen.
+        </AlertDescription>
+      </Alert>
     ) : null;
 
   const committeeReadOnlyBanner =
     role === 'placement_committee' ? (
-      <div
-        className="card"
-        style={{
-          margin: isHub ? '1rem auto 0' : '0 0 1rem',
-          maxWidth: isHub ? '56rem' : undefined,
-          padding: '0.75rem 1rem',
-          fontSize: '0.875rem',
-          borderColor: 'var(--border-default)',
-          background: 'var(--bg-secondary)',
-        }}
-      >
-        <strong>Read-only placement committee view.</strong> You can browse students and applications for your college. Adding or editing records requires a college administrator.
-      </div>
+      <Alert className={cn('mb-4', isHub && 'mx-auto mt-4 max-w-4xl')}>
+        <AlertTitle>Read-only placement committee view</AlertTitle>
+        <AlertDescription>
+          You can browse students and applications for your college. Adding or editing records requires a college
+          administrator.
+        </AlertDescription>
+      </Alert>
     ) : null;
-
-  if (isHub) {
-    return (
-      <>
-        {studentVerifyBanner}
-        {committeeReadOnlyBanner}
-        {children}
-      </>
-    );
-  }
 
   const renderSidebarNavItem = (item, activeFn) => {
     const key = getDashboardNavItemKey(item);
     const icon = (
-      <span className="sidebar-link-icon">
-        <item.icon size={18} aria-hidden="true" />
+      <span className="flex size-5 shrink-0 items-center justify-center">
+        <item.icon aria-hidden="true" />
       </span>
     );
-    const label = <span className="sidebar-link-label">{item.label}</span>;
+    const label = (
+      <span className={cn('min-w-0 flex-1 truncate text-left', sidebarCollapsed && 'md:hidden')}>{item.label}</span>
+    );
 
     if (item.disabled) {
       return (
         <span
           key={key}
-          className="sidebar-link sidebar-link--disabled"
+          className="flex h-8 items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground/50 opacity-60"
           title={item.label}
           aria-disabled="true"
         >
@@ -383,7 +369,12 @@ export default function DashboardLayout({ children }) {
       <Link
         key={key}
         href={item.href}
-        className={`sidebar-link ${active ? 'active' : ''}`}
+        className={cn(
+          'flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium text-sidebar-foreground outline-none transition-colors',
+          'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+          active && 'bg-primary/10 text-sidebar-accent-foreground',
+          sidebarCollapsed && 'md:justify-center md:px-0',
+        )}
         onClick={() => setMobileOpen(false)}
         aria-current={active ? 'page' : undefined}
         title={item.label}
@@ -395,15 +386,25 @@ export default function DashboardLayout({ children }) {
   };
 
   return (
-    <div className={`dashboard-layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+    <div className="dashboard-layout flex min-h-svh w-full bg-background text-foreground">
       <aside
-        className={`sidebar ${mobileOpen ? 'mobile-open' : ''} ${sidebarCollapsed ? 'collapsed' : ''}`}
-        aria-expanded={!sidebarCollapsed}
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-sm',
+          'transition-[width,transform] duration-200 ease-linear',
+          sidebarCollapsed ? 'w-12' : 'w-64',
+          mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+          'max-md:w-72',
+        )}
+        data-state={sidebarCollapsed ? 'collapsed' : 'expanded'}
       >
-        <div className="sidebar-toolbar">
+        <div className="flex h-16 shrink-0 items-center gap-2 px-2">
           <Link
             href={homePath}
-            className="sidebar-logo"
+            className={cn(
+              'flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-1 py-1.5 outline-none',
+              'hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+              sidebarCollapsed && 'md:justify-center',
+            )}
             onClick={() => {
               try {
                 window.dispatchEvent(new Event('placementhub-clear-search'));
@@ -413,37 +414,57 @@ export default function DashboardLayout({ children }) {
               setMobileOpen(false);
             }}
           >
-            <div className="sidebar-logo-icon">P</div>
-            <span className="sidebar-logo-label">PlacementHub</span>
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-xs">
+              P
+            </div>
+            <div className={cn('min-w-0 flex-1', sidebarCollapsed && 'md:hidden')}>
+              <div className="truncate text-sm font-semibold">PlacementHub</div>
+              <div className="truncate text-xs text-sidebar-foreground/60">Career workspace</div>
+            </div>
           </Link>
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost btn-icon sidebar-collapse-toggle"
+            variant="ghost"
+            size="icon-sm"
+            className={cn('shrink-0 max-md:hidden', sidebarCollapsed && 'md:hidden')}
             onClick={() => setSidebarCollapsed((v) => !v)}
             title={sidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
             aria-label={sidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
           >
-            {sidebarCollapsed ? <PanelLeft size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
-          </button>
+            {sidebarCollapsed ? <PanelLeft aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
+          </Button>
         </div>
+        <Separator />
 
-        <nav className="sidebar-nav">
+        <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
           <Link
             href={homePath}
-            className={`sidebar-link ${pathname === homePath ? 'active' : ''}`}
+            className={cn(
+              'flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium outline-none transition-colors',
+              'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+              pathname === homePath && 'bg-primary/10 text-sidebar-accent-foreground',
+              sidebarCollapsed && 'md:justify-center md:px-0',
+            )}
             onClick={() => setMobileOpen(false)}
             aria-current={pathname === homePath ? 'page' : undefined}
             title="Home"
           >
-            <span className="sidebar-link-icon">
-              <Home size={18} aria-hidden="true" />
+            <span className="flex size-5 shrink-0 items-center justify-center">
+              <Home aria-hidden="true" />
             </span>
-            <span className="sidebar-link-label">Home</span>
+            <span className={cn('min-w-0 flex-1 truncate', sidebarCollapsed && 'md:hidden')}>Home</span>
           </Link>
           {showFullSidebarNav ? (
             menu.sections.map((section) => (
-              <div key={section.id}>
-                <div className="sidebar-section-title">{section.title}</div>
+              <div className="flex flex-col gap-1" key={section.id}>
+                <div
+                  className={cn(
+                    'px-2 pb-1 pt-4 text-[0.6875rem] font-medium uppercase tracking-wider text-sidebar-foreground/50',
+                    sidebarCollapsed && 'md:sr-only',
+                  )}
+                >
+                  {section.title}
+                </div>
                 {section.items.map((item) =>
                   renderSidebarNavItem(item, (href) => isSidebarItemActiveInMenu(href, menu, pathname)),
                 )}
@@ -451,7 +472,14 @@ export default function DashboardLayout({ children }) {
             ))
           ) : (
             <>
-              <div className="sidebar-section-title">{activeSection.title}</div>
+              <div
+                className={cn(
+                  'px-2 pb-1 pt-4 text-[0.6875rem] font-medium uppercase tracking-wider text-sidebar-foreground/50',
+                  sidebarCollapsed && 'md:sr-only',
+                )}
+              >
+                {activeSection.title}
+              </div>
               {activeSection.items.map((item) =>
                 renderSidebarNavItem(item, (href) => isSidebarItemActive(href, activeSection, pathname)),
               )}
@@ -459,10 +487,15 @@ export default function DashboardLayout({ children }) {
           )}
         </nav>
 
-        <div className="sidebar-footer">
+        <Separator />
+        <div className="shrink-0 p-2">
           <Link
             href={getRoleProfilePath(role)}
-            className="dashboard-identity-link"
+            className={cn(
+              'flex min-w-0 items-center gap-2 rounded-md p-2 outline-none transition-colors',
+              'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+              sidebarCollapsed && 'md:justify-center md:px-0',
+            )}
             onClick={(e) => {
               setMobileOpen(false);
               const dest = getRoleProfilePath(role);
@@ -481,85 +514,83 @@ export default function DashboardLayout({ children }) {
             aria-label={`${getRoleProfileLabel(role)} — ${session.user.name}`}
             title={getRoleProfileLabel(role)}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem' }}>
-              {(role === 'employer' || role === 'college_admin') ? (
-                <EntityLogo
-                  name={
-                    role === 'employer'
-                      ? employerDisplayName || session.user.name
-                      : (collegeSettings?.institution?.collegeName || session.user.tenantName || session.user.name)
-                  }
-                  logoUrl={resolvedBrandLogoUrl}
-                  placeholderUrl={DEFAULT_ENTITY_LOGO_URL}
-                  size="sm"
-                  shape="rounded"
-                />
-              ) : (
-                <div className="avatar avatar-md">
-                  {getInitials(session.user.name)}
-                </div>
-              )}
-              <div className="sidebar-footer-meta" style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {session.user.name}
-                </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                  {getRoleDisplayName(role, { isAlumni: Boolean(session.user?.isAlumni) })}
-                </div>
-              </div>
-              <ChevronRight
-                size={16}
-                aria-hidden="true"
-                className="sidebar-footer-chevron"
-                style={{ flexShrink: 0, color: 'var(--text-tertiary)' }}
+            {role === 'employer' || role === 'college_admin' ? (
+              <EntityLogo
+                name={
+                  role === 'employer'
+                    ? employerDisplayName || session.user.name
+                    : collegeSettings?.institution?.collegeName || session.user.tenantName || session.user.name
+                }
+                logoUrl={resolvedBrandLogoUrl}
+                placeholderUrl={DEFAULT_ENTITY_LOGO_URL}
+                size="sm"
+                shape="rounded"
               />
+            ) : (
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-semibold text-primary">
+                {getInitials(session.user.name)}
+              </div>
+            )}
+            <div className={cn('min-w-0 flex-1', sidebarCollapsed && 'md:hidden')}>
+              <div className="truncate text-sm font-semibold">{session.user.name}</div>
+              <div className="truncate text-xs text-sidebar-foreground/60">
+                {getRoleDisplayName(role, { isAlumni: Boolean(session.user?.isAlumni) })}
+              </div>
             </div>
+            <ChevronRight
+              aria-hidden="true"
+              className={cn('shrink-0 text-sidebar-foreground/50', sidebarCollapsed && 'md:hidden')}
+            />
           </Link>
         </div>
       </aside>
 
-      <div className="main-content">
-        <header className="topbar">
-          <div className="topbar-left">
-            <button
+      <div
+        className={cn(
+          'flex min-h-svh min-w-0 flex-1 flex-col bg-background transition-[margin] duration-200 ease-linear',
+          sidebarCollapsed ? 'md:ml-12' : 'md:ml-64',
+        )}
+      >
+        <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+          <div className="mx-auto flex min-h-16 w-full max-w-[1440px] items-center justify-between gap-4 px-4 py-2 sm:px-6">
+          <div className="topbar-left flex min-w-0 flex-1 items-center gap-2">
+            <Button
               type="button"
-              className="btn btn-ghost btn-icon dashboard-mobile-menu-toggle"
+              variant="ghost"
+              size="icon-sm"
+              className="dashboard-mobile-menu-toggle md:hidden"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle navigation menu"
             >
-              <Menu size={18} aria-hidden="true" />
-            </button>
-            <Link
-              href="/"
-              className="btn btn-ghost btn-sm dashboard-mobile-landing-link"
+              <Menu aria-hidden="true" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="dashboard-mobile-landing-link"
+              render={<Link href="/" />}
+              nativeButton={false}
               title="Back to landing page"
               aria-label="Back to landing page"
             >
-              <ArrowLeft size={16} aria-hidden="true" />
-              <span>Landing</span>
-            </Link>
-
-            <div
-              style={{
-                marginLeft: '0.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                flexWrap: 'wrap',
-                minWidth: 0,
-                flex: '1 1 auto',
-              }}
-            >
-              <Link
-                href={homePath}
-                className="btn btn-ghost btn-sm"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700, flexShrink: 0 }}
-                title="Full workspace menu"
+              <ArrowLeft data-icon="inline-start" />
+              Landing
+            </Button>
+            {sidebarCollapsed && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="hidden md:inline-flex"
+                onClick={() => setSidebarCollapsed(false)}
+                title="Expand menu"
+                aria-label="Expand menu"
               >
-                <Home size={16} aria-hidden="true" /> Home
-              </Link>
-              <div className="topbar-divider-mobile-hide" style={{ width: '1px', height: '24px', background: 'var(--border)', flexShrink: 0 }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, maxWidth: 'min(100%, 22rem)' }}>
+                <PanelLeft aria-hidden="true" />
+              </Button>
+            )}
+            <Separator orientation="vertical" className="mx-1 hidden h-5! data-vertical:self-center sm:block" />
+            <div className="flex min-w-0 items-center gap-2.5">
                 <EntityLogo
                   name={
                     role === 'super_admin'
@@ -577,8 +608,8 @@ export default function DashboardLayout({ children }) {
                   size="sm"
                   shape="rounded"
                 />
-                <div style={{ minWidth: 0 }}>
-                  <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: 0, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div className="min-w-0">
+                  <h2 className="truncate text-sm font-semibold leading-tight sm:text-base">
                     {role === 'super_admin'
                       ? 'PlacementHub SuperAdmin'
                       : role === 'employer'
@@ -587,7 +618,7 @@ export default function DashboardLayout({ children }) {
                           session.user.tenantName ||
                           session.user.name}
                   </h2>
-                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                  <p className="truncate text-xs text-muted-foreground">
                     {role === 'employer'
                       ? 'Corporate Partner'
                       : role === 'student'
@@ -597,127 +628,119 @@ export default function DashboardLayout({ children }) {
                         : 'College Administration'}
                   </p>
                 </div>
-              </div>
+            </div>
 
               {role === 'employer' && (
-                <>
-                  <div className="topbar-divider-mobile-hide" style={{ width: '1px', height: '24px', background: 'var(--border)', margin: '0 0.5rem' }} />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', flexShrink: 0 }}>Campus:</span>
-                    <Link
-                      href="/dashboard/employer/select-campus"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.4rem',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '4px',
-                        background: 'var(--bg-secondary)',
-                        border: '1px solid var(--border)',
-                        fontSize: '0.875rem',
-                        color: 'var(--text-primary)',
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                        maxWidth: '14rem',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                      title="View campus partnerships (all approved campuses are in scope)"
-                    >
+                <div className="ml-2 hidden min-w-0 items-center gap-2 xl:flex">
+                  <Separator orientation="vertical" className="mr-1 h-5! data-vertical:self-center" />
+                  <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Campus
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="max-w-56"
+                    render={<Link href="/dashboard/employer/select-campus" />}
+                    nativeButton={false}
+                    title="View campus partnerships (all approved campuses are in scope)"
+                  >
+                    <span className="truncate">
                       All campuses
-                      <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>▼</span>
-                    </Link>
-                  </div>
-                  <div className="topbar-divider-mobile-hide" style={{ width: '1px', height: '24px', background: 'var(--border)', margin: '0 0.5rem' }} />
-                  <div className="topbar-academic-year-selector" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', flexShrink: 0 }}>Academic Year:</span>
-                    <select
-                      className="form-input"
+                    </span>
+                  </Button>
+                  <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Academic year
+                  </span>
+                    <AdminFilterSelect
+                      className="h-8 max-w-36 text-muted-foreground"
                       aria-label="Academic Year"
-                      style={{ width: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.875rem', maxWidth: '9rem', opacity: 0.65 }}
                       value={employerAcademicYear}
                       disabled
-                      title="Not used for employer login — data includes all campuses and seasons"
-                    >
-                      {employerAcademicYearOptions.map((opt) => (
-                        <option key={opt} value={opt}>{opt}</option>
-                      ))}
-                    </select>
-                  </div>
-                </>
+                      emptyMapsToAll={false}
+                      onValueChange={() => {}}
+                      items={employerAcademicYearOptions.map((opt) => ({ label: opt, value: opt }))}
+                    />
+                </div>
               )}
 
               {(role === 'college_admin' || role === 'placement_committee') && (
-                <>
-                  <div className="topbar-divider-mobile-hide" style={{ width: '1px', height: '24px', background: 'var(--border)', margin: '0 0.5rem' }} />
-                  <div className="topbar-academic-year-selector" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>Academic Year:</span>
-                    <select
-                      className="form-input"
+                <div className="ml-2 hidden items-center gap-2 xl:flex">
+                  <Separator orientation="vertical" className="mr-1 h-5! data-vertical:self-center" />
+                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Academic year</span>
+                    <AdminFilterSelect
+                      className="h-8 text-muted-foreground"
                       aria-label="Academic Year"
-                      style={{ width: 'auto', padding: '0.25rem 0.5rem', fontSize: '0.875rem', opacity: 0.65, cursor: 'not-allowed' }}
                       value={academicYear}
                       disabled
-                      title="Academic year switching is not active yet — display only"
-                    >
-                      <option value={academicYear}>{academicYear}</option>
-                    </select>
-                  </div>
-                </>
+                      emptyMapsToAll={false}
+                      onValueChange={() => {}}
+                      items={[{ label: academicYear, value: academicYear }]}
+                    />
+                </div>
               )}
-
-
-            </div>
           </div>
 
-          <div className="topbar-right" style={{ flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center', gap: '0.5rem' }}>
+          <div className="flex shrink-0 items-center justify-end gap-1.5">
             <ScreenSearchBar />
             <DevScreenTag />
             {role === 'student' && (
-              <Link
-                href="/dashboard/student/reminders"
-                className="btn btn-ghost btn-sm topbar-label-hide-mobile"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600 }}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="topbar-label-hide-mobile font-semibold"
+                render={<Link href="/dashboard/student/reminders" />}
+                nativeButton={false}
                 title="Reminders & email preview"
                 aria-label="Email reminders"
               >
-                <Mail size={16} aria-hidden="true" /> Email
-              </Link>
+                <Mail data-icon="inline-start" /> Email
+              </Button>
             )}
-            <ThemeToggleButton />
+            <ThemeToggleButton className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-transparent text-sm font-medium outline-none transition-all hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
 
             <NotificationDropdown />
 
-            <div className="dropdown" style={{ position: 'relative' }}>
-              <button
+              <Button
                 type="button"
-                className="btn btn-ghost btn-sm topbar-label-hide-mobile"
+                variant="ghost"
+                size="sm"
+                className="topbar-label-hide-mobile text-muted-foreground"
                 onClick={() => signOut({ callbackUrl: '/login?force=1' })}
-                style={{ color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 title="Sign out"
                 aria-label="Sign out"
               >
-                <LogOut size={16} aria-hidden="true" />
+                <LogOut data-icon="inline-start" />
                 Sign Out
-              </button>
-            </div>
+              </Button>
+          </div>
           </div>
         </header>
 
-        <main id="main-content" className="page-content">
-          {studentVerifyBanner}
-          {committeeReadOnlyBanner}
-          <DashboardErrorBoundary>{children}</DashboardErrorBoundary>
+        <main id="main-content" className="mx-auto w-full max-w-[1440px] flex-1 bg-background px-4 py-6 sm:px-6">
+          {!isHub && studentVerifyBanner}
+          {!isHub && committeeReadOnlyBanner}
+          <DashboardErrorBoundary>
+            {isHub && studentVerifyBanner}
+            {isHub && committeeReadOnlyBanner}
+            {children}
+          </DashboardErrorBoundary>
         </main>
         <SessionAdBanner />
         <DocumentationHelpWidget />
+        <footer className="border-t bg-background">
+          <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center justify-between gap-1 px-4 py-3 text-xs text-muted-foreground sm:flex-row sm:px-6">
+            <span>© {new Date().getFullYear()} PlacementHub</span>
+            <span>{getRoleDisplayName(role, { isAlumni: Boolean(session.user?.isAlumni) })} workspace</span>
+          </div>
+        </footer>
       </div>
 
       {mobileOpen && (
-        <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99 }}
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
           onClick={() => setMobileOpen(false)}
+          aria-label="Close navigation menu"
         />
       )}
     </div>

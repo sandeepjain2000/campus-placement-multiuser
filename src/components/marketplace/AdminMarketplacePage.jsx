@@ -2,12 +2,22 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/components/ToastProvider';
+import AppPageHeader from '@/components/layout/AppPageHeader';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 import {
   MARKETPLACE_BILLING_UNITS,
   MARKETPLACE_CATEGORIES,
   MARKETPLACE_ORDER_STATUSES,
   formatMarketplacePriceInr,
 } from '@/lib/marketplace';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const EMPTY_PROVIDER = {
   name: '',
@@ -219,18 +229,11 @@ export default function AdminMarketplacePage() {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>Marketplace</h1>
-          <p>
-            Catalog service providers (aptitude tests, assessments, training). Colleges and employers
-            request purchases; you confirm fulfillment offline or by invoice.
-          </p>
-        </div>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => loadAll()} disabled={loading}>
-          Refresh
-        </button>
-      </div>
+      <AppPageHeader
+        title="Marketplace"
+        description="Catalog service providers, manage priced services, and confirm purchase fulfillment."
+        actions={<Button type="button" variant="outline" size="sm" onClick={() => loadAll()} disabled={loading}>Refresh</Button>}
+      />
 
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
         {[
@@ -238,14 +241,15 @@ export default function AdminMarketplacePage() {
           { id: 'services', label: 'Services' },
           { id: 'orders', label: 'Purchase requests' },
         ].map((t) => (
-          <button
+          <Button
             key={t.id}
             type="button"
-            className={`btn btn-sm ${tab === t.id ? 'btn-primary' : 'btn-secondary'}`}
+            size="sm"
+            variant={tab === t.id ? 'default' : 'outline'}
             onClick={() => setTab(t.id)}
           >
             {t.label}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -254,401 +258,385 @@ export default function AdminMarketplacePage() {
       ) : null}
 
       {!loading && tab === 'providers' ? (
-        <div className="grid grid-2" style={{ gap: '1.25rem', alignItems: 'start' }}>
-          <div className="card">
-            <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-              {editingProviderId ? 'Edit provider' : 'Add provider'}
-            </h3>
-            <div className="form-group">
-              <label className="form-label">Name</label>
-              <input
-                className="form-input"
+        <div className="grid items-start gap-5 xl:grid-cols-2">
+          <Card>
+            <CardHeader><CardTitle>{editingProviderId ? 'Edit provider' : 'Add provider'}</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-4">
+            <Field>
+              <FieldLabel htmlFor="marketplace-provider-name">Name</FieldLabel>
+              <Input
+                id="marketplace-provider-name"
                 value={providerForm.name}
                 onChange={(e) => setProviderForm((f) => ({ ...f, name: e.target.value }))}
                 placeholder="e.g. CampusApt Prep"
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Category</label>
-              <select
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="marketplace-provider-category">Category</FieldLabel>
+              <AdminFilterSelect
+                id="marketplace-provider-category"
+                className="w-full"
                 value={providerForm.category}
-                onChange={(e) => setProviderForm((f) => ({ ...f, category: e.target.value }))}
-              >
-                {MARKETPLACE_CATEGORIES.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Tagline</label>
-              <input
-                className="form-input"
+                emptyMapsToAll={false}
+                onValueChange={(category) => setProviderForm((f) => ({ ...f, category }))}
+                items={MARKETPLACE_CATEGORIES.map((c) => ({ label: c.label, value: c.value }))}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="marketplace-provider-tagline">Tagline</FieldLabel>
+              <Input
+                id="marketplace-provider-tagline"
                 value={providerForm.tagline}
                 onChange={(e) => setProviderForm((f) => ({ ...f, tagline: e.target.value }))}
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Description</label>
-              <textarea
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="marketplace-provider-description">Description</FieldLabel>
+              <Textarea
+                id="marketplace-provider-description"
                 rows={3}
                 value={providerForm.description}
                 onChange={(e) => setProviderForm((f) => ({ ...f, description: e.target.value }))}
               />
-            </div>
-            <div className="grid grid-2">
-              <div className="form-group">
-                <label className="form-label">Website</label>
-                <input
-                  className="form-input"
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="marketplace-provider-website">Website</FieldLabel>
+                <Input
+                  id="marketplace-provider-website"
                   value={providerForm.website}
                   onChange={(e) => setProviderForm((f) => ({ ...f, website: e.target.value }))}
                 />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Contact email</label>
-                <input
-                  className="form-input"
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="marketplace-provider-email">Contact email</FieldLabel>
+                <Input
+                  id="marketplace-provider-email"
                   type="email"
                   value={providerForm.contactEmail}
                   onChange={(e) => setProviderForm((f) => ({ ...f, contactEmail: e.target.value }))}
                 />
-              </div>
+              </Field>
             </div>
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={providerForm.active}
-                onChange={(e) => setProviderForm((f) => ({ ...f, active: e.target.checked }))}
+                onCheckedChange={(v) => setProviderForm((f) => ({ ...f, active: !!v }))}
               />
               Active in catalog
             </label>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" className="btn btn-primary" disabled={saving} onClick={saveProvider}>
+              <Button type="button" disabled={saving} onClick={saveProvider}>
                 {saving ? 'Saving…' : editingProviderId ? 'Save provider' : 'Add provider'}
-              </button>
+              </Button>
               {editingProviderId ? (
-                <button type="button" className="btn btn-secondary" onClick={resetProviderForm}>
+                <Button type="button" variant="outline" onClick={resetProviderForm}>
                   Cancel
-                </button>
+                </Button>
               ) : null}
             </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="card card-table-shell">
-            <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-              Providers ({providers.length})
-            </h3>
+          <Card>
+            <CardHeader><CardTitle>Providers ({providers.length})</CardTitle></CardHeader>
+            <CardContent className="px-0">
             <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Provider</th>
-                    <th>Category</th>
-                    <th>Services</th>
-                    <th>Status</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Provider</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Services</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead><span className="sr-only">Actions</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {providers.map((p) => (
-                    <tr key={p.id}>
-                      <td>
+                    <TableRow key={p.id}>
+                      <TableCell>
                         <div className="font-semibold">{p.name}</div>
                         {p.tagline ? <div className="text-xs text-tertiary">{p.tagline}</div> : null}
-                      </td>
-                      <td>{p.categoryLabel}</td>
-                      <td className="font-mono">{p.serviceCount ?? 0}</td>
-                      <td>
-                        <span className={`badge badge-${p.active ? 'green' : 'gray'}`}>
-                          {p.active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <button type="button" className="btn btn-ghost btn-sm" onClick={() => editProvider(p)}>
+                      </TableCell>
+                      <TableCell>{p.categoryLabel}</TableCell>
+                      <TableCell className="font-mono">{p.serviceCount ?? 0}</TableCell>
+                      <TableCell>
+                        <StatusBadge tone={p.active ? 'green' : 'gray'}>{p.active ? 'Active' : 'Inactive'}</StatusBadge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Button type="button" variant="ghost" size="sm" onClick={() => editProvider(p)}>
                           Edit
-                        </button>
-                        <button type="button" className="btn btn-ghost btn-sm" onClick={() => deleteProvider(p.id)}>
+                        </Button>
+                        <Button type="button" variant="destructive" size="sm" onClick={() => deleteProvider(p.id)}>
                           Delete
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
                   {providers.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-muted-foreground text-center">
                         No providers yet. Add an aptitude or assessment vendor to start the catalog.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : null}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       ) : null}
 
       {!loading && tab === 'services' ? (
-        <div className="grid grid-2" style={{ gap: '1.25rem', alignItems: 'start' }}>
-          <div className="card">
-            <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-              {editingServiceId ? 'Edit service' : 'Add service'}
-            </h3>
-            <div className="form-group">
-              <label className="form-label">Provider</label>
-              <select
-                className="form-input"
+        <div className="grid items-start gap-5 xl:grid-cols-2">
+          <Card>
+            <CardHeader><CardTitle>{editingServiceId ? 'Edit service' : 'Add service'}</CardTitle></CardHeader>
+            <CardContent className="flex flex-col gap-4">
+            <Field>
+              <FieldLabel htmlFor="marketplace-service-provider">Provider</FieldLabel>
+              <AdminFilterSelect
+                id="marketplace-service-provider"
+                className="w-full"
                 value={serviceForm.providerId}
-                onChange={(e) => setServiceForm((f) => ({ ...f, providerId: e.target.value }))}
-              >
-                <option value="">Select provider…</option>
-                {providerOptions.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Title</label>
-              <input
-                className="form-input"
+                emptyMapsToAll={false}
+                onValueChange={(providerId) => setServiceForm((f) => ({ ...f, providerId }))}
+                items={[
+                  { label: 'Select provider…', value: '' },
+                  ...providerOptions.map((p) => ({ label: p.label, value: p.value })),
+                ]}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="marketplace-service-title">Title</FieldLabel>
+              <Input
+                id="marketplace-service-title"
                 value={serviceForm.title}
                 onChange={(e) => setServiceForm((f) => ({ ...f, title: e.target.value }))}
                 placeholder="e.g. Batch Aptitude Assessment (300 seats)"
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Description</label>
-              <textarea
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="marketplace-service-description">Description</FieldLabel>
+              <Textarea
+                id="marketplace-service-description"
                 rows={3}
                 value={serviceForm.description}
                 onChange={(e) => setServiceForm((f) => ({ ...f, description: e.target.value }))}
               />
-            </div>
-            <div className="grid grid-2">
-              <div className="form-group">
-                <label className="form-label">Price (INR)</label>
-                <input
-                  className="form-input"
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="marketplace-service-price">Price (INR)</FieldLabel>
+                <Input
+                  id="marketplace-service-price"
                   type="number"
                   min="0"
                   step="1"
                   value={serviceForm.priceInr}
                   onChange={(e) => setServiceForm((f) => ({ ...f, priceInr: e.target.value }))}
                 />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Billing</label>
-                <select
-                  className="form-input"
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="marketplace-service-billing">Billing</FieldLabel>
+                <AdminFilterSelect
+                  id="marketplace-service-billing"
+                  className="w-full"
                   value={serviceForm.billingUnit}
-                  onChange={(e) => setServiceForm((f) => ({ ...f, billingUnit: e.target.value }))}
-                >
-                  {MARKETPLACE_BILLING_UNITS.map((b) => (
-                    <option key={b.value} value={b.value}>
-                      {b.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  emptyMapsToAll={false}
+                  onValueChange={(billingUnit) => setServiceForm((f) => ({ ...f, billingUnit }))}
+                  items={MARKETPLACE_BILLING_UNITS.map((b) => ({ label: b.label, value: b.value }))}
+                />
+              </Field>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '0.75rem' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={serviceForm.availableToCollege}
-                  onChange={(e) => setServiceForm((f) => ({ ...f, availableToCollege: e.target.checked }))}
+                  onCheckedChange={(v) => setServiceForm((f) => ({ ...f, availableToCollege: !!v }))}
                 />
                 Colleges
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={serviceForm.availableToEmployer}
-                  onChange={(e) => setServiceForm((f) => ({ ...f, availableToEmployer: e.target.checked }))}
+                  onCheckedChange={(v) => setServiceForm((f) => ({ ...f, availableToEmployer: !!v }))}
                 />
                 Employers
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={serviceForm.published}
-                  onChange={(e) => setServiceForm((f) => ({ ...f, published: e.target.checked }))}
+                  onCheckedChange={(v) => setServiceForm((f) => ({ ...f, published: !!v }))}
                 />
                 Published
               </label>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" className="btn btn-primary" disabled={saving} onClick={saveService}>
+              <Button type="button" disabled={saving} onClick={saveService}>
                 {saving ? 'Saving…' : editingServiceId ? 'Save service' : 'Add service'}
-              </button>
+              </Button>
               {editingServiceId ? (
-                <button type="button" className="btn btn-secondary" onClick={resetServiceForm}>
+                <Button type="button" variant="outline" onClick={resetServiceForm}>
                   Cancel
-                </button>
+                </Button>
               ) : null}
             </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="card card-table-shell">
-            <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-              Services ({services.length})
-            </h3>
+          <Card>
+            <CardHeader><CardTitle>Services ({services.length})</CardTitle></CardHeader>
+            <CardContent className="px-0">
             <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Service</th>
-                    <th>Provider</th>
-                    <th>Price</th>
-                    <th>Audience</th>
-                    <th>Status</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Service</TableHead>
+                    <TableHead>Provider</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Audience</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead><span className="sr-only">Actions</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {services.map((s) => (
-                    <tr key={s.id}>
-                      <td>
+                    <TableRow key={s.id}>
+                      <TableCell>
                         <div className="font-semibold">{s.title}</div>
                         <div className="text-xs text-tertiary">{s.billingLabel}</div>
-                      </td>
-                      <td>{s.providerName}</td>
-                      <td className="font-mono">{formatMarketplacePriceInr(s.priceInr)}</td>
-                      <td className="text-sm">
+                      </TableCell>
+                      <TableCell>{s.providerName}</TableCell>
+                      <TableCell className="font-mono">{formatMarketplacePriceInr(s.priceInr)}</TableCell>
+                      <TableCell>
                         {[s.availableToCollege ? 'College' : null, s.availableToEmployer ? 'Employer' : null]
                           .filter(Boolean)
                           .join(', ') || '—'}
-                      </td>
-                      <td>
-                        <span className={`badge badge-${s.published ? 'green' : 'gray'}`}>
-                          {s.published ? 'Published' : 'Draft'}
-                        </span>
-                      </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
-                        <button type="button" className="btn btn-ghost btn-sm" onClick={() => editService(s)}>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge tone={s.published ? 'green' : 'gray'}>{s.published ? 'Published' : 'Draft'}</StatusBadge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Button type="button" variant="ghost" size="sm" onClick={() => editService(s)}>
                           Edit
-                        </button>
-                        <button type="button" className="btn btn-ghost btn-sm" onClick={() => deleteService(s.id)}>
+                        </Button>
+                        <Button type="button" variant="destructive" size="sm" onClick={() => deleteService(s.id)}>
                           Delete
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
                   {services.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-muted-foreground text-center">
                         No services yet. Add priced offerings under a provider.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : null}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       ) : null}
 
       {!loading && tab === 'orders' ? (
-        <div className="card card-table-shell">
+        <Card>
+          <CardContent>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-            <h3 className="card-title" style={{ margin: 0 }}>
+            <h3 className="text-base font-medium">
               Purchase requests ({orders.length})
             </h3>
-            <select
-              className="form-input"
-              style={{ maxWidth: '14rem' }}
+            <AdminFilterSelect
+              className="h-9 max-w-[14rem]"
               value={orderStatusFilter}
-              onChange={(e) => setOrderStatusFilter(e.target.value)}
-            >
-              <option value="">All statuses</option>
-              {MARKETPLACE_ORDER_STATUSES.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
+              onValueChange={setOrderStatusFilter}
+              items={[
+                { label: 'All statuses', value: 'all' },
+                ...MARKETPLACE_ORDER_STATUSES.map((s) => ({ label: s.label, value: s.value })),
+              ]}
+            />
           </div>
           <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Requested</th>
-                  <th>Buyer</th>
-                  <th>Service</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Requested</TableHead>
+                  <TableHead>Buyer</TableHead>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {orders.map((o) => (
-                  <tr key={o.id}>
-                    <td className="text-sm">{o.createdAt ? new Date(o.createdAt).toLocaleString() : '—'}</td>
-                    <td>
+                  <TableRow key={o.id}>
+                    <TableCell>{o.createdAt ? new Date(o.createdAt).toLocaleString() : '—'}</TableCell>
+                    <TableCell>
                       <div className="font-semibold">{o.buyerOrgName || '—'}</div>
                       <div className="text-xs text-tertiary">
                         {o.buyerRole === 'college_admin' ? 'College' : 'Employer'} · {o.buyerEmail}
                       </div>
-                    </td>
-                    <td>
+                    </TableCell>
+                    <TableCell>
                       <div>{o.serviceTitle}</div>
                       <div className="text-xs text-tertiary">{o.providerName}</div>
-                    </td>
-                    <td className="font-mono">
+                    </TableCell>
+                    <TableCell className="font-mono">
                       {o.priceLabel}
                       {o.quantity > 1 ? ` ×${o.quantity}` : ''}
-                    </td>
-                    <td>
-                      <span className={`badge badge-${o.statusBadge}`}>{o.statusLabel}</span>
-                    </td>
-                    <td style={{ whiteSpace: 'nowrap' }}>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={o.statusBadge}>{o.statusLabel}</StatusBadge>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
                       {o.status === 'requested' ? (
                         <>
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-primary btn-sm"
+                            size="sm"
                             onClick={() => updateOrderStatus(o.id, 'confirmed')}
                           >
                             Confirm
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm"
+                            variant="destructive"
+                            size="sm"
                             onClick={() => updateOrderStatus(o.id, 'cancelled')}
                           >
                             Cancel
-                          </button>
+                          </Button>
                         </>
                       ) : null}
                       {o.status === 'confirmed' ? (
-                        <button
+                        <Button
                           type="button"
-                          className="btn btn-primary btn-sm"
+                          size="sm"
                           onClick={() => updateOrderStatus(o.id, 'fulfilled')}
                         >
                           Mark fulfilled
-                        </button>
+                        </Button>
                       ) : null}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
                 {orders.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-muted-foreground text-center">
                       No purchase requests in this filter.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
-        </div>
+          </CardContent>
+        </Card>
       ) : null}
     </div>
   );

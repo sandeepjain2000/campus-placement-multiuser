@@ -35,6 +35,16 @@ import {
   resolveStudentBatchLabel,
   resolveStudentDegreeLabel,
 } from '@/lib/studentCollegeControlledFields';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const LINK_KINDS = [
   { value: 'linkedin', label: 'LinkedIn' },
@@ -637,17 +647,6 @@ export default function StudentProfilePage() {
       ? '/api/student/resume/view'
       : '';
   const resumeLabel = defaultCv?.label || profile.cvFileName?.trim() || '';
-  const headerActionLabelStyle = {
-    fontSize: '0.72rem',
-    fontWeight: 600,
-    padding: '0.3rem 0.55rem',
-    borderRadius: 'var(--radius-md)',
-    background: 'rgba(255,255,255,0.18)',
-    border: '1px solid rgba(255,255,255,0.4)',
-    color: 'white',
-    margin: 0,
-    textAlign: 'center',
-  };
   const skillsList = profile.skills || [];
   const linksList = profile.profileLinks || [];
   const projectsList = asList(profile.projects);
@@ -671,8 +670,9 @@ export default function StudentProfilePage() {
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div className="profile-header">
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <Card>
+        <CardContent className="flex flex-col gap-5 sm:flex-row sm:items-start">
         <div
           style={{
             flexShrink: 0,
@@ -681,7 +681,6 @@ export default function StudentProfilePage() {
             alignItems: 'center',
             gap: '0.4rem',
             position: 'relative',
-            zIndex: 1,
           }}
         >
           <StudentProfileAvatar
@@ -692,63 +691,64 @@ export default function StudentProfilePage() {
             clickable={Boolean(rawAvatarPhoto || avatarPreviewBlobUrl)}
             onOpenPreview={() => setAvatarPreviewOpen(true)}
           />
-          <label
+          <Button
+            render={<label htmlFor="student-profile-photo" />}
+            nativeButton={false}
+            variant="outline"
+            size="sm"
             aria-label={avatarUploading ? 'Uploading profile photo' : 'Change profile photo'}
-            style={{
-              ...headerActionLabelStyle,
-              cursor: avatarUploading ? 'wait' : 'pointer',
-              opacity: avatarUploading ? 0.8 : 1,
-            }}
           >
             {avatarUploading ? 'Uploading…' : 'Change photo'}
             <input
+              id="student-profile-photo"
               type="file"
               accept={studentAvatarAcceptAttr()}
               hidden
               disabled={avatarUploading}
               onChange={onAvatarChange}
             />
-          </label>
+          </Button>
         </div>
-        <div className="profile-info" style={{ position: 'relative', zIndex: 1, flex: 1, minWidth: 0 }}>
+        <div className="min-w-0 flex-1">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <h2 style={{ margin: 0 }}>{session?.user?.name}</h2>
-            <p className="text-xs" style={{ margin: '0.25rem 0 0', color: 'rgba(255,255,255,0.75)' }}>
+            <div>
+            <h1 className="text-foreground m-0 text-2xl font-semibold tracking-tight">{session?.user?.name}</h1>
+            <p className="text-muted-foreground mt-1 mb-0 text-xs">
               Name is set by your college and can only be changed by a super admin.
             </p>
+            </div>
             {!editingHeader ? (
-              <button
+              <Button
                 type="button"
-                className="profile-edit-summary-btn"
+                variant="outline"
+                size="sm"
                 onClick={() => setEditingTab('header')}
               >
-                <Pencil size={15} aria-hidden />
-                Edit summary
-              </button>
+                <Pencil data-icon="inline-start" aria-hidden="true" />
+                Edit Summary
+              </Button>
             ) : (
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}>
-                Editing summary
-              </span>
+              <StatusBadge tone="blue" showDot>Editing Summary</StatusBadge>
             )}
           </div>
           {!editingHeader ? (
             <>
-              <p style={{ margin: '0.35rem 0 0' }}>
+              <p className="text-muted-foreground mt-2 mb-0 text-sm">
                 {[degreeLabel !== '—' ? degreeLabel : '', batchLabel !== '—' ? `Batch ${batchLabel}` : '']
                   .filter(Boolean)
                   .join(' | ') || '—'}
               </p>
-              <div className="profile-meta">
-                <div className="profile-meta-item">🎓 {profile.rollNumber || '—'}</div>
-                <div className="profile-meta-item">
+              <div className="mt-3 flex flex-wrap gap-2">
+                <StatusBadge tone="gray">🎓 {profile.rollNumber || '—'}</StatusBadge>
+                <StatusBadge tone="gray">
                   📊 CGPA: {Number.isFinite(cgpaNum) ? `${cgpaNum}` : '—'}
-                </div>
+                </StatusBadge>
                 {resumeViewUrl ? (
                   <a
                     href={resumeViewUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="profile-meta-item profile-resume-link"
+                    className="text-foreground text-sm font-medium hover:underline"
                   >
                     📄 {resumeLabel}
                   </a>
@@ -756,63 +756,60 @@ export default function StudentProfilePage() {
                 {displayEmails
                   .filter((x) => x.value)
                   .map((x, i) => (
-                    <div key={i} className="profile-meta-item">
+                    <StatusBadge key={i} tone="gray">
                       📧 {x.label}: {x.value}
-                    </div>
+                    </StatusBadge>
                   ))}
-                <div className="profile-meta-item">
+                <StatusBadge tone="gray">
                   ✉️ Notifications:{' '}
                   {(profile.communicationEmail && String(profile.communicationEmail).trim()) || email || '—'}
-                </div>
+                </StatusBadge>
                 {displayPhones
                   .filter((x) => x.value)
                   .slice(0, 2)
                   .map((x, i) => (
-                    <div key={i} className="profile-meta-item">
+                    <StatusBadge key={i} tone="gray">
                       📱 {x.label}: {x.value}
-                    </div>
+                    </StatusBadge>
                   ))}
               </div>
             </>
           ) : (
-            <div style={{ marginTop: '0.75rem', display: 'grid', gap: '0.75rem' }}>
-              <div className="drive-info-item" style={{ margin: 0 }}>
-                <div className="drive-info-label">Degree / program</div>
-                <div className="drive-info-value">{degreeLabel}</div>
-              </div>
-              <div className="drive-info-item" style={{ margin: 0 }}>
-                <div className="drive-info-label">Batch</div>
-                <div className="drive-info-value">{batchLabel}</div>
-              </div>
-              <div className="drive-info-item" style={{ margin: 0 }}>
-                <div className="drive-info-label">Roll number</div>
-                <div className="drive-info-value">{profile.rollNumber || '—'}</div>
-              </div>
-              <div className="drive-info-item" style={{ margin: 0 }}>
-                <div className="drive-info-label">CGPA</div>
-                <div className="drive-info-value">
+            <FieldGroup className="mt-3 gap-3">
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>Degree / program</FieldLabel>
+                <div className="text-sm font-medium">{degreeLabel}</div>
+              </Field>
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>Batch</FieldLabel>
+                <div className="text-sm font-medium">{batchLabel}</div>
+              </Field>
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>Roll number</FieldLabel>
+                <div className="text-sm font-medium">{profile.rollNumber || '—'}</div>
+              </Field>
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>CGPA</FieldLabel>
+                <div className="text-sm font-medium">
                   {Number.isFinite(cgpaNum) ? `${cgpaNum} / 10` : '—'}
                 </div>
-              </div>
-              <div>
-                <div className="drive-info-label" style={{ marginBottom: '0.35rem' }}>
-                  Communication email (notifications)
-                </div>
+              </Field>
+              <Field>
+                <FieldLabel>Communication email (notifications)</FieldLabel>
                 <ValidatedEmailInput
                   value={profile.communicationEmail || ''}
                   onChange={(value) => persist({ ...profile, communicationEmail: value })}
                   errorMessage="Communication email must be a valid email address (e.g. name@example.com)."
                 />
-              </div>
-              <div>
-                <div className="drive-info-label" style={{ marginBottom: '0.35rem' }}>
-                  Email addresses
-                </div>
+              </Field>
+              <Field>
+                <FieldLabel>Email addresses</FieldLabel>
+                <div className="flex flex-col gap-2">
                 {displayEmails.map((row, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <input
-                      className="form-input"
-                      style={{ maxWidth: '120px' }}
+                  <div key={i} className="flex flex-wrap items-center gap-2">
+                    <Input
+                      aria-label="Email label"
+                      className="max-w-30"
                       placeholder="Label"
                       value={row.label}
                       onChange={(e) => updateEmailRow(i, { label: e.target.value })}
@@ -823,31 +820,31 @@ export default function StudentProfilePage() {
                       value={row.value}
                       onChange={(value) => updateEmailRow(i, { value })}
                     />
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeEmailRow(i)} aria-label="Remove email">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => removeEmailRow(i)} aria-label="Remove email">
                       ✕
-                    </button>
+                    </Button>
                   </div>
                 ))}
-                <button type="button" className="btn btn-secondary btn-sm" onClick={addEmailRow}>
-                  + Add email
-                </button>
-              </div>
-              <div>
-                <div className="drive-info-label" style={{ marginBottom: '0.35rem' }}>
-                  Phone numbers
                 </div>
+                <Button type="button" variant="outline" size="sm" onClick={addEmailRow} className="w-fit">
+                  + Add email
+                </Button>
+              </Field>
+              <Field>
+                <FieldLabel>Phone numbers</FieldLabel>
+                <div className="flex flex-col gap-2">
                 {displayPhones.map((row, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <input
-                      className="form-input"
-                      style={{ maxWidth: '120px' }}
+                  <div key={i} className="flex flex-wrap items-center gap-2">
+                    <Input
+                      aria-label="Phone label"
+                      className="max-w-30"
                       placeholder="Label"
                       value={row.label}
                       onChange={(e) => updatePhone(i, { label: e.target.value })}
                     />
-                    <input
-                      className="form-input"
-                      style={{ flex: '1 1 180px', minWidth: 0 }}
+                    <Input
+                      aria-label="Phone number"
+                      className="min-w-0 flex-1"
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel"
@@ -855,28 +852,20 @@ export default function StudentProfilePage() {
                       value={row.value}
                       onChange={(e) => updatePhone(i, { value: sanitizePhoneInput(e.target.value) })}
                     />
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => removePhone(i)} aria-label="Remove phone">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => removePhone(i)} aria-label="Remove phone">
                       ✕
-                    </button>
+                    </Button>
                   </div>
                 ))}
-                <button type="button" className="btn btn-secondary btn-sm" onClick={addPhone}>
+                </div>
+                <Button type="button" variant="outline" size="sm" onClick={addPhone} className="w-fit">
                   + Add number
-                </button>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '0.5rem',
-                  flexWrap: 'wrap',
-                  justifyContent: 'flex-end',
-                  paddingTop: '0.5rem',
-                  borderTop: '1px solid var(--border-default)',
-                }}
-              >
-                <button
+                </Button>
+              </Field>
+              <div className="flex flex-wrap justify-end gap-2 border-t pt-3">
+                <Button
                   type="button"
-                  className="btn btn-ghost"
+                  variant="ghost"
                   disabled={profileSaving}
                   onClick={() => {
                     void loadProfileFromApi({ silent: true });
@@ -884,18 +873,19 @@ export default function StudentProfilePage() {
                   }}
                 >
                   Cancel
-                </button>
-                <button type="button" className="btn btn-primary" disabled={profileSaving} onClick={() => void handleSave()}>
+                </Button>
+                <Button type="button" disabled={profileSaving} onClick={() => void handleSave()}>
                   {profileSaving ? 'Saving…' : 'Save summary'}
-                </button>
+                </Button>
               </div>
-              <p className="text-xs text-tertiary" style={{ margin: 0 }}>
+              <p className="text-muted-foreground m-0 text-xs">
                 Full address and additional labels are under the Contact tab.
               </p>
-            </div>
+            </FieldGroup>
           )}
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <StudentResumeUploadCard
         resumeViewUrl={resumeViewUrl}
@@ -906,96 +896,73 @@ export default function StudentProfilePage() {
       />
 
       {!isAlumni ? (
-      <div
-        className="card"
-        style={{
-          marginBottom: '1rem',
-          padding: '1rem 1.25rem',
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--border-default)',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            gap: '0.5rem',
-            marginBottom: '0.75rem',
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700 }}>Upcoming placement dates</h3>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <Link href="/dashboard/student/calendar" className="btn btn-secondary btn-sm">
-              Full calendar
-            </Link>
-            <Link href="/dashboard/student/interviews" className="btn btn-ghost btn-sm">
-              Interviews
-            </Link>
+      <Card>
+        <CardHeader>
+          <CardTitle>Upcoming Placement Dates</CardTitle>
+          <CardDescription>Your next scheduled campus events.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" render={<Link href="/dashboard/student/calendar" />} nativeButton={false}>Full Calendar</Button>
+            <Button variant="ghost" size="sm" render={<Link href="/dashboard/student/interviews" />} nativeButton={false}>Interviews</Button>
           </div>
-        </div>
         {placementCalLoading ? (
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Loading campus calendar…
           </p>
         ) : upcomingPlacementDates.length === 0 ? (
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             No upcoming drives on your campus calendar yet.{' '}
             <Link href="/dashboard/student/drives">Browse drives</Link> to find companies and apply.
           </p>
         ) : (
-          <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'grid', gap: '0.35rem' }}>
+          <ul className="m-0 grid gap-2 pl-5">
             {upcomingPlacementDates.map((ev) => (
-              <li key={ev.id} style={{ fontSize: '0.9rem' }}>
+              <li key={ev.id} className="text-sm">
                 <strong>{formatDate(ev.ymd)}</strong> — {ev.title}
               </li>
             ))}
           </ul>
         )}
-      </div>
+        </CardContent>
+      </Card>
       ) : null}
 
-      <div className="card" style={{ padding: '0.75rem 1rem', marginBottom: '1rem' }}>
-        <div className="horizontal-scroll" style={{ display: 'flex', gap: '0.35rem', paddingBottom: '0.1rem' }} role="tablist" aria-label="Profile sections">
+      <Tabs value={activeTab} onValueChange={(nextTab) => {
+        if (editingTab) {
+          void loadProfileFromApi({ silent: true });
+          setEditingTab(null);
+        }
+        setActiveTab(nextTab);
+      }}>
+        <TabsList variant="line" className="w-full justify-start overflow-x-auto" aria-label="Profile sections">
           {PROFILE_TABS.map((tab) => (
-            <button
+            <TabsTrigger
               key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.key}
-              className={activeTab === tab.key ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'}
-              onClick={() => {
-                if (editingTab) {
-                  void loadProfileFromApi({ silent: true });
-                  setEditingTab(null);
-                }
-                setActiveTab(tab.key);
-              }}
-              style={{ whiteSpace: 'nowrap' }}
+              value={tab.key}
             >
               {tab.label}
-            </button>
+            </TabsTrigger>
           ))}
-        </div>
-      </div>
+        </TabsList>
+      </Tabs>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+          <h2 className="text-foreground m-0 text-xl font-semibold">
             {editingHeader ? 'Profile summary' : PROFILE_TABS.find((tab) => tab.key === activeTab)?.label}
-          </h3>
-          <p className="text-sm text-secondary" style={{ margin: '0.25rem 0 0' }}>
+          </h2>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             {editingHeader
               ? 'These details appear in the card at the top of your profile.'
               : 'Edit this section independently from the rest of your profile.'}
           </p>
         </div>
         {editing ? (
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            <button
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button
               type="button"
-              className="btn btn-ghost"
+              variant="ghost"
               disabled={profileSaving}
               onClick={() => {
                 void loadProfileFromApi({ silent: true });
@@ -1003,50 +970,52 @@ export default function StudentProfilePage() {
               }}
             >
               Cancel
-            </button>
-            <button type="button" className="btn btn-primary" disabled={profileSaving} onClick={() => void handleSave()}>
+            </Button>
+            <Button type="button" disabled={profileSaving} onClick={() => void handleSave()}>
               {profileSaving ? 'Saving…' : 'Save section'}
-            </button>
+            </Button>
           </div>
         ) : !editingHeader ? (
-          <button type="button" className="profile-edit-section-btn" onClick={() => setEditingTab(activeTab)}>
-            <Pencil size={16} aria-hidden />
-            Edit section
-          </button>
+          <Button type="button" variant="outline" onClick={() => setEditingTab(activeTab)}>
+            <Pencil data-icon="inline-start" aria-hidden="true" />
+            Edit Section
+          </Button>
         ) : null}
       </div>
 
       <div style={{ display: 'grid', gap: '1.5rem' }}>
         {activeTab === 'academics' && (
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">🎓 Academic Information</h3>
-          </div>
-          <div className="drive-info-grid">
-            <div className="drive-info-item">
-              <div className="drive-info-label">Degree / program</div>
-              <div className="drive-info-value">{degreeLabel}</div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Academic Information</CardTitle>
+            <CardDescription>College-controlled details and your education history.</CardDescription>
+          </CardHeader>
+          <CardContent>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Degree / program</div>
+              <div className="mt-1 text-sm font-medium">{degreeLabel}</div>
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Department</div>
-              <div className="drive-info-value">{profile.department || '—'}</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Department</div>
+              <div className="mt-1 text-sm font-medium">{profile.department || '—'}</div>
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Branch / specialisation</div>
-              <div className="drive-info-value">{profile.branch || '—'}</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Branch / specialisation</div>
+              <div className="mt-1 text-sm font-medium">{profile.branch || '—'}</div>
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Batch</div>
-              <div className="drive-info-value">{batchLabel}</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Batch</div>
+              <div className="mt-1 text-sm font-medium">{batchLabel}</div>
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Roll number</div>
-              <div className="drive-info-value">{profile.rollNumber || '—'}</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Roll number</div>
+              <div className="mt-1 text-sm font-medium">{profile.rollNumber || '—'}</div>
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">CGPA</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">CGPA</div>
               <div
-                className="drive-info-value"
+                className="mt-1 text-sm font-medium"
                 style={{
                   color: Number.isFinite(cgpaNum) && cgpaNum >= 8 ? 'var(--success-600)' : undefined,
                 }}
@@ -1054,8 +1023,8 @@ export default function StudentProfilePage() {
                 {Number.isFinite(cgpaNum) ? `${cgpaNum} / 10` : '—'}
               </div>
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">10th %</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">10th %</div>
               {editing ? (
                 <ValidatedNumberInput
                   fieldId={FIELD_IDS.STUDENT_PERCENT}
@@ -1065,13 +1034,13 @@ export default function StudentProfilePage() {
                   onChange={(v) => persist({ ...profile, tenthPercentage: v })}
                 />
               ) : (
-                <div className="drive-info-value">
+                <div className="mt-1 text-sm font-medium">
                   {profile.tenthPercentage === '' || profile.tenthPercentage == null ? '—' : `${profile.tenthPercentage}%`}
                 </div>
               )}
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">12th %</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">12th %</div>
               {editing ? (
                 <ValidatedNumberInput
                   fieldId={FIELD_IDS.STUDENT_PERCENT}
@@ -1081,13 +1050,13 @@ export default function StudentProfilePage() {
                   onChange={(v) => persist({ ...profile, twelfthPercentage: v })}
                 />
               ) : (
-                <div className="drive-info-value">
+                <div className="mt-1 text-sm font-medium">
                   {profile.twelfthPercentage === '' || profile.twelfthPercentage == null ? '—' : `${profile.twelfthPercentage}%`}
                 </div>
               )}
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Diploma %</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Diploma %</div>
               {editing ? (
                 <ValidatedNumberInput
                   fieldId={FIELD_IDS.STUDENT_PERCENT}
@@ -1097,25 +1066,25 @@ export default function StudentProfilePage() {
                   onChange={(v) => persist({ ...profile, diplomaPercentage: v })}
                 />
               ) : (
-                <div className="drive-info-value">
+                <div className="mt-1 text-sm font-medium">
                   {profile.diplomaPercentage === '' || profile.diplomaPercentage == null ? '—' : `${profile.diplomaPercentage}%`}
                 </div>
               )}
             </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Graduation year</div>
-              <div className="drive-info-value">
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Graduation year</div>
+              <div className="mt-1 text-sm font-medium">
                 {profile.graduationYear === '' || profile.graduationYear == null ? '—' : profile.graduationYear}
               </div>
             </div>
             {!isAlumni ? (
               <>
-                <div className="drive-info-item">
-                  <div className="drive-info-label">Current semester</div>
-                  <div className="drive-info-value">{profile.semester || currentSemester}</div>
+                <div className="rounded-lg border bg-muted/30 p-3">
+                  <div className="text-muted-foreground text-xs font-medium">Current semester</div>
+                  <div className="mt-1 text-sm font-medium">{profile.semester || currentSemester}</div>
                 </div>
-                <div className="drive-info-item">
-                  <div className="drive-info-label">Active Backlogs</div>
+                <div className="rounded-lg border bg-muted/30 p-3">
+                  <div className="text-muted-foreground text-xs font-medium">Active Backlogs</div>
                   {editing ? (
                     <ValidatedNumberInput
                       fieldId={FIELD_IDS.STUDENT_BACKLOGS_ACTIVE}
@@ -1124,11 +1093,11 @@ export default function StudentProfilePage() {
                       onChange={(v) => persist({ ...profile, backlogsActive: v === '' ? 0 : v })}
                     />
                   ) : (
-                    <div className="drive-info-value">{profile.backlogsActive ?? 0}</div>
+                    <div className="mt-1 text-sm font-medium">{profile.backlogsActive ?? 0}</div>
                   )}
                 </div>
-                <div className="drive-info-item">
-                  <div className="drive-info-label">Total Backlogs</div>
+                <div className="rounded-lg border bg-muted/30 p-3">
+                  <div className="text-muted-foreground text-xs font-medium">Total Backlogs</div>
                   {editing ? (
                     <ValidatedNumberInput
                       fieldId={FIELD_IDS.STUDENT_BACKLOGS_TOTAL}
@@ -1137,23 +1106,30 @@ export default function StudentProfilePage() {
                       onChange={(v) => persist({ ...profile, backlogsHistory: v === '' ? 0 : v })}
                     />
                   ) : (
-                    <div className="drive-info-value">{profile.backlogsHistory ?? 0}</div>
+                    <div className="mt-1 text-sm font-medium">{profile.backlogsHistory ?? 0}</div>
                   )}
                 </div>
               </>
             ) : null}
-            <div className="drive-info-item">
-              <div className="drive-info-label">Gender</div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <div className="text-muted-foreground text-xs font-medium">Gender</div>
               {editing ? (
-                <select className="form-select" value={profile.gender || ''} onChange={(e) => persist({ ...profile, gender: e.target.value })}>
-                  <option value="">—</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                  <option>Prefer not to say</option>
-                </select>
+                <AdminFilterSelect
+                  aria-label="Gender"
+                  className="w-full"
+                  value={profile.gender || ''}
+                  emptyMapsToAll={false}
+                  onValueChange={(gender) => persist({ ...profile, gender })}
+                  items={[
+                    { label: '—', value: '' },
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Other', value: 'Other' },
+                    { label: 'Prefer not to say', value: 'Prefer not to say' },
+                  ]}
+                />
               ) : (
-                <div className="drive-info-value">{profile.gender || '—'}</div>
+                <div className="mt-1 text-sm font-medium">{profile.gender || '—'}</div>
               )}
             </div>
           </div>
@@ -1165,11 +1141,11 @@ export default function StudentProfilePage() {
               const hasDetails = hasNarrative || Boolean(percentLabel);
               return (
                 <div key={key} style={{ border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: '0.875rem', background: 'var(--bg-secondary)' }}>
-                  <div className="drive-info-label" style={{ marginBottom: '0.6rem' }}>{label} Details</div>
+                  <div className="text-muted-foreground mb-2 text-xs font-medium">{label} Details</div>
                   {editing ? (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.6rem' }}>
-                      <input
-                        className="form-input"
+                      <Input
+                        aria-label={`${label} institution`}
                         placeholder={key === 'graduation' ? 'College / university' : 'School / institution'}
                         value={row.institution || ''}
                         onChange={(e) => updateEducationDetail(key, { institution: e.target.value })}
@@ -1181,8 +1157,8 @@ export default function StudentProfilePage() {
                         value={row.board || ''}
                         onChange={(v) => updateEducationDetail(key, { board: v })}
                       />
-                      <input className="form-input" type="number" placeholder="Passing year" value={row.year || ''} onChange={(e) => updateEducationDetail(key, { year: e.target.value === '' ? '' : parseInt(e.target.value, 10) })} />
-                      <textarea className="form-textarea" rows={2} style={{ gridColumn: '1 / -1' }} placeholder={key === 'graduation' ? 'Branch, specialisation, achievements, or CGPA notes' : 'Notes, stream, achievements, or subjects'} value={row.notes || ''} onChange={(e) => updateEducationDetail(key, { notes: e.target.value })} />
+                      <Input aria-label={`${label} passing year`} type="number" placeholder="Passing year…" value={row.year || ''} onChange={(e) => updateEducationDetail(key, { year: e.target.value === '' ? '' : parseInt(e.target.value, 10) })} />
+                      <Textarea aria-label={`${label} notes`} rows={2} className="col-span-full" placeholder={key === 'graduation' ? 'Branch, specialisation, achievements, or CGPA notes…' : 'Notes, stream, achievements, or subjects…'} value={row.notes || ''} onChange={(e) => updateEducationDetail(key, { notes: e.target.value })} />
                     </div>
                   ) : hasDetails ? (
                     <div className="text-sm" style={{ lineHeight: 1.6 }}>
@@ -1196,17 +1172,17 @@ export default function StudentProfilePage() {
               );
             })}
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'contact' && (
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">📇 Contact</h3>
-          </div>
+        <Card>
+          <CardHeader><CardTitle>Contact</CardTitle><CardDescription>Email, phone, and address details.</CardDescription></CardHeader>
+          <CardContent>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ marginBottom: '1rem' }}>
-              <div className="drive-info-label" style={{ marginBottom: '0.5rem' }}>
+              <div className="text-muted-foreground mb-2 text-sm font-medium">
                 Communication Email
               </div>
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -1229,15 +1205,15 @@ export default function StudentProfilePage() {
               </div>
             </div>
             <div>
-              <div className="drive-info-label" style={{ marginBottom: '0.5rem' }}>
+              <div className="text-muted-foreground mb-2 text-sm font-medium">
                 Other Email addresses
               </div>
               {displayEmails.map((row, i) => (
                 <div key={i} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center' }}>
                   {editing ? (
                     <>
-                      <input
-                        className="form-input"
+                      <Input
+                        aria-label="Email label"
                         style={{ maxWidth: '120px' }}
                         placeholder="Label"
                         value={row.label}
@@ -1249,9 +1225,9 @@ export default function StudentProfilePage() {
                         value={row.value}
                         onChange={(value) => updateEmailRow(i, { value })}
                       />
-                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeEmailRow(i)} aria-label="Remove email">
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removeEmailRow(i)} aria-label="Remove email">
                         ✕
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <div className="text-sm">
@@ -1261,28 +1237,28 @@ export default function StudentProfilePage() {
                 </div>
               ))}
               {editing && (
-                <button type="button" className="btn btn-secondary btn-sm" onClick={addEmailRow}>
+                <Button type="button" variant="outline" size="sm" onClick={addEmailRow}>
                   + Add email
-                </button>
+                </Button>
               )}
             </div>
             <div>
-              <div className="drive-info-label" style={{ marginBottom: '0.5rem' }}>
+              <div className="text-muted-foreground mb-2 text-sm font-medium">
                 Mobile numbers
               </div>
               {displayPhones.map((row, i) => (
                 <div key={i} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'center' }}>
                   {editing ? (
                     <>
-                      <input
-                        className="form-input"
+                      <Input
+                        aria-label="Phone label"
                         style={{ maxWidth: '120px' }}
                         placeholder="Label"
                         value={row.label}
                         onChange={(e) => updatePhone(i, { label: e.target.value })}
                       />
-                      <input
-                        className="form-input"
+                      <Input
+                        aria-label="Phone number"
                         style={{ flex: 1 }}
                         type="tel"
                         inputMode="tel"
@@ -1291,9 +1267,9 @@ export default function StudentProfilePage() {
                         value={row.value}
                         onChange={(e) => updatePhone(i, { value: sanitizePhoneInput(e.target.value) })}
                       />
-                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => removePhone(i)} aria-label="Remove phone">
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removePhone(i)} aria-label="Remove phone">
                         ✕
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <div className="text-sm">
@@ -1303,19 +1279,19 @@ export default function StudentProfilePage() {
                 </div>
               ))}
               {editing && (
-                <button type="button" className="btn btn-secondary btn-sm" onClick={addPhone}>
+                <Button type="button" variant="outline" size="sm" onClick={addPhone}>
                   + Add number
-                </button>
+                </Button>
               )}
             </div>
             <div>
-              <div className="drive-info-label" style={{ marginBottom: '0.5rem' }}>
+              <div className="text-muted-foreground mb-2 text-sm font-medium">
                 Address
               </div>
               {editing ? (
                 <div style={{ display: 'grid', gap: '0.5rem' }}>
-                  <input
-                    className="form-input"
+                  <Input
+                    aria-label="Address line"
                     placeholder="Address line"
                     value={profile.address?.line1 || ''}
                     onChange={(e) =>
@@ -1325,9 +1301,9 @@ export default function StudentProfilePage() {
                       })
                     }
                   />
-                  <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                    <input
-                      className="form-input"
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <Input
+                      aria-label="City"
                       placeholder="City"
                       value={profile.address?.city || ''}
                       onChange={(e) =>
@@ -1337,8 +1313,8 @@ export default function StudentProfilePage() {
                         })
                       }
                     />
-                    <input
-                      className="form-input"
+                    <Input
+                      aria-label="State"
                       placeholder="State"
                       value={profile.address?.state || ''}
                       onChange={(e) =>
@@ -1349,8 +1325,8 @@ export default function StudentProfilePage() {
                       }
                     />
                   </div>
-                  <input
-                    className="form-input"
+                  <Input
+                    aria-label="Pincode"
                     placeholder="Pincode"
                     value={profile.address?.pincode || ''}
                     onChange={(e) =>
@@ -1372,17 +1348,20 @@ export default function StudentProfilePage() {
               )}
             </div>
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'skills' && (
-        <div className="card">
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <h3 className="card-title">💡 Skills</h3>
+        <Card>
+          <CardHeader>
+            <CardTitle>Skills</CardTitle>
+            <CardDescription>Skills visible to employers and placement teams.</CardDescription>
             {editing ? (
-              <button
+              <Button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                variant="outline"
+                size="sm"
                 disabled={suggestingSkills}
                 onClick={async () => {
                   setSuggestingSkills(true);
@@ -1450,9 +1429,10 @@ export default function StudentProfilePage() {
                 }}
               >
                 {suggestingSkills ? 'Analyzing…' : 'Suggest from CV'}
-              </button>
+              </Button>
             ) : null}
-          </div>
+          </CardHeader>
+          <CardContent>
           {editing ? (
             <>
               <TagPicker
@@ -1464,37 +1444,15 @@ export default function StudentProfilePage() {
                 Press Enter or comma to add a tag. Use &quot;Suggest from CV&quot; after uploading a résumé to pull likely skills.
               </p>
               {suggestSkillsFeedback ? (
-                <div
-                  role="alert"
-                  className="text-sm"
-                  style={{
-                    marginTop: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    borderRadius: 'var(--radius-md, 8px)',
-                    border: '1px solid',
-                    borderColor:
-                      suggestSkillsFeedback.type === 'success'
-                        ? 'var(--success-300, #86efac)'
-                        : suggestSkillsFeedback.type === 'warning'
-                          ? 'var(--warning-300, #fcd34d)'
-                          : 'var(--danger-300, #fca5a5)',
-                    background:
-                      suggestSkillsFeedback.type === 'success'
-                        ? 'var(--success-50, #f0fdf4)'
-                        : suggestSkillsFeedback.type === 'warning'
-                          ? 'var(--warning-50, #fffbeb)'
-                          : 'var(--danger-50, #fef2f2)',
-                    color: 'var(--text-primary)',
-                    lineHeight: 1.5,
-                  }}
-                >
-                  <strong style={{ display: 'block', marginBottom: '0.25rem' }}>
+                <Alert variant={suggestSkillsFeedback.type === 'error' ? 'destructive' : 'default'} className="mt-3">
+                  <AlertTitle>
                     {suggestSkillsFeedback.type === 'success'
                       ? 'Skills suggested'
                       : suggestSkillsFeedback.type === 'warning'
                         ? 'Skills suggested with warnings'
                         : 'Could not suggest skills'}
-                  </strong>
+                  </AlertTitle>
+                  <AlertDescription>
                   <span>{suggestSkillsFeedback.message}</span>
                   {Array.isArray(suggestSkillsFeedback.warnings) && suggestSkillsFeedback.warnings.length > 0 ? (
                     <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.25rem' }}>
@@ -1504,7 +1462,7 @@ export default function StudentProfilePage() {
                     </ul>
                   ) : null}
                   {suggestSkillsFeedback.meta ? (
-                    <p className="text-xs text-tertiary" style={{ margin: '0.5rem 0 0' }}>
+                    <p className="text-muted-foreground mt-2 mb-0 text-xs">
                       {suggestSkillsFeedback.meta.textSource
                         ? `Text source: ${suggestSkillsFeedback.meta.textSource}. `
                         : null}
@@ -1524,20 +1482,17 @@ export default function StudentProfilePage() {
                         : 'Smart AI suggestions are not available on this site yet. '}
                     </p>
                   ) : null}
-                </div>
+                  </AlertDescription>
+                </Alert>
               ) : null}
             </>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {skillsList.length ? (
                 skillsList.map((skill, i) => (
-                  <span
-                    key={`${skill}-${i}`}
-                    className="badge badge-indigo"
-                    style={{ padding: '0.375rem 0.875rem', fontSize: '0.8125rem' }}
-                  >
+                  <StatusBadge key={`${skill}-${i}`} tone="indigo">
                     {skill}
-                  </span>
+                  </StatusBadge>
                 ))
               ) : (
                 <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
@@ -1546,36 +1501,39 @@ export default function StudentProfilePage() {
               )}
             </div>
           )}
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'projects' && (
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <h3 className="card-title">🧩 Projects</h3>
+        <Card>
+          <CardHeader>
+            <CardTitle>Projects</CardTitle>
+            <CardDescription>Portfolio projects, outcomes, and technical stack.</CardDescription>
             {editing && (
-              <button type="button" className="btn btn-secondary btn-sm" onClick={addProject}>
+              <Button type="button" variant="outline" size="sm" onClick={addProject}>
                 + Add project
-              </button>
+              </Button>
             )}
-          </div>
+          </CardHeader>
+          <CardContent>
           <div style={{ display: 'grid', gap: '0.875rem' }}>
             {projectsList.length === 0 && <p className="text-sm text-secondary">No projects added yet.</p>}
             {projectsList.map((project, index) => (
-              <div key={index} className="card" style={{ padding: '1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)' }}>
+              <Card key={index} size="sm" className="bg-muted/30">
+                <CardContent>
                 {editing ? (
-                  <div style={{ display: 'grid', gap: '0.75rem' }}>
-                    <input className="form-input" placeholder="Project title" value={project.title || ''} onChange={(e) => updateProject(index, { title: e.target.value })} />
-                    <textarea className="form-textarea" rows={3} placeholder="What did you build? What problem did it solve?" value={project.description || ''} onChange={(e) => updateProject(index, { description: e.target.value })} />
-                    <input
-                      className="form-input"
+                  <FieldGroup className="gap-4">
+                    <Field><FieldLabel>Project Title</FieldLabel><Input placeholder="Project title…" value={project.title || ''} onChange={(e) => updateProject(index, { title: e.target.value })} /></Field>
+                    <Field><FieldLabel>Description</FieldLabel><Textarea rows={3} placeholder="What did you build? What problem did it solve?…" value={project.description || ''} onChange={(e) => updateProject(index, { description: e.target.value })} /></Field>
+                    <Field><FieldLabel>Technical Stack</FieldLabel><Input
                       placeholder="Tech stack, comma-separated"
                       value={asList(project.techStack).join(', ')}
                       onChange={(e) => updateProject(index, { techStack: e.target.value.split(',').map((item) => item.trim()).filter(Boolean) })}
-                    />
+                    /></Field>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
-                      <input className="form-input" type="url" placeholder="Project URL" value={project.projectUrl || ''} onChange={(e) => updateProject(index, { projectUrl: e.target.value })} />
-                      <input className="form-input" type="url" placeholder="GitHub URL" value={project.githubUrl || ''} onChange={(e) => updateProject(index, { githubUrl: e.target.value })} />
+                      <Input aria-label="Project URL" type="url" placeholder="Project URL…" value={project.projectUrl || ''} onChange={(e) => updateProject(index, { projectUrl: e.target.value })} />
+                      <Input aria-label="GitHub URL" type="url" placeholder="GitHub URL…" value={project.githubUrl || ''} onChange={(e) => updateProject(index, { githubUrl: e.target.value })} />
                       <ValidatedDateInput
                         fieldId={FIELD_IDS.PROJECT_START}
                         value={project.startDate || ''}
@@ -1589,10 +1547,10 @@ export default function StudentProfilePage() {
                         aria-label="Project end date"
                       />
                     </div>
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeProject(index)} style={{ justifySelf: 'start' }}>
+                    <Button type="button" variant="destructive" size="sm" onClick={() => removeProject(index)} className="w-fit">
                       Remove project
-                    </button>
-                  </div>
+                    </Button>
+                  </FieldGroup>
                 ) : (
                   <div>
                     <div style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{project.title || 'Untitled project'}</div>
@@ -1604,41 +1562,47 @@ export default function StudentProfilePage() {
                     {project.description && <p className="text-sm text-secondary" style={{ lineHeight: 1.6, margin: '0.5rem 0' }}>{project.description}</p>}
                     {asList(project.techStack).length > 0 && (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.5rem' }}>
-                        {project.techStack.map((tech) => <span key={tech} className="badge badge-indigo">{tech}</span>)}
+                        {project.techStack.map((tech) => <StatusBadge key={tech} tone="indigo">{tech}</StatusBadge>)}
                       </div>
                     )}
                   </div>
                 )}
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'internships' && (
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <h3 className="card-title">💼 Internships</h3>
+        <Card>
+          <CardHeader>
+            <CardTitle>Internships</CardTitle>
+            <CardDescription>Internship roles, organizations, and outcomes.</CardDescription>
             {editing && (
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => addActivity('internships')}>
+              <Button type="button" variant="outline" size="sm" onClick={() => addActivity('internships')}>
                 + Add internship
-              </button>
+              </Button>
             )}
-          </div>
+          </CardHeader>
+          <CardContent>
           <div style={{ display: 'grid', gap: '0.9rem' }}>
             {internshipsList.length === 0 && <p className="text-sm text-secondary">No internships added yet.</p>}
             {internshipsList.map((row, index) => (
-              <div key={index} className="card" style={{ padding: '1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)' }}>
+              <Card key={index} size="sm" className="bg-muted/30"><CardContent>
                 {editing ? (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.7rem' }}>
-                    <input className="form-input" placeholder="Role / title" value={row.title || ''} onChange={(e) => updateActivity('internships', index, { title: e.target.value })} />
-                    <input className="form-input" placeholder="Company / organization" value={row.organization || ''} onChange={(e) => updateActivity('internships', index, { organization: e.target.value })} />
-                    <input className="form-input" placeholder="Duration, e.g. May-Jul 2025" value={row.period || ''} onChange={(e) => updateActivity('internships', index, { period: e.target.value })} />
-                    <textarea className="form-textarea" rows={4} style={{ gridColumn: '1 / -1' }} placeholder="Describe your work, responsibilities, tools used, and outcomes." value={row.description || ''} onChange={(e) => updateActivity('internships', index, { description: e.target.value })} />
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeActivity('internships', index)} style={{ justifySelf: 'start' }}>
+                  <FieldGroup className="gap-4">
+                    <div className="grid gap-4 md:grid-cols-3">
+                    <Field><FieldLabel>Role / Title</FieldLabel><Input placeholder="Role or title…" value={row.title || ''} onChange={(e) => updateActivity('internships', index, { title: e.target.value })} /></Field>
+                    <Field><FieldLabel>Organization</FieldLabel><Input placeholder="Company or organization…" value={row.organization || ''} onChange={(e) => updateActivity('internships', index, { organization: e.target.value })} /></Field>
+                    <Field><FieldLabel>Duration</FieldLabel><Input placeholder="May–Jul 2025…" value={row.period || ''} onChange={(e) => updateActivity('internships', index, { period: e.target.value })} /></Field>
+                    </div>
+                    <Field><FieldLabel>Description</FieldLabel><Textarea rows={4} placeholder="Describe your work, responsibilities, tools used, and outcomes.…" value={row.description || ''} onChange={(e) => updateActivity('internships', index, { description: e.target.value })} /></Field>
+                    <Button type="button" variant="destructive" size="sm" onClick={() => removeActivity('internships', index)} className="w-fit">
                       Remove internship
-                    </button>
-                  </div>
+                    </Button>
+                  </FieldGroup>
                 ) : (
                   <div>
                     <div style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{row.title || 'Untitled internship'}</div>
@@ -1646,36 +1610,41 @@ export default function StudentProfilePage() {
                     {row.description && <p className="text-sm text-secondary" style={{ margin: '0.5rem 0 0', lineHeight: 1.6 }}>{row.description}</p>}
                   </div>
                 )}
-              </div>
+              </CardContent></Card>
             ))}
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'otherWork' && (
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <h3 className="card-title">🛠️ Other Work</h3>
+        <Card>
+          <CardHeader>
+            <CardTitle>Other Work</CardTitle>
+            <CardDescription>Part-time, freelance, research, and other experience.</CardDescription>
             {editing && (
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => addActivity('otherWork')}>
+              <Button type="button" variant="outline" size="sm" onClick={() => addActivity('otherWork')}>
                 + Add work
-              </button>
+              </Button>
             )}
-          </div>
+          </CardHeader>
+          <CardContent>
           <div style={{ display: 'grid', gap: '0.9rem' }}>
             {otherWorkList.length === 0 && <p className="text-sm text-secondary">No part-time, freelance, research, or other work added yet.</p>}
             {otherWorkList.map((row, index) => (
-              <div key={index} className="card" style={{ padding: '1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)' }}>
+              <Card key={index} size="sm" className="bg-muted/30"><CardContent>
                 {editing ? (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.7rem' }}>
-                    <input className="form-input" placeholder="Role / work title" value={row.title || ''} onChange={(e) => updateActivity('otherWork', index, { title: e.target.value })} />
-                    <input className="form-input" placeholder="Organization / client" value={row.organization || ''} onChange={(e) => updateActivity('otherWork', index, { organization: e.target.value })} />
-                    <input className="form-input" placeholder="Duration / year" value={row.period || ''} onChange={(e) => updateActivity('otherWork', index, { period: e.target.value })} />
-                    <textarea className="form-textarea" rows={4} style={{ gridColumn: '1 / -1' }} placeholder="Describe the work, scope, contribution, and impact." value={row.description || ''} onChange={(e) => updateActivity('otherWork', index, { description: e.target.value })} />
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeActivity('otherWork', index)} style={{ justifySelf: 'start' }}>
+                  <FieldGroup className="gap-4">
+                    <div className="grid gap-4 md:grid-cols-3">
+                    <Field><FieldLabel>Role / Title</FieldLabel><Input placeholder="Role or work title…" value={row.title || ''} onChange={(e) => updateActivity('otherWork', index, { title: e.target.value })} /></Field>
+                    <Field><FieldLabel>Organization</FieldLabel><Input placeholder="Organization or client…" value={row.organization || ''} onChange={(e) => updateActivity('otherWork', index, { organization: e.target.value })} /></Field>
+                    <Field><FieldLabel>Duration</FieldLabel><Input placeholder="Duration or year…" value={row.period || ''} onChange={(e) => updateActivity('otherWork', index, { period: e.target.value })} /></Field>
+                    </div>
+                    <Field><FieldLabel>Description</FieldLabel><Textarea rows={4} placeholder="Describe the work, scope, contribution, and impact.…" value={row.description || ''} onChange={(e) => updateActivity('otherWork', index, { description: e.target.value })} /></Field>
+                    <Button type="button" variant="destructive" size="sm" onClick={() => removeActivity('otherWork', index)} className="w-fit">
                       Remove work
-                    </button>
-                  </div>
+                    </Button>
+                  </FieldGroup>
                 ) : (
                   <div>
                     <div style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{row.title || 'Untitled work'}</div>
@@ -1683,17 +1652,17 @@ export default function StudentProfilePage() {
                     {row.description && <p className="text-sm text-secondary" style={{ margin: '0.5rem 0 0', lineHeight: 1.6 }}>{row.description}</p>}
                   </div>
                 )}
-              </div>
+              </CardContent></Card>
             ))}
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'activities' && (
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div className="card-header">
-            <h3 className="card-title">🏅 Activities</h3>
-          </div>
+        <Card>
+          <CardHeader><CardTitle>Activities</CardTitle><CardDescription>Leadership, accomplishments, volunteering, and extra-curricular work.</CardDescription></CardHeader>
+          <CardContent>
           <div style={{ display: 'grid', gap: '1rem' }}>
             {activitySections.map((section) => {
               const rows = asList(profile[section.key]);
@@ -1702,9 +1671,9 @@ export default function StudentProfilePage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem' }}>
                     <div style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{section.title}</div>
                     {editing && (
-                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => addActivity(section.key)}>
+                      <Button type="button" variant="outline" size="sm" onClick={() => addActivity(section.key)}>
                         + Add
-                      </button>
+                      </Button>
                     )}
                   </div>
                   {rows.length === 0 && <p className="text-sm text-secondary" style={{ margin: 0 }}>{section.empty}</p>}
@@ -1713,13 +1682,13 @@ export default function StudentProfilePage() {
                       <div key={index} style={{ borderTop: index === 0 ? 'none' : '1px solid var(--border-default)', paddingTop: index === 0 ? 0 : '0.75rem' }}>
                         {editing ? (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.6rem' }}>
-                            <input className="form-input" placeholder="Title" value={row.title || ''} onChange={(e) => updateActivity(section.key, index, { title: e.target.value })} />
-                            <input className="form-input" placeholder="Organization / issuer" value={row.organization || ''} onChange={(e) => updateActivity(section.key, index, { organization: e.target.value })} />
-                            <input className="form-input" placeholder="Period / year" value={row.period || ''} onChange={(e) => updateActivity(section.key, index, { period: e.target.value })} />
-                            <textarea className="form-textarea" rows={2} style={{ gridColumn: '1 / -1' }} placeholder="Details, responsibility, outcome, or impact" value={row.description || ''} onChange={(e) => updateActivity(section.key, index, { description: e.target.value })} />
-                            <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeActivity(section.key, index)} style={{ justifySelf: 'start' }}>
+                            <Input aria-label={`${section.title} title`} placeholder="Title…" value={row.title || ''} onChange={(e) => updateActivity(section.key, index, { title: e.target.value })} />
+                            <Input aria-label={`${section.title} organization`} placeholder="Organization or issuer…" value={row.organization || ''} onChange={(e) => updateActivity(section.key, index, { organization: e.target.value })} />
+                            <Input aria-label={`${section.title} period`} placeholder="Period or year…" value={row.period || ''} onChange={(e) => updateActivity(section.key, index, { period: e.target.value })} />
+                            <Textarea aria-label={`${section.title} details`} rows={2} className="col-span-full" placeholder="Details, responsibility, outcome, or impact…" value={row.description || ''} onChange={(e) => updateActivity(section.key, index, { description: e.target.value })} />
+                            <Button type="button" variant="destructive" size="sm" onClick={() => removeActivity(section.key, index)} className="w-fit">
                               Remove
-                            </button>
+                            </Button>
                           </div>
                         ) : (
                           <div>
@@ -1735,17 +1704,17 @@ export default function StudentProfilePage() {
               );
             })}
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'preferences' && (
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">{isAlumni ? '🎯 Job preferences' : '🎯 Placement preferences'}</h3>
-          </div>
-          <div className="drive-info-grid">
-            <div className="drive-info-item" style={{ gridColumn: '1 / -1' }}>
-              <div className="drive-info-label">Expected salary (₹ / year)</div>
+        <Card>
+          <CardHeader><CardTitle>{isAlumni ? 'Job Preferences' : 'Placement Preferences'}</CardTitle><CardDescription>Salary, location, and relocation preferences.</CardDescription></CardHeader>
+          <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field className="sm:col-span-2">
+              <FieldLabel>Expected salary (₹ / year)</FieldLabel>
               {editing ? (
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   <ValidatedNumberInput
@@ -1765,7 +1734,7 @@ export default function StudentProfilePage() {
                   />
                 </div>
               ) : (
-                <div className="drive-info-value">
+                <div className="text-sm font-medium">
                   {hasSalary ? (
                     <>
                       ₹{(Number(profile.expectedSalaryMin) / 100000).toFixed(1)}L – ₹
@@ -1776,12 +1745,12 @@ export default function StudentProfilePage() {
                   )}
                 </div>
               )}
-            </div>
-            <div className="drive-info-item" style={{ gridColumn: '1 / -1' }}>
-              <div className="drive-info-label">Preferred locations (comma-separated)</div>
+            </Field>
+            <Field className="sm:col-span-2">
+              <FieldLabel>Preferred locations (comma-separated)</FieldLabel>
               {editing ? (
-                <input
-                  className="form-input"
+                <Input
+                  aria-label="Preferred locations"
                   value={profile.preferredLocations}
                   onChange={(e) => persist({ ...profile, preferredLocations: e.target.value })}
                   placeholder="Bangalore, Hyderabad, Remote…"
@@ -1789,90 +1758,92 @@ export default function StudentProfilePage() {
               ) : (
                 <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
                   {locList.map((loc, i) => (
-                    <span key={i} className="badge badge-blue">
+                    <StatusBadge key={i} tone="blue">
                       {loc}
-                    </span>
+                    </StatusBadge>
                   ))}
                 </div>
               )}
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label">Willing to relocate</div>
+            </Field>
+            <Field>
+              <FieldLabel>Willing to relocate</FieldLabel>
               {editing ? (
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={profile.willingToRelocate}
-                    onChange={(e) => persist({ ...profile, willingToRelocate: e.target.checked })}
+                    onCheckedChange={(v) => persist({ ...profile, willingToRelocate: !!v })}
                   />
                   Yes
                 </label>
               ) : (
-                <div className="drive-info-value">{profile.willingToRelocate ? '✅ Yes' : '❌ No'}</div>
+                <StatusBadge tone={profile.willingToRelocate ? 'green' : 'gray'} showDot>
+                  {profile.willingToRelocate ? 'Yes' : 'No'}
+                </StatusBadge>
               )}
-            </div>
+            </Field>
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
 
         {activeTab === 'links' && (
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <h3 className="card-title">🔗 Profiles, projects & websites</h3>
+        <Card>
+          <CardHeader>
+            <CardTitle>Profiles, Projects & Websites</CardTitle>
+            <CardDescription>Professional profiles and portfolio links.</CardDescription>
             {editing && (
-              <button type="button" className="btn btn-secondary btn-sm" onClick={addProfileLink}>
+              <Button type="button" variant="outline" size="sm" onClick={addProfileLink}>
                 + Add link
-              </button>
+              </Button>
             )}
-          </div>
+          </CardHeader>
+          <CardContent>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {linksList.length === 0 && (
               <p className="text-sm text-secondary">No links yet. Add LinkedIn, GitHub, a general site, or a project link.</p>
             )}
             {linksList.map((link) => (
-              <div key={link.id} className="card" style={{ padding: '1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)' }}>
+              <Card key={link.id} size="sm" className="bg-muted/30">
+                <CardContent>
                 {editing ? (
-                  <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                      <div>
-                        <label
-                          className="form-label text-xs"
-                          style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-tertiary)' }}
-                        >
+                  <FieldGroup className="gap-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field>
+                        <FieldLabel>
                           <ProfileLinkKindIcon kind={link.kind} />
                           Type
-                        </label>
-                        <select className="form-select" value={link.kind} onChange={(e) => updateLink(link.id, { kind: e.target.value })}>
-                          {LINK_KINDS.map((k) => (
-                            <option key={k.value} value={k.value}>
-                              {k.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="form-label text-xs">Title / label</label>
-                        <input className="form-input" value={link.title} onChange={(e) => updateLink(link.id, { title: e.target.value })} placeholder="e.g. My GitHub" />
-                      </div>
-                      <div style={{ gridColumn: '1 / -1' }}>
-                        <label className="form-label text-xs">URL</label>
-                        <input className="form-input" value={link.url} onChange={(e) => updateLink(link.id, { url: e.target.value })} placeholder="https://…" />
-                      </div>
-                      <div style={{ gridColumn: '1 / -1' }}>
-                        <label className="form-label text-xs">Description</label>
-                        <textarea
-                          className="form-textarea"
+                        </FieldLabel>
+                        <AdminFilterSelect
+                          aria-label="Link type"
+                          className="w-full"
+                          value={link.kind}
+                          emptyMapsToAll={false}
+                          onValueChange={(kind) => updateLink(link.id, { kind })}
+                          items={LINK_KINDS.map((k) => ({ label: k.label, value: k.value }))}
+                        />
+                      </Field>
+                      <Field>
+                        <FieldLabel>Title / label</FieldLabel>
+                        <Input aria-label="Link title" value={link.title} onChange={(e) => updateLink(link.id, { title: e.target.value })} placeholder="e.g. My GitHub…" />
+                      </Field>
+                      <Field className="sm:col-span-2">
+                        <FieldLabel>URL</FieldLabel>
+                        <Input aria-label="Link URL" type="url" value={link.url} onChange={(e) => updateLink(link.id, { url: e.target.value })} placeholder="https://…" />
+                      </Field>
+                      <Field className="sm:col-span-2">
+                        <FieldLabel>Description</FieldLabel>
+                        <Textarea
                           rows={2}
                           value={link.description}
                           onChange={(e) => updateLink(link.id, { description: e.target.value })}
                           placeholder="What’s on this profile or in this repo? Key projects, stack, etc."
                         />
-                      </div>
+                      </Field>
                     </div>
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeLink(link.id)}>
+                    <Button type="button" variant="destructive" size="sm" onClick={() => removeLink(link.id)}>
                       Remove link
-                    </button>
-                  </>
+                    </Button>
+                  </FieldGroup>
                 ) : (
                   <>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
@@ -1893,46 +1864,44 @@ export default function StudentProfilePage() {
                     </div>
                   </>
                 )}
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </div>
+          </CardContent>
+        </Card>
         )}
       </div>
 
       {activeTab === 'about' && (
-      <div className="card" style={{ marginTop: '1.5rem' }}>
-        <div className="card-header">
-          <h3 className="card-title">📝 About me</h3>
-        </div>
+      <Card>
+        <CardHeader><CardTitle>About Me</CardTitle><CardDescription>A short professional introduction for employers.</CardDescription></CardHeader>
+        <CardContent>
         {editing ? (
           <div style={{ display: 'grid', gap: '1rem' }}>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <label
-                className={`btn btn-secondary btn-sm${avatarUploading ? ' disabled' : ''}`}
-                style={{ cursor: avatarUploading ? 'wait' : 'pointer', margin: 0, opacity: avatarUploading ? 0.7 : 1 }}
-              >
+              <Button render={<label htmlFor="about-profile-photo" />} nativeButton={false} variant="outline" size="sm">
                 {avatarUploading ? '⏳ Uploading photo…' : '📷 Update photo'}
                 <input
+                  id="about-profile-photo"
                   type="file"
                   accept={studentAvatarAcceptAttr()}
                   hidden
                   disabled={avatarUploading}
                   onChange={onAvatarChange}
                 />
-              </label>
-              <Link href="/dashboard/student/my-cvs" className="btn btn-secondary btn-sm">
-                Manage CVs
-              </Link>
+              </Button>
+              <Button render={<Link href="/dashboard/student/my-cvs" />} nativeButton={false} variant="outline" size="sm">Manage CVs</Button>
             </div>
-            <textarea className="form-textarea" value={profile.bio} onChange={(e) => persist({ ...profile, bio: e.target.value })} rows={4} />
+            <Textarea aria-label="About me" value={profile.bio} onChange={(e) => persist({ ...profile, bio: e.target.value })} rows={4} />
           </div>
         ) : (
           <p className="text-sm" style={{ lineHeight: 1.7 }}>
             {profile.bio || '—'}
           </p>
         )}
-      </div>
+        </CardContent>
+      </Card>
       )}
 
       {avatarPreviewOpen && (avatarPreviewBlobUrl || avatarLightboxSrc) ? (

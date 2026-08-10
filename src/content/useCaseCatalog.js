@@ -76,10 +76,16 @@ export function groupUseCasesByRole(flows) {
   return byRole;
 }
 
-export function useCaseAutoRunnerCommand(slug) {
+/** Shell command strings for use-case runners (not React hooks — avoid `use*` prefix). */
+export function getUseCaseAutoRunnerCommand(slug) {
   return `npm run qa:uc -- ${slug}`;
 }
 
-export function useCaseApiRunnerCommand(slug) {
+export function getUseCaseApiRunnerCommand(slug) {
   return `npm run qa:uc:api -- ${slug}`;
 }
+
+/** @deprecated Prefer getUseCaseAutoRunnerCommand */
+export const useCaseAutoRunnerCommand = getUseCaseAutoRunnerCommand;
+/** @deprecated Prefer getUseCaseApiRunnerCommand */
+export const useCaseApiRunnerCommand = getUseCaseApiRunnerCommand;

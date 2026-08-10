@@ -2,23 +2,21 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { signOut } from '@/lib/clientSignOut';
 import { Search } from 'lucide-react';
-import NotificationDropdown from '@/components/NotificationDropdown';
-import ThemeToggleButton from '@/components/ThemeToggleButton';
-import DevScreenTag from '@/components/DevScreenTag';
-import EntityLogo from '@/components/EntityLogo';
-import { useResolvedBrandLogoUrl } from '@/hooks/useResolvedBrandLogoUrl';
-import { getDashboardMenu, NAV_SECTION_STORAGE_KEY, ROLE_HOME_PATHS, getRoleProfilePath, getRoleProfileLabel, getDashboardNavItemKey } from '@/config/dashboardMenu';
+import {
+  getDashboardMenu,
+  NAV_SECTION_STORAGE_KEY,
+  getDashboardNavItemKey,
+} from '@/config/dashboardMenu';
 import { isAlumniStudent } from '@/lib/studentAlumni';
 import { ALUMNI_BROWSE_JOBS_PATH, ALUMNI_MY_JOBS_PATH } from '@/lib/alumniRoutes';
 import { EMPLOYER_ALUMNI_JOBS_PATH } from '@/lib/employerAlumniRoutes';
 import { getDevScreenId } from '@/config/devScreenIds';
-import { getRoleDisplayName } from '@/lib/utils';
-import { DEFAULT_ENTITY_LOGO_URL } from '@/lib/clientAssetUrl';
 import { readStoredActiveCampus, resolveEmployerActiveCampus } from '@/lib/employerActiveCampus';
-// import OnboardingChecklist from '@/components/OnboardingChecklist';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 
 function getHubPageTitle(session, role, menu) {
   if (role === 'super_admin') return 'Platform Administration';
@@ -106,15 +104,13 @@ function syncNavSection(sectionId) {
 }
 
 /**
- * Full-screen dashboard hub (mega-menu): category columns with all links, quick actions, branded header.
- * Matches the multi-column hub layout (see globals .dashboard-nav-hub-*).
+ * Role Home hub: category Cards + quick actions.
+ * Renders inside `dashboard/layout.js` shell (sidebar/topbar) — do not duplicate brand/sign-out chrome here.
+ * Menu data remains role-scoped via getDashboardMenu(role).
  */
 export default function DashboardFullScreenHub({ role, session }) {
-  const router = useRouter();
   const menu = getDashboardMenu(role, session?.user);
   const isAlumni = role === 'student' && isAlumniStudent(session?.user);
-  const homePath = ROLE_HOME_PATHS[role] || ROLE_HOME_PATHS.student;
-  const brandLogoUrl = useResolvedBrandLogoUrl();
   const [employerCampus, setEmployerCampus] = useState(null);
   const [employerCampusLoading, setEmployerCampusLoading] = useState(role === 'employer');
   const [employerApprovedCount, setEmployerApprovedCount] = useState(0);
@@ -189,221 +185,157 @@ export default function DashboardFullScreenHub({ role, session }) {
 
   if (!menu?.sections?.length) {
     return (
-      <div style={{ padding: '2rem', minHeight: '50vh' }}>
-        <p>Workspace menu could not be loaded. Please sign out and try again.</p>
+      <div className="flex min-h-[40vh] items-center justify-center p-8">
+        <p className="text-muted-foreground m-0 text-sm">
+          Workspace menu could not be loaded. Please sign out and try again.
+        </p>
       </div>
     );
   }
 
   const hubTitle = getHubPageTitle(session, role, menu);
+  const visibleQuickActions = hubFilter ? hubFilter.quickActions : quickActions;
+  const visibleSections = hubFilter ? hubFilter.sections : menu.sections;
 
-  const logoName =
-    role === 'super_admin' ? 'PlacementHub' : session?.user?.tenantName || session?.user?.name || 'PlacementHub';
   return (
-    <div className="dashboard-nav-hub">
-      <header className="dashboard-nav-hub-topbar">
-        <div className="dashboard-nav-hub-topbar-left">
-          <Link
-            href={homePath}
-            className="dashboard-nav-hub-brand"
-            onClick={() => {
-              setHubSearch('');
-              try {
-                window.dispatchEvent(new Event('placementhub-clear-search'));
-              } catch {
-                /* ignore */
-              }
-            }}
-          >
-            <div className="sidebar-logo-icon">P</div>
-            <div>
-              <div className="dashboard-nav-hub-brand-title">PlacementHub</div>
-              <div className="dashboard-nav-hub-brand-sub">Connecting your placement community</div>
-            </div>
-          </Link>
-        </div>
-        <div className="dashboard-nav-hub-topbar-center">
-          <h1 className="dashboard-nav-hub-page-title">{hubTitle}</h1>
-        </div>
-        <div className="dashboard-nav-hub-topbar-right" style={{ alignItems: 'center', gap: '0.5rem' }}>
-          <DevScreenTag />
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <Search
-              size={16}
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                left: '0.65rem',
-                color: 'var(--text-tertiary)',
-                pointerEvents: 'none',
-              }}
-            />
-            <input
-              id="hub-search"
-              type="search"
-              className="dashboard-nav-hub-search form-input"
-              placeholder="Search screens (e.g. drives, S-11)…"
-              value={hubSearch}
-              onChange={(e) => setHubSearch(e.target.value)}
-              aria-label="Search dashboard destinations"
-              title="Filter links by name, path, or screen tag (e.g. S-11)"
-              style={{ paddingLeft: '2.25rem' }}
-            />
-          </div>
-          <Link
-            href={getRoleProfilePath(role)}
-            className="dashboard-identity-link dashboard-identity-link--hub"
-            aria-label={`${getRoleProfileLabel(role)} — ${session?.user?.name}`}
-            title={getRoleProfileLabel(role)}
-            onClick={(e) => {
-              const dest = getRoleProfilePath(role);
-              if (!dest) {
-                e.preventDefault();
-                return;
-              }
-              e.preventDefault();
-              router.push(dest);
-            }}
-          >
-            <div style={{ flexShrink: 0 }}>
-              <EntityLogo
-                name={logoName}
-                logoUrl={brandLogoUrl}
-                placeholderUrl={
-                  role === 'employer' || role === 'college_admin' ? DEFAULT_ENTITY_LOGO_URL : null
-                }
-                size="sm"
-                shape="rounded"
-              />
-            </div>
-            <div style={{ fontSize: '0.8125rem', textAlign: 'right', minWidth: 0 }}>
-              <div style={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {session?.user?.name}
-              </div>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--text-tertiary)' }}>
-                {getRoleDisplayName(role, { isAlumni })}
-              </div>
-            </div>
-          </Link>
-          <NotificationDropdown />
-          <ThemeToggleButton />
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => signOut({ callbackUrl: '/login?force=1' })}>
-            Sign out
-          </button>
-        </div>
-      </header>
-
-      <div className="dashboard-nav-hub-body">
-        {/* OnboardingChecklist moved to dedicated menu item */}
-        {role === 'employer' && employerNeedsPartnership && (
-          <div
-            className="wireframe-banner"
-            style={{
-              marginBottom: '1rem',
-              display: 'block',
-              background: 'rgba(99, 102, 241, 0.08)',
-              borderStyle: 'solid',
-              borderColor: 'var(--primary-200)',
-            }}
-            role="status"
-          >
-            <strong>No campus partnership yet</strong>
-            <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-              Request an <strong>approved</strong> campus tie-up to unlock campus-scoped recruiting views. You can still
-              open internships and job postings below once a college approves your partnership.
-            </p>
-            <Link href="/dashboard/employer/select-campus" className="btn btn-primary btn-sm" style={{ marginTop: '0.75rem', display: 'inline-flex' }}>
-              Campus Partnerships →
-            </Link>
-          </div>
-        )}
-        {role === 'employer' && employerHasCampus && (
-          <div
-            className="wireframe-banner"
-            style={{
-              marginBottom: '1rem',
-              display: 'block',
-              background: 'var(--bg-secondary)',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-default)',
-            }}
-            role="status"
-          >
-            <strong>Active campus: {employerCampus.name}</strong>
-            <p style={{ margin: '0.35rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-              Recruiting data and drives use this partnership.
-              {employerApprovedCount > 1 ? ` ${employerApprovedCount} approved campuses — ` : ' '}
-              <Link href="/dashboard/employer/select-campus" style={{ fontWeight: 600 }}>
-                {employerApprovedCount > 1 ? 'switch campus' : 'change campus'}
-              </Link>
-              .
-            </p>
-          </div>
-        )}
-
-        <p className="dashboard-nav-hub-intro">
-          Open any destination below. The sidebar on inner pages shows only that category; use <strong>Home</strong> in
-          the top bar to return here.
-        </p>
-
-        {(hubFilter ? hubFilter.quickActions : quickActions).length > 0 && (
-          <div className="dashboard-nav-hub-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            {(hubFilter ? hubFilter.quickActions : quickActions).map((a) => (
-              <Link key={`${a.label}-${a.href}`} href={a.href} className="dashboard-nav-hub-quick">
-                {a.label}
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {hubFilter && hubFilter.sections.length === 0 && hubFilter.quickActions.length === 0 && (
-          <p className="text-secondary" style={{ marginTop: '0.75rem' }}>
-            No destinations match “{hubSearch.trim()}”. Try a shorter phrase or a screen tag like <code>S-11</code>.
+    <div className="flex flex-col gap-4">
+      {/*
+        AdminCN chrome: title + description LEFT, search RIGHT.
+        Do not use Tailwind `flex-col` + `sm:flex-row` here — globals.css still
+        defines unconditional `.flex-col { flex-direction: column }`, which wins
+        over `sm:flex-row` and leaves `sm:items-end` stacking this block on the right.
+      */}
+      <div className="ph-hub-page-header">
+        <div className="ph-hub-page-header__title min-w-0 flex-1">
+          <h1 className="dashboard-nav-hub-page-title text-foreground m-0 text-left text-2xl font-semibold tracking-tight">{hubTitle}</h1>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-left text-sm leading-snug">
+            Open any destination below. The sidebar on inner pages shows only that category; use <strong>Home</strong>{' '}
+            in the sidebar to return here.
           </p>
-        )}
+        </div>
+        <InputGroup className="ph-hub-page-header__search w-full max-w-sm shrink-0">
+          <InputGroupAddon align="inline-start">
+            <Search aria-hidden="true" />
+          </InputGroupAddon>
+          <InputGroupInput
+            id="hub-search"
+            type="search"
+            placeholder="Search screens (e.g. drives, S-11)…"
+            value={hubSearch}
+            onChange={(e) => setHubSearch(e.target.value)}
+            aria-label="Search dashboard destinations"
+            title="Filter links by name, path, or screen tag (e.g. S-11)"
+          />
+        </InputGroup>
+      </div>
 
-        <div className="dashboard-nav-hub-grid">
-          {(hubFilter ? hubFilter.sections : menu.sections).map((section) => (
-            <div key={section.id} className="dashboard-nav-hub-column">
-              <h2 className="dashboard-nav-hub-category-title">{section.title}</h2>
-              <ul className="dashboard-nav-hub-list">
+      {role === 'employer' && employerNeedsPartnership && (
+        <Alert>
+          <AlertTitle>No campus partnership yet</AlertTitle>
+          <AlertDescription>
+            Request an <strong>approved</strong> campus tie-up to unlock campus-scoped recruiting views. You can still
+            open internships and job postings below once a college approves your partnership.
+          </AlertDescription>
+          <div className="col-start-2 mt-3">
+            <Button render={<Link href="/dashboard/employer/select-campus" />} size="sm" nativeButton={false}>
+              Campus Partnerships →
+            </Button>
+          </div>
+        </Alert>
+      )}
+      {role === 'employer' && employerHasCampus && (
+        <Alert>
+          <AlertTitle>Active campus: {employerCampus.name}</AlertTitle>
+          <AlertDescription>
+            Recruiting data and drives use this partnership.
+            {employerApprovedCount > 1 ? ` ${employerApprovedCount} approved campuses — ` : ' '}
+            <Link href="/dashboard/employer/select-campus" className="font-semibold underline-offset-4 hover:underline">
+              {employerApprovedCount > 1 ? 'switch campus' : 'change campus'}
+            </Link>
+            .
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {visibleQuickActions.length > 0 && (
+        <div className="hidden flex-wrap items-center gap-2 md:flex">
+          {visibleQuickActions.map((a) => (
+            <Button
+              key={`${a.label}-${a.href}`}
+              variant="outline"
+              size="sm"
+              render={<Link href={a.href} />}
+              nativeButton={false}
+            >
+              {a.label}
+            </Button>
+          ))}
+        </div>
+      )}
+
+      {hubFilter && hubFilter.sections.length === 0 && hubFilter.quickActions.length === 0 && (
+        <p className="text-muted-foreground m-0 text-sm">
+          No destinations match “{hubSearch.trim()}”. Try a shorter phrase or a screen tag like <code>S-11</code>.
+        </p>
+      )}
+
+      <div className="ph-hub-card-grid dashboard-nav-hub-grid">
+        {visibleSections.map((section) => (
+          <Card key={section.id} size="sm" className="self-start">
+            <CardHeader className="border-b">
+              <CardTitle>{section.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="m-0 flex list-none flex-col gap-0.5 p-0">
                 {section.items.map((item) => (
                   <li key={`${section.id}-${getDashboardNavItemKey(item)}`}>
                     {item.disabled ? (
-                      <span className="dashboard-nav-hub-link dashboard-nav-hub-link--disabled" aria-disabled="true">
-                        <span className="dashboard-nav-hub-link-icon" aria-hidden="true">
-                          <item.icon size={16} strokeWidth={1.75} />
-                        </span>
+                      <span className="text-muted-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm opacity-60">
+                        <item.icon aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.75} />
                         {item.label}
                       </span>
                     ) : (
-                      <Link
-                        href={item.href}
-                        className="dashboard-nav-hub-link"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-auto w-full justify-start gap-2 px-2 py-1.5 font-normal"
+                        render={<Link href={item.href} />}
+                        nativeButton={false}
                         onClick={() => syncNavSection(section.id)}
                       >
-                        <span className="dashboard-nav-hub-link-icon" aria-hidden="true">
-                          <item.icon size={16} strokeWidth={1.75} />
-                        </span>
-                        {item.label}
+                        <item.icon aria-hidden="true" data-icon="inline-start" strokeWidth={1.75} />
+                        <span className="min-w-0 flex-1 truncate text-left">{item.label}</span>
                         {hubSearch.trim() ? (
-                          <span className="text-xs text-tertiary" style={{ marginLeft: '0.35rem' }}>
+                          <span className="text-muted-foreground shrink-0 text-xs">
                             ({getDevScreenId(item.href) || '—'})
                           </span>
                         ) : null}
-                      </Link>
+                      </Button>
                     )}
                   </li>
                 ))}
               </ul>
-            </div>
-          ))}
-        </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
       <style>{`
-        @media (max-width: 768px) {
-          .dashboard-nav-hub-actions {
-            display: none !important;
+        /* Title LEFT / search RIGHT — avoid globals .flex-col vs sm:flex-row conflict */
+        .ph-hub-page-header {
+          display: flex;
+          width: 100%;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+        @media (min-width: 640px) {
+          .ph-hub-page-header {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+          }
+          .ph-hub-page-header__search {
+            margin-inline-start: auto;
           }
         }
       `}</style>

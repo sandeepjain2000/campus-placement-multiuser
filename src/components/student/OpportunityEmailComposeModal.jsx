@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Mail, Send, X } from 'lucide-react';
+import { Mail, Send } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import {
   buildOpportunityEmailBody,
@@ -13,6 +13,18 @@ import {
   publicJobPostUrl,
   publicJobQuestionsUrl,
 } from '@/lib/opportunityPublicLinks';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 /**
  * Compose job/internship share email before opening the mail client.
@@ -47,7 +59,7 @@ export default function OpportunityEmailComposeModal({
     setBody(initialBody);
   }, [defaultTo, initialSubject, initialBody, list]);
 
-  if (!list.length) return null;
+  const open = list.length > 0;
 
   const openMailClient = () => {
     const recipients = normalizeEmailRecipients(to);
@@ -99,131 +111,97 @@ export default function OpportunityEmailComposeModal({
   const hasRecipients = Boolean(normalizeEmailRecipients(to));
 
   return (
-    <div className="modal-overlay modal-overlay-solid" role="presentation" onClick={onClose}>
-      <div
-        className="modal modal-lg"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="opportunity-email-compose-title"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <h2 id="opportunity-email-compose-title" className="modal-title">
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next && !sending) onClose?.();
+      }}
+    >
+      <DialogContent className="sm:max-w-lg gap-4" showCloseButton={!sending}>
+        <DialogHeader>
+          <DialogTitle id="opportunity-email-compose-title">
             Email {list.length === 1 ? `this ${label}` : `${list.length} ${label}s`}
-          </h2>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
+          </DialogTitle>
+          <DialogDescription>Compose before opening your mail client or sending from the system.</DialogDescription>
+        </DialogHeader>
 
-        <div
-          className="modal-body"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            maxHeight: 'min(62vh, 560px)',
-            overflowY: 'auto',
-          }}
-        >
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" htmlFor="opportunity-email-to">
-              To
-            </label>
-            <input
+        <div className="grid max-h-[min(62vh,28rem)] gap-4 overflow-y-auto pr-1">
+          <Field className="gap-2">
+            <FieldLabel htmlFor="opportunity-email-to">To</FieldLabel>
+            <Input
               id="opportunity-email-to"
-              className="form-input"
               type="text"
               value={to}
               onChange={(e) => setTo(e.target.value)}
               placeholder="you@college.edu, friend@example.com"
               autoComplete="email"
             />
-            <p className="text-xs text-secondary" style={{ margin: '0.35rem 0 0' }}>
-              Defaults to your account email. Add more recipients separated by commas.
-            </p>
-          </div>
+            <FieldDescription>Defaults to your account email. Add more recipients separated by commas.</FieldDescription>
+          </Field>
 
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" htmlFor="opportunity-email-subject">
-              Subject
-            </label>
-            <input
+          <Field className="gap-2">
+            <FieldLabel htmlFor="opportunity-email-subject">Subject</FieldLabel>
+            <Input
               id="opportunity-email-subject"
-              className="form-input"
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             />
-          </div>
+          </Field>
 
           {list.length === 1 && list[0]?.id ? (
-            <div
-              style={{
-                padding: '0.75rem 0.85rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-default)',
-                background: 'var(--bg-secondary)',
-                fontSize: '0.8125rem',
-              }}
-            >
-              <div style={{ fontWeight: 600, marginBottom: '0.35rem' }}>Links included in message</div>
-              <div style={{ wordBreak: 'break-all', lineHeight: 1.5 }}>
+            <div className="bg-muted/50 rounded-lg border px-3.5 py-3 text-sm">
+              <div className="mb-1.5 font-semibold">Links included in message</div>
+              <div className="break-all leading-relaxed">
                 <div>
-                  <span className="text-secondary">Public job post: </span>
+                  <span className="text-muted-foreground">Public job post: </span>
                   {publicJobPostUrl(list[0].id, origin)}
                 </div>
                 <div>
-                  <span className="text-secondary">Post questions: </span>
+                  <span className="text-muted-foreground">Post questions: </span>
                   {publicJobQuestionsUrl(list[0].id, origin)}
                 </div>
               </div>
             </div>
           ) : null}
 
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" htmlFor="opportunity-email-body">
-              Message
-            </label>
-            <textarea
+          <Field className="gap-2">
+            <FieldLabel htmlFor="opportunity-email-body">Message</FieldLabel>
+            <Textarea
               id="opportunity-email-body"
-              className="form-input"
               rows={12}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              style={{ fontFamily: 'inherit', lineHeight: 1.5 }}
+              className="leading-relaxed"
             />
-          </div>
+          </Field>
         </div>
 
-        <div className="modal-footer" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <button type="button" className="btn btn-secondary" onClick={onClose} disabled={sending}>
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
+          <Button type="button" variant="secondary" onClick={onClose} disabled={sending}>
             Cancel
-          </button>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginLeft: 'auto' }}>
-            <button
+          </Button>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button
               type="button"
-              className="btn btn-secondary"
+              variant="secondary"
               disabled={!hasRecipients || sending}
               onClick={openMailClient}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
             >
-              <Mail size={16} aria-hidden />
+              <Mail data-icon="inline-start" />
               Open in email app
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-primary"
               disabled={!hasRecipients || sending}
               onClick={() => void sendFromSystem()}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
             >
-              <Send size={16} aria-hidden />
+              <Send data-icon="inline-start" />
               {sending ? 'Sending…' : 'Send email'}
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

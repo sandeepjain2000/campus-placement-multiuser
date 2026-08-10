@@ -28,6 +28,15 @@ import {
 } from '@/lib/employerAssessmentTargets';
 import { shouldShowFilterCount } from '@/lib/filterBadgeLabel';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const KIND_TABS = [
   { id: 'internship', label: 'Internship', icon: GraduationCap },
@@ -398,8 +407,8 @@ function EmployerAssessmentUploadsContent() {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Assessment uploads (CSV)</h1>
           <p>
             Export all campus students for the current academic year, set <code>hiring_result</code>, and upload. View summaries in{' '}
@@ -409,51 +418,29 @@ function EmployerAssessmentUploadsContent() {
             .
           </p>
         </div>
-        <div className="page-header-actions">
-          <button
+        <div className="flex flex-wrap gap-2">
+          <Button
             type="button"
-            className="btn btn-primary"
             disabled={submittingResults || isSubmitted || !selectedTargetId}
             onClick={() => void submitResults()}
           >
             {isSubmitted ? 'Submitted' : submittingResults ? 'Submitting…' : 'Submit results'}
-          </button>
+          </Button>
         </div>
       </div>
 
       <AssessmentWorkflowStepper />
 
-      <div
-        role="tablist"
-        aria-label="Opportunity type"
-        style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap' }}
-      >
+      <Tabs value={kindTab} onValueChange={setKindTab} className="mb-4"><TabsList aria-label="Opportunity type">
         {KIND_TABS.map((t) => {
           const Icon = t.icon;
           const active = kindTab === t.id;
           const n = targetCounts[t.id] ?? 0;
           return (
-            <button
+            <TabsTrigger
               key={t.id}
               type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => setKindTab(t.id)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.6rem 1.25rem',
-                borderRadius: '999px',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                transition: 'background 0.2s ease-out, color 0.2s ease-out, box-shadow 0.2s ease-out',
-                border: 'none',
-                cursor: 'pointer',
-                background: active ? 'var(--primary-600, #2563eb)' : 'var(--surface-subtle, #f3f4f6)',
-                color: active ? '#fff' : 'var(--text-primary, #111827)',
-                boxShadow: active ? '0 1px 3px rgba(37, 99, 235, 0.35)' : 'none',
-              }}
+              value={t.id}
             >
               <Icon size={16} aria-hidden />
               {t.label}
@@ -469,12 +456,12 @@ function EmployerAssessmentUploadsContent() {
                   {n}
                 </span>
               ) : null}
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList></Tabs>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
+      <Card className="mb-4"><CardContent>
         <p className="text-sm text-secondary" style={{ margin: '0 0 1rem' }}>
           {selectedTargetId ? (
             <>
@@ -490,105 +477,83 @@ function EmployerAssessmentUploadsContent() {
             </>
           )}
         </p>
-        <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(14rem, 1fr))' }}>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" htmlFor="assessment-upload-campus">
+        <FieldGroup className="grid gap-4 md:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="assessment-upload-campus">
               Campus
-            </label>
-            <select
+            </FieldLabel>
+            <AdminFilterSelect
               id="assessment-upload-campus"
-              className="form-select"
+              className="w-full"
               value={selectedTenantId}
               disabled={campusesLoading}
-              onChange={(e) => {
-                const id = e.target.value;
+              emptyMapsToAll={false}
+              onValueChange={(id) => {
                 setSelectedTenantId(id);
                 const campus = approvedCampuses.find((c) => String(c.id) === String(id));
                 if (campus) persistActiveCampus(campusPayloadFromRow(campus));
               }}
-            >
-              {approvedCampuses.length === 0 ? (
-                <option value="">{campusesLoading ? 'Loading…' : 'No approved campuses'}</option>
-              ) : (
-                approvedCampuses.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" htmlFor="assessment-upload-target">
+              items={
+                approvedCampuses.length === 0
+                  ? [{ label: campusesLoading ? 'Loading…' : 'No approved campuses', value: '' }]
+                  : approvedCampuses.map((c) => ({ label: c.name, value: String(c.id) }))
+              }
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="assessment-upload-target">
               {kindTab === 'drive' ? 'Drive' : 'Job / posting'}
-            </label>
-            <select
+            </FieldLabel>
+            <AdminFilterSelect
               id="assessment-upload-target"
-              className="form-select"
+              className="w-full"
               value={selectedTargetId}
               disabled={targetsLoading || !selectedTenantId}
-              onChange={(e) =>
-                setTargetByKind((prev) => ({ ...prev, [kindTab]: e.target.value }))
+              onValueChange={(targetId) =>
+                setTargetByKind((prev) => ({ ...prev, [kindTab]: targetId }))
               }
-            >
-              <option value="">{targetsLoading ? 'Loading…' : 'Select target…'}</option>
-              {targets.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+              items={[
+                { label: targetsLoading ? 'Loading…' : 'Select target…', value: 'all' },
+                ...targets.map((t) => ({ label: t.label, value: String(t.id) })),
+              ]}
+            />
+          </Field>
+        </FieldGroup>
+      </CardContent></Card>
 
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '0.75rem',
-          marginBottom: '1.25rem',
-          padding: '0.85rem 1rem',
-          borderRadius: '0.5rem',
-          background: pendingForTab > 0 ? 'rgba(239, 68, 68, 0.08)' : 'var(--surface-subtle, #f9fafb)',
-          border: pendingForTab > 0 ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid var(--border-subtle, #e5e7eb)',
-        }}
-      >
+      <Alert variant={pendingForTab > 0 ? 'destructive' : 'default'} className="mb-5">
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flex: '1 1 16rem' }}>
           {pendingForTab > 0 ? <AlertCircle size={18} aria-hidden style={{ color: 'var(--danger-600)', marginTop: 2 }} /> : null}
           <div>
-            <p className="text-sm font-semibold" style={{ margin: 0 }}>
+            <AlertTitle>
               CSV import corrections — {KIND_TABS.find((t) => t.id === kindTab)?.label}
-            </p>
-            <p className="text-sm text-secondary" style={{ margin: '0.25rem 0 0' }}>
+            </AlertTitle>
+            <AlertDescription>
               {pendingForTab > 0
                 ? `${pendingForTab} import(s) need fixes before they can be accepted.`
                 : 'If a CSV upload fails validation, open the correction screen here to fix rows online.'}
-            </p>
+            </AlertDescription>
           </div>
         </div>
         <Link
           href={`/dashboard/employer/assessment-uploads/review?kind=${kindTab}`}
-          className={pendingForTab > 0 ? 'btn btn-primary' : 'btn btn-secondary'}
+          className={pendingForTab > 0 ? 'bg-primary text-primary-foreground inline-flex h-9 items-center rounded-md px-4 text-sm font-medium' : 'border-input bg-background hover:bg-accent inline-flex h-9 items-center rounded-md border px-4 text-sm font-medium'}
           style={{ textDecoration: 'none', whiteSpace: 'nowrap' }}
         >
           {pendingForTab > 0 ? `Review & correct (${pendingForTab})` : 'Open correction screen'}
         </Link>
-      </div>
+      </Alert>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <div
-          className="card-header"
+      <Card className="mb-4">
+        <CardHeader
           style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '1rem' }}
         >
-          <h3 className="card-title" style={{ margin: 0 }}>
+          <CardTitle>
             CSV
-          </h3>
-          <button
+          </CardTitle>
+          <Button
             type="button"
-            className="btn btn-secondary"
+            variant="outline"
             disabled={exporting || !selectedTenantId || !selectedTargetId}
             title={
               !selectedTargetId
@@ -601,8 +566,9 @@ function EmployerAssessmentUploadsContent() {
           >
             <Download size={16} aria-hidden style={{ marginRight: '0.35rem', verticalAlign: '-2px' }} />
             {exporting ? 'Exporting…' : 'Export CSV template'}
-          </button>
-        </div>
+          </Button>
+        </CardHeader>
+        <CardContent>
         <div
           className="text-sm"
           role="note"
@@ -672,11 +638,11 @@ function EmployerAssessmentUploadsContent() {
             await mutatePendingImports();
           }}
         />
-      </div>
+        </CardContent>
+      </Card>
 
       {lastUploadResult && (
-        <div className="card" style={{ marginBottom: '1rem' }}>
-          <h3 className="card-title">Latest upload summary</h3>
+        <Card className="mb-4"><CardHeader><CardTitle>Latest upload summary</CardTitle></CardHeader><CardContent>
           <p>
             Total: <strong>{lastUploadResult.totalRows}</strong> | Accepted: <strong>{lastUploadResult.acceptedRows}</strong> | Rejected:{' '}
             <strong>{lastUploadResult.rejectedRows}</strong>
@@ -687,23 +653,21 @@ function EmployerAssessmentUploadsContent() {
                 <div key={e}>• {e}</div>
               ))}
               {lastUploadResult.errors.length > 20 && (
-                <button
-                  className="btn btn-ghost btn-sm"
+                <Button
+                  variant="ghost"
+                  size="sm"
                   style={{ marginTop: '0.5rem' }}
                   onClick={() => setShowAllUploadErrors((v) => !v)}
                 >
                   {showAllUploadErrors ? 'Show less' : `Show all ${lastUploadResult.errors.length} errors`}
-                </button>
+                </Button>
               )}
             </div>
           )}
-        </div>
+        </CardContent></Card>
       )}
 
-      <div className="card">
-        <h3 className="card-title" style={{ marginBottom: '0.35rem' }}>
-          Upload history
-        </h3>
+      <Card><CardHeader><CardTitle>Upload history</CardTitle></CardHeader><CardContent>
         <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
           Use <strong>View / edit</strong> to adjust hiring results after a successful upload. Accepted and Rejected
           counts reflect current hiring results after you save edits.
@@ -728,36 +692,35 @@ function EmployerAssessmentUploadsContent() {
                 style={{ marginBottom: '1rem' }}
               />
             ) : null}
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th>Target</th>
-                    <th>File</th>
-                    <th>Total</th>
-                    <th>Accepted</th>
-                    <th>Rejected</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
+            <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Time</TableHead>
+                    <TableHead>Target</TableHead>
+                    <TableHead>File</TableHead>
+                    <TableHead>Total</TableHead>
+                    <TableHead>Accepted</TableHead>
+                    <TableHead>Rejected</TableHead>
+                    <TableHead className="w-px" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {displayUploads.length === 0 && uploadsTotalCount > 0 ? (
-                    <tr>
-                      <td colSpan={7} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
                         No uploads match your search.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : null}
                   {displayUploads.map((u) => (
-                    <tr key={u.id}>
-                      <td>{u.created_at ? new Date(u.created_at).toLocaleString() : '—'}</td>
-                      <td>{u.drive_id ? `Drive (${String(u.drive_id).slice(0, 8)}…)` : `Job (${String(u.job_id).slice(0, 8)}…)`}</td>
-                      <td>{u.original_file_name}</td>
-                      <td>{u.total_rows}</td>
-                      <td>{u.accepted_rows}</td>
-                      <td>{u.rejected_rows}</td>
-                      <td>
+                    <TableRow key={u.id}>
+                      <TableCell>{u.created_at ? new Date(u.created_at).toLocaleString() : '—'}</TableCell>
+                      <TableCell>{u.drive_id ? `Drive (${String(u.drive_id).slice(0, 8)}…)` : `Job (${String(u.job_id).slice(0, 8)}…)`}</TableCell>
+                      <TableCell>{u.original_file_name}</TableCell>
+                      <TableCell>{u.total_rows}</TableCell>
+                      <TableCell>{u.accepted_rows}</TableCell>
+                      <TableCell>{u.rejected_rows}</TableCell>
+                      <TableCell>
                         <StandardTableIconAction
                           action={editorUploadId === u.id ? 'close' : 'edit'}
                           loading={false}
@@ -772,37 +735,37 @@ function EmployerAssessmentUploadsContent() {
                           }}
                           tooltip={editorUploadId === u.id ? 'Close editor' : 'View and edit hiring results'}
                         />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                   {uploadsTotalCount === 0 && (
-                    <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
                         No uploads for this tab yet.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
           </>
         )}
-      </div>
+      </CardContent></Card>
 
       {editorUploadId && (
         <>
-          <div className="card" style={{ marginTop: '1rem' }}>
-            <div className="card-header" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
-              <h3 className="card-title">Results for this upload — edit &amp; save</h3>
+          <Card className="mt-4">
+            <CardHeader className="flex-row items-center justify-between gap-3">
+              <CardTitle>Results for this upload — edit &amp; save</CardTitle>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditorUploadId(null)}>
+                <Button type="button" variant="ghost" size="sm" onClick={() => setEditorUploadId(null)}>
                   Close editor
-                </button>
-                <button type="button" className="btn btn-primary" disabled={savingRows || draftRows.length === 0} onClick={saveDraftRows}>
+                </Button>
+                <Button type="button" disabled={savingRows || draftRows.length === 0} onClick={saveDraftRows}>
                   {savingRows ? 'Saving…' : 'Save changes'}
-                </button>
+                </Button>
               </div>
-            </div>
+            </CardHeader>
+            <CardContent>
             {detailError && <p style={{ color: 'var(--danger-600)' }}>{detailError.message}</p>}
             {detailLoading ? (
               <div className="skeleton skeleton-card" style={{ height: 200 }} />
@@ -811,90 +774,79 @@ function EmployerAssessmentUploadsContent() {
                 <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
                   Edit hiring results below. You can add one student by roll at the bottom if needed.
                 </p>
-                <div className="table-container" style={{ overflowX: 'auto', border: 'none' }}>
-                  <table className="data-table" style={{ minWidth: 720 }}>
-                    <thead>
-                      <tr>
-                        <th>System ID</th>
-                        <th>Roll</th>
-                        <th>Account name</th>
-                        <th>Candidate (override)</th>
-                        <th>Hiring result</th>
-                        <th>Remarks</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <Table className="min-w-[720px]">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>System ID</TableHead>
+                        <TableHead>Roll</TableHead>
+                        <TableHead>Account name</TableHead>
+                        <TableHead>Candidate (override)</TableHead>
+                        <TableHead>Hiring result</TableHead>
+                        <TableHead>Remarks</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                       {draftRows.map((r) => (
-                        <tr key={r.id}>
-                          <td className="font-mono text-sm">{r.system_id || '—'}</td>
-                          <td className="font-mono text-sm">{r.roll_number || '—'}</td>
-                          <td className="text-sm">{r.account_name || '—'}</td>
-                          <td>
-                            <input
-                              className="form-input"
+                        <TableRow key={r.id}>
+                          <TableCell className="font-mono text-sm">{r.system_id || '—'}</TableCell>
+                          <TableCell className="font-mono text-sm">{r.roll_number || '—'}</TableCell>
+                          <TableCell className="text-sm">{r.account_name || '—'}</TableCell>
+                          <TableCell>
+                            <Input
                               style={{ minWidth: 120, fontSize: '0.8rem' }}
                               value={r.candidate_name || ''}
                               disabled={isSubmitted}
                               onChange={(e) => patchDraft(r.id, 'candidate_name', e.target.value)}
                               placeholder="Optional"
                             />
-                          </td>
-                          <td>
-                            <select
-                              className="form-select"
-                              style={{ minWidth: 120, fontSize: '0.8rem' }}
+                          </TableCell>
+                          <TableCell>
+                            <AdminFilterSelect
+                              className="min-w-[7.5rem] text-xs"
                               value={r.hiring_result || ''}
                               disabled={isSubmitted}
-                              onChange={(e) => patchDraft(r.id, 'hiring_result', e.target.value)}
-                            >
-                              {HIRING_RESULT_OPTIONS.map((o) => (
-                                <option key={o.value || 'empty'} value={o.value}>
-                                  {o.label}
-                                </option>
-                              ))}
-                            </select>
-                          </td>
-                          <td>
-                            <textarea
-                              className="form-input"
+                              emptyMapsToAll={false}
+                              onValueChange={(v) => patchDraft(r.id, 'hiring_result', v)}
+                              items={HIRING_RESULT_OPTIONS.map((o) => ({ label: o.label, value: o.value }))}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Textarea
                               style={{ minWidth: 160, fontSize: '0.8rem', minHeight: 48 }}
                               value={r.remarks || ''}
                               disabled={isSubmitted}
                               onChange={(e) => patchDraft(r.id, 'remarks', e.target.value)}
                               rows={2}
                             />
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
                       {draftRows.length === 0 && (
-                        <tr>
-                          <td colSpan={6} className="text-center text-secondary">
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center text-muted-foreground">
                             No accepted rows for this upload yet.
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       )}
-                    </tbody>
-                  </table>
-                </div>
+                    </TableBody>
+                  </Table>
 
                 <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle, #e5e7eb)' }}>
                   <h4 className="text-sm font-semibold" style={{ marginBottom: '0.5rem' }}>
                     Optional: add one student by roll
                   </h4>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', maxWidth: 480 }}>
-                    <input
-                      className="form-input"
+                    <Input
                       style={{ maxWidth: 220 }}
                       placeholder="System ID or roll no."
                       value={addRoll}
                       onChange={(e) => setAddRoll(e.target.value)}
                     />
-                    <button type="button" className="btn btn-secondary" disabled={addingRow} onClick={addManualRow}>
+                    <Button type="button" variant="outline" disabled={addingRow} onClick={addManualRow}>
                       {addingRow ? 'Adding…' : 'Add to upload'}
-                    </button>
+                    </Button>
                   </div>
-                  <textarea
-                    className="form-input"
+                  <Textarea
                     style={{ minHeight: 56, fontSize: '0.875rem', marginTop: '0.5rem', maxWidth: 480 }}
                     placeholder="Optional remarks"
                     value={addRemarks}
@@ -904,49 +856,45 @@ function EmployerAssessmentUploadsContent() {
                 </div>
               </>
             )}
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="card" style={{ marginTop: '1rem' }}>
-            <h3 className="card-title" style={{ marginBottom: '0.35rem' }}>
-              Activity log
-            </h3>
+          <Card className="mt-4"><CardHeader><CardTitle>Activity log</CardTitle></CardHeader><CardContent>
             {auditError && <p style={{ color: 'var(--danger-600)' }}>{auditError.message}</p>}
             {auditLoading ? (
               <div className="skeleton skeleton-card" style={{ height: 140 }} />
             ) : (
-              <div className="table-container">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>Type</th>
-                      <th>Summary</th>
-                      <th>By</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Time</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Summary</TableHead>
+                      <TableHead>By</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {auditEntries.map((e) => (
-                      <tr key={e.id}>
-                        <td>{e.created_at ? new Date(e.created_at).toLocaleString() : '—'}</td>
-                        <td>
+                      <TableRow key={e.id}>
+                        <TableCell>{e.created_at ? new Date(e.created_at).toLocaleString() : '—'}</TableCell>
+                        <TableCell>
                           <code className="text-sm">{e.action}</code>
-                        </td>
-                        <td className="text-sm">{e.summary}</td>
-                        <td className="text-sm">{(e.actor_name && e.actor_name.trim()) || e.actor_email || '—'}</td>
-                      </tr>
+                        </TableCell>
+                        <TableCell className="text-sm">{e.summary}</TableCell>
+                        <TableCell className="text-sm">{(e.actor_name && e.actor_name.trim()) || e.actor_email || '—'}</TableCell>
+                      </TableRow>
                     ))}
                     {auditEntries.length === 0 && (
-                      <tr>
-                        <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground">
                           No activity logged yet for this upload.
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     )}
-                  </tbody>
-                </table>
-              </div>
+                  </TableBody>
+                </Table>
             )}
-          </div>
+          </CardContent></Card>
         </>
       )}
     </div>

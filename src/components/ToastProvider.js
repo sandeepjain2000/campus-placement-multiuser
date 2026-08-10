@@ -9,7 +9,7 @@ export function ToastProvider({ children }) {
   const [logHistory, setLogHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  const downloadLog = (message, meta) => {
+  const downloadLog = useCallback((message, meta) => {
     const content = `ERROR REPORT\nTime: ${new Date().toISOString()}\nMessage: ${message}\n\nDATA:\n${JSON.stringify(meta, null, 2)}`;
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -18,7 +18,7 @@ export function ToastProvider({ children }) {
     a.download = `log-${Date.now()}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-  };
+  }, []);
 
   const addToast = useCallback((message, type = 'info', duration = 5000, meta = null) => {
     const id = Date.now() + '-' + Math.random().toString(36).substring(2, 9);

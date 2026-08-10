@@ -1,4 +1,4 @@
-import { useCaseRunnerCommand, useCaseRunnerBat, useCaseAutoRunnerCommand, ALL_USE_CASES } from '@/content/developerNotes';
+import { getUseCaseRunnerCommand, getUseCaseRunnerBat, getUseCaseAutoRunnerCommand, ALL_USE_CASES } from '@/content/developerNotes';
 
 const STEP_COUNT = 7;
 
@@ -61,19 +61,19 @@ export default function UseCasesTable({ flows, intro, showRunner = true }) {
                         className="dev-notes-inline-code"
                         style={{ display: 'block', marginBottom: '0.3rem', fontSize: '0.7rem', whiteSpace: 'normal', wordBreak: 'break-word' }}
                       >
-                        {useCaseAutoRunnerCommand(row.runnerSlug)}
+                        {getUseCaseAutoRunnerCommand(row.runnerSlug)}
                       </code>
                       <code
                         className="dev-notes-inline-code"
                         style={{ display: 'block', marginBottom: '0.3rem', fontSize: '0.7rem', whiteSpace: 'normal', wordBreak: 'break-word' }}
                       >
-                        {useCaseRunnerCommand(row.runnerSlug)}
+                        {getUseCaseRunnerCommand(row.runnerSlug)}
                       </code>
                       <code
                         className="dev-notes-inline-code"
                         style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-tertiary)', whiteSpace: 'normal', wordBreak: 'break-word' }}
                       >
-                        {useCaseRunnerBat(row.runnerSlug)}
+                        {getUseCaseRunnerBat(row.runnerSlug)}
                       </code>
                     </div>
                   ) : null}
@@ -84,10 +84,10 @@ export default function UseCasesTable({ flows, intro, showRunner = true }) {
                       <>
                         <span className="dev-notes-runner-slug">{row.runnerSlug}</span>
                         <code className="dev-notes-inline-code" style={{ display: 'block', marginBottom: '0.35rem' }}>
-                          {useCaseRunnerCommand(row.runnerSlug)}
+                          {getUseCaseRunnerCommand(row.runnerSlug)}
                         </code>
                         <code className="dev-notes-inline-code" style={{ display: 'block', color: 'var(--text-tertiary)' }}>
-                          {useCaseRunnerBat(row.runnerSlug)}
+                          {getUseCaseRunnerBat(row.runnerSlug)}
                         </code>
                       </>
                     ) : (

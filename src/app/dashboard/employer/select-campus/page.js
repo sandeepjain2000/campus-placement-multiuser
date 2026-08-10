@@ -1,10 +1,9 @@
 'use client';
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
-import { useSession } from 'next-auth/react';
 import EntityLogo from '@/components/EntityLogo';
-import { Search, Plus, ChevronDown, X, Eye, Trash2, Building2 } from 'lucide-react';
+import { Plus, Eye, Trash2, Building2 } from 'lucide-react';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
   TIE_UP_REVOKE_DISABLED_TITLE,
@@ -15,6 +14,16 @@ import {
 import { EMPLOYER_USE_CAMPUS_DISABLED_TITLE } from '@/lib/employerActiveCampus';
 import { formatFilterBadgeLabelParen } from '@/lib/filterBadgeLabel';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ToastProvider';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url, { credentials: 'include', cache: 'no-store' });
@@ -52,96 +61,9 @@ function statusRank(s) {
   return 3;
 }
 
-function CollegeCombobox({ options, selectedId, onChange, placeholder }) {
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState('');
-  const ref = useRef(null);
-  const selected = options.find(o => o.id === selectedId);
-
-  useEffect(() => {
-    const fn = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', fn);
-    return () => document.removeEventListener('mousedown', fn);
-  }, []);
-
-  const filtered = useMemo(() => {
-    if (!q) return options.slice(0, 60);
-    const lq = q.toLowerCase();
-    return options.filter(o => (o.name||'').toLowerCase().includes(lq) || (o.city||'').toLowerCase().includes(lq)).slice(0, 60);
-  }, [options, q]);
-
-  return (
-    <div ref={ref} style={{ position: 'relative', minWidth: 240, flex: 1 }}>
-      <div
-        onClick={() => setOpen(v => !v)}
-        style={{
-          display: 'flex', alignItems: 'center', gap: '0.5rem',
-          padding: '0.65rem 1rem', border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-md)', background: 'var(--bg-primary)',
-          cursor: 'pointer', fontSize: '0.95rem', color: selected ? 'var(--text-primary)' : 'var(--text-tertiary)',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
-        }}
-      >
-        <Search size={16} color="var(--text-tertiary)" style={{ flexShrink: 0 }} />
-        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: selected ? 500 : 400 }}>
-          {selected ? selected.name : placeholder}
-        </span>
-        {selectedId ? (
-          <div 
-            onClick={e => { e.stopPropagation(); onChange(''); }}
-            style={{ padding: '0.25rem', background: 'var(--bg-secondary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}
-          >
-            <X size={14} style={{ flexShrink: 0 }} />
-          </div>
-        ) : (
-          <ChevronDown size={16} color="var(--text-tertiary)" style={{ flexShrink: 0 }} />
-        )}
-      </div>
-      {open && (
-        <div className="animate-fadeIn" style={{
-          position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, zIndex: 100,
-          background: 'var(--bg-primary)', border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-xl)',
-          maxHeight: 300, display: 'flex', flexDirection: 'column',
-        }}>
-          <div style={{ padding: '0.75rem', borderBottom: '1px solid var(--border-default)', background: 'var(--bg-secondary)' }}>
-            <input autoFocus value={q} onChange={e => setQ(e.target.value)}
-              placeholder="Type to search colleges..."
-              style={{ width: '100%', border: 'none', outline: 'none', fontSize: '0.95rem', background: 'transparent', color: 'var(--text-primary)' }}
-            />
-          </div>
-          <div style={{ overflowY: 'auto', flex: 1 }}>
-            <div
-              onClick={() => { onChange(''); setOpen(false); setQ(''); }}
-              style={{ padding: '0.75rem 1rem', fontSize: '0.95rem', color: 'var(--text-tertiary)', cursor: 'pointer', fontWeight: 500 }}
-            >All campuses</div>
-            {filtered.map(o => (
-              <div key={o.id}
-                onClick={() => { onChange(o.id); setOpen(false); setQ(''); }}
-                style={{
-                  padding: '0.75rem 1rem', fontSize: '0.95rem', cursor: 'pointer',
-                  background: o.id === selectedId ? 'var(--primary-50)' : 'transparent',
-                  color: 'var(--text-primary)',
-                  display: 'flex', flexDirection: 'column', gap: '0.1rem'
-                }}
-                onMouseEnter={e => { if (o.id !== selectedId) e.currentTarget.style.background = 'var(--bg-secondary)'; }}
-                onMouseLeave={e => { if (o.id !== selectedId) e.currentTarget.style.background = 'transparent'; }}
-              >
-                <div style={{ fontWeight: o.id === selectedId ? 600 : 500, color: o.id === selectedId ? 'var(--primary-700)' : 'var(--text-primary)' }}>{o.name}</div>
-                {o.city && <div style={{ fontSize: '0.8rem', color: o.id === selectedId ? 'var(--primary-600)' : 'var(--text-tertiary)' }}>{o.city}</div>}
-              </div>
-            ))}
-            {filtered.length === 0 && <div style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--text-tertiary)', fontSize: '0.95rem' }}>No results found.</div>}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function SelectCampusPage() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { addToast } = useToast();
   const { data, error, isLoading, mutate } = useSWR('/api/employer/campuses', fetcher);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('approved');
@@ -150,11 +72,9 @@ export default function SelectCampusPage() {
   const [requesting, setRequesting] = useState(null);
   const [revoking, setRevoking] = useState(null);
   const [revokeTarget, setRevokeTarget] = useState(null);
-  const [toast, setToast] = useState(null);
 
   const showToast = (msg, type = 'success') => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 3000);
+    addToast(msg, type === 'error' ? 'error' : 'success');
   };
 
   const rawColleges = data?.colleges;
@@ -232,102 +152,59 @@ export default function SelectCampusPage() {
   ];
 
   return (
-    <div className="animate-fadeIn select-campus-page" style={{ paddingBottom: '2rem', width: '100%' }}>
-      {/* Toast */}
-      {toast && (
-        <div className="animate-slideUp" style={{
-          position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
-          padding: '1rem 1.5rem', borderRadius: 'var(--radius-lg)', fontWeight: 600, fontSize: '0.95rem',
-          background: toast.type === 'error' ? 'var(--danger-50)' : 'var(--success-50)',
-          border: `1px solid ${toast.type === 'error' ? 'var(--danger-200)' : 'var(--success-200)'}`,
-          color: toast.type === 'error' ? 'var(--danger-700)' : 'var(--success-700)',
-          boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)',
-          display: 'flex', alignItems: 'center', gap: '0.75rem'
-        }}>
-          {toast.type === 'error' ? <X size={18} /> : <Eye size={18} />} {toast.msg}
-        </div>
-      )}
-
+    <div className="animate-fadeIn flex w-full flex-col gap-5 pb-8">
       {/* Page header */}
-      <div
-        className="page-header"
-        style={{
-          marginBottom: '1.25rem',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: '1rem',
-        }}
-      >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Building2 size={22} aria-hidden /> Campus Partnerships
+          <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+            <Building2 aria-hidden /> Campus Partnerships
           </h1>
-          <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+          <p className="text-muted-foreground mt-1 text-sm">
             {isLoading ? 'Loading campus directory…' : `${counts.total} colleges · ${counts.approved} approved · ${counts.pending} pending`}
           </p>
         </div>
-        <button
-          className="btn btn-primary"
-          type="button"
-          onClick={() => router.push('/dashboard/employer/select-campus/create')}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}
-        >
-          <Plus size={16} aria-hidden /> Request Tie-up
-        </button>
+        <Button onClick={() => router.push('/dashboard/employer/select-campus/create')}>
+          <Plus data-icon="inline-start" aria-hidden /> Request Tie-up
+        </Button>
       </div>
 
       {/* Switch campus help */}
       {!isLoading && !error && (
-        <div
-          className="card"
-          style={{
-            marginBottom: '1.25rem',
-            padding: '1rem 1.25rem',
-            border: '1px solid var(--primary-200)',
-            background: 'var(--primary-50)',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ fontSize: '0.9rem', color: 'var(--primary-900)', lineHeight: 1.5 }}>
+        <Alert>
+          <AlertDescription className="flex flex-wrap items-center justify-between gap-3">
+          <span>
             <strong>All campuses:</strong> employer login includes every approved partnership — no campus switch needed.
             The <strong>Use campus</strong> action is kept for reference but is disabled.
-          </div>
+          </span>
           {counts.approved > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+            <div className="flex flex-wrap items-center gap-2">
               {colleges
                 .filter((c) => normalizeApprovalStatus(c.approval_status) === 'approved')
                 .slice(0, 5)
                 .map((c) => (
-                  <button
+                  <Button
                     key={c.id}
-                    type="button"
-                    className="btn btn-primary btn-sm"
+                    size="sm"
                     disabled
                     title={EMPLOYER_USE_CAMPUS_DISABLED_TITLE}
                   >
                     Use {c.name?.split('(')[0]?.trim().slice(0, 28) || 'campus'}
-                  </button>
+                  </Button>
                 ))}
             </div>
           )}
           {counts.approved === 0 && (
-            <button type="button" className="btn btn-primary btn-sm" onClick={() => router.push('/data-entry')}>
+            <Button size="sm" onClick={() => router.push('/data-entry')}>
               Demo data → Ensure IIT Madras tie-up
-            </button>
+            </Button>
           )}
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
-      {/* Pill-based Filter Tabs */}
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <Tabs value={filterStatus} onValueChange={setFilterStatus}>
+        <TabsList className="h-auto flex-wrap">
         {statusPills.map((t) => {
-          const isActive = filterStatus === t.key;
           let count = '';
           if (!isLoading) {
             if (t.key === 'approved') count = counts.approved;
@@ -336,104 +213,97 @@ export default function SelectCampusPage() {
             if (t.key === 'all') count = counts.total;
           }
           return (
-            <button
+            <TabsTrigger
               key={t.key}
-              onClick={() => setFilterStatus(t.key)}
-              style={{
-                padding: '0.5rem 1.25rem',
-                borderRadius: '999px',
-                fontWeight: 600,
-                fontSize: '0.95rem',
-                transition: 'all 0.2s ease',
-                border: 'none',
-                cursor: 'pointer',
-                background: isActive ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                color: isActive ? 'white' : 'var(--text-secondary)',
-                boxShadow: isActive ? '0 4px 10px rgba(79, 70, 229, 0.2)' : 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem'
-              }}
+              value={t.key}
             >
               {formatFilterBadgeLabelParen(t.label, count !== '' ? count : 0)}
-            </button>
+            </TabsTrigger>
           )
         })}
-      </div>
+        </TabsList>
+      </Tabs>
 
       {/* Search and Sort Toolbar */}
-      <div className="card" style={{ padding: '1rem', marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', border: '1px solid var(--border-default)' }}>
-        <div style={{ position: 'relative', flex: '1 1 240px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)', pointerEvents: 'none' }} />
-          <input
-            type="text" className="form-input" placeholder="Search by name or city…"
+      <Card>
+        <CardContent className="grid gap-4 py-4 md:grid-cols-3">
+        <Field>
+          <FieldLabel htmlFor="campus-search">Search campuses</FieldLabel>
+          <Input
+            id="campus-search" name="campus-search" type="search" placeholder="Search by name or city…"
             value={search} onChange={e => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.65rem', paddingBottom: '0.65rem', fontSize: '0.95rem' }}
           />
-        </div>
-
-        <CollegeCombobox options={campusOptions} selectedId={focusCampusId} onChange={setFocusCampusId} placeholder="Focus on specific campus…" />
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Sort By:</span>
-          <select className="form-select" style={{ width: 'auto', padding: '0.65rem 2rem 0.65rem 1rem', fontSize: '0.95rem', fontWeight: 500 }} value={sortOption} onChange={e => setSortOption(e.target.value)}>
-            <option value="status">Approval Status</option>
-            <option value="name_asc">Name (A–Z)</option>
-            <option value="name_desc">Name (Z–A)</option>
-            <option value="students_desc">Student Count (High to Low)</option>
-          </select>
-        </div>
-      </div>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="campus-focus">Focus campus</FieldLabel>
+          <AdminFilterSelect
+            id="campus-focus"
+            className="w-full"
+            value={focusCampusId}
+            onValueChange={setFocusCampusId}
+            items={[
+              { label: 'All campuses', value: 'all' },
+              ...campusOptions.map((campus) => ({ label: campus.name, value: String(campus.id) })),
+            ]}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="campus-sort">Sort by</FieldLabel>
+          <AdminFilterSelect
+            id="campus-sort"
+            className="w-full"
+            value={sortOption}
+            onValueChange={setSortOption}
+            emptyMapsToAll={false}
+            items={[
+              { label: 'Approval Status', value: 'status' },
+              { label: 'Name (A–Z)', value: 'name_asc' },
+              { label: 'Name (Z–A)', value: 'name_desc' },
+              { label: 'Student Count (High to Low)', value: 'students_desc' },
+            ]}
+          />
+        </Field>
+        </CardContent>
+      </Card>
 
       {/* Table */}
       {isLoading && <div className="skeleton skeleton-card" style={{ height: 400 }} />}
-      {error && <div className="card" style={{ textAlign: 'center', padding: '4rem', color: 'var(--danger-600)', fontWeight: 600 }}>{error.message || 'Failed to load colleges.'}</div>}
+      {error && <Alert variant="destructive"><AlertDescription>{error.message || 'Failed to load colleges.'}</AlertDescription></Alert>}
 
       {!isLoading && !error && (
-        <div className="card card-table-shell select-campus-table-shell" style={{ border: '1px solid var(--border-default)' }}>
-          <div
-            style={{
-              margin: 0,
-              padding: '0.65rem 1rem',
-              borderBottom: '1px solid var(--border-default)',
-              background: 'var(--bg-secondary)',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.5rem',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span className="text-sm text-secondary">
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="bg-muted/30 border-b py-4">
+            <CardTitle>Campus Directory</CardTitle>
+            <CardDescription>
               Showing <strong>{displayRows.length}</strong> campus{displayRows.length === 1 ? '' : 'es'} · scroll horizontally for all columns (Actions on the right)
-            </span>
-          </div>
-          <div className="table-container select-campus-table-scroll" style={{ border: 'none', borderRadius: 0 }}>
-            <table className="data-table select-campus-table">
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)' }}>
-                  <th style={{ width: 40, paddingLeft: '1.5rem' }}>#</th>
-                  <th>College Name</th>
-                  <th className="select-campus-table__optional">Location</th>
-                  <th className="select-campus-table__optional">Contact Details</th>
-                  <th style={{ textAlign: 'right' }}>Students</th>
-                  <th className="select-campus-table__optional" style={{ textAlign: 'right' }}>Placement</th>
-                  <th>Status</th>
-                  <th className="select-campus-table__actions">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="overflow-x-auto p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-12 pl-6">#</TableHead>
+                  <TableHead>College Name</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Contact Details</TableHead>
+                  <TableHead className="text-right">Students</TableHead>
+                  <TableHead className="text-right">Placement</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {displayRows.length === 0 ? (
-                  <tr>
-                    <td colSpan={9} style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-tertiary)' }}>
-                      <Building2 size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
-                      <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No colleges found</div>
-                      <div>Try adjusting your filters or search query.</div>
-                      <button className="btn btn-ghost" style={{ marginTop: '1rem' }} onClick={() => { setSearch(''); setFilterStatus('all'); setFocusCampusId(''); }}>
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-muted-foreground h-40 text-center">
+                      <Building2 className="mx-auto mb-3 opacity-40" aria-hidden />
+                      <p className="text-foreground font-semibold">No colleges found</p>
+                      <p className="mt-1">Try adjusting your filters or search query.</p>
+                      <Button variant="ghost" className="mt-3" onClick={() => { setSearch(''); setFilterStatus('all'); setFocusCampusId(''); }}>
                         Clear Filters
-                      </button>
-                    </td>
-                  </tr>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ) : displayRows.map((c, i) => {
                   const status = normalizeApprovalStatus(c.approval_status);
                   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.null;
@@ -443,28 +313,27 @@ export default function SelectCampusPage() {
                   const showRequest = canRequestTieUp(c.approval_status);
 
                   return (
-                    <tr key={c.id}>
-                      <td style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', paddingLeft: '1.5rem' }}>{i + 1}</td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                    <TableRow key={c.id}>
+                      <TableCell className="text-muted-foreground pl-6 text-xs tabular-nums">{i + 1}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
                           <EntityLogo name={c.name} website={c.website} size="md" shape="rounded" />
                           <div>
-                            <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{c.name}</div>
+                            <div className="font-semibold">{c.name}</div>
                             {c.website && (
                               <a href={c.website.startsWith('http') ? c.website : `https://${c.website}`} target="_blank" rel="noreferrer"
-                                style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', textDecoration: 'none' }}
-                                className="hover:text-primary-600"
+                                className="text-muted-foreground text-xs hover:underline"
                               >
                                 {c.website.replace(/^https?:\/\//, '')}
                               </a>
                             )}
                           </div>
                         </div>
-                      </td>
-                      <td style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }} className="select-campus-table__optional">
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
                         {[c.city, c.state].filter(Boolean).join(', ') || '—'}
-                      </td>
-                      <td style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }} className="select-campus-table__optional">
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
                         <div>
                           {c.email ? (
                             <a href={`mailto:${c.email}`} style={{ color: 'var(--text-link)', textDecoration: 'none' }} title={`Email ${c.name}`}>
@@ -479,51 +348,44 @@ export default function SelectCampusPage() {
                             </a>
                           ) : '—'}
                         </div>
-                      </td>
-                      <td style={{ textAlign: 'right', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>{c.total_students ?? 0}</td>
-                      <td style={{ textAlign: 'right', fontSize: '0.9rem', fontWeight: 500, color: placementPct != null && placementPct >= 70 ? 'var(--success-600)' : 'var(--text-primary)' }} className="select-campus-table__optional">
+                      </TableCell>
+                      <TableCell className="text-right font-medium tabular-nums">{c.total_students ?? 0}</TableCell>
+                      <TableCell className="text-right font-medium tabular-nums">
                         {placementPct != null ? `${placementPct}%` : '—'}
-                      </td>
-                      <td>
-                        <span style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                          padding: '0.35rem 0.75rem', borderRadius: '999px',
-                          fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap',
-                          background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}`,
-                        }}>
-                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.dot }}></div>
-                          {cfg.label}
-                        </span>
-                      </td>
-                      <td className="select-campus-table__actions">
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', flexWrap: 'nowrap' }}>
-                          <button
-                            className="btn btn-ghost btn-sm"
-                            style={{ padding: '0.4rem', border: '1px solid var(--border-default)', color: 'var(--primary-600)' }}
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={status || 'not_requested'} showDot>{cfg.label}</StatusBadge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
                             onClick={() => router.push(`/dashboard/employer/select-campus/${c.id}`)}
                             title={`View details for ${c.name}`}
+                            aria-label={`View details for ${c.name}`}
                           >
-                            <Eye size={16} />
-                          </button>
+                            <Eye aria-hidden />
+                          </Button>
                           {isApproved && (
                             <>
-                              <button
-                                type="button"
-                                className="btn btn-primary btn-sm"
+                              <Button
+                                size="sm"
                                 disabled
                                 title={EMPLOYER_USE_CAMPUS_DISABLED_TITLE}
                               >
                                 Use campus
-                              </button>
-                              <button
-                                className="btn btn-ghost btn-sm"
-                                style={{ padding: '0.4rem', border: '1px solid var(--border-default)', color: 'var(--danger-600)', opacity: TIE_UP_REVOKE_ENABLED ? 1 : 0.45 }}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon-sm"
                                 onClick={() => TIE_UP_REVOKE_ENABLED && setRevokeTarget(c)}
                                 disabled={!TIE_UP_REVOKE_ENABLED || revoking === c.id}
                                 title={TIE_UP_REVOKE_ENABLED ? `Revoke tie-up with ${c.name}` : TIE_UP_REVOKE_DISABLED_TITLE}
+                                aria-label={`Revoke tie-up with ${c.name}`}
                               >
-                                {revoking === c.id ? '…' : <Trash2 size={16} />}
-                              </button>
+                                {revoking === c.id ? '…' : <Trash2 aria-hidden />}
+                              </Button>
                             </>
                           )}
                           {showRequest && (
@@ -536,16 +398,16 @@ export default function SelectCampusPage() {
                               tooltip={`Request tie-up with ${c.name}`}
                             />
                           )}
-                          {isPending && <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', fontWeight: 600, padding: '0.4rem 0.5rem' }}>Awaiting Approval</span>}
+                          {isPending && <span className="text-muted-foreground text-xs font-medium">Awaiting Approval</span>}
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
 
       <ConfirmDialog

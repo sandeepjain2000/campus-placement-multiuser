@@ -4,7 +4,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import { mentorshipStatusLabel } from '@/lib/studentMentorshipRequest';
-import { HandHeart, Plus, Send, X } from 'lucide-react';
+import { HandHeart, Plus, Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Textarea } from '@/components/ui/textarea';
 
 const EMPTY_FORM = {
   title: '',
@@ -14,12 +21,11 @@ const EMPTY_FORM = {
   timeHint: '',
 };
 
-function statusBadgeClass(status) {
-  if (status === 'approved') return 'badge-green';
-  if (status === 'submitted') return 'badge-yellow';
-  if (status === 'rejected') return 'badge-red';
-  if (status === 'closed') return 'badge-gray';
-  return 'badge-gray';
+function statusTone(status) {
+  if (status === 'approved') return 'green';
+  if (status === 'submitted') return 'amber';
+  if (status === 'rejected') return 'red';
+  return 'gray';
 }
 
 export default function StudentMentorshipRequestsPage() {
@@ -134,253 +140,83 @@ export default function StudentMentorshipRequestsPage() {
   );
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div
-        style={{
-          marginBottom: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-          <span
-            style={{
-              display: 'flex',
-              padding: '0.5rem',
-              background: 'var(--primary-50)',
-              borderRadius: '10px',
-              color: 'var(--primary-600)',
-            }}
-            aria-hidden
-          >
-            <HandHeart size={24} />
-          </span>
-          <div>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem' }}>
-              Request a mentor
-            </h1>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Post what you need help with. Your college reviews the request; partnered employers can
-              volunteer informally — this is not a job application.
-            </p>
-          </div>
-        </div>
-        <button type="button" className="btn btn-primary" onClick={openCreate}>
-          <Plus size={16} style={{ marginRight: 6 }} />
-          New request
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="card" style={{ marginBottom: '1.5rem', padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <h2 style={{ margin: 0, fontSize: '1.1rem' }}>
-              {editing ? 'Edit request' : 'New mentorship request'}
-            </h2>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setShowForm(false)}>
-              <X size={16} />
-            </button>
-          </div>
-          <div style={{ display: 'grid', gap: '0.75rem' }}>
-            <label>
-              <span className="form-label">Title</span>
-              <input
-                className="form-input"
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                placeholder="e.g. Guidance on system design interviews"
-              />
-            </label>
-            <label>
-              <span className="form-label">What you need help with</span>
-              <textarea
-                className="form-input"
-                rows={4}
-                value={form.summary}
-                onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))}
-                placeholder="Describe your goals and what kind of mentorship would help."
-              />
-            </label>
-            <label>
-              <span className="form-label">Topics (optional)</span>
-              <input
-                className="form-input"
-                value={form.topics}
-                onChange={(e) => setForm((f) => ({ ...f, topics: e.target.value }))}
-                placeholder="e.g. DSA, resume, cloud architecture"
-              />
-            </label>
-            <label>
-              <span className="form-label">Preferred format (optional)</span>
-              <input
-                className="form-input"
-                value={form.preferredFormat}
-                onChange={(e) => setForm((f) => ({ ...f, preferredFormat: e.target.value }))}
-                placeholder="e.g. 30-min video call, async chat"
-              />
-            </label>
-            <label>
-              <span className="form-label">Timing (optional)</span>
-              <input
-                className="form-input"
-                value={form.timeHint}
-                onChange={(e) => setForm((f) => ({ ...f, timeHint: e.target.value }))}
-                placeholder="e.g. Weekends, before placements"
-              />
-            </label>
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              disabled={saving}
-              onClick={() => submitForm(false)}
-            >
-              Save draft
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              disabled={saving}
-              onClick={() => submitForm(true)}
-            >
-              <Send size={14} style={{ marginRight: 6 }} />
-              Submit to college
-            </button>
-          </div>
-        </div>
-      )}
-
-      {loading ? (
-        <p className="text-secondary">Loading…</p>
-      ) : sorted.length === 0 ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
-            No requests yet. Create one when you want informal guidance from industry mentors.
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <HandHeart className="text-muted-foreground size-7" strokeWidth={1.5} />
+            Request a mentor
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
+            Request informal guidance from partnered employers after your college reviews the topic.
           </p>
         </div>
+        <Button type="button" onClick={openCreate}><Plus data-icon="inline-start" />New request</Button>
+      </div>
+
+      {showForm ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>{editing ? 'Edit request' : 'New mentorship request'}</CardTitle>
+            <CardDescription>Describe the outcome you want and how a mentor can help.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FieldGroup>
+              <Field><FieldLabel htmlFor="mentor-title">Title</FieldLabel><Input id="mentor-title" name="title" autoComplete="off" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="Guidance on system design interviews…" /></Field>
+              <Field><FieldLabel htmlFor="mentor-summary">What you need help with</FieldLabel><Textarea id="mentor-summary" name="summary" autoComplete="off" rows={4} value={form.summary} onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))} placeholder="Describe your goals and the guidance you need…" /></Field>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Field><FieldLabel htmlFor="mentor-topics">Topics (optional)</FieldLabel><Input id="mentor-topics" name="topics" autoComplete="off" value={form.topics} onChange={(e) => setForm((f) => ({ ...f, topics: e.target.value }))} placeholder="DSA, résumé, cloud…" /></Field>
+                <Field><FieldLabel htmlFor="mentor-format">Preferred format</FieldLabel><Input id="mentor-format" name="preferredFormat" autoComplete="off" value={form.preferredFormat} onChange={(e) => setForm((f) => ({ ...f, preferredFormat: e.target.value }))} placeholder="30-minute video call…" /></Field>
+                <Field><FieldLabel htmlFor="mentor-timing">Timing</FieldLabel><Input id="mentor-timing" name="timeHint" autoComplete="off" value={form.timeHint} onChange={(e) => setForm((f) => ({ ...f, timeHint: e.target.value }))} placeholder="Weekends…" /></Field>
+              </div>
+            </FieldGroup>
+          </CardContent>
+          <CardFooter className="flex-wrap gap-2">
+            <Button type="button" variant="outline" disabled={saving} onClick={() => submitForm(false)}>Save draft</Button>
+            <Button type="button" disabled={saving} onClick={() => submitForm(true)}><Send data-icon="inline-start" />Submit to college</Button>
+            <Button type="button" variant="ghost" disabled={saving} onClick={() => setShowForm(false)}>Cancel</Button>
+          </CardFooter>
+        </Card>
+      ) : null}
+
+      {loading ? <Card><CardContent className="text-muted-foreground py-10 text-center">Loading requests…</CardContent></Card> : sorted.length === 0 ? (
+        <Card><CardContent className="text-muted-foreground py-10 text-center">No requests yet. Create one when you want informal guidance from an industry mentor.</CardContent></Card>
       ) : (
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
-          {sorted.map((item) => (
-            <div key={item.id} className="card" style={{ padding: '1rem 1.25rem' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '1rem',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <strong>{item.title}</strong>
-                    <span className={`badge ${statusBadgeClass(item.status)}`}>
-                      {mentorshipStatusLabel(item.status)}
-                    </span>
-                  </div>
-                  <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                    {item.summary}
-                  </p>
-                  {item.collegeNote && (
-                    <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem' }}>
-                      <strong>College note:</strong> {item.collegeNote}
-                    </p>
-                  )}
-                  {item.status === 'approved' && item.volunteerCount > 0 && (
-                    <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: 'var(--primary-700)' }}>
-                      {item.volunteerCount} mentor{item.volunteerCount === 1 ? '' : 's'} volunteered
-                    </p>
-                  )}
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-b px-4 py-3"><CardTitle className="text-base">Your requests</CardTitle><CardDescription>{sorted.length} mentorship request{sorted.length === 1 ? '' : 's'}</CardDescription></CardHeader>
+          <CardContent className="divide-y p-0">
+            {sorted.map((item) => (
+              <div key={item.id} className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2"><h2 className="m-0 text-base font-semibold">{item.title}</h2><StatusBadge tone={statusTone(item.status)} showDot>{mentorshipStatusLabel(item.status) || '—'}</StatusBadge></div>
+                  <p className="text-muted-foreground mt-1 mb-0 text-sm">{item.summary}</p>
+                  {item.collegeNote ? <p className="mt-2 mb-0 text-sm"><strong>College note:</strong> {item.collegeNote}</p> : null}
+                  {item.status === 'approved' && item.volunteerCount > 0 ? <p className="text-primary mt-1 mb-0 text-xs font-medium">{item.volunteerCount} mentor{item.volunteerCount === 1 ? '' : 's'} volunteered</p> : null}
                 </div>
-                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-                  {(item.status === 'draft' || item.status === 'rejected') && (
-                    <>
-                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => openEdit(item)}>
-                        Edit
-                      </button>
-                      <button type="button" className="btn btn-primary btn-sm" onClick={() => submitExisting(item.id)}>
-                        Submit
-                      </button>
-                    </>
-                  )}
-                  {item.status === 'approved' && (
-                    <>
-                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => setDetail(item)}>
-                        View volunteers
-                      </button>
-                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => closeRequest(item.id)}>
-                        Close
-                      </button>
-                    </>
-                  )}
-                  {item.status === 'submitted' && (
-                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => closeRequest(item.id)}>
-                      Withdraw
-                    </button>
-                  )}
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  {(item.status === 'draft' || item.status === 'rejected') ? <><Button type="button" variant="outline" size="sm" onClick={() => openEdit(item)}>Edit</Button><Button type="button" size="sm" onClick={() => submitExisting(item.id)}>Submit</Button></> : null}
+                  {item.status === 'approved' ? <><Button type="button" variant="outline" size="sm" onClick={() => setDetail(item)}>View volunteers</Button><Button type="button" variant="ghost" size="sm" onClick={() => closeRequest(item.id)}>Close</Button></> : null}
+                  {item.status === 'submitted' ? <Button type="button" variant="ghost" size="sm" onClick={() => closeRequest(item.id)}>Withdraw</Button> : null}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </CardContent>
+        </Card>
       )}
 
-      {detail && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.45)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 50,
-            padding: '1rem',
-          }}
-          onClick={() => setDetail(null)}
-        >
-          <div
-            className="card"
-            style={{ maxWidth: 520, width: '100%', padding: '1.25rem', maxHeight: '80vh', overflow: 'auto' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Mentor volunteers</h2>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setDetail(null)}>
-                <X size={16} />
-              </button>
+      <Dialog open={Boolean(detail)} onOpenChange={(open) => { if (!open) setDetail(null); }}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Mentor volunteers</DialogTitle><DialogDescription>{detail?.title}</DialogDescription></DialogHeader>
+          {(detail?.volunteers || []).length === 0 ? <p className="text-muted-foreground m-0 text-sm">No volunteers yet. Check back after employers respond.</p> : (
+            <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto">
+              {detail?.volunteers.map((v) => <Card key={v.id} size="sm"><CardHeader><CardTitle>{v.companyName}</CardTitle><CardDescription>{v.volunteeredAt ? new Date(v.volunteeredAt).toLocaleString() : ''}</CardDescription></CardHeader>{v.message ? <CardContent className="text-sm">{v.message}</CardContent> : null}</Card>)}
             </div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{detail.title}</p>
-            {(detail.volunteers || []).length === 0 ? (
-              <p>No volunteers yet. Check back after employers respond.</p>
-            ) : (
-              <ul style={{ margin: 0, paddingLeft: '1.1rem' }}>
-                {detail.volunteers.map((v) => (
-                  <li key={v.id} style={{ marginBottom: '0.75rem' }}>
-                    <strong>{v.companyName}</strong>
-                    {v.message && (
-                      <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem' }}>{v.message}</p>
-                    )}
-                    <span className="text-secondary text-sm">
-                      {v.volunteeredAt ? new Date(v.volunteeredAt).toLocaleString() : ''}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '1rem' }}>
-              Coordinate follow-up directly with volunteers or through your placement office.
-            </p>
-          </div>
-        </div>
-      )}
+          )}
+          <p className="text-muted-foreground m-0 text-xs">Coordinate follow-up directly with volunteers or through your placement office.</p>
+        </DialogContent>
+      </Dialog>
 
-      <p style={{ marginTop: '1.5rem', fontSize: '0.8rem' }}>
+      <p className="text-muted-foreground m-0 text-xs">
         <Link href="/dashboard/student/overview">Back to overview</Link>
         {' · '}
         Looking for formal mentorship programs? See{' '}

@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 import { Search, Sparkles } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { filterScreensForRole } from '@/config/screenRegistry';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 
 export default function ScreenSearchBar() {
   const { data: session, status } = useSession();
@@ -99,23 +102,12 @@ export default function ScreenSearchBar() {
 
   return (
     <div className={`screen-search-bar${open || q ? ' is-open' : ''}`} ref={wrapRef} style={{ position: 'relative' }}>
-      <div
-        className="screen-search-inline"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.35rem',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-md)',
-          padding: '0.15rem 0.5rem 0.15rem 0.35rem',
-          background: 'var(--bg-primary)',
-          minWidth: 'min(200px, 42vw)',
-        }}
-      >
-        <Search size={16} aria-hidden style={{ flexShrink: 0, color: 'var(--text-tertiary)' }} />
-        <input
+      <InputGroup className="min-w-[min(200px,42vw)]">
+        <InputGroupAddon>
+          <Search aria-hidden />
+        </InputGroupAddon>
+        <InputGroupInput
           type="search"
-          className="form-input"
           placeholder="Search screens (Ctrl+K)…"
           value={q}
           aria-label="Search dashboard screens"
@@ -128,37 +120,21 @@ export default function ScreenSearchBar() {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          style={{
-            border: 'none',
-            boxShadow: 'none',
-            flex: 1,
-            minWidth: 0,
-            padding: '0.35rem 0.25rem',
-            background: 'transparent',
-          }}
         />
-      </div>
+      </InputGroup>
       {open && (
-        <div
-          className="card screen-search-popover"
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 'calc(100% + 6px)',
-            width: 'min(420px, 92vw)',
-            zIndex: 80,
-            padding: '0.75rem',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
-          }}
+        <Card
+          className="screen-search-popover absolute right-0 top-[calc(100%+6px)] z-40 w-[min(420px,92vw)] shadow-xl"
         >
-          <label className="form-label" style={{ marginBottom: '0.35rem' }}>
-            Screens ({role.replace(/_/g, ' ')})
-          </label>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-secondary btn-sm" disabled={aiLoading || !q.trim()} onClick={runAi}>
-              <Sparkles size={14} style={{ marginRight: 4 }} aria-hidden />
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Screens ({role.replace(/_/g, ' ')})</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" disabled={aiLoading || !q.trim()} onClick={runAi}>
+              <Sparkles data-icon="inline-start" aria-hidden />
               {aiLoading ? '…' : 'Smart match (AI)'}
-            </button>
+            </Button>
             {aiNote && <span className="text-xs text-secondary" style={{ flex: '1 1 100%' }}>{aiNote}</span>}
           </div>
           <div style={{ marginTop: '0.65rem', maxHeight: 280, overflowY: 'auto' }}>
@@ -230,7 +206,8 @@ export default function ScreenSearchBar() {
               </p>
             )}
           </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

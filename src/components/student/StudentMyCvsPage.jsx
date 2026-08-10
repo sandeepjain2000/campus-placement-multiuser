@@ -15,6 +15,12 @@ import {
   studentCvRowMissingFile,
 } from '@/lib/studentCvLoadClient';
 import { Archive, CheckCircle2, CircleAlert, FileText, Star, Upload } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const fetcher = async () => fetchStudentCvListClassified('?includeArchived=1');
 
@@ -30,33 +36,23 @@ function CvLoadBanner({ result }) {
   if (!isRequest && !isUnavailable) return null;
 
   return (
-    <div
-      className="card"
-      role="status"
-      style={{
-        padding: '1rem',
-        marginBottom: '1rem',
-        borderColor: isRequest ? 'var(--warning-300)' : 'var(--border-default)',
-        background: isRequest ? 'var(--warning-50, #fffbeb)' : undefined,
-      }}
-    >
-      <p style={{ margin: 0, display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-        <CircleAlert size={18} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden />
-        <span>
+    <Alert role="status">
+      <CircleAlert aria-hidden="true" />
+      <AlertTitle>{isUnavailable ? 'CV Service Unavailable' : 'Could Not Refresh CVs'}</AlertTitle>
+      <AlertDescription>
           {result.message
             || (isUnavailable
               ? STUDENT_CV_LOAD_MESSAGES.UNAVAILABLE
               : STUDENT_CV_LOAD_MESSAGES.REQUEST_FAILED)}
-        </span>
-      </p>
+      </AlertDescription>
       {result.errorCode || result.reference ? (
-        <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0 1.75rem' }}>
+        <p className="text-muted-foreground col-start-2 m-0 text-xs">
           {result.errorCode ? `Code: ${result.errorCode}` : null}
           {result.errorCode && result.reference ? ' · ' : null}
           {result.reference ? `Ref: ${result.reference}` : null}
         </p>
       ) : null}
-    </div>
+    </Alert>
   );
 }
 
@@ -125,126 +121,107 @@ export default function StudentMyCvsPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-        <span
-          style={{
-            display: 'flex',
-            padding: '0.5rem',
-            background: 'var(--primary-50)',
-            borderRadius: 10,
-            color: 'var(--primary-600)',
-          }}
-        >
-          <FileText size={24} />
-        </span>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem' }}>My CVs</h1>
-          <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-12">
+      <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <FileText className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+            My CVs
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             Label each CV (max {CV_LABEL_MAX_LENGTH} characters). Choose which CV to send with each application.
             CVs shared with employers cannot be deleted — archive instead.
           </p>
-        </div>
       </div>
 
       {data ? <CvLoadBanner result={data} /> : null}
 
       {cvVerification.required && !cvVerification.hasVerifiedCv && !loadFailed ? (
-        <div className="card" style={{ padding: '1rem', marginBottom: '1rem', borderColor: 'var(--warning-300)' }}>
-          <p style={{ margin: 0, display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-            <CircleAlert size={18} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden />
-            <span>
+        <Alert>
+          <CircleAlert aria-hidden="true" />
+          <AlertTitle>CV Verification Required</AlertTitle>
+          <AlertDescription>
               Your college requires CV verification before you can apply to drives and internships.
               Ask your placement office to verify an uploaded CV below.
-            </span>
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
-      <div className="card" style={{ padding: '1.25rem', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: '0 0 1rem', fontSize: '1rem' }}>Upload a new CV</h2>
-        <div style={{ display: 'grid', gap: '0.75rem', maxWidth: 480 }}>
-          <CvLabelInput label={label} onChange={setLabel} disabled={uploading} />
-          <label className="btn btn-primary" style={{ width: 'fit-content', cursor: uploading ? 'wait' : 'pointer' }}>
-            <Upload size={16} style={{ marginRight: 6 }} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Upload a New CV</CardTitle>
+          <CardDescription>Add a clear label so you can select the right CV for each application.</CardDescription>
+        </CardHeader>
+        <CardContent>
+        <FieldGroup className="max-w-md">
+          <Field><CvLabelInput label={label} onChange={setLabel} disabled={uploading} /></Field>
+          <Field>
+          <Button render={<label htmlFor="new-cv-file" />} nativeButton={false} className="w-fit">
+            <Upload data-icon="inline-start" aria-hidden="true" />
             {uploading ? 'Uploading…' : 'Choose file'}
-            <input type="file" accept=".pdf,.doc,.docx" hidden disabled={uploading} onChange={onUpload} />
-          </label>
-        </div>
-      </div>
+            <input id="new-cv-file" type="file" accept=".pdf,.doc,.docx" hidden disabled={uploading} onChange={onUpload} />
+          </Button>
+          <FieldDescription>PDF or Word document.</FieldDescription>
+          </Field>
+        </FieldGroup>
+        </CardContent>
+      </Card>
 
       {isLoading ? (
-        <p className="text-secondary">Loading…</p>
+        <p className="text-muted-foreground m-0">Loading…</p>
       ) : (
         <>
-          <h2 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Active CVs ({active.length})</h2>
+          <h2 className="text-foreground m-0 text-lg font-semibold">Active CVs ({active.length})</h2>
           {active.length === 0 ? (
-            <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
-              <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+            <Card size="sm">
+              <CardContent className="text-muted-foreground py-8 text-center">
                 {loadFailed
                   ? 'CV list could not be refreshed. Upload is still available — try again in a moment.'
                   : STUDENT_CV_LOAD_MESSAGES.EMPTY}
-              </p>
-            </div>
+              </CardContent>
+            </Card>
           ) : (
-            <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+            <div className="grid gap-3">
               {active.map((cv) => (
-                <div key={cv.id} className="card" style={{ padding: '1rem 1.25rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-                    <div>
+                <Card key={cv.id} size="sm">
+                  <CardHeader>
+                    <div className="min-w-0">
                       {editingId === cv.id ? (
-                        <input
-                          className="form-input"
+                        <Input
+                          aria-label="CV label"
                           value={editLabel}
                           maxLength={CV_LABEL_MAX_LENGTH}
                           onChange={(e) => setEditLabel(e.target.value)}
-                          style={{ maxWidth: 240 }}
+                          className="max-w-60"
                         />
                       ) : (
-                        <strong>{cv.label}</strong>
+                        <CardTitle className="truncate" title={cv.label}>{cv.label}</CardTitle>
                       )}
-                      {cv.isDefault && (
-                        <span className="badge badge-green" style={{ marginLeft: 8 }}>
-                          Default
-                        </span>
-                      )}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                      {cv.isDefault && <StatusBadge tone="green" showDot>Default</StatusBadge>}
                       {cvVerification.required ? (
                         cv.isVerified ? (
-                          <span className="badge badge-green" style={{ marginLeft: 8 }}>
-                            <CheckCircle2 size={12} style={{ display: 'inline', verticalAlign: 'text-bottom' }} aria-hidden />
-                            {' '}
-                            Verified
-                          </span>
+                          <StatusBadge tone="green"><CheckCircle2 aria-hidden="true" /> Verified</StatusBadge>
                         ) : (
-                          <span className="badge badge-amber" style={{ marginLeft: 8 }}>
-                            Pending verification
-                          </span>
+                          <StatusBadge tone="amber" showDot>Pending Verification</StatusBadge>
                         )
                       ) : null}
+                      </div>
                       {(cv.usedOnApplications || 0) > 0 && (
-                        <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                        <CardDescription className="mt-2">
                           Used on {cv.usedOnApplications} application{cv.usedOnApplications === 1 ? '' : 's'}
-                        </p>
+                        </CardDescription>
                       )}
                       {studentCvRowMissingFile(cv) ? (
-                        <p
-                          style={{
-                            margin: '0.35rem 0 0',
-                            fontSize: '0.8rem',
-                            color: 'var(--warning-700, #b45309)',
-                            fontWeight: 600,
-                          }}
-                        >
-                          {STUDENT_CV_LOAD_MESSAGES.MISSING_FILE}
-                        </p>
+                        <StatusBadge tone="amber" className="mt-2">{STUDENT_CV_LOAD_MESSAGES.MISSING_FILE}</StatusBadge>
                       ) : null}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                  </CardHeader>
+                  <CardFooter className="flex-wrap gap-2">
                       {editingId === cv.id ? (
                         <>
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-primary btn-sm"
+                            size="sm"
                             onClick={async () => {
                               try {
                                 await patchCv(cv.id, { label: editLabel });
@@ -256,27 +233,29 @@ export default function StudentMyCvsPage() {
                             }}
                           >
                             Save
-                          </button>
-                          <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)}>
+                          </Button>
+                          <Button type="button" variant="ghost" size="sm" onClick={() => setEditingId(null)}>
                             Cancel
-                          </button>
+                          </Button>
                         </>
                       ) : (
                         <>
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-secondary btn-sm"
+                            variant="outline"
+                            size="sm"
                             onClick={() => {
                               setEditingId(cv.id);
                               setEditLabel(cv.label);
                             }}
                           >
                             Edit label
-                          </button>
+                          </Button>
                           {!cv.isDefault && (
-                            <button
+                            <Button
                               type="button"
-                              className="btn btn-secondary btn-sm"
+                              variant="outline"
+                              size="sm"
                               onClick={async () => {
                                 try {
                                   await patchCv(cv.id, { action: 'set_default' });
@@ -286,13 +265,14 @@ export default function StudentMyCvsPage() {
                                 }
                               }}
                             >
-                              <Star size={14} style={{ marginRight: 4 }} />
+                              <Star data-icon="inline-start" aria-hidden="true" />
                               Set default
-                            </button>
+                            </Button>
                           )}
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm"
+                            variant="ghost"
+                            size="sm"
                             onClick={async () => {
                               if (!window.confirm('Archive this CV? It stays available for past applications.')) return;
                               try {
@@ -303,53 +283,50 @@ export default function StudentMyCvsPage() {
                               }
                             }}
                           >
-                            <Archive size={14} style={{ marginRight: 4 }} />
+                            <Archive data-icon="inline-start" aria-hidden="true" />
                             Archive
-                          </button>
+                          </Button>
                           <CvViewDownloadButtons
                             viewUrl={studentCvRowMissingFile(cv) ? null : studentCvViewUrl(cv.id)}
                             downloadUrl={studentCvRowMissingFile(cv) ? null : studentCvDownloadUrl(cv.id)}
                             viewLabel="View"
                           />
                           {studentCvRowMissingFile(cv) ? (
-                            <span className="text-xs text-tertiary">File unavailable</span>
+                            <span className="text-muted-foreground text-xs">File unavailable</span>
                           ) : null}
                         </>
                       )}
-                    </div>
-                  </div>
-                </div>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           )}
 
           {archived.length > 0 && (
             <>
-              <h2 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Archived ({archived.length})</h2>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
+              <h2 className="text-foreground mt-2 mb-0 text-lg font-semibold">Archived ({archived.length})</h2>
+              <p className="text-muted-foreground m-0 text-sm">
                 Archived CVs are hidden from new applications but remain available to employers for applications that
                 already used them.
               </p>
-              <div style={{ display: 'grid', gap: '0.5rem' }}>
+              <div className="grid gap-2">
                 {archived.map((cv) => (
-                  <div key={cv.id} className="card" style={{ padding: '0.75rem 1rem', opacity: 0.85 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                      <div>
-                        <strong>{cv.label}</strong>
-                        <span className="badge badge-gray" style={{ marginLeft: 8 }}>
-                          Archived
-                        </span>
-                      </div>
+                  <Card key={cv.id} size="sm" className="opacity-85">
+                    <CardHeader>
+                      <CardTitle>{cv.label}</CardTitle>
+                      <CardAction><StatusBadge tone="gray">Archived</StatusBadge></CardAction>
+                    </CardHeader>
+                    <CardFooter>
                       {cv.hasFile === false ? (
-                        <span className="text-xs text-tertiary">File no longer available</span>
+                        <span className="text-muted-foreground text-xs">File no longer available</span>
                       ) : (
                         <CvViewDownloadButtons
                           viewUrl={studentCvViewUrl(cv.id)}
                           downloadUrl={studentCvDownloadUrl(cv.id)}
                         />
                       )}
-                    </div>
-                  </div>
+                    </CardFooter>
+                  </Card>
                 ))}
               </div>
             </>
@@ -357,11 +334,10 @@ export default function StudentMyCvsPage() {
         </>
       )}
 
-      <p style={{ marginTop: '1.5rem', fontSize: '0.8rem' }}>
-        <Link href="/dashboard/student/documents">Other documents</Link>
-        {' · '}
-        <Link href="/dashboard/student/profile">My profile</Link>
-      </p>
+      <div className="flex gap-2">
+        <Button variant="link" render={<Link href="/dashboard/student/documents" />} nativeButton={false}>Other Documents</Button>
+        <Button variant="link" render={<Link href="/dashboard/student/profile" />} nativeButton={false}>My Profile</Button>
+      </div>
     </div>
   );
 }

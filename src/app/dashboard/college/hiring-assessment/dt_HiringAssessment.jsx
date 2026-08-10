@@ -13,6 +13,11 @@ import { downloadCsvFromApi } from '@/lib/downloadCsvFromApi';
 import { pickRepresentativeAssessmentRows } from '@/lib/assessmentRowsDedupe';
 import { COLLEGE_OFFERS_ALL_STUDENTS_CSV_FILENAME } from '@/lib/offersAssessmentStarterCsv';
 import { ClipboardList, Users, Upload, Download } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function CollegeHiringAssessmentPage() {
   const { addToast } = useToast();
@@ -100,65 +105,63 @@ export default function CollegeHiringAssessmentPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      {/* Glassmorphic Hero */}
-      <div style={{
-        position: 'relative', background: 'var(--banner-gradient)',
-        borderRadius: 'var(--radius-xl)', padding: '2.5rem', color: 'white', overflow: 'hidden',
-        marginBottom: '2rem', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem'
-      }}>
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', borderRadius: '50%' }} />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 style={{ color: '#ffffff', fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <ClipboardList size={28} /> Hiring Assessment
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <ClipboardList className="text-muted-foreground size-7" /> Hiring assessment
           </h1>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.85)', margin: 0 }}>Read-only view of employer CSV uploads for your campus. Export for spreadsheets.</p>
+          <p className="text-muted-foreground mt-1 text-sm">Read-only view of employer CSV uploads for your campus. Export for spreadsheets.</p>
         </div>
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <button type="button" className="btn" onClick={downloadOffersImportStarter} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Download size={16} /> All Students Template
-          </button>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" onClick={downloadOffersImportStarter}>
+            <Download data-icon="inline-start" /> All students template
+          </Button>
           <ExportCsvSplitButton filenameBase="hiring_assessment_college_view" currentCount={displayRows.length} fullCount={displayRows.length} getRows={getCsv} />
         </div>
       </div>
 
       {loading ? (
-        <div className="skeleton skeleton-card" style={{ height: 200 }} />
+        <div className="skeleton skeleton-card h-48" />
       ) : loadError ? (
-        <div className="card" style={{ padding: '1.25rem', borderColor: 'var(--danger-200)', background: 'var(--danger-50)' }}>
-          <p style={{ margin: 0, color: 'var(--danger-700)', fontWeight: 600 }}>{loadError}</p>
-          <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load assessment data</AlertTitle>
+          <AlertDescription>
+            {loadError}{' '}
             If this mentions missing tables, apply migration <code>013_audit_exports_and_assessment_uploads.sql</code> on production.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : (
         <>
-          <div className="grid grid-3" style={{ marginBottom: '1.5rem' }}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Assessment summary</CardTitle>
+              <CardDescription>Most recent representative result per student.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap divide-x">
             {[
-              { label: 'Total Students', value: summary.uniqueStudentCount ?? 0, sub: summary.totalResultRows > 0 ? `${summary.totalResultRows} upload row(s)` : null, icon: Users, color: 'var(--primary-600)', bg: 'var(--primary-50)' },
-              { label: 'Upload Batches', value: summary.uploadsCount, sub: null, icon: Upload, color: 'var(--info-600)', bg: 'rgba(2,132,199,0.08)' },
-              { label: 'With hiring result', value: summary.withHiringResult ?? 0, sub: summary.withoutHiringResult ? `${summary.withoutHiringResult} pending` : null, icon: ClipboardList, color: 'var(--warning-600)', bg: 'rgba(217,119,6,0.08)' },
-            ].map(({ label, value, sub, icon: Icon, color, bg }) => (
-              <div key={label} className="card" style={{ padding: '1.5rem', border: '1px solid var(--border-default)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                  <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', background: bg, color }}><Icon size={20} strokeWidth={2} /></div>
-                </div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>{value}</div>
-                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontWeight: 500 }}>{label}</div>
-                {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '0.25rem' }}>{sub}</div>}
+              { label: 'Total students', value: summary.uniqueStudentCount ?? 0, sub: summary.totalResultRows > 0 ? `${summary.totalResultRows} upload rows` : null, icon: Users },
+              { label: 'Upload batches', value: summary.uploadsCount, sub: null, icon: Upload },
+              { label: 'With hiring result', value: summary.withHiringResult ?? 0, sub: summary.withoutHiringResult ? `${summary.withoutHiringResult} pending` : null, icon: ClipboardList },
+            ].map(({ label, value, sub, icon: Icon }) => (
+              <div key={label} className="flex min-w-48 flex-1 items-center gap-3 px-4 py-2 first:pl-0 last:pr-0">
+                <Icon className="text-muted-foreground size-5" />
+                <div><div className="text-xl font-semibold">{value}</div><div className="text-muted-foreground text-xs">{label}{sub ? ` · ${sub}` : ''}</div></div>
               </div>
             ))}
-          </div>
+            </CardContent>
+          </Card>
 
           <HiringResultBreakdown summary={summary} />
 
-          <div className="card">
-            <p className="text-xs text-secondary" style={{ marginBottom: '0.75rem', lineHeight: 1.5 }}>
+          <Card className="gap-0 overflow-hidden py-0">
+            <CardHeader className="border-b px-4 py-3">
+              <CardTitle className="text-base">Student assessment detail</CardTitle>
+              <CardDescription>
               <strong>Detail (read-only).</strong> One row per student; if the same roll appears in multiple assessment files, the <strong>most recent upload</strong>{' '}
               determines what you see here (older batches remain stored). <strong>Candidate</strong> is the name from your campus student master list for that roll (then
               email, then roll). CSV placeholders like &quot;Student_1&quot; are not shown here.
-            </p>
+              </CardDescription>
             {totalCount > 0 ? (
               <DataTableToolbar
                 search={search}
@@ -171,52 +174,33 @@ export default function CollegeHiringAssessmentPage() {
                 totalCount={totalCount}
                 hasActiveFilters={hasActiveFilters}
                 onClear={clearFilters}
-                style={{ marginBottom: '1rem' }}
               />
             ) : null}
-            <div className="table-container" style={{ overflowX: 'auto', border: 'none' }}>
-              <table className="data-table" style={{ minWidth: 960 }}>
-                <thead>
-                  <tr>
-                    <th>Employer</th>
-                    <th>File</th>
-                    <th>Roll</th>
-                    <th>Candidate</th>
-                    <th>Hiring result</th>
-                    <th>Remarks</th>
-                  </tr>
-                </thead>
-                <tbody>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader><TableRow><TableHead>Employer</TableHead><TableHead>File</TableHead><TableHead>Roll</TableHead><TableHead>Candidate</TableHead><TableHead>Hiring result</TableHead><TableHead>Remarks</TableHead></TableRow></TableHeader>
+                <TableBody>
                   {displayRows.length === 0 && totalCount > 0 ? (
-                    <tr>
-                      <td colSpan={colCount} className="text-center text-secondary">
-                        No rows match your search.
-                      </td>
-                    </tr>
+                    <TableRow><TableCell colSpan={colCount} className="text-muted-foreground h-24 text-center">No rows match your search.</TableCell></TableRow>
                   ) : null}
                   {displayRows.map((r) => (
-                    <tr key={r.id}>
-                      <td className="text-sm">{r.employer_company || '—'}</td>
-                      <td className="text-xs">{r.original_file_name || '—'}</td>
-                      <td className="text-sm font-mono">{r.roll_number}</td>
-                      <td className="text-sm">{r.candidate_name || '—'}</td>
-                      <td className="text-sm">{r.hiring_result || '—'}</td>
-                      <td className="text-sm" style={{ maxWidth: 220 }}>
-                        {r.remarks || '—'}
-                      </td>
-                    </tr>
+                    <TableRow key={r.id}>
+                      <TableCell>{r.employer_company || '—'}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">{r.original_file_name || '—'}</TableCell>
+                      <TableCell className="font-mono">{r.roll_number}</TableCell>
+                      <TableCell>{r.candidate_name || '—'}</TableCell>
+                      <TableCell><StatusBadge tone={r.hiring_result ? 'info' : 'neutral'}>{r.hiring_result || 'Pending'}</StatusBadge></TableCell>
+                      <TableCell className="max-w-56">{r.remarks || '—'}</TableCell>
+                    </TableRow>
                   ))}
                   {totalCount === 0 ? (
-                    <tr>
-                      <td colSpan={colCount} className="text-center text-secondary">
-                        No assessment upload rows for your campus yet. When employers submit CSV results, they will appear here.
-                      </td>
-                    </tr>
+                    <TableRow><TableCell colSpan={colCount} className="text-muted-foreground h-24 text-center">No assessment upload rows for your campus yet. When employers submit CSV results, they will appear here.</TableCell></TableRow>
                   ) : null}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </>
       )}
     </div>

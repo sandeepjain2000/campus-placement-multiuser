@@ -13,6 +13,15 @@ import PageLoading from '@/components/PageLoading';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { STUDENT_DOCUMENT_ACCEPT_ATTR } from '@/lib/studentDocumentUpload';
 import { uploadStudentDocumentViaServer } from '@/lib/clientStudentDocumentUpload';
+import { FileText, Grid2X2, List, Upload } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = (url) => fetch(url).then((res) => {
   if (!res.ok) throw new Error('Failed to load documents');
@@ -116,132 +125,130 @@ export default function StudentDocumentsPage() {
   if (error) return <PageError error={error} />;
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>📄 My documents</h1>
-          <p>
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <FileText className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+            My Documents
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             CVs are managed separately with mandatory labels.{' '}
-            <Link href="/dashboard/student/my-cvs" style={{ fontWeight: 600 }}>
+            <Link href="/dashboard/student/my-cvs" className="text-foreground font-medium hover:underline">
               My CVs
             </Link>{' '}
             — use this page for ID proof, academic records, certificates, and other files.
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
-          <div className="view-toggle" role="group" aria-label="Document view">
-            <button type="button" className={view === 'cards' ? 'active' : ''} onClick={() => setView('cards')}>Cards</button>
-            <button type="button" className={view === 'table' ? 'active' : ''} onClick={() => setView('table')}>Table</button>
-          </div>
-          <Link href="/dashboard/student/my-cvs" className="btn btn-secondary">
-            My CVs
-          </Link>
-          <button type="button" className="btn btn-primary" onClick={() => setShowUpload(!showUpload)}>
-            + Other document
-          </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Tabs value={view} onValueChange={setView}>
+            <TabsList aria-label="Document view">
+              <TabsTrigger value="cards"><Grid2X2 data-icon="inline-start" aria-hidden="true" /> Cards</TabsTrigger>
+              <TabsTrigger value="table"><List data-icon="inline-start" aria-hidden="true" /> Table</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button variant="outline" render={<Link href="/dashboard/student/my-cvs" />} nativeButton={false}>My CVs</Button>
+          <Button type="button" onClick={() => setShowUpload(!showUpload)}>
+            <Upload data-icon="inline-start" aria-hidden="true" /> Other Document
+          </Button>
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1.25rem', border: '1px solid var(--primary-200)', background: 'var(--primary-50)' }}>
-        <div style={{ padding: '1.25rem 1.5rem' }}>
-          <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.05rem', fontWeight: 700, color: 'var(--primary-900)' }}>
-            CVs / résumés
-          </h3>
-          <p className="text-sm text-secondary" style={{ margin: '0 0 0.75rem', lineHeight: 1.55 }}>
+      <Alert>
+        <FileText aria-hidden="true" />
+        <AlertTitle>CVs / Résumés</AlertTitle>
+        <AlertDescription>
             Upload labelled CVs, choose which one to send with each application, and archive old versions. Employers see your
             label only — not the original file name.
-          </p>
-          <Link href="/dashboard/student/my-cvs" className="btn btn-primary btn-sm">
-            Go to My CVs
-          </Link>
-        </div>
-      </div>
+          <div className="mt-3"><Button size="sm" render={<Link href="/dashboard/student/my-cvs" />} nativeButton={false}>Go to My CVs</Button></div>
+        </AlertDescription>
+      </Alert>
 
       {showUpload && (
-        <div className="card" style={{ marginBottom: '1.5rem', border: '2px dashed var(--primary-300)' }}>
-          <div style={{ padding: '1.5rem' }}>
-            <h3 style={{ marginBottom: '0.75rem' }}>Upload another document</h3>
-            <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Upload Another Document</CardTitle>
+            <CardDescription>
               ID proof, academic records, certificates, and other files. For CVs, use{' '}
               <Link href="/dashboard/student/my-cvs">My CVs</Link>.
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-              <select className="form-select" style={{ width: 'auto' }} value={docType} onChange={(e) => setDocType(e.target.value)} disabled={uploading}>
-                <option value="id_proof">ID proof</option>
-                <option value="academic">Academic</option>
-                <option value="certificate">Certificate</option>
-                <option value="other">Other</option>
-              </select>
-              <label className="btn btn-primary" style={{ cursor: uploading ? 'wait' : 'pointer', margin: 0 }}>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FieldGroup className="max-w-md">
+            <Field>
+              <FieldLabel htmlFor="student-document-type">Document Type</FieldLabel>
+              <AdminFilterSelect
+                id="student-document-type"
+                className="w-full"
+                value={docType}
+                disabled={uploading}
+                emptyMapsToAll={false}
+                onValueChange={setDocType}
+                items={[
+                  { label: 'ID proof', value: 'id_proof' },
+                  { label: 'Academic', value: 'academic' },
+                  { label: 'Certificate', value: 'certificate' },
+                  { label: 'Other', value: 'other' },
+                ]}
+              />
+              <FieldDescription>PDF, Word documents, or supported images.</FieldDescription>
+            </Field>
+            <Field>
+              <Button render={<label htmlFor="student-document-file" />} nativeButton={false} className="w-fit">
                 {uploading ? 'Uploading…' : 'Choose file'}
                 <input
+                  id="student-document-file"
                   type="file"
                   hidden
                   accept={STUDENT_DOCUMENT_ACCEPT_ATTR}
                   disabled={uploading}
                   onChange={onFileSelected}
                 />
-              </label>
-            </div>
-          </div>
-        </div>
+              </Button>
+            </Field>
+            </FieldGroup>
+          </CardContent>
+        </Card>
       )}
 
       {isLoading && <PageLoading message="Loading documents…" inline />}
 
       {!isLoading && view === 'cards' && (
-        <>
-          <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.75rem' }}>Other documents</h2>
-          <div className="grid grid-3">
+        <section className="flex flex-col gap-3" aria-labelledby="other-documents-heading">
+          <h2 id="other-documents-heading" className="text-foreground m-0 text-lg font-semibold">Other Documents</h2>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {otherDocuments.map((doc) => {
               const dtype = docTypes[doc.document_type] || docTypes.other;
               return (
-                <div key={doc.id} className="card card-hover">
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                    <div className={`stats-card-icon ${dtype.color}`} style={{ width: 40, height: 40, fontSize: '1.125rem' }}>
-                      {dtype.icon}
-                    </div>
-                    <span className={`badge badge-${doc.is_verified ? 'green' : 'amber'}`}>
-                      {doc.is_verified ? '✅ Verified' : '⏳ Pending'}
-                    </span>
-                  </div>
-                  <h4 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', wordBreak: 'break-word' }}>{doc.document_name}</h4>
-                  <div className="text-xs text-tertiary" style={{ marginBottom: '0.75rem' }}>
+                <Card key={doc.id} size="sm">
+                  <CardHeader>
+                    <CardTitle className="break-words">{doc.document_name}</CardTitle>
+                    <CardDescription>
                     {dtype.label} • {formatSize(doc.file_size)} • {formatDate(doc.uploaded_at)}
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <a
-                      className="btn btn-ghost btn-sm"
-                      style={{ flex: 1 }}
-                      href={`/api/student/documents/view?id=${encodeURIComponent(doc.id)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Open
-                    </a>
-                    <button
-                      type="button"
-                      className="btn btn-ghost btn-sm"
-                      style={{ color: 'var(--danger-500)' }}
-                      onClick={() => setRemoveTarget({ id: doc.id, name: doc.document_name })}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
+                    </CardDescription>
+                    <CardAction><StatusBadge tone={doc.is_verified ? 'green' : 'amber'} showDot>{doc.is_verified ? 'Verified' : 'Pending'}</StatusBadge></CardAction>
+                  </CardHeader>
+                  <CardFooter className="gap-2">
+                    <Button variant="outline" size="sm" render={<a href={`/api/student/documents/view?id=${encodeURIComponent(doc.id)}`} target="_blank" rel="noopener noreferrer" />} nativeButton={false}>Open</Button>
+                    <Button type="button" variant="destructive" size="sm" onClick={() => setRemoveTarget({ id: doc.id, name: doc.document_name })}>Remove</Button>
+                  </CardFooter>
+                </Card>
               );
             })}
           </div>
           {otherDocuments.length === 0 && (
-            <p className="text-sm text-secondary" style={{ marginTop: '0.5rem' }}>
+            <Card size="sm"><CardContent className="text-muted-foreground py-8 text-center">
               No other documents yet. Use the upload buttons above.
-            </p>
+            </CardContent></Card>
           )}
-        </>
+        </section>
       )}
 
       {!isLoading && view === 'table' && (
-        <div className="card">
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border border-b py-4">
+            <CardTitle>Other Documents</CardTitle>
+            <CardDescription>Showing {filteredCount} of {totalCount}</CardDescription>
           {totalCount > 0 ? (
             <DataTableToolbar
               search={search}
@@ -254,70 +261,51 @@ export default function StudentDocumentsPage() {
               totalCount={totalCount}
               hasActiveFilters={hasActiveFilters}
               onClear={clearFilters}
-              style={{ marginBottom: 0, borderRadius: 0, border: 'none', borderBottom: '1px solid var(--border-default)' }}
             />
           ) : null}
-          <div className="table-container">
-            <table className="data-table data-table-mobile-cards">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Role</th>
-                  <th>Size</th>
-                  <th>Uploaded</th>
-                  <th>Verified</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead><TableHead>Type</TableHead><TableHead>Role</TableHead>
+                  <TableHead>Size</TableHead><TableHead>Uploaded</TableHead><TableHead>Verified</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {displayDocuments.length === 0 && totalCount > 0 ? (
-                  <tr>
-                    <td colSpan={7} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                       No documents match your search.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
                 {displayDocuments.map((doc) => {
                   const dtype = docTypes[doc.document_type] || docTypes.other;
                   return (
-                    <tr key={doc.id}>
-                      <td className="font-semibold" data-label="Name">{doc.document_name}</td>
-                      <td data-label="Type">{dtype.label}</td>
-                      <td data-label="Role">—</td>
-                      <td data-label="Size">{formatSize(doc.file_size)}</td>
-                      <td data-label="Uploaded">{formatDate(doc.uploaded_at)}</td>
-                      <td data-label="Verified">{doc.is_verified ? 'Yes' : 'Pending'}</td>
-                      <td data-label="Actions" style={{ whiteSpace: 'nowrap' }}>
-                        <a
-                          className="btn btn-ghost btn-sm"
-                          href={`/api/student/documents/view?id=${encodeURIComponent(doc.id)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Open
-                        </a>
-                        <button
-                          type="button"
-                          className="btn btn-ghost btn-sm"
-                          style={{ color: 'var(--danger-500)' }}
-                          onClick={() => setRemoveTarget({ id: doc.id, name: doc.document_name })}
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
+                    <TableRow key={doc.id}>
+                      <TableCell className="max-w-64 truncate font-medium" title={doc.document_name}>{doc.document_name}</TableCell>
+                      <TableCell>{dtype.label}</TableCell><TableCell>—</TableCell>
+                      <TableCell className="tabular-nums">{formatSize(doc.file_size)}</TableCell>
+                      <TableCell>{formatDate(doc.uploaded_at)}</TableCell>
+                      <TableCell><StatusBadge tone={doc.is_verified ? 'green' : 'amber'} showDot>{doc.is_verified ? 'Verified' : 'Pending'}</StatusBadge></TableCell>
+                      <TableCell className="text-right"><div className="inline-flex gap-1.5">
+                        <Button variant="ghost" size="sm" render={<a href={`/api/student/documents/view?id=${encodeURIComponent(doc.id)}`} target="_blank" rel="noopener noreferrer" />} nativeButton={false}>Open</Button>
+                        <Button type="button" variant="destructive" size="sm" onClick={() => setRemoveTarget({ id: doc.id, name: doc.document_name })}>Remove</Button>
+                      </div></TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
           {totalCount === 0 && (
-            <p className="text-sm text-secondary" style={{ padding: '1rem' }}>
+            <p className="text-muted-foreground m-0 p-6 text-center text-sm">
               No documents yet. Upload your primary CV on Profile, or use the buttons above.
             </p>
           )}
-        </div>
+          </CardContent>
+        </Card>
       )}
 
       <ConfirmDialog

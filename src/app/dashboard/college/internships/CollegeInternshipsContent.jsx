@@ -3,13 +3,19 @@
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { BookOpen, Calendar, GraduationCap, IndianRupee, LayoutGrid, List } from 'lucide-react';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, cn } from '@/lib/utils';
 import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS, FILTER_ALL } from '@/lib/tableQueryPresets';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import PageLoading from '@/components/PageLoading';
 import { useToast } from '@/components/ToastProvider';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import InternshipDetailModal from './InternshipDetailModal';
 import InternshipListingActions from './InternshipListingActions';
 import {
@@ -109,7 +115,10 @@ export default function CollegeInternshipsContent() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || `Failed to ${action} listing`);
       await mutate();
-      addToast(action === 'approve' ? 'Listing approved — students can now see it.' : 'Listing rejected.', action === 'approve' ? 'success' : 'info');
+      addToast(
+        action === 'approve' ? 'Listing approved — students can now see it.' : 'Listing rejected.',
+        action === 'approve' ? 'success' : 'info'
+      );
       setViewRow((current) => (current?.id === jobId ? null : current));
     } catch (e) {
       addToast(e.message || 'Action failed', 'error');
@@ -119,368 +128,285 @@ export default function CollegeInternshipsContent() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '2rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.25rem' }}>
-        <div className="page-header-left">
-          <h1>Internships &amp; Programs</h1>
-          <p>
-            Review employer listings before they appear to students. Approve each posting for your campus after
-            checking eligibility and stipend details.
-          </p>
-        </div>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <GraduationCap className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+          Internships &amp; Programs
+        </h1>
+        <p className="text-muted-foreground m-0 text-sm">
+          Review employer listings before they appear to students. Approve each posting for your campus after checking
+          eligibility and stipend details.
+        </p>
       </div>
 
       {!isLoading && !error ? (
-        <p
-          className="text-sm text-secondary"
-          style={{
-            margin: '0 0 1.25rem',
-            padding: '0.65rem 0.85rem',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 'var(--radius-md)',
-          }}
-        >
-          <strong style={{ color: 'var(--text-primary)' }}>{stats.count}</strong> listing
-          {stats.count === 1 ? '' : 's'}
-          {stats.pending ? (
-            <>
-              {' '}
-              · <strong style={{ color: 'var(--warning-600, #d97706)' }}>{stats.pending}</strong> awaiting review
-            </>
-          ) : null}
-          {stats.openings ? (
-            <>
-              {' '}
-              · <strong style={{ color: 'var(--text-primary)' }}>{stats.openings}</strong> openings
-            </>
-          ) : null}
-          {stats.avgStipend != null ? (
-            <>
-              {' '}
-              · avg stipend <strong style={{ color: 'var(--text-primary)' }}>{formatCurrency(stats.avgStipend)}</strong>/mo
-            </>
-          ) : null}
-        </p>
+        <Alert>
+          <AlertTitle>
+            {stats.count} listing{stats.count === 1 ? '' : 's'}
+          </AlertTitle>
+          <AlertDescription>
+            {stats.pending ? (
+              <>
+                <strong className="text-amber-600">{stats.pending}</strong> awaiting review
+              </>
+            ) : (
+              'None awaiting review'
+            )}
+            {stats.openings ? (
+              <>
+                {' '}
+                · <strong>{stats.openings}</strong> openings
+              </>
+            ) : null}
+            {stats.avgStipend != null ? (
+              <>
+                {' '}
+                · avg stipend <strong>{formatCurrency(stats.avgStipend)}</strong>/mo
+              </>
+            ) : null}
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {error ? (
-        <div className="card" style={{ borderColor: 'var(--danger-500)', marginBottom: '1rem' }}>
-          <p className="text-sm" style={{ margin: 0 }}>
-            Could not load internships. Ensure you are signed in as a college admin and migration{' '}
-            <span className="font-mono text-xs">067</span> is applied.
-          </p>
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load internships</AlertTitle>
+          <AlertDescription>
+            Ensure you are signed in as a college admin and migration <code className="text-xs">067</code> is applied.
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {isLoading ? <PageLoading message="Loading internships…" inline /> : null}
 
       {!isLoading && !error && totalCount > 0 ? (
-        <>
-          <DataTableToolbar
-            search={search}
-            onSearchChange={setSearch}
-            searchPlaceholder="Search title, employer, or skills…"
-            filter={filter}
-            onFilterChange={setFilter}
-            filterOptions={TYPE_FILTER_OPTIONS}
-            filterLabel="Type"
-            sort={sort}
-            onSortChange={setSort}
-            sortOptions={COMMON_SORT_OPTIONS}
-            filteredCount={filteredCount}
-            totalCount={totalCount}
-            hasActiveFilters={hasActiveFilters}
-            onClear={clearFilters}
-          />
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '0.75rem',
-              margin: '-0.5rem 0 1rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <label className="text-sm text-secondary" htmlFor="college-listing-approval-filter">
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-3 border-b px-4 py-3">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <CardTitle className="text-base">Campus listings</CardTitle>
+                <CardDescription>
+                  Showing {filteredCount} of {totalCount}
+                </CardDescription>
+              </div>
+              <div
+                className="bg-muted flex w-fit items-center gap-0.5 rounded-lg p-[3px]"
+                role="group"
+                aria-label="View mode"
+              >
+                {[
+                  { mode: 'card', icon: LayoutGrid, label: 'Card view', short: 'Cards' },
+                  { mode: 'list', icon: List, label: 'List view', short: 'List' },
+                ].map(({ mode, icon: Icon, label, short }) => (
+                  <Button
+                    key={mode}
+                    type="button"
+                    size="sm"
+                    variant={viewMode === mode ? 'secondary' : 'ghost'}
+                    title={label}
+                    aria-label={label}
+                    aria-pressed={viewMode === mode}
+                    onClick={() => setViewMode(mode)}
+                    className="h-8 gap-1.5 px-2.5"
+                  >
+                    <Icon data-icon="inline-start" />
+                    {short}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <DataTableToolbar
+              search={search}
+              onSearchChange={setSearch}
+              searchPlaceholder="Search title, employer, or skills…"
+              filter={filter}
+              onFilterChange={setFilter}
+              filterOptions={TYPE_FILTER_OPTIONS}
+              filterLabel="Type"
+              sort={sort}
+              onSortChange={setSort}
+              sortOptions={COMMON_SORT_OPTIONS}
+              filteredCount={filteredCount}
+              totalCount={totalCount}
+              hasActiveFilters={hasActiveFilters}
+              onClear={clearFilters}
+            />
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="text-muted-foreground text-sm" htmlFor="college-listing-approval-filter">
                 Campus status
               </label>
-              <select
+              <AdminFilterSelect
                 id="college-listing-approval-filter"
-                className="form-select"
-                style={{ width: 'auto', minWidth: '10rem', padding: '0.5rem 2rem 0.5rem 0.75rem' }}
+                className="min-w-40"
                 value={approvalFilter}
-                onChange={(e) => setApprovalFilter(e.target.value)}
-              >
-                {APPROVAL_FILTER_OPTIONS.map((opt) => (
-                  <option key={opt.value || 'all'} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+                onValueChange={setApprovalFilter}
+                items={APPROVAL_FILTER_OPTIONS.map((opt) => ({
+                  label: opt.label,
+                  value: opt.value === '' ? 'all' : opt.value,
+                }))}
+              />
             </div>
-            <div
-              role="group"
-              aria-label="View mode"
-              style={{
-                display: 'flex',
-                background: 'var(--bg-secondary)',
-                borderRadius: '10px',
-                padding: '3px',
-                gap: '2px',
-                border: '1px solid var(--border-default)',
-              }}
-            >
-              {[
-                { mode: 'card', icon: LayoutGrid, label: 'Card view' },
-                { mode: 'list', icon: List, label: 'List view' },
-              ].map(({ mode, icon: Icon, label }) => (
-                <button
-                  key={mode}
-                  type="button"
-                  title={label}
-                  aria-label={label}
-                  aria-pressed={viewMode === mode}
-                  onClick={() => setViewMode(mode)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    padding: '0.4rem 0.85rem',
-                    borderRadius: '7px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    transition: 'background 0.15s ease, color 0.15s ease',
-                    background: viewMode === mode ? 'var(--bg-primary)' : 'transparent',
-                    color: viewMode === mode ? 'var(--primary-600)' : 'var(--text-tertiary)',
-                    boxShadow: viewMode === mode ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                  }}
-                >
-                  <Icon size={15} aria-hidden />
-                  {mode === 'card' ? 'Cards' : 'List'}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      ) : null}
-
-      {!isLoading && !error && totalCount > 0 && viewMode === 'list' ? (
-        <div className="card card-table-shell" style={{ border: '1px solid var(--border-default)' }}>
-          <div className="table-container" style={{ border: 'none', overflowX: 'auto' }}>
-            <table className="data-table college-applications-table college-internships-table">
-              <colgroup>
-                <col className="college-internships-col-title" />
-                <col className="college-internships-col-employer" />
-                <col className="college-internships-col-type" />
-                <col className="college-internships-col-stipend" />
-                <col className="college-internships-col-cgpa" />
-                <col className="college-internships-col-openings" />
-                <col className="college-internships-col-posted" />
-                <col className="college-internships-col-campus" />
-                <col className="college-internships-col-actions" />
-              </colgroup>
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)' }}>
-                  {TABLE_COLUMNS.map((col, i) => (
-                    <th
-                      key={col}
-                      className={col === 'Actions' ? 'college-internships-col-actions' : undefined}
-                      style={
-                        i === 0
-                          ? { paddingLeft: '1.25rem' }
-                          : i === TABLE_COLUMNS.length - 1
-                            ? { textAlign: 'right', paddingRight: '1.25rem' }
-                            : undefined
-                      }
-                    >
-                      {col}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {displayRows.length === 0 ? (
-                  <tr>
-                    <td colSpan={TABLE_COLUMNS.length} className="text-center text-secondary">
-                      No listings match your search or filters.
-                    </td>
-                  </tr>
-                ) : null}
-                {displayRows.map((row) => {
-                  const typeMeta = getJobTypeMeta(row.job_type);
-                  const campusMeta = getCollegeStatusMeta(row.college_status);
-                  const busy = actionBusyId === row.id;
-                  return (
-                    <tr key={row.id}>
-                      <td
-                        className="font-semibold text-sm cell-truncate"
-                        style={{ paddingLeft: '1.25rem' }}
-                        title={row.title || undefined}
-                      >
-                        {row.title}
-                      </td>
-                      <td className="text-sm">
-                        <CompanyNameLink name={row.company_name} website={row.website} />
-                      </td>
-                      <td>
-                        <span className={`badge ${typeMeta.badge} badge-dot`}>{typeMeta.label}</span>
-                      </td>
-                      <td className="text-sm">{stipendLabel(row.salary_min, row.salary_max)}</td>
-                      <td className="text-sm">{row.min_cgpa != null ? Number(row.min_cgpa) : '—'}</td>
-                      <td className="text-sm">{row.vacancies ?? '—'}</td>
-                      <td className="text-sm text-secondary">{row.created_at ? formatDate(row.created_at) : '—'}</td>
-                      <td>
-                        <span className={`badge ${campusMeta.badge} badge-dot`} style={{ fontSize: '0.75rem' }}>
-                          {campusMeta.label}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'right', paddingRight: '1.25rem', whiteSpace: 'nowrap' }} className="college-internships-col-actions">
-                        <InternshipListingActions
-                          row={row}
-                          busy={busy}
-                          onApprove={(id) => reviewListing(id, 'approve')}
-                          onReject={(id) => reviewListing(id, 'reject')}
-                          onView={setViewRow}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ) : null}
-
-      {!isLoading && !error && totalCount > 0 && viewMode === 'card' ? (
-        displayRows.length === 0 ? (
-          <div className="card">
-            <p className="text-secondary" style={{ margin: 0 }}>
-              No listings match your search or filters.
-            </p>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {displayRows.map((row) => {
-              const typeMeta = getJobTypeMeta(row.job_type);
-              const campusMeta = getCollegeStatusMeta(row.college_status);
-              const busy = actionBusyId === row.id;
-              return (
-                <div key={row.id} className="card card-hover" style={{ border: '1px solid var(--border-default)' }}>
-                  {String(row.college_status || 'pending') === 'pending' ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: '0.75rem',
-                        flexWrap: 'wrap',
-                        marginBottom: '1rem',
-                        padding: '0.65rem 0.85rem',
-                        borderRadius: 'var(--radius-md)',
-                        background: 'rgba(217, 119, 6, 0.08)',
-                        border: '1px solid rgba(217, 119, 6, 0.22)',
-                      }}
-                    >
-                      <span className="text-sm" style={{ color: 'var(--warning-700, #b45309)', fontWeight: 600 }}>
-                        Pending your campus approval — students cannot apply yet
-                      </span>
-                    </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {viewMode === 'list' ? (
+              <Table className="college-internships-table">
+                <TableHeader>
+                  <TableRow>
+                    {TABLE_COLUMNS.map((col) => (
+                      <TableHead key={col} className={cn(col === 'Actions' && 'text-right')}>
+                        {col}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {displayRows.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={TABLE_COLUMNS.length} className="text-muted-foreground h-24 text-center">
+                        No listings match your search or filters.
+                      </TableCell>
+                    </TableRow>
                   ) : null}
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-start',
-                      gap: '1rem',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          flexWrap: 'wrap',
-                          marginBottom: '0.35rem',
-                        }}
-                      >
-                        <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, margin: 0 }}>{row.title}</h3>
-                        <span className={`badge ${typeMeta.badge} badge-dot`}>{typeMeta.label}</span>
-                        <span className={`badge ${campusMeta.badge} badge-dot`}>{campusMeta.label}</span>
-                      </div>
-                      <div style={{ marginBottom: '0.5rem' }}>
-                        <CompanyNameLink name={row.company_name} website={row.website} />
-                      </div>
-                      <p className="text-sm text-secondary" style={{ margin: '0 0 0.75rem', lineHeight: 1.5 }}>
-                        {(row.description || '').slice(0, 280)}
-                        {(row.description || '').length > 280 ? '…' : ''}
-                      </p>
-                      <div
-                        className="text-sm text-secondary"
-                        style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}
-                      >
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                          <IndianRupee size={14} aria-hidden /> Stipend: {stipendLabel(row.salary_min, row.salary_max)}
-                        </span>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                          <BookOpen size={14} aria-hidden /> Min CGPA: {row.min_cgpa != null ? Number(row.min_cgpa) : '—'}
-                        </span>
-                        <span>Openings: {row.vacancies ?? '—'}</span>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                          <Calendar size={14} aria-hidden /> Posted {row.created_at ? formatDate(row.created_at) : '—'}
-                        </span>
-                      </div>
-                      {row.skills_required?.length ? (
-                        <div style={{ marginTop: '0.65rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                          {row.skills_required.map((skill) => (
-                            <span key={skill} className="badge badge-gray">
-                              {skill}
+                  {displayRows.map((row) => {
+                    const typeMeta = getJobTypeMeta(row.job_type);
+                    const campusMeta = getCollegeStatusMeta(row.college_status);
+                    const busy = actionBusyId === row.id;
+                    return (
+                      <TableRow key={row.id}>
+                        <TableCell className="max-w-[14rem] font-medium">
+                          <span className="block truncate" title={row.title || undefined}>
+                            {row.title}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <CompanyNameLink name={row.company_name} website={row.website} />
+                        </TableCell>
+                        <TableCell className="min-w-[7rem]">
+                          <StatusBadge tone={typeMeta.tone} showDot>
+                            {typeMeta.label || 'Internship'}
+                          </StatusBadge>
+                        </TableCell>
+                        <TableCell>{stipendLabel(row.salary_min, row.salary_max)}</TableCell>
+                        <TableCell>{row.min_cgpa != null ? Number(row.min_cgpa) : '—'}</TableCell>
+                        <TableCell>{row.vacancies ?? '—'}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {row.created_at ? formatDate(row.created_at) : '—'}
+                        </TableCell>
+                        <TableCell className="min-w-[7.5rem]">
+                          <StatusBadge tone={campusMeta.tone} showDot>
+                            {campusMeta.label || 'Pending review'}
+                          </StatusBadge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <InternshipListingActions
+                            row={row}
+                            busy={busy}
+                            onApprove={(id) => reviewListing(id, 'approve')}
+                            onReject={(id) => reviewListing(id, 'reject')}
+                            onView={setViewRow}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="flex flex-col gap-3 p-4">
+                {displayRows.length === 0 ? (
+                  <p className="text-muted-foreground m-0 text-sm">No listings match your search or filters.</p>
+                ) : (
+                  displayRows.map((row) => {
+                    const typeMeta = getJobTypeMeta(row.job_type);
+                    const campusMeta = getCollegeStatusMeta(row.college_status);
+                    const busy = actionBusyId === row.id;
+                    return (
+                      <Card key={row.id} size="sm" className="gap-3">
+                        {String(row.college_status || 'pending') === 'pending' ? (
+                          <Alert className="border-amber-600/20 bg-amber-600/10 text-amber-700 dark:text-amber-400">
+                            <AlertDescription className="text-amber-700 dark:text-amber-400">
+                              Pending your campus approval — students cannot apply yet
+                            </AlertDescription>
+                          </Alert>
+                        ) : null}
+                        <CardHeader className="gap-2 px-4">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <CardTitle className="text-base">{row.title}</CardTitle>
+                            <StatusBadge tone={typeMeta.tone} showDot>
+                              {typeMeta.label}
+                            </StatusBadge>
+                            <StatusBadge tone={campusMeta.tone} showDot>
+                              {campusMeta.label}
+                            </StatusBadge>
+                          </div>
+                          <CardDescription>
+                            <CompanyNameLink name={row.company_name} website={row.website} />
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-3 px-4">
+                          <p className="text-muted-foreground m-0 text-sm leading-relaxed">
+                            {(row.description || '').slice(0, 280)}
+                            {(row.description || '').length > 280 ? '…' : ''}
+                          </p>
+                          <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
+                            <span className="inline-flex items-center gap-1">
+                              <IndianRupee className="size-3.5" aria-hidden /> Stipend:{' '}
+                              {stipendLabel(row.salary_min, row.salary_max)}
                             </span>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      marginTop: '1rem',
-                      paddingTop: '1rem',
-                      borderTop: '1px solid var(--border-default)',
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <InternshipListingActions
-                      row={row}
-                      busy={busy}
-                      onApprove={(id) => reviewListing(id, 'approve')}
-                      onReject={(id) => reviewListing(id, 'reject')}
-                      onView={setViewRow}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )
+                            <span className="inline-flex items-center gap-1">
+                              <BookOpen className="size-3.5" aria-hidden /> Min CGPA:{' '}
+                              {row.min_cgpa != null ? Number(row.min_cgpa) : '—'}
+                            </span>
+                            <span>Openings: {row.vacancies ?? '—'}</span>
+                            <span className="inline-flex items-center gap-1">
+                              <Calendar className="size-3.5" aria-hidden /> Posted{' '}
+                              {row.created_at ? formatDate(row.created_at) : '—'}
+                            </span>
+                          </div>
+                          {row.skills_required?.length ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {row.skills_required.map((skill) => (
+                                <StatusBadge key={skill} tone="gray">
+                                  {skill}
+                                </StatusBadge>
+                              ))}
+                            </div>
+                          ) : null}
+                          <div className="flex justify-end border-t pt-3">
+                            <InternshipListingActions
+                              row={row}
+                              busy={busy}
+                              align="end"
+                              onApprove={(id) => reviewListing(id, 'approve')}
+                              onReject={(id) => reviewListing(id, 'reject')}
+                              onView={setViewRow}
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       ) : null}
 
       {!isLoading && !error && totalCount === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-          <GraduationCap size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.25, color: 'var(--text-tertiary)' }} />
-          <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>No published listings yet</p>
-          <p className="text-sm text-secondary" style={{ margin: '0.5rem 0 0', maxWidth: '36rem', marginInline: 'auto' }}>
-            Partners must publish from Internships or Projects and include your college. Listings appear here as{' '}
-            <strong>Pending review</strong> until you approve them for students.
-          </p>
-        </div>
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+              <GraduationCap className="size-7" />
+            </div>
+            <CardTitle className="mb-1 text-lg">No internship listings yet</CardTitle>
+            <CardDescription className="max-w-md text-sm">
+              Partners must publish from Internships or Projects and include your college. Listings appear here as{' '}
+              <strong>Pending review</strong> until you approve them for campus.
+            </CardDescription>
+          </CardContent>
+        </Card>
       ) : null}
 
       <InternshipDetailModal

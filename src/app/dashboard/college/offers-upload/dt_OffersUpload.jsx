@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { mutate } from 'swr';
-import { FileUp, Send } from 'lucide-react';
+import { Download, FileText, FileUp, Send } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   CollegeOffersUploadMeta,
   useCollegeOffersUploadActions,
@@ -31,72 +34,73 @@ export default function DtCollegeOffersUpload() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <FileUp size={24} aria-hidden />
+    <div className="animate-fadeIn flex flex-col gap-5 pb-8">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <FileUp className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
             Upload offers (CSV)
           </h1>
-          <p className="text-secondary" style={{ margin: '0.35rem 0 0', fontSize: '0.9375rem', maxWidth: 640 }}>
+          <p className="text-muted-foreground m-0 max-w-2xl text-sm">
             Bulk-import offers for students on your master list. View and edit the full table on{' '}
-            <Link href="/dashboard/college/offers" className="link-inline" style={{ fontWeight: 600 }}>
+            <Link href="/dashboard/college/offers" className="text-primary font-medium">
               Offers
             </Link>
             .
           </p>
         </div>
-        <div className="page-header-actions">
-          <Link href="/dashboard/college/offers" className="btn btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-            <Send size={16} aria-hidden />
+          <Button render={<Link href="/dashboard/college/offers" />} variant="outline">
+            <Send data-icon="inline-start" aria-hidden />
             View all offers
-          </Link>
-        </div>
+          </Button>
       </div>
 
       <CollegeOffersUploadMeta />
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <h2 className="card-title" style={{ marginBottom: '0.75rem' }}>
-          Step 1 — Download template
-        </h2>
-        <p className="text-sm text-secondary" style={{ marginBottom: '1rem', lineHeight: 1.55 }}>
+      <Card>
+        <CardHeader>
+          <CardTitle>1. Download a template</CardTitle>
+          <CardDescription>
           Columns: <code>roll_number</code>, <code>company_name</code>, <code>job_title</code>, plus optional salary, location, deadline, status.
-        </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <button type="button" className="btn btn-secondary" onClick={downloadBlankTemplate}>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" onClick={downloadBlankTemplate}>
+            <FileText data-icon="inline-start" />
             Blank template
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={downloadAssessmentStarter}>
+          </Button>
+          <Button type="button" variant="secondary" onClick={downloadAssessmentStarter}>
+            <Download data-icon="inline-start" />
             All students (assessment prefill)
-          </button>
-        </div>
-        <p className="text-xs text-tertiary" style={{ margin: '0.75rem 0 0', lineHeight: 1.5 }}>
+          </Button>
+        <p className="text-muted-foreground m-0 basis-full pt-2 text-xs leading-5">
           The all-students file includes every roll on your{' '}
           <Link href="/dashboard/college/students">master list</Link>. <code>company_name</code> is filled from the{' '}
           <Link href="/dashboard/college/hiring-assessment">newest assessment upload</Link> when available.
         </p>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <h2 className="card-title" style={{ marginBottom: '0.75rem' }}>
-          Step 2 — Upload filled CSV
-        </h2>
-        <p className="text-sm text-secondary" style={{ marginBottom: '1rem', lineHeight: 1.55 }}>
-          Each <strong>roll number</strong> must exist on your Students screen.
-        </p>
-        <label className="btn btn-primary" style={{ cursor: uploading ? 'wait' : 'pointer', margin: 0 }}>
+      <Card>
+        <CardHeader>
+          <CardTitle>2. Upload the completed CSV</CardTitle>
+          <CardDescription>Each roll number must exist on your Students screen.</CardDescription>
+        </CardHeader>
+        <CardContent>
+        <Button render={<label />} aria-disabled={uploading}>
+          <FileUp data-icon="inline-start" />
           {uploading ? 'Importing…' : 'Choose CSV file'}
           <input type="file" accept=".csv,text/csv" hidden disabled={uploading} onChange={handleUpload} />
-        </label>
-      </div>
+        </Button>
+        </CardContent>
+      </Card>
 
-      <div className="directive-panel" role="region" aria-label="Offer import rules">
-        <p className="directive-panel__title">After import</p>
-        <p className="text-sm text-secondary" style={{ margin: 0, lineHeight: 1.55 }}>
+      <Alert>
+        <AlertTitle>After import</AlertTitle>
+        <AlertDescription>
           Students see pending rows on <strong>My Offers</strong> and can accept or decline. Optional status in CSV: pending, accepted, rejected, expired, revoked (defaults to pending).
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }

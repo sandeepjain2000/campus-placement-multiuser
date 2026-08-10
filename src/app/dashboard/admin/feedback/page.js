@@ -11,6 +11,14 @@ import { useToast } from '@/components/ToastProvider';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import AdminRecordModal from '@/components/admin/AdminRecordModal';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const PAGE_SIZE = 10;
 const EXPORT_PAGE_SIZE = 500;
@@ -203,10 +211,7 @@ export default function AdminFeedbackInboxPage() {
 
   if (isLoading || !data) {
     return (
-      <div>
-        <div className="skeleton skeleton-heading" />
-        <div className="skeleton skeleton-card" style={{ height: 200 }} />
-      </div>
+      <Card><CardHeader><CardTitle>Feedback inbox</CardTitle><CardDescription>Loading submissions…</CardDescription></CardHeader></Card>
     );
   }
 
@@ -247,11 +252,11 @@ export default function AdminFeedbackInboxPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>📥 Feedback inbox</h1>
-          <p>Every submission from students, employers, and college admins across the platform.</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Feedback inbox</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">Every submission from students, employers, and college admins across the platform.</p>
         </div>
         <ExportCsvSplitButton
           filenameBase="admin_feedback"
@@ -261,35 +266,22 @@ export default function AdminFeedbackInboxPage() {
         />
       </div>
 
-      <div className="grid grid-4" style={{ marginBottom: '1rem' }}>
-        <div className="stats-card">
-          <div className="stats-card-value">{counts.submitted}</div>
-          <div className="stats-card-label">Submitted</div>
-        </div>
-        <div className="stats-card amber">
-          <div className="stats-card-value">{counts.review}</div>
-          <div className="stats-card-label">Under review</div>
-        </div>
-        <div className="stats-card green">
-          <div className="stats-card-value">{counts.planned}</div>
-          <div className="stats-card-label">Planned</div>
-        </div>
-        <div className="stats-card">
-          <div className="stats-card-value">{counts.closed}</div>
-          <div className="stats-card-label">Closed</div>
-        </div>
-      </div>
+      <Card size="sm"><CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <span className="font-medium">Status summary</span>
+        <span className="text-sm"><strong>{counts.submitted}</strong> submitted</span>
+        <span className="text-sm"><strong>{counts.review}</strong> under review</span>
+        <span className="text-sm"><strong>{counts.planned}</strong> planned</span>
+        <span className="text-sm"><strong>{counts.closed}</strong> closed</span>
+      </CardContent></Card>
 
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">
-            All entries ({total}
-            {total > 0 ? ` · page ${page} of ${totalPages}` : ''}
-            )
-          </h3>
-        </div>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4">
+          <CardTitle>All entries</CardTitle>
+          <CardDescription>{total} total{total > 0 ? ` · page ${page} of ${totalPages}` : ''}</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
         {pageTotalCount > 0 ? (
-          <DataTableToolbar
+          <div className="p-4"><DataTableToolbar
             search={search}
             onSearchChange={setSearch}
             searchPlaceholder="Search title, category, or submitter…"
@@ -304,135 +296,30 @@ export default function AdminFeedbackInboxPage() {
             totalCount={pageTotalCount}
             hasActiveFilters={hasActiveFilters}
             onClear={clearFilters}
-            style={{ margin: '0 1.25rem 1rem', border: '1px solid var(--border-default)' }}
-          />
+          /></div>
         ) : null}
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>When</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>From</th>
-                <th>Role</th>
-                <th>Replies</th>
-                <th>Status</th>
-                <th style={{ width: 72 }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {displayItems.length === 0 && pageTotalCount > 0 ? (
-                <tr>
-                  <td colSpan={8} className="text-center text-secondary">
-                    No feedback on this page matches your search or filters.
-                  </td>
-                </tr>
-              ) : null}
-              {displayItems.map((row) => (
-                <tr key={row.id}>
-                  <td className="text-sm">{formatDate(row.created_at)}</td>
-                  <td>
-                    <div className="font-semibold">{row.title}</div>
-                    <div
-                      className="text-sm text-secondary"
-                      style={{ maxWidth: 420, marginTop: '0.25rem', lineHeight: 1.45 }}
-                    >
-                      {row.description}
-                    </div>
-                  </td>
-                  <td>{row.category}</td>
-                  <td className="text-sm">
-                    <div>{(row.user_name && row.user_name.trim()) || '—'}</div>
-                    {row.user_email ? (
-                      <div className="text-xs text-tertiary">{row.user_email}</div>
-                    ) : null}
-                    <div className="text-xs text-secondary" style={{ marginTop: '0.2rem' }}>
-                      {row.organization_name || '—'}
-                    </div>
-                  </td>
-                  <td>
-                    <span className="badge badge-gray">{formatFeedbackRole(row.user_role)}</span>
-                  </td>
-                  <td>
-                    {Number(row.reply_count || 0) > 0 ? (
-                      <span className="badge badge-green">{row.reply_count} replied</span>
-                    ) : (
-                      <span className="badge badge-gray">No reply</span>
-                    )}
-                  </td>
-                  <td>
-                    <select
-                      className="form-select"
-                      style={{ minWidth: '140px' }}
-                      value={row.status}
-                      onChange={(e) => updateStatus(row.id, e.target.value)}
-                    >
-                      {STATUSES.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>
-                    <StandardTableIconAction
-                      action="view"
-                      showLabel={false}
-                      onClick={() => openThread(row.id)}
-                      tooltip="View thread and reply"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {total > PAGE_SIZE && (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '0.75rem',
-              padding: '0.75rem 1rem',
-              borderTop: '1px solid var(--border-default)',
-            }}
-          >
-            <span className="text-sm text-secondary">
-              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
-            </span>
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <button
-                type="button"
-                className="btn btn-outline btn-sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                Previous
-              </button>
-              <span className="text-sm text-secondary">
-                Page {page} / {totalPages}
-              </span>
-              <button
-                type="button"
-                className="btn btn-outline btn-sm"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
-        {items.length === 0 && (
-          <p className="text-sm text-secondary" style={{ padding: '1rem' }}>
-            No feedback yet — or the <code>platform_feedback</code> table is not created. Run{' '}
-            <code>db/migrations/002_platform_feedback.sql</code>.
-          </p>
-        )}
-      </div>
+        <Table>
+          <TableHeader><TableRow>{['When','Title','Category','From','Role','Replies','Status','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableBody>
+            {displayItems.length === 0 && pageTotalCount > 0 ? <TableRow><TableCell colSpan={8} className="text-muted-foreground h-24 text-center">No feedback on this page matches your search or filters.</TableCell></TableRow> : null}
+            {displayItems.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell className="text-sm">{formatDate(row.created_at)}</TableCell>
+                <TableCell><div className="font-semibold">{row.title}</div><div className="text-muted-foreground mt-1 max-w-md text-sm">{row.description}</div></TableCell>
+                <TableCell>{row.category}</TableCell>
+                <TableCell className="text-sm"><div>{(row.user_name && row.user_name.trim()) || '—'}</div>{row.user_email ? <div className="text-muted-foreground text-xs">{row.user_email}</div> : null}<div className="text-muted-foreground mt-1 text-xs">{row.organization_name || '—'}</div></TableCell>
+                <TableCell><StatusBadge tone="gray">{formatFeedbackRole(row.user_role)}</StatusBadge></TableCell>
+                <TableCell>{Number(row.reply_count || 0) > 0 ? <StatusBadge tone="green">{row.reply_count} replied</StatusBadge> : <StatusBadge tone="gray">No reply</StatusBadge>}</TableCell>
+                <TableCell><AdminFilterSelect className="min-w-36" value={row.status} emptyMapsToAll={false} onValueChange={(s) => updateStatus(row.id, s)} items={STATUSES.map((s) => ({ label: s, value: s }))} /></TableCell>
+                <TableCell><StandardTableIconAction action="view" showLabel={false} onClick={() => openThread(row.id)} tooltip="View thread and reply" /></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        {items.length === 0 ? <Alert className="m-4"><AlertDescription>No feedback yet — or the platform_feedback table is not created. Run db/migrations/002_platform_feedback.sql.</AlertDescription></Alert> : null}
+        </CardContent>
+        {total > PAGE_SIZE ? <div className="flex flex-wrap items-center justify-between gap-3 border-t p-4"><span className="text-muted-foreground text-sm">Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}</span><div className="flex items-center gap-2"><Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button><span className="text-muted-foreground text-sm">Page {page} / {totalPages}</span><Button type="button" variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</Button></div></div> : null}
+      </Card>
 
       <AdminRecordModal
         title={selectedTitle}
@@ -443,34 +330,25 @@ export default function AdminFeedbackInboxPage() {
         onClose={closePanel}
         footer={
           threadData?.item && !threadData.repliesUnavailable ? (
-            <button
+            <Button
               type="button"
-              className="btn btn-primary"
               onClick={sendReply}
               disabled={replyLoading || !replyText.trim()}
             >
               {replyLoading ? 'Sending…' : 'Send reply'}
-            </button>
+            </Button>
           ) : null
         }
       >
         {threadData?.item ? (
           <>
             {threadData.repliesUnavailable ? (
-              <div
-                className="card"
-                style={{
-                  marginBottom: '1rem',
-                  padding: '0.75rem 1rem',
-                  borderColor: 'var(--warning-300)',
-                  background: 'var(--warning-50)',
-                }}
-              >
-                <p className="text-sm" style={{ margin: 0, color: 'var(--warning-800)' }}>
+              <Alert className="mb-4">
+                <AlertDescription>
                   {threadData.error ||
                     'Replies are disabled until db/migrations/003_platform_feedback_replies.sql is applied.'}
-                </p>
-              </div>
+                </AlertDescription>
+              </Alert>
             ) : null}
 
             <div style={{ marginBottom: '1rem' }}>
@@ -499,18 +377,13 @@ export default function AdminFeedbackInboxPage() {
                     </div>
                   ) : null}
                 </div>
-                <select
-                  className="form-select"
-                  style={{ minWidth: '140px', flexShrink: 0 }}
+                <AdminFilterSelect
+                  className="min-w-36 shrink-0"
                   value={threadData.item.status}
-                  onChange={(e) => updateStatus(threadData.item.id, e.target.value)}
-                >
-                  {STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
+                  emptyMapsToAll={false}
+                  onValueChange={(s) => updateStatus(threadData.item.id, s)}
+                  items={STATUSES.map((s) => ({ label: s, value: s }))}
+                />
               </div>
             </div>
 
@@ -544,19 +417,18 @@ export default function AdminFeedbackInboxPage() {
             </div>
 
             {!threadData.repliesUnavailable ? (
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label" htmlFor="admin-feedback-reply">
+              <Field>
+                <FieldLabel htmlFor="admin-feedback-reply">
                   Reply as Super Admin
-                </label>
-                <textarea
+                </FieldLabel>
+                <Textarea
                   id="admin-feedback-reply"
-                  className="form-input"
                   rows={4}
                   placeholder="Type your reply to the feedback submitter…"
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                 />
-              </div>
+              </Field>
             ) : null}
           </>
         ) : null}

@@ -1,6 +1,7 @@
 'use client';
 
 import { Mail, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 /**
  * Inline bulk actions shown when table rows are selected.
@@ -16,47 +17,24 @@ export default function TableBulkActionBar({
 
   return (
     <div
-      className="table-bulk-action-bar"
       role="status"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '0.5rem',
-        padding: '0.65rem 0.85rem',
-        marginBottom: '0.75rem',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px solid var(--primary-200)',
-        background: 'var(--primary-50)',
-        color: 'var(--text-primary)',
-        fontSize: '0.875rem',
-        ...style,
-      }}
+      style={style}
+      className="table-bulk-action-bar mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-sm text-foreground"
     >
-      <span style={{ fontWeight: 600 }}>
+      <span className="font-semibold">
         {count} selected
       </span>
       {onEmail ? (
-        <button
-          type="button"
-          className="btn btn-secondary btn-sm"
-          onClick={onEmail}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-        >
-          <Mail size={15} aria-hidden />
+        <Button type="button" variant="outline" size="sm" onClick={onEmail}>
+          <Mail data-icon="inline-start" aria-hidden />
           {emailLabel}
-        </button>
+        </Button>
       ) : null}
       {onClear ? (
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          onClick={onClear}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', marginLeft: 'auto' }}
-        >
-          <X size={14} aria-hidden />
+        <Button type="button" variant="ghost" size="sm" onClick={onClear} className="ml-auto">
+          <X data-icon="inline-start" aria-hidden />
           Clear
-        </button>
+        </Button>
       ) : null}
     </div>
   );

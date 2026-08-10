@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 import useSWR from 'swr';
+import { Button } from '@/components/ui/button';
 
 const DISMISS_KEY = 'placementhub_session_ad_dismissed';
 const ROTATION_MS = 15 * 60 * 1000;
@@ -85,9 +86,9 @@ function SessionAdBannerInner() {
             <h3 className="session-ad-banner-title">{ad.title}</h3>
             <p className="session-ad-banner-body">{ad.body}</p>
           </div>
-          <Link href={ad.href} className="btn btn-primary btn-sm session-ad-banner-cta" target="_blank" rel="noopener noreferrer">
+          <Button render={<Link href={ad.href} target="_blank" rel="noopener noreferrer" />} size="sm" className="session-ad-banner-cta">
             {ad.cta}
-          </Link>
+          </Button>
         </div>
         <button
           type="button"

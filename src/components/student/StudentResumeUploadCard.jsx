@@ -11,6 +11,12 @@ import { CvLabelInput } from '@/components/student/StudentCvApply';
 import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
 import { appendCvDownloadParam } from '@/lib/studentCvApiPaths';
 import { CV_LABEL_MAX_LENGTH } from '@/lib/studentCvShared';
+import { FileText, Upload } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup } from '@/components/ui/field';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 /**
  * Résumé card on student profile — uploads go through labelled CV API when enabled.
@@ -64,77 +70,41 @@ export default function StudentResumeUploadCard({
   };
 
   return (
-    <section
-      className="card profile-resume-card"
-      aria-labelledby="profile-resume-heading"
-      style={{ marginBottom: '1rem', padding: '1rem 1.25rem' }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ flex: '1 1 12rem', minWidth: 0 }}>
-          <h3 id="profile-resume-heading" style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700 }}>
-            Résumé / CV
-          </h3>
-          <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.5 }}>
+    <Card aria-labelledby="profile-resume-heading">
+      <CardHeader>
+        <CardTitle id="profile-resume-heading" className="flex items-center gap-2">
+          <FileText aria-hidden="true" /> Résumé / CV
+        </CardTitle>
+        <CardDescription>
             {hasResume
               ? 'Labelled CVs are attached when you apply. Employers see your label — not the original file name.'
               : 'Upload a labelled CV to apply to drives and opportunities.'}
-          </p>
+        </CardDescription>
+        <CardAction>
           {hasResume ? (
-            <p className="text-sm" style={{ margin: '0.5rem 0 0', fontWeight: 600 }}>
-              <span aria-hidden="true">📄 </span>
-              {resumeLabel || 'CV on file'}
-            </p>
+            <StatusBadge tone="green" showDot>{resumeLabel || 'CV on file'}</StatusBadge>
           ) : (
-            <p
-              className="text-xs"
-              style={{
-                margin: '0.5rem 0 0',
-                color: 'var(--warning-700, #b45309)',
-                fontWeight: 600,
-              }}
-            >
-              No résumé uploaded yet
-            </p>
+            <StatusBadge tone="amber" showDot>No résumé uploaded</StatusBadge>
           )}
-          <p className="text-xs text-tertiary" style={{ margin: '0.25rem 0 0' }}>
-            PDF or Word, up to 5 MB · manage multiple versions in{' '}
-            <Link href="/dashboard/student/my-cvs" style={{ fontWeight: 600 }}>
-              My CVs
-            </Link>
-          </p>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        <FieldGroup>
+          <FieldDescription>
+            PDF or Word, up to 5 MB · manage multiple versions in <Link href="/dashboard/student/my-cvs">My CVs</Link>.
+          </FieldDescription>
           {cvError ? (
-            <p
-              className="text-sm"
-              role="alert"
-              style={{ margin: '0.5rem 0 0', color: 'var(--danger-600, #dc2626)', fontWeight: 500 }}
-            >
-              {cvError}
-            </p>
+            <Alert variant="destructive">
+              <AlertTitle>Could Not Upload Résumé</AlertTitle>
+              <AlertDescription>{cvError}</AlertDescription>
+            </Alert>
           ) : null}
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.75rem',
-            alignItems: 'stretch',
-            flexShrink: 0,
-            minWidth: 200,
-          }}
-        >
           {useCvApi ? (
-            <CvLabelInput label={label} onChange={setLabel} disabled={cvUploading} />
+            <Field className="max-w-md">
+              <CvLabelInput label={label} onChange={setLabel} disabled={cvUploading} />
+            </Field>
           ) : null}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+          <div className="flex flex-wrap items-center gap-2">
             {hasResume && resumeViewUrl ? (
               <CvViewDownloadButtons
                 viewUrl={resumeViewUrl}
@@ -142,30 +112,27 @@ export default function StudentResumeUploadCard({
                 viewLabel="View résumé"
               />
             ) : null}
-            <label
-              className={`btn btn-primary btn-sm${cvUploading ? ' disabled' : ''}`}
-              style={{
-                cursor: cvUploading ? 'wait' : 'pointer',
-                margin: 0,
-                opacity: cvUploading ? 0.85 : 1,
-              }}
+            <Button
+              size="sm"
+              render={<label htmlFor="profile-resume-file" />}
+              nativeButton={false}
               aria-label={cvUploading ? 'Uploading résumé' : hasResume ? 'Replace résumé' : 'Upload résumé'}
             >
+              <Upload data-icon="inline-start" aria-hidden="true" />
               {cvUploading ? 'Uploading…' : hasResume ? 'Replace résumé' : 'Upload résumé'}
               <input
+                id="profile-resume-file"
                 type="file"
                 accept={STUDENT_RESUME_ACCEPT_ATTR}
                 hidden
                 disabled={cvUploading}
                 onChange={handleCvInputChange}
               />
-            </label>
-            <Link href="/dashboard/student/my-cvs" className="btn btn-ghost btn-sm">
-              My CVs
-            </Link>
+            </Button>
+            <Button variant="ghost" size="sm" render={<Link href="/dashboard/student/my-cvs" />} nativeButton={false}>My CVs</Button>
           </div>
-        </div>
-      </div>
-    </section>
+        </FieldGroup>
+      </CardContent>
+    </Card>
   );
 }

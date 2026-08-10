@@ -11,6 +11,11 @@ import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { SORT_DATE_ASC, SORT_DATE_DESC } from '@/lib/dataTableQuery';
 import { useToast } from '@/components/ToastProvider';
 import { formatDate, formatStatus } from '@/lib/utils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const GUIDE_SORT_OPTIONS = [
   {
@@ -47,7 +52,10 @@ export default function CollegeInternshipGuidesPage() {
   const [editingId, setEditingId] = useState(null);
 
   const items = Array.isArray(data?.items) ? data.items : [];
-  const summary = data?.summary || { total: 0, withGuide: 0 };
+  const summary = useMemo(
+    () => data?.summary || { total: 0, withGuide: 0 },
+    [data?.summary],
+  );
 
   const {
     search,
@@ -172,28 +180,28 @@ export default function CollegeInternshipGuidesPage() {
   if (isLoading) return <PageLoading message="Loading interns…" variant="skeleton-card" />;
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <UserRoundSearch size={26} aria-hidden />
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex max-w-3xl flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <UserRoundSearch className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
             Internship guides
           </h1>
-          <p className="text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.55 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Assign a campus faculty or TPO guide for each intern. Students see guide contact details on their
             Internship Progress Reviews page.
           </p>
-          <p className="text-sm text-tertiary" style={{ margin: '0.35rem 0 0' }}>{statLine}</p>
+          <p className="text-muted-foreground m-0 text-xs">{statLine}</p>
         </div>
-        <div className="page-header-actions">
-          <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={!filtered.length}>
+        <div>
+          <Button type="button" variant="outline" size="sm" onClick={exportCsv} disabled={!filtered.length}>
             Export CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {error ? (
-        <div className="card" style={{ padding: '1.5rem', color: 'var(--danger-600)' }}>{error.message}</div>
+        <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : null}
 
       <DataTableToolbar
@@ -208,63 +216,60 @@ export default function CollegeInternshipGuidesPage() {
         onClearFilters={clearFilters}
       />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="flex flex-col gap-4">
         {filtered.map((row) => {
           const isEditing = editingId === row.programApplicationId;
           const isSaving = savingId === row.programApplicationId;
           return (
-            <div key={row.programApplicationId} className="card" style={{ padding: '1.25rem' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: '1rem',
-                  flexWrap: 'wrap',
-                  marginBottom: isEditing || !row.guide ? '0.75rem' : 0,
-                }}
-              >
+            <Card key={row.programApplicationId}>
+              <CardHeader className="border-b">
+              <div className="flex flex-wrap justify-between gap-4">
                 <div>
-                  <div style={{ fontWeight: 600 }}>{row.studentName}</div>
-                  <div className="text-sm text-secondary">
+                  <CardTitle>{row.studentName}</CardTitle>
+                  <div className="text-muted-foreground text-sm">
                     {row.rollNumber} · {row.branch}
                   </div>
-                  <div className="text-sm" style={{ marginTop: '0.35rem' }}>
+                  <div className="mt-1 text-sm">
                     {row.companyName} — {row.openingTitle}
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span className={`badge badge-${row.applicationStatus === 'selected' ? 'green' : 'amber'} badge-dot`}>
-                    {formatStatus(row.applicationStatus)}
-                  </span>
+                <div className="flex flex-wrap items-start gap-2">
+                  <StatusBadge tone={row.applicationStatus === 'selected' ? 'green' : 'amber'} showDot>
+                    {formatStatus(row.applicationStatus) || 'Applied'}
+                  </StatusBadge>
                   {!isEditing ? (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-secondary btn-sm"
+                      variant="outline"
+                      size="sm"
                       onClick={() => setEditingId(row.programApplicationId)}
                     >
                       {row.guide ? 'Edit guide' : 'Assign guide'}
-                    </button>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-sm"
+                      variant="ghost"
+                      size="sm"
                       disabled={isSaving}
                       onClick={() => setEditingId(null)}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
 
               {!isEditing && row.guide ? (
-                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
-                  <p className="text-xs text-tertiary" style={{ margin: '0 0 0.35rem', fontWeight: 600, letterSpacing: '0.04em' }}>
+                <div className="flex flex-col gap-2">
+                  <p className="text-muted-foreground m-0 text-xs font-semibold tracking-wide">
                     CAMPUS GUIDE
                   </p>
                   <InternshipGuideForm initialGuide={row.guide} readOnly />
                   {row.guide.updatedAt ? (
-                    <p className="text-xs text-tertiary" style={{ margin: '0.5rem 0 0' }}>
+                    <p className="text-muted-foreground m-0 text-xs">
                       Updated {formatDate(row.guide.updatedAt)}
                     </p>
                   ) : null}
@@ -272,12 +277,15 @@ export default function CollegeInternshipGuidesPage() {
               ) : null}
 
               {!isEditing && row.supervisor ? (
-                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
-                  <p className="text-xs text-tertiary" style={{ margin: '0 0 0.35rem', fontWeight: 600, letterSpacing: '0.04em' }}>
+                <>
+                <Separator />
+                <div className="flex flex-col gap-2">
+                  <p className="text-muted-foreground m-0 text-xs font-semibold tracking-wide">
                     COMPANY SUPERVISOR
                   </p>
                   <InternshipSupervisorForm initialSupervisor={row.supervisor} readOnly />
                 </div>
+                </>
               ) : null}
 
               {isEditing ? (
@@ -288,14 +296,13 @@ export default function CollegeInternshipGuidesPage() {
                   onClear={row.guide ? () => clearGuide(row.programApplicationId) : null}
                 />
               ) : null}
-            </div>
+              </CardContent>
+            </Card>
           );
         })}
 
         {!error && filtered.length === 0 ? (
-          <div className="card" style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            No selected or in-progress internships on your campus yet.
-          </div>
+          <Card><CardContent className="text-muted-foreground py-10 text-center">No selected or in-progress internships on your campus yet.</CardContent></Card>
         ) : null}
       </div>
     </div>

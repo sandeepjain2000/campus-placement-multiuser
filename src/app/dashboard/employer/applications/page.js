@@ -8,15 +8,14 @@ import {
   Briefcase,
   Building2,
   ClipboardList,
-  FileText,
   FolderDot,
   GraduationCap,
-  Search,
 } from 'lucide-react';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatDate, formatStatus } from '@/lib/utils';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { useToast } from '@/components/ToastProvider';
 import PageLoading from '@/components/PageLoading';
+import DataTableToolbar from '@/components/DataTableToolbar';
 import EmployerStudentProfileModal from '@/components/employer/EmployerStudentProfileModal';
 import EmployerApplicationRowActions from '@/components/employer/EmployerApplicationRowActions';
 import {
@@ -28,6 +27,11 @@ import {
   formatFilterBadgeLabel,
   shouldShowFilterCount,
 } from '@/lib/filterBadgeLabel';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const ALL_TABS = [
   { id: 'drives', label: 'Placement drives', shortLabel: 'Drives', icon: Building2, desc: 'Students who registered for your campus placement drives.' },
@@ -45,6 +49,13 @@ const STATUS_PILLS = [
   { key: 'rejected', label: 'Rejected' },
   { key: 'on_hold', label: 'On Hold' },
   { key: 'withdrawn', label: 'Withdrawn' },
+];
+
+const APPLICATION_SORT_OPTIONS = [
+  { value: 'date_desc', label: 'Newest first' },
+  { value: 'date_asc', label: 'Oldest first' },
+  { value: 'cgpa_desc', label: 'Highest CGPA' },
+  { value: 'name_asc', label: 'Name A–Z' },
 ];
 
 async function fetcher(url) {
@@ -290,320 +301,259 @@ export default function EmployerApplicationsPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      {/* High-Fidelity Glassmorphic Hero Banner */}
-      <div
-        style={{
-          position: 'relative',
-          background: 'var(--banner-gradient)',
-          borderRadius: 'var(--radius-xl)',
-          padding: '2.5rem',
-          color: 'white',
-          overflow: 'hidden',
-          marginBottom: '2.5rem',
-          boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1.5rem',
-        }}
-      >
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: '-50px', left: '10%', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%)', borderRadius: '50%' }} />
-        
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 style={{ color: '#ffffff', fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <ClipboardList size={28} /> {isAlumniScope ? 'Alumni Applications' : 'Applications Pipeline'}
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <ClipboardList className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+            {isAlumniScope ? 'Alumni Applications' : 'Applications Pipeline'}
           </h1>
-          <p style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.85)', margin: 0 }}>
-            {tabMeta.desc}
-          </p>
-          <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.75)', margin: '0.5rem 0 0' }}>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">{tabMeta.desc}</p>
+          <p className="text-muted-foreground mt-2 mb-0 text-xs">
             Students confirmed by another employer (FCFS) are hidden here — see{' '}
-            <Link href="/dashboard/employer/fcfs-unavailable" style={{ color: '#fff', textDecoration: 'underline' }}>
+            <Link
+              href="/dashboard/employer/fcfs-unavailable"
+              className="text-primary underline underline-offset-2"
+            >
               Unavailable candidates
             </Link>
             .
           </p>
         </div>
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <ExportCsvSplitButton
-            filenameBase={`employer-applications-${tab}`}
-            currentCount={filtered.length}
-            fullCount={items.length}
-            getRows={getApplicationsCsv}
-          />
-        </div>
+        <ExportCsvSplitButton
+          filenameBase={`employer-applications-${tab}`}
+          currentCount={filtered.length}
+          fullCount={items.length}
+          getRows={getApplicationsCsv}
+        />
       </div>
 
-      {driveIdFromUrl && tab === 'drives' && (
-        <div
-          role="status"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            marginBottom: '1.25rem',
-            padding: '0.85rem 1.1rem',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--border-default)',
-            background: 'var(--primary-50)',
-            color: 'var(--text-primary)',
-            fontSize: '0.9rem',
-          }}
-        >
-          <span>
-            <strong>{items.length}</strong> applicant{items.length === 1 ? '' : 's'} for this placement drive
-            {statusFilter || search ? ` (${filtered.length} shown with current filters)` : ''}.
-            Use the shortlist icon on each row to move candidates forward.
-          </span>
-          <Link href="/dashboard/employer/applications?tab=drives" className="btn btn-ghost btn-sm">
-            Show all drives
-          </Link>
-        </div>
-      )}
+      {driveIdFromUrl && tab === 'drives' ? (
+        <Alert>
+          <AlertDescription className="flex flex-wrap items-center justify-between gap-3">
+            <span>
+              <strong>{items.length}</strong> applicant{items.length === 1 ? '' : 's'} for this placement drive
+              {statusFilter || search ? ` (${filtered.length} shown with current filters)` : ''}.
+              Use the shortlist icon on each row to move candidates forward.
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              render={<Link href="/dashboard/employer/applications?tab=drives" />}
+            >
+              Show all drives
+            </Button>
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
-      {jobIdFromUrl && !driveIdFromUrl && (tab === 'jobs' || tab === 'internships' || tab === 'projects') && (
-        <div
-          role="status"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            marginBottom: '1.25rem',
-            padding: '0.85rem 1.1rem',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--border-default)',
-            background: 'var(--primary-50)',
-            color: 'var(--text-primary)',
-            fontSize: '0.9rem',
-          }}
-        >
-          <span>
-            <strong>{items.length}</strong> applicant{items.length === 1 ? '' : 's'} for this opening
-            {statusFilter || search ? ` (${filtered.length} shown with current filters)` : ''}.
-          </span>
-          <Link href={`${applicationsBasePath}?tab=${tab}`} className="btn btn-ghost btn-sm">
-            Show all {tab === 'internships' ? 'internships' : tab === 'projects' ? 'projects' : 'alumni jobs'}
-          </Link>
-        </div>
-      )}
+      {jobIdFromUrl && !driveIdFromUrl && (tab === 'jobs' || tab === 'internships' || tab === 'projects') ? (
+        <Alert>
+          <AlertDescription className="flex flex-wrap items-center justify-between gap-3">
+            <span>
+              <strong>{items.length}</strong> applicant{items.length === 1 ? '' : 's'} for this opening
+              {statusFilter || search ? ` (${filtered.length} shown with current filters)` : ''}.
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              render={<Link href={`${applicationsBasePath}?tab=${tab}`} />}
+            >
+              Show all {tab === 'internships' ? 'internships' : tab === 'projects' ? 'projects' : 'alumni jobs'}
+            </Button>
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
       {visibleTabs.length > 1 ? (
-        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        <div
+          className="bg-muted flex w-fit flex-wrap items-center gap-0.5 rounded-lg p-[3px]"
+          role="tablist"
+          aria-label="Application source"
+        >
           {visibleTabs.map((t) => {
             const Icon = t.icon;
             const n = counts[t.id] ?? 0;
             const active = tab === t.id;
             return (
-              <button
+              <Button
                 key={t.id}
                 type="button"
+                size="sm"
+                variant={active ? 'secondary' : 'ghost'}
+                role="tab"
+                aria-selected={active}
                 onClick={() => {
                   setTab(t.id);
                   setStatusFilter('');
                   router.replace(`${applicationsBasePath}?tab=${t.id}`);
                 }}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.6rem 1.5rem',
-                  borderRadius: '999px',
-                  fontWeight: 700,
-                  fontSize: '0.95rem',
-                  transition: 'all 0.2s ease',
-                  border: 'none',
-                  cursor: 'pointer',
-                  background: active ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                  color: active ? 'white' : 'var(--text-secondary)',
-                  boxShadow: active ? '0 4px 10px rgba(79, 70, 229, 0.25)' : 'none',
-                }}
+                className="h-8 gap-1.5 px-2.5"
               >
-                <Icon size={17} strokeWidth={active ? 2.5 : 1.75} />
+                <Icon data-icon="inline-start" strokeWidth={active ? 2.25 : 1.75} />
                 {t.shortLabel}
                 {shouldShowFilterCount(n) ? (
-                  <span style={{ opacity: 0.85, fontSize: '0.8rem', background: active ? 'rgba(255,255,255,0.25)' : 'var(--bg-primary)', borderRadius: '999px', padding: '0.1rem 0.4rem', fontWeight: 700, color: active ? 'white' : 'var(--text-tertiary)' }}>
+                  <span className="bg-background/80 text-muted-foreground rounded-full px-1.5 py-0 text-[0.7rem] font-semibold">
                     {n}
                   </span>
                 ) : null}
-              </button>
+              </Button>
             );
           })}
         </div>
       ) : null}
 
-      {error && (
-        <div className="card" style={{ marginBottom: '1.5rem', border: '1px solid var(--danger-200)', background: 'var(--danger-50)', padding: '1.25rem 1.5rem' }}>
-          <p className="text-sm" style={{ margin: 0, color: 'var(--danger-700)', fontWeight: 500 }}>{error.message}</p>
-        </div>
-      )}
+      {error ? (
+        <Alert variant="destructive">
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+      ) : null}
 
-      {/* Toolbar Card */}
-      <div className="card" style={{ padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', border: '1px solid var(--border-default)' }}>
-        <div style={{ position: 'relative', flex: '1 1 240px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)', pointerEvents: 'none' }} />
-          <input
-            className="form-input"
-            placeholder="Search by name, email, college, or opening…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.75rem', paddingRight: '1rem', paddingTop: '0.65rem', paddingBottom: '0.65rem', fontSize: '0.95rem' }}
-          />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Sort:</span>
-          <select className="form-select" value={sortOption} onChange={(e) => setSortOption(e.target.value)} style={{ width: 'auto', padding: '0.65rem 2rem 0.65rem 1rem', fontSize: '0.95rem', fontWeight: 500 }}>
-            <option value="date_desc">Newest first</option>
-            <option value="date_asc">Oldest first</option>
-            <option value="cgpa_desc">Highest CGPA</option>
-            <option value="name_asc">Name A–Z</option>
-          </select>
-        </div>
-        <span style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)', fontWeight: 600, marginLeft: 'auto' }}>
-          {filtered.length} of {items.length} shown
-        </span>
-      </div>
+      <DataTableToolbar
+        search={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search by name, email, college, or opening…"
+        sort={sortOption}
+        onSortChange={setSortOption}
+        sortOptions={APPLICATION_SORT_OPTIONS}
+        filteredCount={filtered.length}
+        totalCount={items.length}
+        hasActiveFilters={Boolean(statusFilter || search.trim())}
+        onClear={() => {
+          setSearch('');
+          setStatusFilter('');
+        }}
+      />
 
-      {/* Status Filter Pills */}
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+      <div className="flex flex-wrap gap-2">
         {STATUS_PILLS.map((p) => (
-          <button
-            key={p.key}
+          <Button
+            key={p.key || 'all'}
             type="button"
+            size="sm"
+            variant={statusFilter === p.key ? 'secondary' : 'outline'}
             onClick={() => setStatusFilter(p.key)}
-            style={{
-              padding: '0.4rem 1rem',
-              borderRadius: '999px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              border: statusFilter === p.key ? '1.5px solid var(--primary-400)' : '1.5px solid var(--border-default)',
-              background: statusFilter === p.key ? 'var(--primary-50)' : 'var(--bg-primary)',
-              color: statusFilter === p.key ? 'var(--primary-700)' : 'var(--text-secondary)',
-              cursor: 'pointer',
-              transition: 'all 0.15s',
-            }}
           >
             {formatFilterBadgeLabel(p.label, statusCounts[p.key])}
-          </button>
+          </Button>
         ))}
       </div>
 
-      {isLoading && (
+      {isLoading ? (
         <PageLoading message="Loading applications…" inline>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }} aria-hidden="true">
+          <div className="flex flex-col gap-3" aria-hidden="true">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="skeleton" style={{ height: '56px', borderRadius: 'var(--radius-md)' }} />
+              <div key={i} className="skeleton h-14 rounded-lg" />
             ))}
           </div>
         </PageLoading>
-      )}
+      ) : null}
 
-      {!isLoading && !error && filtered.length === 0 && (
-        <div className="card" style={{ textAlign: 'center', padding: '5rem 2rem', border: '1px dashed var(--border-default)', borderRadius: 'var(--radius-xl)' }}>
-          <ClipboardList size={48} style={{ color: 'var(--text-tertiary)', margin: '0 auto 1rem', opacity: 0.4 }} />
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>No applications yet</h3>
-          <p style={{ color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>
-            Students apply from placement drives (Jobs) or from Internships / Projects.<br />
-            Post a job to start receiving applications.
-          </p>
-        </div>
-      )}
+      {!isLoading && !error && filtered.length === 0 ? (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center py-16 text-center">
+            <ClipboardList className="text-muted-foreground mb-4 size-12 opacity-40" />
+            <CardTitle className="text-lg">No applications yet</CardTitle>
+            <CardDescription className="mt-2 max-w-md">
+              Students apply from placement drives (Jobs) or from Internships / Projects.
+              Post a job to start receiving applications.
+            </CardDescription>
+          </CardContent>
+        </Card>
+      ) : null}
 
-      {!isLoading && !error && filtered.length > 0 && (
-        <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border-default)' }}>
-          <div className="table-container" style={{ border: 'none', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-            <table className="data-table">
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)' }}>
+      {!isLoading && !error && filtered.length > 0 ? (
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
                   {isAlumniScope ? (
                     <>
-                      <th style={{ paddingLeft: '1.5rem' }}>Opening</th>
-                      <th>College</th>
-                      <th>Student</th>
-                      <th>System ID</th>
-                      <th>Branch</th>
-                      <th>CGPA</th>
-                      <th>Status</th>
-                      <th>Applied</th>
-                      <th style={{ textAlign: 'right', paddingRight: '1.5rem', width: 1 }}>Actions</th>
+                      <TableHead className="pl-4">Opening</TableHead>
+                      <TableHead>College</TableHead>
+                      <TableHead>Student</TableHead>
+                      <TableHead>System ID</TableHead>
+                      <TableHead>Branch</TableHead>
+                      <TableHead>CGPA</TableHead>
+                      <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                      <TableHead>Applied</TableHead>
+                      <TableHead className="pr-4 text-right">Actions</TableHead>
                     </>
                   ) : (
                     <>
-                      <th style={{ paddingLeft: '1.5rem' }}>Student</th>
-                      <th>System ID</th>
-                      <th>College</th>
-                      <th>Branch</th>
-                      <th>CGPA</th>
-                      <th>Opening</th>
-                      <th>Status</th>
-                      <th>Applied</th>
-                      <th style={{ textAlign: 'right', paddingRight: '1.5rem', width: 1 }}>Actions</th>
+                      <TableHead className="pl-4">Student</TableHead>
+                      <TableHead>System ID</TableHead>
+                      <TableHead>College</TableHead>
+                      <TableHead>Branch</TableHead>
+                      <TableHead>CGPA</TableHead>
+                      <TableHead>Opening</TableHead>
+                      <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                      <TableHead>Applied</TableHead>
+                      <TableHead className="pr-4 text-right">Actions</TableHead>
                     </>
                   )}
-                </tr>
-              </thead>
-              <tbody>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filtered.map((app) => {
                   const appName = String(app?.studentName || 'Student').trim() || 'Student';
                   const initials = appName.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2).toUpperCase();
                   const openingCell = (
-                    <td style={{ maxWidth: 220, fontSize: '0.9rem', paddingLeft: isAlumniScope ? '1.5rem' : undefined }}>
-                      <div style={{ fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.3 }}>{app.openingTitle}</div>
-                    </td>
+                    <TableCell className="max-w-[14rem] pl-4">
+                      <div className="font-medium leading-snug">{app.openingTitle}</div>
+                    </TableCell>
                   );
                   const collegeCell = (
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                        <Building2 size={13} style={{ flexShrink: 0, color: 'var(--text-tertiary)' }} />
+                    <TableCell>
+                      <div className="text-muted-foreground flex items-center gap-1.5 text-sm">
+                        <Building2 className="size-3.5 shrink-0" />
                         {app.collegeName}
                       </div>
-                    </td>
+                    </TableCell>
                   );
                   const studentCell = (
-                    <td style={{ paddingLeft: isAlumniScope ? undefined : '1.5rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <div
-                          className="avatar avatar-sm"
-                          style={{
-                            background: 'linear-gradient(135deg, var(--primary-100), var(--primary-200))',
-                            color: 'var(--primary-700)',
-                            fontWeight: 700, fontSize: '0.75rem',
-                            border: '1px solid var(--primary-300)'
-                          }}
-                        >
+                    <TableCell className={isAlumniScope ? undefined : 'pl-4'}>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-primary/10 text-primary border-primary/20 flex size-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold">
                           {initials || 'S'}
                         </div>
-                        <div>
-                          <div className="font-semibold text-sm">{app.studentName}</div>
-                          <div className="text-xs text-tertiary">{app.email}</div>
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold">{app.studentName}</div>
+                          <div className="text-muted-foreground truncate text-xs">{app.email}</div>
                         </div>
                       </div>
-                    </td>
+                    </TableCell>
                   );
-                  const systemIdCell = <td className="font-mono text-sm text-secondary">{app.systemId || '—'}</td>;
-                  const branchCell = <td className="text-sm text-secondary">{app.branch || '—'}</td>;
+                  const systemIdCell = (
+                    <TableCell className="text-muted-foreground font-mono text-sm">{app.systemId || '—'}</TableCell>
+                  );
+                  const branchCell = (
+                    <TableCell className="text-muted-foreground text-sm">{app.branch || '—'}</TableCell>
+                  );
                   const cgpaCell = (
-                    <td>
+                    <TableCell>
                       {app.cgpa != null ? (
-                        <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{app.cgpa}</span>
+                        <span className="text-sm font-semibold">{app.cgpa}</span>
                       ) : '—'}
-                    </td>
+                    </TableCell>
                   );
                   const statusCell = (
-                    <td>
-                      <span className={`badge badge-${getStatusColor(app.status)} badge-dot`} style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }}>
-                        {formatStatus(app.status)}
-                      </span>
-                    </td>
+                    <TableCell className="min-w-[6.5rem]" data-label="Status">
+                      <StatusBadge status={app.status} showDot>
+                        {formatStatus(app.status) || 'Applied'}
+                      </StatusBadge>
+                    </TableCell>
                   );
-                  const appliedCell = <td className="text-sm text-secondary">{app.appliedAt ? formatDate(app.appliedAt) : '—'}</td>;
+                  const appliedCell = (
+                    <TableCell className="text-muted-foreground text-sm">
+                      {app.appliedAt ? formatDate(app.appliedAt) : '—'}
+                    </TableCell>
+                  );
                   const actionsCell = (
-                    <td style={{ textAlign: 'right', paddingRight: '1.5rem' }}>
+                    <TableCell className="pr-4 text-right whitespace-nowrap">
                       <EmployerApplicationRowActions
                         app={app}
                         busy={updatingAppKey === `${app.sourceKind}-${app.id}`}
@@ -624,10 +574,10 @@ export default function EmployerApplicationsPage() {
                         onDownloadResume={() => downloadResume(app.resumeDownloadUrl)}
                         onUpdateStatus={updateStatus}
                       />
-                    </td>
+                    </TableCell>
                   );
                   return (
-                    <tr key={`${app.sourceKind}-${app.id}-${app.jobId || app.driveId || app.openingTitle}`}>
+                    <TableRow key={`${app.sourceKind}-${app.id}-${app.jobId || app.driveId || app.openingTitle}`}>
                       {isAlumniScope ? (
                         <>
                           {openingCell}
@@ -653,15 +603,17 @@ export default function EmployerApplicationsPage() {
                           {actionsCell}
                         </>
                       )}
-                    </tr>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <EmployerStudentProfileModal
+        key={profileStudentId || 'closed'}
         open={Boolean(profileStudentId)}
         profileData={profileData}
         profileError={profileError}

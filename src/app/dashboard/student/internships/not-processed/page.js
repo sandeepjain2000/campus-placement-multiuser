@@ -8,7 +8,10 @@ import EntityLogo from '@/components/EntityLogo';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import PageLoading from '@/components/PageLoading';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
-import { buildStudentOpportunityCsvPayload } from '@/lib/studentOpportunityCsvExport';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 async function fetcher(url) {
   const res = await fetch(url, { cache: 'no-store', credentials: 'include' });
@@ -31,9 +34,7 @@ export default function StudentNotProcessedInternshipsPage() {
     const rows = items.map((row) => [
       row.companyName || '',
       row.title || '',
-      row.salaryMin != null || row.salaryMax != null
-        ? formatCurrency(row.salaryMin || row.salaryMax)
-        : '',
+      row.salaryMin != null || row.salaryMax != null ? formatCurrency(row.salaryMin || row.salaryMax) : '',
       row.applicationDeadline ? formatDate(row.applicationDeadline) : '',
       row.notProcessedReason || 'Not processed after internship selection',
     ]);
@@ -41,18 +42,18 @@ export default function StudentNotProcessedInternshipsPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Lock size={26} className="text-secondary" strokeWidth={1.5} />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Lock className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
             Not Processed Internships
           </h1>
-          <p className="text-secondary">
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             Read-only list of internships you could not apply to after FCFS internship selection (max 1 per student).
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           {items.length > 0 ? (
             <ExportCsvSplitButton
               filenameBase="not_processed_internships"
@@ -62,107 +63,106 @@ export default function StudentNotProcessedInternshipsPage() {
               size="sm"
             />
           ) : null}
-          <Link href="/dashboard/student/internships" className="btn btn-secondary btn-sm">
-            <GraduationCap size={16} style={{ marginRight: '0.35rem' }} />
+          <Button
+            size="sm"
+            variant="secondary"
+            className="w-fit"
+            render={<Link href="/dashboard/student/internships" />}
+            nativeButton={false}
+          >
+            <GraduationCap data-icon="inline-start" />
             Browse internships
-          </Link>
+          </Button>
         </div>
       </div>
 
       {isLoading && !error ? <PageLoading message="Loading…" inline /> : null}
 
       {!isLoading && error ? (
-        <div className="card" style={{ borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0 }}>{error.message}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load list</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
       ) : null}
 
       {!isLoading && !error && !locked ? (
-        <div
-          className="card"
-          style={{
-            padding: '1.25rem 1.5rem',
-            border: '1px solid var(--border-default)',
-            background: 'var(--bg-secondary)',
-          }}
-        >
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+        <Alert>
+          <AlertDescription>
             You are not locked by an internship selection yet. When a company selects you for an internship, other open
             internships you did not apply to will appear here.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {!isLoading && !error && locked && selected ? (
-        <div
-          role="status"
-          className="card"
-          style={{
-            marginBottom: '1.25rem',
-            padding: '1rem 1.25rem',
-            borderColor: 'var(--primary-200)',
-            background: 'var(--primary-50)',
-          }}
-        >
-          <p className="text-sm" style={{ margin: 0, lineHeight: 1.55 }}>
-            Selected internship:{' '}
+        <Alert>
+          <AlertTitle>Selected internship</AlertTitle>
+          <AlertDescription>
             <strong>{selected.companyName}</strong> — {selected.title}. Other internships below were not processed
             because you cannot apply after selection.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {!isLoading && !error && locked && items.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
-            No additional not-processed internships. You either applied to all other visible openings before selection,
-            or no other internships were published for your campus.
-          </p>
-        </div>
+        <Card className="gap-0 py-10">
+          <CardContent className="px-6 text-center">
+            <CardDescription className="text-sm">
+              No additional not-processed internships. You either applied to all other visible openings before selection,
+              or no other internships were published for your campus.
+            </CardDescription>
+          </CardContent>
+        </Card>
       ) : null}
 
       {!isLoading && !error && items.length > 0 ? (
-        <div className="card card-table-shell">
-          <div className="table-container">
-            <table className="data-table student-opportunities-table">
-              <thead>
-                <tr>
-                  <th style={{ paddingLeft: '1rem' }}>Company</th>
-                  <th>Role</th>
-                  <th>Stipend</th>
-                  <th>Deadline</th>
-                  <th style={{ paddingRight: '1rem' }}>Reason</th>
-                </tr>
-              </thead>
-              <tbody>
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-1 border-b px-4 py-3">
+            <CardTitle className="text-base">Not processed listings</CardTitle>
+            <CardDescription>{items.length} internship{items.length === 1 ? '' : 's'}</CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table className="student-opportunities-table">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Stipend</TableHead>
+                  <TableHead>Deadline</TableHead>
+                  <TableHead>Reason</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {items.map((row) => (
-                  <tr key={row.id}>
-                    <td style={{ paddingLeft: '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
+                  <TableRow key={row.id}>
+                    <TableCell data-label="Company">
+                      <div className="flex min-w-0 items-center gap-2">
                         <EntityLogo name={row.companyName} size="sm" shape="rounded" />
-                        <span className="cell-truncate font-semibold">
+                        <span className="truncate font-medium">
                           <CompanyNameLink name={row.companyName} website={row.website} />
                         </span>
                       </div>
-                    </td>
-                    <td className="cell-truncate">{row.title}</td>
-                    <td className="text-sm">
+                    </TableCell>
+                    <TableCell data-label="Role" className="max-w-[12rem]">
+                      <span className="block truncate">{row.title}</span>
+                    </TableCell>
+                    <TableCell data-label="Stipend" className="text-sm">
                       {row.salaryMin != null || row.salaryMax != null
                         ? `${formatCurrency(row.salaryMin || row.salaryMax)} /mo`
                         : '—'}
-                    </td>
-                    <td className="text-sm">
+                    </TableCell>
+                    <TableCell data-label="Deadline" className="text-sm">
                       {row.applicationDeadline ? formatDate(row.applicationDeadline) : '—'}
-                    </td>
-                    <td className="text-sm text-secondary" style={{ paddingRight: '1rem' }}>
+                    </TableCell>
+                    <TableCell data-label="Reason" className="text-muted-foreground text-sm">
                       Not applied — blocked after FCFS selection
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       ) : null}
     </div>
   );

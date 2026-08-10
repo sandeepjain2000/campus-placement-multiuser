@@ -14,7 +14,7 @@ import {
   opportunitySearchText,
 } from '@/lib/tableQueryPresets';
 import { Briefcase, Mail } from 'lucide-react';
-import { formatCurrency, formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import EntityLogo from '@/components/EntityLogo';
 import CompanyNameLink from '@/components/CompanyNameLink';
@@ -23,6 +23,12 @@ import StudentBrowsePrerequisitePanel from '@/components/student/StudentBrowsePr
 import StudentOpportunityDetailModal from '@/components/student/StudentOpportunityDetailModal';
 import StudentOpportunityRowActions from '@/components/student/StudentOpportunityRowActions';
 import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   globalApplyBlockedReason,
   resolveApplyBlockReason,
@@ -69,9 +75,6 @@ export default function StudentJobsPage() {
     }
   }, [isAlumni, router, status]);
 
-  if (status === 'loading' || !isAlumni) {
-    return <PageLoading message="Loading…" />;
-  }
   const { startApply, applyingId, pickerModal } = useProgramApplicationWithCv({
     addToast,
     mutate,
@@ -115,6 +118,10 @@ export default function StudentJobsPage() {
 
   const selection = useTableRowSelection();
   usePruneRowSelection(selection, displayItems);
+
+  if (status === 'loading' || !isAlumni) {
+    return <PageLoading message="Loading…" />;
+  }
 
   const apply = async (jobId, title) => {
     const row = items.find((i) => i.id === jobId);
@@ -162,41 +169,43 @@ export default function StudentJobsPage() {
   const pageSomeSelected = selection.someSelected(displayItems);
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Briefcase size={28} className="text-secondary" strokeWidth={1.5} />
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Briefcase className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
             Browse Alumni Jobs
           </h1>
-          <p className="text-secondary">
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             Alumni job openings published for your college network. Apply directly from here.
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           {canBrowseListings && totalCount > 0 ? (
             <>
-              <button
+              <Button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                variant="outline"
+                size="sm"
+                className="w-fit shrink-0"
                 onClick={emailFilteredJobs}
                 title="Open your email client with all jobs in the current view"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
               >
-                <Mail size={15} aria-hidden />
+                <Mail data-icon="inline-start" aria-hidden />
                 Email view ({displayItems.length})
-              </button>
+              </Button>
               {displayItems.length !== items.length ? (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-ghost btn-sm"
+                  variant="ghost"
+                  size="sm"
+                  className="w-fit shrink-0"
                   onClick={emailAllJobs}
                   title="Email every job on this campus list"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
-                  <Mail size={15} aria-hidden />
+                  <Mail data-icon="inline-start" aria-hidden />
                   Email all ({items.length})
-                </button>
+                </Button>
               ) : null}
               <ExportCsvSplitButton
                 filenameBase="alumni_jobs"
@@ -208,17 +217,18 @@ export default function StudentJobsPage() {
             </>
           ) : null}
           {canBrowseListings ? (
-            <span className="badge badge-blue" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <StatusBadge tone="blue" className="px-3 py-1 text-sm">
               {totalCount} job{totalCount !== 1 ? 's' : ''} available
-            </span>
+            </StatusBadge>
           ) : null}
         </div>
       </div>
 
       {isLoading && <PageLoading message="Loading alumni jobs…" inline />}
       {error && (
-        <div className="card" style={{ borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0 }}>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load alumni jobs</AlertTitle>
+          <AlertDescription>
             {error.message}
             {error.message === 'Failed to load opportunities' ? (
               <>
@@ -236,201 +246,223 @@ export default function StudentJobsPage() {
                 <code className="text-xs">004_group_tenants_student_affiliation.sql</code>, then reload.
               </>
             ) : null}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {!isLoading && !error && (
-      <StudentBrowsePrerequisitePanel {...browseGateProps}>
-      <StudentApplyResumeBanner
-        canApply={canApply}
-        placementLocked={placementLocked}
-        applyBlockedReason={applyBlockedReason}
-      />
+        <StudentBrowsePrerequisitePanel {...browseGateProps}>
+          <div className="flex flex-col gap-4">
+            <StudentApplyResumeBanner
+              canApply={canApply}
+              placementLocked={placementLocked}
+              applyBlockedReason={applyBlockedReason}
+            />
 
-      {canBrowseListings && !error && totalCount === 0 && (
-        <div className="empty-state-container" style={{ textAlign: 'center', padding: '3rem 1rem', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)' }}>
-          <div style={{ background: 'var(--primary-50)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-            <Briefcase size={28} />
-          </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>No jobs available</h3>
-          <p className="text-secondary" style={{ margin: 0 }}>
-            No alumni job postings for your campus right now. When an employer publishes a lateral role and your college approves it, it will appear here.
-          </p>
-        </div>
-      )}
+            {canBrowseListings && totalCount === 0 && (
+              <Card className="gap-0 py-10">
+                <CardContent className="flex flex-col items-center px-6 text-center">
+                  <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+                    <Briefcase className="size-7" />
+                  </div>
+                  <CardTitle className="mb-1 text-lg">No jobs available</CardTitle>
+                  <CardDescription className="max-w-md text-sm">
+                    No alumni job postings for your campus right now. When an employer publishes a lateral role and your
+                    college approves it, it will appear here.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            )}
 
-      {canBrowseListings && totalCount > 0 && (
-        <>
-        <DataTableToolbar
-          search={search}
-          onSearchChange={setSearch}
-          searchPlaceholder="Search company, role, or status…"
-          filter={filter}
-          onFilterChange={setFilter}
-          filterOptions={STUDENT_OPPORTUNITY_FILTER_OPTIONS}
-          filterLabel="Status"
-          sort={sort}
-          onSortChange={setSort}
-          sortOptions={COMPANY_SORT_OPTIONS}
-          filteredCount={filteredCount}
-          totalCount={totalCount}
-          hasActiveFilters={hasActiveFilters}
-          onClear={clearFilters}
-        />
-        <TableBulkActionBar
-          count={selection.count}
-          onEmail={emailSelectedJobs}
-          onClear={selection.clear}
-          emailLabel="Email selected jobs"
-        />
-        </>
-      )}
-
-      {/* ── Tabular list ── */}
-      {canBrowseListings && totalCount > 0 && (
-        <div className="card card-table-shell">
-          <div className="table-container">
-          <table className="data-table student-opportunities-table">
-            <colgroup>
-              <col className="student-opportunities-col-select" />
-              <col className="student-opportunities-col-company" />
-              <col className="student-opportunities-col-role" />
-              <col className="student-opportunities-col-stipend" />
-              <col className="student-opportunities-col-cgpa" />
-              <col className="student-opportunities-col-openings" />
-              <col className="student-opportunities-col-deadline" />
-              <col className="student-opportunities-col-status" />
-              <col className="student-opportunities-col-actions" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th className="student-opportunities-col-select" style={{ paddingLeft: '0.75rem' }}>
-                  <input
-                    type="checkbox"
-                    aria-label="Select all jobs on this page"
-                    checked={pageAllSelected}
-                    ref={(el) => {
-                      if (el) el.indeterminate = pageSomeSelected;
-                    }}
-                    onChange={() => selection.toggleAll(displayItems)}
+            {canBrowseListings && totalCount > 0 && (
+              <Card className="gap-0 overflow-hidden py-0">
+                <CardHeader className="border-border gap-3 border-b px-4 py-3">
+                  <div className="flex flex-col gap-1">
+                    <CardTitle className="text-base">Open listings</CardTitle>
+                    <CardDescription>
+                      Showing {filteredCount} of {totalCount}
+                    </CardDescription>
+                  </div>
+                  <DataTableToolbar
+                    search={search}
+                    onSearchChange={setSearch}
+                    searchPlaceholder="Search company, role, or status…"
+                    filter={filter}
+                    onFilterChange={setFilter}
+                    filterOptions={STUDENT_OPPORTUNITY_FILTER_OPTIONS}
+                    filterLabel="Status"
+                    sort={sort}
+                    onSortChange={setSort}
+                    sortOptions={COMPANY_SORT_OPTIONS}
+                    filteredCount={filteredCount}
+                    totalCount={totalCount}
+                    hasActiveFilters={hasActiveFilters}
+                    onClear={clearFilters}
                   />
-                </th>
-                <th className="student-opportunities-col-company" style={{ paddingLeft: '1rem' }}>Company</th>
-                <th className="student-opportunities-col-role">Role</th>
-                <th className="student-opportunities-col-stipend">Salary</th>
-                <th className="student-opportunities-col-cgpa">CGPA</th>
-                <th className="student-opportunities-col-openings">Openings</th>
-                <th className="student-opportunities-col-deadline">Deadline</th>
-                <th className="student-opportunities-col-status">Status</th>
-                <th className="student-opportunities-col-actions" style={{ textAlign: 'right', paddingRight: '1rem' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {displayItems.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="text-center text-secondary">
-                    No jobs match your search or filters.
-                  </td>
-                </tr>
-              ) : null}
-              {displayItems.map((row) => {
-                const salaryText =
-                  row.salaryMin != null || row.salaryMax != null
-                    ? `${formatCurrency(row.salaryMin || row.salaryMax)}${
-                        row.salaryMax != null && row.salaryMin != null && Number(row.salaryMax) !== Number(row.salaryMin)
-                          ? ` – ${formatCurrency(row.salaryMax)}`
-                          : ''
-                      } /mo`
-                    : '—';
-                return (
-                <tr key={row.id} className={selection.isSelected(row) ? 'is-row-selected' : undefined}>
-                  <td className="student-opportunities-col-select" data-label="" style={{ paddingLeft: '0.75rem' }}>
-                    <input
-                      type="checkbox"
-                      aria-label={`Select ${row.title || 'job'} at ${row.companyName || 'company'}`}
-                      checked={selection.isSelected(row)}
-                      onChange={() => selection.toggle(row)}
-                    />
-                  </td>
-                  <td className="student-opportunities-col-company" data-label="Company" style={{ paddingLeft: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
-                      <EntityLogo name={row.companyName} size="sm" shape="rounded" />
-                      <span className="cell-truncate font-semibold" title={row.companyName || undefined}>
-                        <CompanyNameLink name={row.companyName} website={row.website} />
-                      </span>
-                    </div>
-                  </td>
-                  <td className="cell-truncate" data-label="Role" title={row.title || undefined}>{row.title}</td>
-                  <td className="text-sm cell-truncate" data-label="Salary" title={salaryText !== '—' ? salaryText : undefined}>
-                    {row.salaryMin != null || row.salaryMax != null ? (
-                      <>
-                        {formatCurrency(row.salaryMin || row.salaryMax)}
-                        {row.salaryMax != null && row.salaryMin != null && Number(row.salaryMax) !== Number(row.salaryMin)
-                          ? ` – ${formatCurrency(row.salaryMax)}`
-                          : ''}
-                        <span className="text-tertiary"> /mo</span>
-                      </>
-                    ) : '—'}
-                  </td>
-                  <td className="text-sm" data-label="CGPA">{row.minCgpa != null ? row.minCgpa : '—'}</td>
-                  <td className="text-sm" data-label="Openings">{row.vacancies ?? '—'}</td>
-                  <td className="text-sm cell-truncate" data-label="Deadline" title={row.applicationDeadline ? formatDate(row.applicationDeadline) : undefined}>
-                    {row.applicationDeadline ? formatDate(row.applicationDeadline) : '—'}
-                  </td>
-                  <td data-label="Status">
-                    {row.hasApplied ? (
-                      <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
-                        {formatStatus(row.applicationStatus)}
-                      </span>
-                    ) : (
-                      <span className="badge badge-gray">Open</span>
-                    )}
-                  </td>
-                  <td className="student-opportunities-col-actions" data-label="Actions" style={{ textAlign: 'right', paddingRight: '1rem' }}>
-                    <StudentOpportunityRowActions
-                      row={row}
-                      kind="job"
-                      currentStudent={currentStudent}
-                      globalBlockedReason={globalBlockedReason}
-                      applyingId={applyingId}
-                      onView={setSelectedRow}
-                      onDownload={downloadJob}
-                      onEmail={(r) => emailJobs([r])}
-                      onApply={apply}
-                      onShowEligibility={setSelectedRow}
-                    />
-                  </td>
-                </tr>
-              );})}
-            </tbody>
-          </table>
+                  <TableBulkActionBar
+                    count={selection.count}
+                    onEmail={emailSelectedJobs}
+                    onClear={selection.clear}
+                    emailLabel="Email selected jobs"
+                  />
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table className="student-opportunities-table">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-10 pl-3">
+                          <Checkbox
+                            aria-label="Select all jobs on this page"
+                            checked={pageAllSelected}
+                            indeterminate={pageSomeSelected}
+                            onCheckedChange={() => selection.toggleAll(displayItems)}
+                          />
+                        </TableHead>
+                        <TableHead className="pl-4">Company</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Salary</TableHead>
+                        <TableHead>CGPA</TableHead>
+                        <TableHead>Openings</TableHead>
+                        <TableHead>Deadline</TableHead>
+                        <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                        <TableHead className="text-right pr-4">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {displayItems.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} className="text-muted-foreground h-24 text-center">
+                            No jobs match your search or filters.
+                          </TableCell>
+                        </TableRow>
+                      ) : null}
+                      {displayItems.map((row) => {
+                        const salaryText =
+                          row.salaryMin != null || row.salaryMax != null
+                            ? `${formatCurrency(row.salaryMin || row.salaryMax)}${
+                                row.salaryMax != null &&
+                                row.salaryMin != null &&
+                                Number(row.salaryMax) !== Number(row.salaryMin)
+                                  ? ` – ${formatCurrency(row.salaryMax)}`
+                                  : ''
+                              } /mo`
+                            : '—';
+                        return (
+                          <TableRow
+                            key={row.id}
+                            data-state={selection.isSelected(row) ? 'selected' : undefined}
+                          >
+                            <TableCell data-label="" className="pl-3">
+                              <Checkbox
+                                aria-label={`Select ${row.title || 'job'} at ${row.companyName || 'company'}`}
+                                checked={selection.isSelected(row)}
+                                onCheckedChange={() => selection.toggle(row)}
+                              />
+                            </TableCell>
+                            <TableCell data-label="Company" className="pl-4">
+                              <div className="flex min-w-0 items-center gap-2">
+                                <EntityLogo name={row.companyName} size="sm" shape="rounded" />
+                                <span className="truncate font-medium" title={row.companyName || undefined}>
+                                  <CompanyNameLink name={row.companyName} website={row.website} />
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell data-label="Role" className="max-w-[12rem]">
+                              <span className="block truncate" title={row.title || undefined}>
+                                {row.title}
+                              </span>
+                            </TableCell>
+                            <TableCell
+                              data-label="Salary"
+                              className="text-sm"
+                              title={salaryText !== '—' ? salaryText : undefined}
+                            >
+                              {row.salaryMin != null || row.salaryMax != null ? (
+                                <>
+                                  {formatCurrency(row.salaryMin || row.salaryMax)}
+                                  {row.salaryMax != null &&
+                                  row.salaryMin != null &&
+                                  Number(row.salaryMax) !== Number(row.salaryMin)
+                                    ? ` – ${formatCurrency(row.salaryMax)}`
+                                    : ''}
+                                  <span className="text-muted-foreground"> /mo</span>
+                                </>
+                              ) : (
+                                '—'
+                              )}
+                            </TableCell>
+                            <TableCell data-label="CGPA" className="text-sm">
+                              {row.minCgpa != null ? row.minCgpa : '—'}
+                            </TableCell>
+                            <TableCell data-label="Openings" className="text-sm">
+                              {row.vacancies ?? '—'}
+                            </TableCell>
+                            <TableCell
+                              data-label="Deadline"
+                              className="max-w-[10rem] text-sm"
+                              title={row.applicationDeadline ? formatDate(row.applicationDeadline) : undefined}
+                            >
+                              <span className="block truncate">
+                                {row.applicationDeadline ? formatDate(row.applicationDeadline) : '—'}
+                              </span>
+                            </TableCell>
+                            <TableCell className="min-w-[6.5rem]" data-label="Status">
+                              {row.hasApplied ? (
+                                <StatusBadge status={row.applicationStatus || 'applied'} showDot>
+                                  {formatStatus(row.applicationStatus) || 'Applied'}
+                                </StatusBadge>
+                              ) : (
+                                <StatusBadge tone="gray" showDot>
+                                  Open
+                                </StatusBadge>
+                              )}
+                            </TableCell>
+                            <TableCell data-label="Actions" className="pr-4 text-right whitespace-nowrap">
+                              <StudentOpportunityRowActions
+                                row={row}
+                                kind="job"
+                                currentStudent={currentStudent}
+                                globalBlockedReason={globalBlockedReason}
+                                applyingId={applyingId}
+                                onView={setSelectedRow}
+                                onDownload={downloadJob}
+                                onEmail={(r) => emailJobs([r])}
+                                onApply={apply}
+                                onShowEligibility={setSelectedRow}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            )}
+
+            {selectedRow ? (
+              <StudentOpportunityDetailModal
+                row={selectedRow}
+                kind="job"
+                onClose={() => setSelectedRow(null)}
+                onApply={apply}
+                applyingId={applyingId}
+                currentStudent={currentStudent}
+                canApply={canApply}
+                applyBlockedReason={applyBlockedReason}
+              />
+            ) : null}
+
+            {emailComposeRows ? (
+              <OpportunityEmailComposeModal
+                rows={emailComposeRows}
+                kind="job"
+                defaultTo={userEmail}
+                onClose={() => setEmailComposeRows(null)}
+              />
+            ) : null}
           </div>
-        </div>
-      )}
-
-      {selectedRow ? (
-        <StudentOpportunityDetailModal
-          row={selectedRow}
-          kind="job"
-          onClose={() => setSelectedRow(null)}
-          onApply={apply}
-          applyingId={applyingId}
-          currentStudent={currentStudent}
-          canApply={canApply}
-          applyBlockedReason={applyBlockedReason}
-        />
-      ) : null}
-
-      {emailComposeRows ? (
-        <OpportunityEmailComposeModal
-          rows={emailComposeRows}
-          kind="job"
-          defaultTo={userEmail}
-          onClose={() => setEmailComposeRows(null)}
-        />
-      ) : null}
-      </StudentBrowsePrerequisitePanel>
+        </StudentBrowsePrerequisitePanel>
       )}
       {pickerModal}
     </div>

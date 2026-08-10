@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Database, Download, Play, Loader2, Trash2, RefreshCw } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import { SANDBOX_DEFAULT_PASSWORD } from '@/lib/sandboxCredentials';
 import {
   DEMO_ACTION_GROUPS,
@@ -302,44 +308,47 @@ export default function DemoDataTester({
               </p>
             )}
             {apiDisabled ? (
-              <p className="demo-tester-warn">Demo APIs disabled — set DEMO_DATA_API_ENABLED=true on the server.</p>
+              <Alert className="mt-3" variant="destructive">
+                <AlertDescription>Demo APIs disabled — set DEMO_DATA_API_ENABLED=true on the server.</AlertDescription>
+              </Alert>
             ) : null}
           </header>
         ) : apiDisabled ? (
-          <p className="demo-tester-warn">Demo APIs disabled — set DEMO_DATA_API_ENABLED=true on the server.</p>
+          <Alert variant="destructive">
+            <AlertDescription>Demo APIs disabled — set DEMO_DATA_API_ENABLED=true on the server.</AlertDescription>
+          </Alert>
         ) : null}
 
         <div className="demo-tester-toolbar">
           <label className="demo-tester-campus">
             <span className="demo-tester-campus-label">Campus</span>
-            <select
-              className="form-select demo-tester-select"
+            <AdminFilterSelect
+              className="demo-tester-select h-8 min-h-8"
               value={tenantId}
               disabled={collegesLoading || apiDisabled}
-              onChange={(e) => {
-                setTenantId(e.target.value);
+              emptyMapsToAll={false}
+              onValueChange={(id) => {
+                setTenantId(id);
                 setSelectedPurgeKey('');
               }}
-            >
-              <option value="">Random</option>
-              {colleges.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              items={[
+                { label: 'Random', value: '' },
+                ...colleges.map((c) => ({ label: c.name, value: String(c.id) })),
+              ]}
+            />
           </label>
-          <button
+          <Button
             type="button"
-            className="btn btn-secondary btn-sm"
+            variant="outline"
+            size="sm"
             disabled={!runs.length}
             onClick={downloadResults}
           >
-            <Download size={14} /> JSON ({runs.length})
-          </button>
+            <Download data-icon="inline-start" /> JSON ({runs.length})
+          </Button>
         </div>
 
-        <div className="demo-tester-panel">
+        <Card size="sm" className="demo-tester-panel gap-0 py-0">
           <div className="demo-tester-row demo-tester-row-head">
             <span>Action</span>
             <span className="demo-tester-col-n" title="How many records to create — only for bulk seed actions">
@@ -364,9 +373,9 @@ export default function DemoDataTester({
                   </div>
                   <div className="demo-tester-col-n">
                     {!action.hideCount ? (
-                      <input
+                      <Input
                         type="number"
-                        className="form-input demo-tester-count"
+                        className="demo-tester-count"
                         min={1}
                         max={action.countMax}
                         value={counts[action.id] ?? action.countDefault}
@@ -389,25 +398,26 @@ export default function DemoDataTester({
                     )}
                   </div>
                   <div className="demo-tester-col-run">
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-primary btn-sm demo-tester-run"
+                      size="sm"
+                      className="demo-tester-run"
                       disabled={apiDisabled || running !== null}
                       onClick={() => runAction(action)}
                     >
                       {running === action.id ? (
-                        <Loader2 size={14} className="spin" aria-hidden />
+                        <Loader2 className="spin" data-icon="inline-start" aria-hidden />
                       ) : (
-                        <Play size={14} aria-hidden />
+                        <Play data-icon="inline-start" aria-hidden />
                       )}
                       Run
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           ))}
-        </div>
+        </Card>
 
         <section id="demo-purge" className="demo-tester-purge" ref={purgeSectionRef}>
           <div className="demo-tester-purge-head">
@@ -424,23 +434,28 @@ export default function DemoDataTester({
                 Choose from the dropdown, then purge.
               </p>
             </div>
-            <button
+            <Button
               type="button"
-              className="btn btn-secondary btn-sm"
+              variant="outline"
+              size="sm"
               disabled={apiDisabled || purgeLoading}
               onClick={loadPurgeCandidates}
             >
-              {purgeLoading ? <Loader2 size={14} className="spin" aria-hidden /> : <RefreshCw size={14} />}
+              {purgeLoading ? <Loader2 className="spin" data-icon="inline-start" aria-hidden /> : <RefreshCw data-icon="inline-start" />}
               Refresh
-            </button>
+            </Button>
           </div>
-          {purgeError ? <p className="demo-tester-warn">{purgeError}</p> : null}
-          {purgeNotice && !purgeError ? (
-            <p className="demo-tester-purge-notice" role="status">
-              {purgeNotice}
-            </p>
+          {purgeError ? (
+            <Alert className="mb-2" variant="destructive">
+              <AlertDescription>{purgeError}</AlertDescription>
+            </Alert>
           ) : null}
-          <div className="demo-tester-panel demo-tester-purge-panel">
+          {purgeNotice && !purgeError ? (
+            <Alert className="mb-2" role="status">
+              <AlertDescription>{purgeNotice}</AlertDescription>
+            </Alert>
+          ) : null}
+          <Card size="sm" className="demo-tester-panel demo-tester-purge-panel gap-0">
             {purgeLoading && !purgeCandidates ? (
               <p className="demo-tester-row-empty">Loading purge candidates…</p>
             ) : null}
@@ -482,48 +497,47 @@ export default function DemoDataTester({
                     <div className="demo-tester-purge-picker">
                       <label className="demo-tester-purge-field">
                         <span className="demo-tester-purge-field-label">Type</span>
-                        <select
-                          className="form-select demo-tester-select"
+                        <AdminFilterSelect
+                          className="demo-tester-select h-8 min-h-8"
                           value={purgeTypeFilter}
-                          onChange={(e) => {
-                            setPurgeTypeFilter(e.target.value);
+                          disabled={apiDisabled || purgingKey !== null}
+                          emptyMapsToAll={false}
+                          onValueChange={(v) => {
+                            setPurgeTypeFilter(v);
                             setSelectedPurgeKey('');
                           }}
-                          disabled={apiDisabled || purgingKey !== null}
-                        >
-                          <option value="all">All types</option>
-                          {PURGE_GROUPS.map((group) => (
-                            <option key={group.key} value={group.entityType}>
-                              {group.label}
-                            </option>
-                          ))}
-                        </select>
+                          items={[
+                            { label: 'All types', value: 'all' },
+                            ...PURGE_GROUPS.map((group) => ({ label: group.label, value: group.entityType })),
+                          ]}
+                        />
                       </label>
                       <label className="demo-tester-purge-field demo-tester-purge-field-grow">
                         <span className="demo-tester-purge-field-label">Entity to purge</span>
-                        <select
-                          className="form-select demo-tester-select"
+                        <AdminFilterSelect
+                          className="demo-tester-select h-8 min-h-8 w-full"
                           value={selectedPurgeKey}
-                          onChange={(e) => setSelectedPurgeKey(e.target.value)}
                           disabled={apiDisabled || purgingKey !== null || !purgeOptions.length}
-                        >
-                          {purgeOptions.length === 0 ? (
-                            <option value="">No matches — change type filter or campus</option>
-                          ) : (
-                            <>
-                              <option value="">Select entity to purge…</option>
-                              {purgeOptions.map((opt) => (
-                                <option key={opt.optionKey} value={opt.optionKey}>
-                                  {opt.optionLabel}
-                                </option>
-                              ))}
-                            </>
-                          )}
-                        </select>
+                          emptyMapsToAll={false}
+                          onValueChange={setSelectedPurgeKey}
+                          items={
+                            purgeOptions.length === 0
+                              ? [{ label: 'No matches — change type filter or campus', value: '' }]
+                              : [
+                                  { label: 'Select entity to purge…', value: '' },
+                                  ...purgeOptions.map((opt) => ({
+                                    label: opt.optionLabel,
+                                    value: opt.optionKey,
+                                  })),
+                                ]
+                          }
+                        />
                       </label>
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-danger btn-sm demo-tester-purge-submit"
+                        variant="destructive"
+                        size="sm"
+                        className="demo-tester-purge-submit"
                         disabled={
                           apiDisabled ||
                           purgingKey !== null ||
@@ -532,12 +546,12 @@ export default function DemoDataTester({
                         onClick={() => selectedPurgeItem && purgeOne(selectedPurgeItem)}
                       >
                         {purgingKey ? (
-                          <Loader2 size={14} className="spin" aria-hidden />
+                          <Loader2 className="spin" data-icon="inline-start" aria-hidden />
                         ) : (
-                          <Trash2 size={14} aria-hidden />
+                          <Trash2 data-icon="inline-start" aria-hidden />
                         )}
                         Purge selected
-                      </button>
+                      </Button>
                     </div>
                     {selectedPurgeItem ? (
                       <div className="demo-tester-purge-preview">
@@ -554,10 +568,11 @@ export default function DemoDataTester({
                 )}
               </>
             ) : null}
-          </div>
+          </Card>
         </section>
 
-        <details className="demo-tester-results" open={runs.length > 0}>
+        <Card size="sm" className="demo-tester-results">
+        <details open={runs.length > 0}>
           <summary>Results ({runs.length})</summary>
           {!runs.length ? (
             <p className="demo-tester-empty">No runs yet.</p>
@@ -567,9 +582,9 @@ export default function DemoDataTester({
                 <div key={run.id} className={`demo-tester-result ${run.ok ? '' : 'demo-tester-result-fail'}`}>
                   <div className="demo-tester-result-meta">
                     <span>{run.action}</span>
-                    <span className={`badge ${run.ok ? 'badge-green' : 'badge-red'}`}>
+                    <StatusBadge tone={run.ok ? 'green' : 'red'}>
                       {run.ok ? 'OK' : 'Fail'}
-                    </span>
+                    </StatusBadge>
                     <span className="text-xs text-tertiary">
                       {new Date(run.at).toLocaleString()} · {run.status || '—'}
                     </span>
@@ -580,6 +595,7 @@ export default function DemoDataTester({
             </div>
           )}
         </details>
+        </Card>
 
         {!isEmbed ? (
         <p className="demo-tester-footer">
@@ -782,14 +798,6 @@ export default function DemoDataTester({
         }
         .demo-tester-empty-hints li {
           line-height: 1.45;
-        }
-        .btn-danger {
-          background: var(--danger-600, #dc2626);
-          color: #fff;
-          border: 1px solid var(--danger-700, #b91c1c);
-        }
-        .btn-danger:hover:not(:disabled) {
-          background: var(--danger-700, #b91c1c);
         }
         .demo-tester-row {
           display: grid;

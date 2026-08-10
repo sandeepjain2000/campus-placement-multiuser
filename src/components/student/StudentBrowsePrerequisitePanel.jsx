@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 /**
  * Blocks browse listings until profile + CV prerequisites are met.
@@ -26,48 +29,26 @@ export default function StudentBrowsePrerequisitePanel({
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div
-        className="card"
+    <div className="animate-fadeIn flex flex-col gap-3">
+      <Alert
         role="region"
         aria-labelledby="student-browse-gate-title"
-        style={{
-          marginBottom: '1.5rem',
-          padding: '1.5rem 1.75rem',
-          borderColor: 'var(--warning-500)',
-          background: 'var(--warning-50, rgba(234, 179, 8, 0.08))',
-        }}
+        className="border-amber-500/40 bg-amber-500/5"
       >
-        <h2
-          id="student-browse-gate-title"
-          style={{
-            margin: '0 0 0.75rem',
-            fontSize: '1.25rem',
-            fontWeight: 800,
-            color: 'var(--text-primary)',
-            letterSpacing: '-0.02em',
-          }}
-        >
+        <AlertTitle id="student-browse-gate-title" className="text-base">
           {browseGateTitle || 'Complete your profile to continue'}
-        </h2>
-        <p className="text-sm text-secondary" style={{ margin: '0 0 1.25rem', lineHeight: 1.6, maxWidth: 640 }}>
-          {browseGateMessage ||
-            'Finish your profile and upload your CV before browsing jobs, internships, and placement drives.'}
-        </p>
+        </AlertTitle>
+        <AlertDescription className="flex max-w-2xl flex-col gap-4">
+          <p>
+            {browseGateMessage ||
+              'Finish your profile and upload your CV before browsing jobs, internships, and placement drives.'}
+          </p>
 
-        <ul
-          className="text-sm"
-          style={{
-            margin: '0 0 1.25rem',
-            paddingLeft: '1.25rem',
-            lineHeight: 1.7,
-            color: 'var(--text-secondary)',
-          }}
-        >
-          <li style={{ marginBottom: '0.35rem' }}>
-            <strong style={{ color: 'var(--text-primary)' }}>Academic profile:</strong>{' '}
+          <ul className="flex list-disc flex-col gap-2 pl-5">
+          <li>
+            <strong>Academic profile:</strong>{' '}
             {profileComplete ? (
-              <span style={{ color: 'var(--success-600, #059669)' }}>Complete</span>
+              <StatusBadge tone="green">Complete</StatusBadge>
             ) : (
               <span>
                 Incomplete
@@ -76,35 +57,36 @@ export default function StudentBrowsePrerequisitePanel({
             )}
           </li>
           <li>
-            <strong style={{ color: 'var(--text-primary)' }}>Primary CV / résumé:</strong>{' '}
+            <strong>Primary CV / résumé:</strong>{' '}
             {hasResume ? (
-              <span style={{ color: 'var(--success-600, #059669)' }}>Uploaded</span>
+              <StatusBadge tone="green">Uploaded</StatusBadge>
             ) : (
               <span>Not uploaded yet</span>
             )}
           </li>
-        </ul>
+          </ul>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div className="flex flex-wrap gap-2">
           {!profileComplete ? (
-            <Link href="/dashboard/student/profile" className="btn btn-primary">
+            <Button render={<Link href="/dashboard/student/profile" />}>
               Complete profile
-            </Link>
+            </Button>
           ) : null}
           {!hasResume ? (
-            <Link href="/dashboard/student/profile" className="btn btn-secondary">
+            <Button render={<Link href="/dashboard/student/profile" />} variant="secondary">
               Upload CV (Profile → Résumé / CV)
-            </Link>
+            </Button>
           ) : null}
           {!hasResume ? (
-            <Link href="/dashboard/student/documents" className="btn btn-ghost">
+            <Button render={<Link href="/dashboard/student/documents" />} variant="ghost">
               Documents
-            </Link>
+            </Button>
           ) : null}
         </div>
-      </div>
+        </AlertDescription>
+      </Alert>
 
-      <p className="text-sm text-tertiary" style={{ margin: 0, fontStyle: 'italic' }}>
+      <p className="text-sm italic text-muted-foreground">
         Listings are hidden until both requirements above are satisfied.
       </p>
     </div>

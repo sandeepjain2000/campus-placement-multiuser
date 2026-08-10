@@ -1,14 +1,17 @@
 'use client';
 
 import useSWR from 'swr';
-import { Trophy } from 'lucide-react';
-import { formatCurrency, formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { BookOpen, Calendar, IndianRupee, Trophy } from 'lucide-react';
+import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import StudentApplyResumeBanner from '@/components/StudentApplyResumeBanner';
 import PostingEligibilitySection from '@/components/student/PostingEligibilitySection';
 import StudentApplyEligibilityControls from '@/components/student/StudentApplyEligibilityControls';
 import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 import {
   globalApplyBlockedReason,
   resolveApplyBlockReason,
@@ -31,13 +34,14 @@ export default function StudentHackathonsPage() {
   });
 
   const items = data?.items || [];
+  const totalCount = items.length;
   const placementLocked = data?.placementLocked === true;
   const applyBlockedReason = data?.applyBlockedReason || '';
   const currentStudent = buildStudentApplyContext(data);
   const canApply = data?.canApply !== false;
   const globalBlockedReason = globalApplyBlockedReason(canApply, applyBlockedReason);
 
-  const { startApply, pickerModal } = useProgramApplicationWithCv({ addToast, mutate });
+  const { startApply, applyingId, pickerModal } = useProgramApplicationWithCv({ addToast, mutate });
 
   const apply = async (jobId, title) => {
     const row = items.find((i) => i.id === jobId);
@@ -49,18 +53,23 @@ export default function StudentHackathonsPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Trophy size={28} className="text-secondary" strokeWidth={1.5} />
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Trophy className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
             Browse Hackathons
           </h1>
-          <p className="text-secondary">
-            Hackathons published for your campus. Apply when you meet the criteria — track submissions under My Hackathons in My
-            Applications.
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
+            Hackathons published for your campus. Apply when you meet the criteria — track submissions under My Hackathons
+            in My Applications.
           </p>
         </div>
+        {!isLoading && !error && totalCount > 0 ? (
+          <StatusBadge tone="blue" className="px-3 py-1 text-sm">
+            {totalCount} hackathon{totalCount !== 1 ? 's' : ''} available
+          </StatusBadge>
+        ) : null}
       </div>
 
       <StudentApplyResumeBanner
@@ -71,8 +80,9 @@ export default function StudentHackathonsPage() {
 
       {isLoading && <PageLoading message="Loading hackathons…" inline />}
       {error && (
-        <div className="card" style={{ borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0 }}>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load hackathons</AlertTitle>
+          <AlertDescription>
             {error.message}
             {/job_posting_visibility|program_applications|member_tenant_id|does not exist/i.test(error.message) ? (
               <>
@@ -82,86 +92,118 @@ export default function StudentHackathonsPage() {
                 <code className="text-xs">004_group_tenants_student_affiliation.sql</code>, then reload.
               </>
             ) : null}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
-      {!isLoading && !error && items.length === 0 && (
-        <div className="card">
-          <p className="text-secondary" style={{ margin: 0 }}>
-            No published hackathons for your campus yet. Employers post these from Projects (hackathon type) and select your college.
-          </p>
-        </div>
+      {!isLoading && !error && totalCount === 0 && (
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+              <Trophy className="size-7" />
+            </div>
+            <CardTitle className="mb-1 text-lg">No hackathons available</CardTitle>
+            <CardDescription className="max-w-md text-sm">
+              No published hackathons for your campus yet. Employers post these from Projects (hackathon type) and select
+              your college.
+            </CardDescription>
+          </CardContent>
+        </Card>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {items.map((row) => (
-          <div key={row.id} className="card" style={{ margin: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span className="font-semibold text-lg">{row.title}</span>
-                  <span className="badge badge-amber">Hackathon</span>
+      {!isLoading && !error && totalCount > 0 ? (
+        <div className="flex flex-col gap-3">
+          {items.map((row) => (
+            <Card key={row.id} size="sm" className="gap-3">
+              <CardHeader className="gap-2 px-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <CardTitle className="text-base">{row.title}</CardTitle>
+                  <StatusBadge tone="amber" showDot>
+                    Hackathon
+                  </StatusBadge>
+                  {row.hasApplied ? (
+                    <StatusBadge status={row.applicationStatus || 'applied'} showDot>
+                      {formatStatus(row.applicationStatus) || 'Applied'}
+                    </StatusBadge>
+                  ) : (
+                    <StatusBadge tone="gray" showDot>
+                      Open
+                    </StatusBadge>
+                  )}
                 </div>
-                <div className="text-sm text-secondary">
+                <CardDescription>
                   <CompanyNameLink name={row.companyName} website={row.website} />
-                </div>
-                {row.description && (
-                  <p className="text-sm" style={{ marginTop: '0.5rem', whiteSpace: 'pre-wrap' }}>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3 px-4">
+                {row.description ? (
+                  <p className="text-muted-foreground m-0 text-sm leading-relaxed whitespace-pre-wrap">
                     {row.description}
                   </p>
-                )}
-                <div className="text-sm text-tertiary" style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                ) : null}
+                <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
                   {row.salaryMin != null || row.salaryMax != null ? (
-                    <span>
+                    <span className="inline-flex items-center gap-1">
+                      <IndianRupee className="size-3.5" aria-hidden />
                       Prize / stipend: {formatCurrency(row.salaryMin || row.salaryMax)}
-                      {row.salaryMax != null && row.salaryMin != null && Number(row.salaryMax) !== Number(row.salaryMin)
+                      {row.salaryMax != null &&
+                      row.salaryMin != null &&
+                      Number(row.salaryMax) !== Number(row.salaryMin)
                         ? ` – ${formatCurrency(row.salaryMax)}`
                         : ''}
                     </span>
                   ) : null}
-                  {row.minCgpa != null ? <span>Min CGPA: {row.minCgpa}</span> : null}
+                  {row.minCgpa != null ? (
+                    <span className="inline-flex items-center gap-1">
+                      <BookOpen className="size-3.5" aria-hidden />
+                      Min CGPA: {row.minCgpa}
+                    </span>
+                  ) : null}
                   {row.vacancies != null ? <span>Slots: {row.vacancies}</span> : null}
-                  {row.applicationDeadline ? <span>Deadline: {formatDate(row.applicationDeadline)}</span> : null}
+                  {row.applicationDeadline ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar className="size-3.5" aria-hidden />
+                      Deadline: {formatDate(row.applicationDeadline)}
+                    </span>
+                  ) : null}
                 </div>
-                {row.skillsRequired?.length > 0 && (
-                  <div style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                {row.skillsRequired?.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
                     {row.skillsRequired.map((s) => (
-                      <span key={s} className="badge badge-gray">
+                      <StatusBadge key={s} tone="gray">
                         {s}
-                      </span>
+                      </StatusBadge>
                     ))}
                   </div>
-                )}
-                {!row.hasApplied ? (
-                  <div style={{ marginTop: '1rem' }}>
-                    <PostingEligibilitySection
-                      opportunity={programOpportunityFromRow(row)}
-                      student={currentStudent}
-                      audience="student"
-                    />
-                  </div>
                 ) : null}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', minWidth: 'min(11rem, 100%)', flex: '1 1 10rem' }}>
-                {row.hasApplied ? (
-                  <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
-                    {formatStatus(row.applicationStatus)}
-                  </span>
-                ) : (
-                  <StudentApplyEligibilityControls
+                {!row.hasApplied ? (
+                  <PostingEligibilitySection
                     opportunity={programOpportunityFromRow(row)}
                     student={currentStudent}
-                    applyLabel="Apply"
-                    globalBlockedReason={globalBlockedReason}
-                    onApply={() => apply(row.id, row.title)}
+                    audience="student"
                   />
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+                ) : null}
+                <div className="flex justify-end border-t pt-3">
+                  {row.hasApplied ? (
+                    <StatusBadge status={row.applicationStatus || 'applied'} showDot>
+                      {formatStatus(row.applicationStatus) || 'Applied'}
+                    </StatusBadge>
+                  ) : (
+                    <StudentApplyEligibilityControls
+                      opportunity={programOpportunityFromRow(row)}
+                      student={currentStudent}
+                      applyLabel="Apply"
+                      globalBlockedReason={globalBlockedReason}
+                      applying={applyingId === row.id}
+                      onApply={() => apply(row.id, row.title)}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : null}
       {pickerModal}
     </div>
   );

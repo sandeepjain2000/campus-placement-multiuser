@@ -12,6 +12,11 @@ import { downloadCsvFromApi } from '@/lib/downloadCsvFromApi';
 import { formatCurrency, formatDate, formatStatus, getStatusColor } from '@/lib/utils';
 import { swrFetcher } from '@/lib/fetchJson';
 import { MAX_CSV_UPLOAD_BYTES, PLATFORM_SETTINGS_DEFAULTS } from '@/lib/platformSettingsDefaults';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const MAX_CSV_BYTES = MAX_CSV_UPLOAD_BYTES;
 
@@ -105,70 +110,63 @@ export function CollegeOffersUploadMeta({ compact = false }) {
   });
 
   if (isLoading) {
-    return <div className="skeleton skeleton-card" style={{ height: compact ? 88 : 120, marginBottom: '1rem' }} />;
+    return <div className={`skeleton rounded-xl ${compact ? 'h-24' : 'h-32'}`} />;
   }
 
   if (error) {
     return (
-      <div className="card" style={{ marginBottom: '1rem', padding: '1rem', borderColor: 'var(--danger-200)', background: 'var(--danger-50)' }}>
-        <p style={{ margin: 0, color: 'var(--danger-700)', fontSize: '0.875rem' }}>{error.message}</p>
-      </div>
+      <Alert variant="destructive">
+        <AlertTitle>Could not load offer summary</AlertTitle>
+        <AlertDescription>{error.message}</AlertDescription>
+      </Alert>
     );
   }
 
   return (
-    <>
-      <div
-        className="card"
-        style={{
-          marginBottom: '1rem',
-          padding: compact ? '1rem' : '1.25rem',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          alignItems: 'center',
-          border: '1px solid var(--border-default)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 140 }}>
-          <Users size={18} style={{ color: 'var(--primary-600)' }} aria-hidden />
+    <div className="flex flex-col gap-4">
+      <Card>
+        <CardContent className={`flex flex-wrap items-center gap-5 ${compact ? 'py-4' : 'py-5'}`}>
+        <div className="flex min-w-36 items-center gap-3">
+          <Users className="text-primary size-5" aria-hidden />
           <div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.1 }}>{data?.studentsWithRoll ?? 0}</div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Students with roll no.</div>
+            <div className="text-xl font-semibold leading-none">{data?.studentsWithRoll ?? 0}</div>
+            <div className="text-muted-foreground mt-1 text-xs">Students with roll no.</div>
           </div>
         </div>
-        <div style={{ width: 1, height: 36, background: 'var(--border-default)' }} aria-hidden />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 140 }}>
-          <ClipboardList size={18} style={{ color: 'var(--primary-600)' }} aria-hidden />
+        <div className="bg-border h-9 w-px" aria-hidden />
+        <div className="flex min-w-36 items-center gap-3">
+          <ClipboardList className="text-primary size-5" aria-hidden />
           <div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.1 }}>{summary.total}</div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+            <div className="text-xl font-semibold leading-none">{summary.total}</div>
+            <div className="text-muted-foreground mt-1 text-xs">
               Offers on file · {summary.pending} pending
             </div>
           </div>
         </div>
         {data?.assessmentPrefillCount > 0 ? (
           <>
-            <div style={{ width: 1, height: 36, background: 'var(--border-default)' }} aria-hidden />
-            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)', maxWidth: 280, lineHeight: 1.45 }}>
+            <div className="bg-border h-9 w-px" aria-hidden />
+            <p className="text-muted-foreground m-0 max-w-72 text-xs leading-5">
               <strong>{data.assessmentPrefillCount}</strong> students can prefill <code>company_name</code> from your latest{' '}
-              <Link href="/dashboard/college/hiring-assessment" className="link-inline">assessment upload</Link>.
+              <Link href="/dashboard/college/hiring-assessment" className="text-primary font-medium">assessment upload</Link>.
             </p>
           </>
         ) : null}
-        <Link href="/dashboard/college/offers" className="btn btn-secondary btn-sm" style={{ marginLeft: 'auto' }}>
+        <Button render={<Link href="/dashboard/college/offers" />} variant="outline" size="sm" className="ml-auto">
           View all offers
-        </Link>
-      </div>
+        </Button>
+        </CardContent>
+      </Card>
 
       {recentTotalCount > 0 ? (
-        <div className="card" style={{ marginBottom: '1rem', padding: 0, overflow: 'hidden', border: '1px solid var(--border-default)' }}>
-          <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border-default)', background: 'var(--bg-secondary)' }}>
-            <h2 className="card-title" style={{ margin: 0, fontSize: '1rem' }}>Recent offers</h2>
-            <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-3 border-b px-4 py-3">
+            <div>
+            <CardTitle className="text-base">Recent offers</CardTitle>
+            <CardDescription>
               Latest on your campus — edit on <Link href="/dashboard/college/offers">Offers</Link>.
-            </p>
-          </div>
+            </CardDescription>
+            </div>
           <DataTableToolbar
             search={search}
             onSearchChange={setSearch}
@@ -180,66 +178,45 @@ export function CollegeOffersUploadMeta({ compact = false }) {
             totalCount={recentTotalCount}
             hasActiveFilters={hasActiveFilters}
             onClear={clearFilters}
-            style={{ margin: '0 1rem', border: 'none', borderBottom: '1px solid var(--border-default)', borderRadius: 0 }}
           />
-          <div className="table-container" style={{ border: 'none' }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th style={{ paddingLeft: '1.25rem' }}>Student</th>
-                  <th>Company</th>
-                  <th>Role</th>
-                  <th>CTC</th>
-                  <th>Status</th>
-                  <th style={{ paddingRight: '1.25rem' }}>Added</th>
-                </tr>
-              </thead>
-              <tbody>
+          </CardHeader>
+          <CardContent className="overflow-x-auto p-0">
+            <Table>
+              <TableHeader><TableRow>
+                <TableHead>Student</TableHead><TableHead>Company</TableHead><TableHead>Role</TableHead>
+                <TableHead>CTC</TableHead><TableHead>Status</TableHead><TableHead>Added</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>
                 {displayRecent.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-center text-secondary">No offers match your search.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={6} className="text-muted-foreground h-24 text-center">No offers match your search.</TableCell></TableRow>
                 ) : null}
                 {displayRecent.map((o) => (
-                  <tr key={o.id}>
-                    <td style={{ paddingLeft: '1.25rem' }}>
-                      <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{o.student_name || '—'}</div>
-                      <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{o.roll_number || '—'}</div>
-                    </td>
-                    <td style={{ fontSize: '0.875rem' }}>{o.company_name || '—'}</td>
-                    <td style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{o.job_title || '—'}</td>
-                    <td style={{ fontSize: '0.875rem' }}>{o.salary ? formatCurrency(o.salary) : '—'}</td>
-                    <td>
-                      <span className={`badge badge-${getStatusColor(o.status)} badge-dot`} style={{ fontSize: '0.7rem' }}>
-                        {formatStatus(o.status)}
-                      </span>
-                    </td>
-                    <td style={{ paddingRight: '1.25rem', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-                      {o.created_at ? formatDate(o.created_at) : '—'}
-                    </td>
-                  </tr>
+                  <TableRow key={o.id}>
+                    <TableCell><div className="font-medium">{o.student_name || '—'}</div><div className="text-muted-foreground font-mono text-xs">{o.roll_number || '—'}</div></TableCell>
+                    <TableCell>{o.company_name || '—'}</TableCell>
+                    <TableCell className="text-muted-foreground">{o.job_title || '—'}</TableCell>
+                    <TableCell>{o.salary ? formatCurrency(o.salary) : '—'}</TableCell>
+                    <TableCell>
+                      <StatusBadge tone={getStatusColor(o.status)} showDot>
+                        {formatStatus(o.status) || 'Pending'}
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{o.created_at ? formatDate(o.created_at) : '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       ) : (
-        <div
-          className="card"
-          style={{
-            marginBottom: '1rem',
-            padding: '1.25rem',
-            border: '1px dashed var(--border-default)',
-            background: 'var(--bg-secondary)',
-          }}
-        >
-          <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+        <Card className="border-dashed">
+          <CardContent className="text-muted-foreground py-6 text-sm leading-6">
             No offers on file yet. Download a template below, fill in <code>roll_number</code>, <code>company_name</code>, and{' '}
             <code>job_title</code>, then upload — or add rows on the <Link href="/dashboard/college/offers">Offers</Link> screen.
-          </p>
-        </div>
+          </CardContent>
+        </Card>
       )}
-    </>
+    </div>
   );
 }
 

@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 /**
  * @param {{
@@ -64,21 +66,15 @@ export default function MultiSelectDropdown({
   return (
     <div
       ref={rootRef}
-      className={`filter-multiselect${isActive ? ' filter-multiselect--active' : ''}`}
-      style={{ position: 'relative', minWidth }}
+      className="relative"
+      style={{ minWidth }}
     >
-      <button
+      <Button
         type="button"
-        className={`form-select filter-multiselect__trigger${isActive ? ' is-filter-active' : ''}`}
+        variant="outline"
+        className={cn('w-full justify-between', isActive && 'border-primary/40 bg-primary/5')}
         style={{
-          width: '100%',
           minWidth,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '0.5rem',
-          textAlign: 'left',
-          cursor: 'pointer',
         }}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -87,23 +83,12 @@ export default function MultiSelectDropdown({
         data-filter-active={isActive ? 'true' : 'false'}
         onClick={() => setOpen((v) => !v)}
       >
-        <span
-          className="filter-multiselect__label"
-          style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-        >
-          {triggerLabel}
-        </span>
+        <span className="truncate">{triggerLabel}</span>
         <ChevronDown
-          size={16}
-          style={{
-            flexShrink: 0,
-            color: isActive ? 'var(--primary-600)' : 'var(--text-tertiary)',
-            transform: open ? 'rotate(180deg)' : 'none',
-            transition: 'transform 0.15s ease-out, color 0.15s ease-out',
-          }}
+          className={cn('shrink-0 text-muted-foreground transition-transform', open && 'rotate-180')}
           aria-hidden
         />
-      </button>
+      </Button>
 
       {open && (
         <div
@@ -111,19 +96,9 @@ export default function MultiSelectDropdown({
           role="listbox"
           aria-multiselectable="true"
           aria-label={label}
-          className="card"
+          className="absolute inset-x-0 top-[calc(100%+4px)] z-50 max-h-[min(280px,50vh)] min-w-[max(100%,220px)] overflow-y-auto overscroll-contain rounded-md border bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10"
           style={{
-            position: 'absolute',
-            zIndex: 50,
-            top: 'calc(100% + 4px)',
-            left: 0,
-            right: 0,
             minWidth: 'max(100%, 220px)',
-            maxHeight: '280px',
-            overflowY: 'auto',
-            padding: '0.35rem',
-            border: '1px solid var(--border-default)',
-            boxShadow: 'var(--shadow-md, 0 8px 24px rgba(0,0,0,0.12))',
           }}
         >
           <button
@@ -131,36 +106,12 @@ export default function MultiSelectDropdown({
             role="option"
             aria-selected={selected.length === 0}
             onClick={() => onChange([])}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.5rem 0.65rem',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              background: selected.length === 0 ? 'var(--bg-secondary)' : 'transparent',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-              fontWeight: selected.length === 0 ? 600 : 400,
-              color: 'var(--text-primary)',
-            }}
+            className={cn('flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-muted', selected.length === 0 && 'bg-muted font-medium')}
           >
             <span
-              style={{
-                width: 16,
-                height: 16,
-                borderRadius: 4,
-                border: '1.5px solid var(--border-strong)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: selected.length === 0 ? 'var(--primary-600)' : 'var(--bg-primary)',
-                borderColor: selected.length === 0 ? 'var(--primary-600)' : 'var(--border-strong)',
-                flexShrink: 0,
-              }}
+              className={cn('inline-flex size-4 shrink-0 items-center justify-center rounded border', selected.length === 0 && 'border-primary bg-primary text-primary-foreground')}
             >
-              {selected.length === 0 && <Check size={11} color="#fff" strokeWidth={3} />}
+              {selected.length === 0 && <Check className="size-3" strokeWidth={3} />}
             </span>
             {allLabel}
           </button>
@@ -174,37 +125,14 @@ export default function MultiSelectDropdown({
                 role="option"
                 aria-selected={checked}
                 onClick={() => toggle(opt.value)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.5rem 0.65rem',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  background: checked ? 'var(--primary-50)' : 'transparent',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  color: 'var(--text-primary)',
-                }}
+                className={cn('flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-muted', checked && 'bg-primary/5')}
               >
                 <span
-                  style={{
-                    width: 16,
-                    height: 16,
-                    borderRadius: 4,
-                    border: '1.5px solid var(--border-strong)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: checked ? 'var(--primary-600)' : 'var(--bg-primary)',
-                    borderColor: checked ? 'var(--primary-600)' : 'var(--border-strong)',
-                    flexShrink: 0,
-                  }}
+                  className={cn('inline-flex size-4 shrink-0 items-center justify-center rounded border', checked && 'border-primary bg-primary text-primary-foreground')}
                 >
-                  {checked && <Check size={11} color="#fff" strokeWidth={3} />}
+                  {checked && <Check className="size-3" strokeWidth={3} />}
                 </span>
-                <span style={{ textAlign: 'left' }}>{opt.label || opt.value}</span>
+                <span className="text-left">{opt.label || opt.value}</span>
               </button>
             );
           })}

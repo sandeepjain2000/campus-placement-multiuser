@@ -24,7 +24,8 @@ test.describe('Authentication Flows', () => {
     await loginAsDemo(page, 'arjun.verma@iitm.edu');
 
     await expect(page).toHaveURL(/\/dashboard\/student/, { timeout: 15_000 });
-    await expect(page.locator('.dashboard-nav-hub-page-title')).toContainText('Dashboard', { timeout: 15_000 });
+    // Hub title is personalized (e.g. "Arjun — Home"), not the literal word "Dashboard".
+    await expect(page.locator('.dashboard-nav-hub-page-title')).toContainText(/Home/i, { timeout: 15_000 });
 
     await page.getByRole('button', { name: /sign out/i }).click({ force: true });
     await expect(page).toHaveURL(/\/login/, { timeout: 15_000 });
@@ -34,7 +35,7 @@ test.describe('Authentication Flows', () => {
     await loginAsDemo(page, 'hr@techcorp.com');
 
     await expect(page).toHaveURL(/\/dashboard\/employer/, { timeout: 15_000 });
-    await expect(page.locator('.dashboard-nav-hub-page-title')).toContainText('Dashboard', { timeout: 15_000 });
+    await expect(page.locator('.dashboard-nav-hub-page-title')).toContainText(/Home/i, { timeout: 15_000 });
 
     await page.getByRole('button', { name: /sign out/i }).click({ force: true });
     await expect(page).toHaveURL(/\/login/, { timeout: 15_000 });
@@ -44,7 +45,7 @@ test.describe('Authentication Flows', () => {
     await loginAsDemo(page, 'admin@iitm.edu');
 
     await expect(page).toHaveURL(/\/dashboard\/college/, { timeout: 15_000 });
-    await expect(page.locator('.dashboard-nav-hub-page-title')).toContainText('Dashboard', { timeout: 15_000 });
+    await expect(page.locator('.dashboard-nav-hub-page-title')).toContainText(/Home/i, { timeout: 15_000 });
 
     await page.getByRole('button', { name: /sign out/i }).click({ force: true });
     await expect(page).toHaveURL(/\/login/, { timeout: 15_000 });

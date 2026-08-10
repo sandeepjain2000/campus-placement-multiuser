@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { toDateOnlyString } from '@/lib/dateOnly';
 import { getInitialCalendarCursorFromIsoDates } from '@/lib/calendarInitialCursor';
 import { CampusCalendarGrid } from '@/components/calendar/CampusCalendarGrid';
@@ -12,6 +12,9 @@ import CollegeCalendarCategoryFilter from '@/components/college/CollegeCalendarC
 import CollegeCalendarClashBanner from '@/components/college/CollegeCalendarClashBanner';
 import { useToast } from '@/components/ToastProvider';
 import useSWR from 'swr';
+import { CalendarDays, CalendarPlus, FileDown, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -52,11 +55,15 @@ export default function CollegeCalendarPage() {
   );
 
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
-
-  useEffect(() => {
-    if (!data?.events) return;
+  const [cursorAppliedKey, setCursorAppliedKey] = useState('');
+  const cursorKey = data?.events
+    ? `${initialCursor.initialYear}-${initialCursor.initialMonth}`
+    : '';
+  // Adjust month when calendar data arrives (same outcome as the previous effect sync).
+  if (cursorKey && cursorKey !== cursorAppliedKey) {
+    setCursorAppliedKey(cursorKey);
     setCurrentMonth(new Date(initialCursor.initialYear, initialCursor.initialMonth, 1));
-  }, [data?.events, initialCursor.initialYear, initialCursor.initialMonth]);
+  }
 
   const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
@@ -127,13 +134,16 @@ export default function CollegeCalendarPage() {
   );
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>📅 Placement Calendar</h1>
-          <p>Add exams and academic programs to avoid clashes with placement drives</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <CalendarDays className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+            Placement calendar
+          </h1>
+          <p className="text-muted-foreground m-0 text-sm">Add exams and academic programs to avoid clashes with placement drives.</p>
         </div>
-        <div className="page-header-actions">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <ExportCollegeCalendarButton
             year={currentMonth.getFullYear()}
             month={currentMonth.getMonth()}
@@ -142,22 +152,23 @@ export default function CollegeCalendarPage() {
             getCsvRows={getScheduleCsv}
             filenameBase="placement_calendar"
           />
-          <button className="btn btn-secondary" type="button" onClick={() => setImportOpen(true)}>
+          <Button variant="outline" type="button" onClick={() => setImportOpen(true)}>
+            <FileDown data-icon="inline-start" />
             Import calendar (.ics)
-          </button>
-          <button className="btn btn-ghost" type="button" onClick={() => setDeleteImportedOpen(true)}>
+          </Button>
+          <Button variant="ghost" type="button" onClick={() => setDeleteImportedOpen(true)}>
+            <Trash2 data-icon="inline-start" />
             Delete imported
-          </button>
-          <button className="btn btn-primary" type="button" onClick={() => setModalMode('program')}>
-            + Add program / exam
-          </button>
-          <button className="btn btn-secondary" type="button" onClick={() => setModalMode('block')}>
-            + Block dates
-          </button>
+          </Button>
+          <Button type="button" onClick={() => setModalMode('program')}>
+            <CalendarPlus data-icon="inline-start" />
+            Add program / exam
+          </Button>
+          <Button variant="outline" type="button" onClick={() => setModalMode('block')}>Block dates</Button>
         </div>
       </div>
 
-      <div style={{ marginBottom: '1rem' }}>
+      <div>
         <CollegeCalendarCategoryFilter
           value={category}
           onChange={setCategory}
@@ -167,35 +178,41 @@ export default function CollegeCalendarPage() {
 
       <CollegeCalendarClashBanner items={allCalItems} />
 
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <CampusCalendarGrid
-          items={calItems}
-          initialYear={currentMonth.getFullYear()}
-          initialMonth={currentMonth.getMonth()}
-          viewMode="month"
-          onCursorChange={(year, month) => setCurrentMonth(new Date(year, month, 1))}
-        />
-        {error && <p className="text-secondary" style={{ margin: '0.75rem 1.5rem 0' }}>Failed to load calendar events.</p>}
+      <Card className="gap-0 overflow-hidden py-0">
+        <CardHeader className="border-border border-b px-4 py-3">
+          <CardTitle className="text-base">{monthName}</CardTitle>
+          <CardDescription>{calItems.length} calendar item{calItems.length === 1 ? '' : 's'} in the selected scope</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <CampusCalendarGrid
+            items={calItems}
+            initialYear={currentMonth.getFullYear()}
+            initialMonth={currentMonth.getMonth()}
+            viewMode="month"
+            onCursorChange={(year, month) => setCurrentMonth(new Date(year, month, 1))}
+          />
+          {error && <p className="text-muted-foreground mx-6 mt-3 text-sm">Failed to load calendar events.</p>}
 
-        <div style={{ display: 'flex', gap: '1.5rem', margin: '1rem 1.5rem 1.5rem', fontSize: '0.8125rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-            <div style={{ width: 12, height: 12, borderRadius: 3, background: 'var(--primary-100)' }} />
+          <div className="text-muted-foreground flex flex-wrap gap-6 px-6 py-4 text-xs">
+          <div className="flex items-center gap-1.5">
+            <div className="bg-primary/20 size-3 rounded-sm" />
             Placement
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-            <div style={{ width: 12, height: 12, borderRadius: 3, background: 'var(--warning-100)' }} />
+          <div className="flex items-center gap-1.5">
+            <div className="bg-amber-200 size-3 rounded-sm" />
             Imported
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-            <div style={{ width: 12, height: 12, borderRadius: 3, background: 'var(--danger-100)' }} />
+          <div className="flex items-center gap-1.5">
+            <div className="bg-destructive/20 size-3 rounded-sm" />
             Exam / Blocking program
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-            <div style={{ width: 12, height: 12, borderRadius: 3, background: 'var(--success-100)' }} />
+          <div className="flex items-center gap-1.5">
+            <div className="bg-emerald-200 size-3 rounded-sm" />
             Holiday
           </div>
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <AddCollegeProgramEventModal
         open={modalMode != null}

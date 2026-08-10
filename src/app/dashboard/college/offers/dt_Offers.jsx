@@ -6,7 +6,7 @@ import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS, FILTER_ALL } from '@/lib/tableQueryPresets';
 import { Send } from 'lucide-react';
-import { formatDate, formatCurrency, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatDate, formatCurrency, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 import CompanyNameLink from '@/components/CompanyNameLink';
@@ -15,6 +15,15 @@ import { validateCollegeOfferPayload } from '@/lib/apiInputValidation';
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -36,12 +45,72 @@ const OFFER_TABLE_COLUMNS = [
   'Actions',
 ];
 
+function OfferEditorFields({ form, setForm, students, editingRow }) {
+  const editing = Boolean(editingRow);
+
+  return (
+    <FieldGroup className="grid gap-5 md:grid-cols-2">
+      {!editing ? (
+        <Field>
+          <FieldLabel htmlFor="college-offer-student">Student (master list)</FieldLabel>
+          <AdminFilterSelect
+            id="college-offer-student"
+            className="w-full"
+            value={form.studentId}
+            onValueChange={(studentId) => setForm((p) => ({ ...p, studentId }))}
+            items={[
+              { label: 'Select student…', value: 'all' },
+              ...students.map((student) => ({ label: student.label, value: student.id })),
+            ]}
+          />
+        </Field>
+      ) : null}
+      <Field>
+        <FieldLabel htmlFor="college-offer-company">Company name</FieldLabel>
+        <Input id="college-offer-company" name="companyName" value={form.reportedCompanyName} onChange={(e) => setForm((p) => ({ ...p, reportedCompanyName: e.target.value }))} placeholder="Company named in the offer…" disabled={Boolean(editing && editingRow?.linked_employer)} />
+        {editing && editingRow?.linked_employer ? <FieldDescription>Company comes from the linked employer account.</FieldDescription> : null}
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="college-offer-role">Role / job title</FieldLabel>
+        <Input id="college-offer-role" name="jobTitle" value={form.jobTitle} onChange={(e) => setForm((p) => ({ ...p, jobTitle: e.target.value }))} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="college-offer-salary">Salary (INR annual)</FieldLabel>
+        <ValidatedNumberInput id="college-offer-salary" fieldId={FIELD_IDS.COLLEGE_OFFER_SALARY} value={form.salary} onChange={(value) => setForm((p) => ({ ...p, salary: value }))} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="college-offer-location">Location</FieldLabel>
+        <Input id="college-offer-location" name="location" value={form.location} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="college-offer-deadline">Response deadline</FieldLabel>
+        <ValidatedDateInput id="college-offer-deadline" fieldId={FIELD_IDS.COLLEGE_OFFER_DEADLINE} value={form.deadline} onChange={(value) => setForm((p) => ({ ...p, deadline: value }))} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="college-offer-joining">Joining date</FieldLabel>
+        <ValidatedDateInput id="college-offer-joining" fieldId={FIELD_IDS.COLLEGE_OFFER_JOINING} context={{ deadline: form.deadline }} value={form.joiningDate} onChange={(value) => setForm((p) => ({ ...p, joiningDate: value }))} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="college-offer-status">Status</FieldLabel>
+        <AdminFilterSelect
+          id="college-offer-status"
+          className="w-full"
+          value={form.status}
+          onValueChange={(status) => setForm((p) => ({ ...p, status }))}
+          emptyMapsToAll={false}
+          items={STATUS_OPTIONS.map((status) => ({ label: formatStatus(status), value: status }))}
+        />
+      </Field>
+    </FieldGroup>
+  );
+}
+
 export default function DtCollegeOffers() {
   const { addToast } = useToast();
   const { data, error, isLoading, mutate } = useSWR('/api/college/offers', fetcher);
   const { data: studentsPayload } = useSWR('/api/college/students', fetcher);
 
-  const offers = Array.isArray(data?.offers) ? data.offers : [];
+  const offers = useMemo(() => (Array.isArray(data?.offers) ? data.offers : []), [data?.offers]);
   const offerFilterOptions = useMemo(
     () => [FILTER_ALL, ...STATUS_OPTIONS.map((s) => ({ value: s, label: formatStatus(s) }))],
     [],
@@ -107,8 +176,6 @@ export default function DtCollegeOffers() {
       status: 'pending',
     });
   };
-
-  const todayYmd = useMemo(() => toDateOnlyString(new Date()), []);
 
   const submitAdd = async () => {
     if (!form.studentId || !form.reportedCompanyName.trim() || !form.jobTitle.trim()) {
@@ -238,56 +305,23 @@ export default function DtCollegeOffers() {
       : null;
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-12">
       {error ? (
-        <div
-          className="card"
-          role="alert"
-          style={{
-            padding: '1rem 1.25rem',
-            marginBottom: '1rem',
-            background: 'var(--danger-50)',
-            border: '1px solid var(--danger-200)',
-          }}
-        >
-          <p style={{ margin: 0, color: 'var(--danger-700)', fontWeight: 600 }}>
-            {error.message || 'Could not load offers.'}
-          </p>
-        </div>
+        <Alert variant="destructive"><AlertDescription>{error.message || 'Could not load offers.'}</AlertDescription></Alert>
       ) : null}
 
-      <div
-        style={{
-          marginBottom: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
-              margin: '0 0 0.35rem',
-              letterSpacing: '-0.02em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <Send size={24} aria-hidden />
-            Placement offers
+          <h1 className="m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Send className="text-muted-foreground size-7" aria-hidden />
+            Placement Offers
           </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>{summaryLine}</p>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">{summaryLine}</p>
           {avgSalaryLine ? (
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', margin: '0.25rem 0 0' }}>{avgSalaryLine}</p>
+            <p className="text-muted-foreground mt-1 mb-0 text-xs">{avgSalaryLine}</p>
           ) : null}
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           <StandardTableIconAction
             action="add"
             variant="primary"
@@ -300,114 +334,30 @@ export default function DtCollegeOffers() {
         </div>
       </div>
 
-      <div className="directive-panel" role="region" aria-label="Student acceptance" style={{ marginBottom: '1rem' }}>
-        <p className="directive-panel__title">When students use the app</p>
-        <p className="text-sm text-secondary" style={{ margin: 0, lineHeight: 1.55 }}>
+      <Alert aria-label="Student acceptance">
+        <AlertDescription>
           If the student signs in, they can accept or decline <strong>pending</strong> rows on <strong>My Offers</strong>; status then syncs here. You can also set
           status manually when you already know the outcome (e.g. accepted from email). To roll back a mistaken status, open <strong>Edit</strong>, set{' '}
           <strong>Status</strong> to <strong>pending</strong> again, and save — or use <strong>Delete</strong> to remove a row (an older revision may become current
           automatically).
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
-      {(showAdd || editId) && (
-        <div className="card" style={{ marginBottom: '1rem' }}>
-          <h3 className="card-title">{editId ? 'Edit offer' : 'Add offer'}</h3>
-          {!editId && (
-            <div className="form-group">
-              <label className="form-label">Student (master list)</label>
-              <select
-                className="form-select"
-                value={form.studentId}
-                onChange={(e) => setForm((p) => ({ ...p, studentId: e.target.value }))}
-              >
-                <option value="">Select student</option>
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          <div className="grid grid-2" style={{ gap: '1rem' }}>
-            <div className="form-group">
-              <label className="form-label">Company name (text)</label>
-              <input
-                className="form-input"
-                value={form.reportedCompanyName}
-                onChange={(e) => setForm((p) => ({ ...p, reportedCompanyName: e.target.value }))}
-                placeholder="As shared with the student / email"
-                disabled={Boolean(editId && editingRow?.linked_employer)}
-              />
-              {editId && editingRow?.linked_employer ? (
-                <p className="text-xs text-tertiary" style={{ marginTop: '0.25rem' }}>
-                  Company comes from the employer account for this row; edit other fields as needed.
-                </p>
-              ) : null}
-            </div>
-            <div className="form-group">
-              <label className="form-label">Role / job title</label>
-              <input
-                className="form-input"
-                value={form.jobTitle}
-                onChange={(e) => setForm((p) => ({ ...p, jobTitle: e.target.value }))}
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Salary (INR annual)</label>
-              <ValidatedNumberInput
-                fieldId={FIELD_IDS.COLLEGE_OFFER_SALARY}
-                value={form.salary}
-                onChange={(v) => setForm((p) => ({ ...p, salary: v }))}
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Location</label>
-              <input
-                className="form-input"
-                value={form.location}
-                onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))}
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Response deadline</label>
-              <ValidatedDateInput
-                fieldId={FIELD_IDS.COLLEGE_OFFER_DEADLINE}
-                value={form.deadline}
-                onChange={(v) => setForm((p) => ({ ...p, deadline: v }))}
-              />
-              <label className="form-label" style={{ marginTop: '0.75rem' }}>
-                Joining date
-              </label>
-              <ValidatedDateInput
-                fieldId={FIELD_IDS.COLLEGE_OFFER_JOINING}
-                context={{ deadline: form.deadline }}
-                value={form.joiningDate}
-                onChange={(v) => setForm((p) => ({ ...p, joiningDate: v }))}
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Status</label>
-              <select className="form-select" value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}>
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s}>
-                    {formatStatus(s)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-            <button type="button" className="btn btn-primary" disabled={saving} onClick={editId ? submitEdit : submitAdd}>
-              {saving ? 'Saving…' : editId ? 'Save changes' : 'Create'}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={closeModals}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <Dialog open={showAdd || Boolean(editId)} onOpenChange={(open) => { if (!open) closeModals(); }}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{editId ? 'Edit Offer' : 'Add Offer'}</DialogTitle>
+            <DialogDescription>Record the offer terms and response status.</DialogDescription>
+          </DialogHeader>
+          <OfferEditorFields form={form} setForm={setForm} students={students} editingRow={editingRow} />
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={closeModals}>Cancel</Button>
+            <Button type="button" disabled={saving} onClick={editId ? submitEdit : submitAdd}>
+              {saving ? 'Saving…' : editId ? 'Save Changes' : 'Create Offer'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {!isLoading && totalCount > 0 ? (
         <DataTableToolbar
@@ -428,13 +378,13 @@ export default function DtCollegeOffers() {
         />
       ) : null}
 
-      <div className="card desktop-table" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border-default)' }}>
-        <div className="table-container" style={{ border: 'none' }}>
-        <table className="data-table">
-          <thead>
-            <tr style={{ background: 'var(--bg-secondary)' }}>
+      <Card className="gap-0 overflow-hidden py-0">
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
               {OFFER_TABLE_COLUMNS.map((col, i) => (
-                <th
+                <TableHead
                   key={col}
                   style={
                     i === 0
@@ -445,47 +395,43 @@ export default function DtCollegeOffers() {
                   }
                 >
                   {col}
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {isLoading && !offers.length ? (
-              <tr>
-                <td colSpan={OFFER_TABLE_COLUMNS.length} style={{ padding: '2rem 1.5rem' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="skeleton" style={{ height: 40, borderRadius: 'var(--radius-md)' }} />
-                    ))}
-                  </div>
-                </td>
-              </tr>
+              <TableRow>
+                <TableCell colSpan={OFFER_TABLE_COLUMNS.length} className="text-muted-foreground h-24 text-center">
+                  Loading offers…
+                </TableCell>
+              </TableRow>
             ) : null}
             {!isLoading && !error && displayOffers.length === 0 && totalCount > 0 ? (
-              <tr>
-                <td colSpan={OFFER_TABLE_COLUMNS.length} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={OFFER_TABLE_COLUMNS.length} className="text-muted-foreground h-24 text-center">
                   No offers match your search or filters.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
             {!isLoading &&
               !error &&
               displayOffers.map((offer) => (
-              <tr key={offer.id}>
-                <td className="font-semibold" style={{ paddingLeft: '1.5rem' }}>
+              <TableRow key={offer.id}>
+                <TableCell className="pl-6 font-semibold">
                   {offer.student_name}
                   {offer.roll_number ? <div className="text-xs text-tertiary font-mono">{offer.roll_number}</div> : null}
-                </td>
-                <td>{offer.college_name || '—'}</td>
-                <td>{offer.job_title || '—'}</td>
-                <td>{offer.salary ? formatCurrency(Number(offer.salary)) : '—'}</td>
-                <td>{offer.location || '—'}</td>
-                <td>{offer.deadline ? formatDate(offer.deadline) : '—'}</td>
-                <td>
-                  <span className={`badge badge-${getStatusColor(offer.status)} badge-dot`}>{formatStatus(offer.status)}</span>
-                </td>
-                <td style={{ paddingRight: '1.5rem' }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
+                </TableCell>
+                <TableCell>{offer.college_name || '—'}</TableCell>
+                <TableCell>{offer.job_title || '—'}</TableCell>
+                <TableCell>{offer.salary ? formatCurrency(Number(offer.salary)) : '—'}</TableCell>
+                <TableCell>{offer.location || '—'}</TableCell>
+                <TableCell>{offer.deadline ? formatDate(offer.deadline) : '—'}</TableCell>
+                <TableCell className="min-w-[6.5rem]">
+                  <StatusBadge status={offer.status || 'pending'} showDot>{formatStatus(offer.status) || 'Pending'}</StatusBadge>
+                </TableCell>
+                <TableCell className="pr-6">
+                  <div className="flex flex-wrap items-center gap-1">
                     <StandardTableIconAction action="view" onClick={() => setViewRow(offer)} />
                     <StandardTableIconAction
                       action="edit"
@@ -496,41 +442,30 @@ export default function DtCollegeOffers() {
                     />
                     <StandardTableIconAction action="delete" variant="danger" onClick={() => removeOffer(offer.id)} />
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {!isLoading && !error && offers.length === 0 ? (
-              <tr>
-                <td colSpan={OFFER_TABLE_COLUMNS.length} style={{ textAlign: 'center', padding: '3rem 2rem' }}>
-                  <Send size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.25 }} aria-hidden />
-                  <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No offers yet</div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Use Add offer above to log off-platform placements.</div>
-                </td>
-              </tr>
+              <TableRow>
+                <TableCell colSpan={OFFER_TABLE_COLUMNS.length} className="px-8 py-12 text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <Send className="text-muted-foreground size-9 opacity-40" aria-hidden />
+                    <div className="font-semibold">No offers yet</div>
+                    <div className="text-muted-foreground text-sm">Use Add Offer above to log off-platform placements.</div>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : null}
-          </tbody>
-        </table>
-        </div>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
 
       {viewRow && (
-        <div
-          className="card"
-          style={{
-            marginTop: '1rem',
-            border: '1px solid var(--border)',
-            position: 'sticky',
-            bottom: '1rem',
-            zIndex: 2,
-          }}
-        >
-          <div className="card-header" style={{ justifyContent: 'space-between' }}>
-            <h3 className="card-title">Offer detail</h3>
-            <button type="button" className="btn btn-secondary btn-sm" onClick={() => setViewRow(null)}>
-              Close
-            </button>
-          </div>
-          <div className="text-sm" style={{ lineHeight: 1.7 }}>
+        <Dialog open onOpenChange={(open) => { if (!open) setViewRow(null); }}>
+          <DialogContent>
+          <DialogHeader><DialogTitle>Offer detail</DialogTitle><DialogDescription>Full placement offer record.</DialogDescription></DialogHeader>
+          <div className="flex flex-col gap-2 text-sm leading-relaxed">
             <div>
               <strong>Student:</strong> {viewRow.student_name} ({viewRow.roll_number || '—'})
             </div>
@@ -553,14 +488,16 @@ export default function DtCollegeOffers() {
             <div>
               <strong>Deadline:</strong> {viewRow.deadline ? formatDate(viewRow.deadline) : '—'}
             </div>
-            <div>
-              <strong>Status:</strong> {formatStatus(viewRow.status)}
+            <div className="flex items-center gap-2">
+              <strong>Status:</strong> <StatusBadge status={viewRow.status || 'pending'} showDot>{formatStatus(viewRow.status) || 'Pending'}</StatusBadge>
             </div>
-            <div className="text-xs text-tertiary" style={{ marginTop: '0.5rem' }}>
+            <div className="text-muted-foreground mt-2 text-xs">
               Linked employer account: {viewRow.linked_employer ? 'yes' : 'no (college-reported text company)'}
             </div>
           </div>
-        </div>
+          <DialogFooter><Button type="button" variant="secondary" onClick={() => setViewRow(null)}>Close</Button></DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

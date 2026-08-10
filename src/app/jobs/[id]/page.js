@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Briefcase, ExternalLink, MessageCircleQuestion } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { publicJobQuestionsPath } from '@/lib/opportunityPublicLinks';
 
@@ -53,10 +57,10 @@ export default function PublicJobPage({ params }) {
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <header style={{ borderBottom: '1px solid var(--border-default)', padding: '1rem 1.5rem' }}>
         <div style={{ maxWidth: '820px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-          <Link href="/" className="btn btn-ghost btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-            <ArrowLeft size={16} aria-hidden /> PlacementHub
+          <Link href="/" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>
+            <ArrowLeft data-icon="inline-start" aria-hidden /> PlacementHub
           </Link>
-          <Link href="/login" className="btn btn-primary btn-sm">
+          <Link href="/login" className={buttonVariants({ size: 'sm' })}>
             Sign in
           </Link>
         </div>
@@ -65,16 +69,18 @@ export default function PublicJobPage({ params }) {
       <main style={{ maxWidth: '820px', margin: '0 auto', padding: '2.5rem 1.5rem 4rem' }}>
         {loading ? <p className="text-secondary">Loading job…</p> : null}
         {error ? (
-          <div className="card" style={{ padding: '1.5rem' }}>
-            <p style={{ margin: 0 }}>{error}</p>
-          </div>
+          <Alert variant="destructive">
+            <Briefcase aria-hidden />
+            <AlertTitle>Job unavailable</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         ) : null}
 
         {job ? (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
               <Briefcase size={22} className="text-secondary" aria-hidden />
-              <span className="badge badge-blue">Alumni job opening</span>
+              <Badge variant="secondary">Alumni job opening</Badge>
             </div>
             <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 0.35rem' }}>
               {job.title}
@@ -97,16 +103,8 @@ export default function PublicJobPage({ params }) {
               ) : null}
             </p>
 
-            <div
-              className="card"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                gap: '1rem',
-                marginBottom: '1.5rem',
-                padding: '1.25rem',
-              }}
-            >
+            <Card className="mb-6">
+              <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <div className="text-xs text-secondary">Compensation</div>
                 <div style={{ fontWeight: 600 }}>{payText}</div>
@@ -127,7 +125,8 @@ export default function PublicJobPage({ params }) {
                   <div style={{ fontWeight: 600 }}>{job.workMode}</div>
                 </div>
               ) : null}
-            </div>
+              </CardContent>
+            </Card>
 
             {job.skillsRequired?.length > 0 ? (
               <div style={{ marginBottom: '1.25rem' }}>
@@ -136,29 +135,27 @@ export default function PublicJobPage({ params }) {
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
                   {job.skillsRequired.map((skill) => (
-                    <span key={skill} className="badge badge-gray">
-                      {skill}
-                    </span>
+                    <Badge key={skill} variant="outline">{skill}</Badge>
                   ))}
                 </div>
               </div>
             ) : null}
 
-            <div className="card" style={{ padding: '1.25rem', marginBottom: '1.5rem' }}>
-              <div className="text-sm text-secondary" style={{ marginBottom: '0.5rem', fontWeight: 600 }}>
-                Description
-              </div>
+            <Card className="mb-6">
+              <CardHeader><CardTitle>Description</CardTitle></CardHeader>
+              <CardContent>
               <p style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.65 }}>
                 {job.description?.trim() || 'No description provided.'}
               </p>
-            </div>
+              </CardContent>
+            </Card>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-              <Link href={publicJobQuestionsPath(job.id)} className="btn btn-primary">
-                <MessageCircleQuestion size={16} aria-hidden style={{ marginRight: '0.35rem' }} />
+              <Link href={publicJobQuestionsPath(job.id)} className={buttonVariants()}>
+                <MessageCircleQuestion data-icon="inline-start" aria-hidden />
                 Post a question
               </Link>
-              <Link href="/register" className="btn btn-secondary">
+              <Link href="/register" className={buttonVariants({ variant: 'outline' })}>
                 Apply via PlacementHub
               </Link>
             </div>

@@ -21,6 +21,13 @@ function formatDateTime(dateStr) {
 import PageError from '@/components/PageError';
 import AdminRecordModal from '@/components/admin/AdminRecordModal';
 import { useToast } from '@/components/ToastProvider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url, { credentials: 'include' });
@@ -97,9 +104,9 @@ function EmailLogDetailPanel({ row }) {
         </h3>
         <div style={{ display: 'grid', gap: '0.65rem' }}>
           <DetailField label="Status">
-            <span className={`badge badge-${row.status === 'sent' ? 'green' : row.status === 'failed' ? 'red' : 'gray'}`}>
+            <StatusBadge tone={row.status === 'sent' ? 'green' : row.status === 'failed' ? 'red' : 'gray'} showDot>
               {(row.status || 'unknown').toUpperCase()}
-            </span>
+            </StatusBadge>
           </DetailField>
           {row.skip_reason && <DetailField label="Skip Reason">{row.skip_reason}</DetailField>}
           {row.smtp_response && <DetailField label="SMTP Response" mono>{row.smtp_response}</DetailField>}
@@ -150,36 +157,26 @@ export default function AdminEmailLogsPage() {
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div style={{ marginBottom: '1.25rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Mail size={22} className="text-primary-600" aria-hidden="true" />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div>
+        <h1 className="m-0 flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <Mail aria-hidden="true" />
           Platform email delivery logs
         </h1>
-        <p className="text-secondary text-sm" style={{ margin: '0.35rem 0 0', maxWidth: '48rem', lineHeight: 1.55 }}>
+        <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
           Outbound email history with a three-step recipient trail: original address, after communication-email
           routing, and final SMTP destination. Recipient login email is stored even if the account is later deleted.
         </p>
       </div>
 
-      <div
-        className="card"
-        style={{
-          marginBottom: '1rem',
-          display: 'grid',
-          gap: '0.75rem',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))',
-          alignItems: 'end',
-        }}
-      >
-        <div className="form-group" style={{ margin: 0, gridColumn: '1 / -1' }}>
-          <label className="form-label" htmlFor="email-log-search">
-            Search
-          </label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <input
+      <Card>
+        <CardHeader><CardTitle>Filter delivery logs</CardTitle><CardDescription>Search recipient, subject, context, or delivery identifier.</CardDescription></CardHeader>
+        <CardContent><FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="email-log-search">Search</FieldLabel>
+          <div className="flex gap-2">
+            <Input
               id="email-log-search"
-              className="form-input"
               placeholder="Login email, recipient, subject, context, Zepto ID..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -187,86 +184,82 @@ export default function AdminEmailLogsPage() {
                 if (e.key === 'Enter') runSearch();
               }}
             />
-            <button type="button" className="btn btn-secondary" onClick={runSearch}>
-              <Search size={16} aria-hidden="true" />
-            </button>
+            <Button type="button" variant="outline" size="icon" aria-label="Search email logs" onClick={runSearch}><Search /></Button>
           </div>
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Delivery Status</label>
-          <select className="form-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="">All statuses</option>
-            <option value="sent">Sent</option>
-            <option value="failed">Failed</option>
-            <option value="skipped">Skipped</option>
-          </select>
-        </div>
-      </div>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="email-log-status">Delivery status</FieldLabel>
+          <AdminFilterSelect
+            id="email-log-status"
+            className="w-full"
+            value={statusFilter}
+            onValueChange={setStatusFilter}
+            items={[
+              { label: 'All statuses', value: 'all' },
+              { label: 'Sent', value: 'sent' },
+              { label: 'Failed', value: 'failed' },
+              { label: 'Skipped', value: 'skipped' },
+            ]}
+          />
+        </Field>
+        </FieldGroup></CardContent>
+      </Card>
 
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4"><CardTitle>Delivery history</CardTitle><CardDescription>{logs.length} matching logs</CardDescription></CardHeader>
+        <CardContent className="p-0">
         {isLoading ? (
-          <div className="skeleton" style={{ height: 220, margin: '1rem' }} />
+          <p className="text-muted-foreground p-6">Loading email logs…</p>
         ) : logs.length === 0 ? (
-          <p className="text-secondary" style={{ padding: '1.5rem', margin: 0 }}>
+          <p className="text-muted-foreground p-6">
             No email logs match your filters.
           </p>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ width: '100%' }}>
-              <thead>
-                <tr>
-                  <th>When</th>
-                  <th>Context</th>
-                  <th>Recipient (login)</th>
-                  <th>Original → Final</th>
-                  <th>Subject</th>
-                  <th>Status</th>
-                  <th style={{ width: 56 }} />
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader><TableRow>{['When','Context','Recipient (login)','Original → Final','Subject','Status','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+              <TableBody>
                 {logs.map((row) => (
-                  <tr key={row.id}>
-                    <td className="text-sm" style={{ whiteSpace: 'nowrap' }}>{formatDateTime(row.created_at)}</td>
-                    <td className="text-sm font-semibold">{row.context || '—'}</td>
-                    <td className="text-sm font-mono">
+                  <TableRow key={row.id}>
+                    <TableCell className="whitespace-nowrap text-sm">{formatDateTime(row.created_at)}</TableCell>
+                    <TableCell className="text-sm font-semibold">{row.context || '—'}</TableCell>
+                    <TableCell className="font-mono text-sm">
                       {row.recipient_login_email || row.original_to || '—'}
                       {row.recipient_name ? (
-                        <div className="text-xs text-tertiary" style={{ fontFamily: 'inherit' }}>
+                        <div className="text-muted-foreground font-sans text-xs">
                           {row.recipient_name}
                           {row.recipient_role ? ` · ${row.recipient_role}` : ''}
                         </div>
                       ) : null}
-                    </td>
-                    <td className="text-sm font-mono" style={{ maxWidth: 220 }}>
+                    </TableCell>
+                    <TableCell className="max-w-56 font-mono text-sm">
                       <span title={row.original_to || ''}>{row.original_to || '—'}</span>
-                      <div className="text-xs text-tertiary">→ {row.resolved_to || '—'}</div>
-                    </td>
-                    <td className="text-sm" style={{ maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div className="text-muted-foreground text-xs">→ {row.resolved_to || '—'}</div>
+                    </TableCell>
+                    <TableCell className="max-w-72 truncate text-sm">
                       {row.subject_truncated || '—'}
-                    </td>
-                    <td>
-                      <span className={`badge badge-${row.status === 'sent' ? 'green' : row.status === 'failed' ? 'red' : 'gray'}`}>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={row.status === 'sent' ? 'green' : row.status === 'failed' ? 'red' : 'gray'} showDot>
                         {(row.status || 'unknown').toUpperCase()}
-                      </span>
-                    </td>
-                    <td>
-                      <button
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell>
+                      <Button
                         type="button"
-                        className="btn btn-ghost btn-sm"
+                        variant="ghost" size="icon"
                         aria-label="View log details"
                         onClick={() => setSelected(row)}
                       >
-                        <Eye size={15} />
-                      </button>
-                    </td>
-                  </tr>
+                        <Eye />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       <AdminRecordModal
         title="Email Delivery Log Details"
@@ -274,10 +267,10 @@ export default function AdminEmailLogsPage() {
         onClose={() => setSelected(null)}
         footer={
           selected ? (
-            <button type="button" className="btn btn-secondary" onClick={() => void copyLogDetails()}>
-              <Copy size={15} aria-hidden="true" style={{ marginRight: '0.35rem' }} />
+            <Button type="button" variant="outline" onClick={() => void copyLogDetails()}>
+              <Copy data-icon="inline-start" aria-hidden="true" />
               Copy raw log
-            </button>
+            </Button>
           ) : null
         }
       >

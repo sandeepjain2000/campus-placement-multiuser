@@ -2,9 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Rocket, School, Eye, X, Mail, Info } from 'lucide-react';
+import { Rocket, Eye, Mail, Info } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 function flattenPrograms(colleges) {
   const rows = [];
@@ -116,21 +125,10 @@ export default function EmployerStartupFundingPage() {
     window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
-  const modalBackdrop = {
-    position: 'fixed',
-    inset: 0,
-    zIndex: 200,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '1rem',
-    background: 'rgba(15, 23, 42, 0.55)',
-  };
-
   return (
     <div className="animate-fadeIn" style={{ paddingBottom: '2rem' }}>
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Rocket size={24} className="text-primary" aria-hidden />
             Startup seed funding
@@ -140,201 +138,132 @@ export default function EmployerStartupFundingPage() {
             actual investments are negotiated offline with the institution&apos;s innovation office.
           </p>
         </div>
-        <Link href="/dashboard/employer/select-campus" className="btn btn-secondary btn-sm">
+        <Button variant="outline" size="sm" render={<Link href="/dashboard/employer/select-campus" />}>
           Campus partnerships
-        </Link>
+        </Button>
       </div>
 
-      <div
-        className="card"
-        style={{
-          marginBottom: '1rem',
-          padding: '1rem 1.25rem',
-          borderLeft: '4px solid var(--primary-500, #3b82f6)',
-          background: 'var(--bg-secondary)',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'flex-start' }}>
+      <Alert className="mb-4">
           <Info size={20} className="text-primary" style={{ flexShrink: 0, marginTop: 2 }} aria-hidden />
-          <div>
-            <p className="text-sm font-semibold" style={{ margin: '0 0 0.35rem' }}>
-              Informational module — no transactions on PlacementHub
-            </p>
-            <p className="text-sm text-secondary" style={{ margin: 0, lineHeight: 1.55 }}>
+            <AlertTitle>Informational module — no transactions on PlacementHub</AlertTitle>
+            <AlertDescription>
               {disclaimer ||
                 'Seed investments involve legal review, shareholder agreements, valuation, and compliance steps that are outside the scope of this platform. Use the programs below to understand what each college offers, then contact them directly to begin a formal process.'}
-            </p>
-          </div>
-        </div>
-      </div>
+            </AlertDescription>
+      </Alert>
 
-      <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <School size={16} className="text-secondary" aria-hidden />
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              College
-            </span>
-            <select
-              className="form-select"
-              style={{ minWidth: 200 }}
+      <Card className="mb-4"><CardContent className="flex flex-wrap items-end gap-3">
+          <Field className="min-w-48 flex-1">
+            <FieldLabel>College</FieldLabel>
+            <AdminFilterSelect
+              className="h-9 w-full"
               value={collegeFilter}
-              onChange={(e) => setCollegeFilter(e.target.value)}
-            >
-              <option value="">All colleges</option>
-              {collegeOptions.map(([id, name]) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              Category
-            </span>
-            <select
-              className="form-select"
-              style={{ minWidth: 180 }}
+              onValueChange={setCollegeFilter}
+              items={[
+                { label: 'All colleges', value: 'all' },
+                ...collegeOptions.map(([id, name]) => ({ label: name, value: String(id) })),
+              ]}
+            />
+          </Field>
+          <Field className="min-w-44 flex-1">
+            <FieldLabel>Category</FieldLabel>
+            <AdminFilterSelect
+              className="h-9 w-full"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="">All categories</option>
-              {categoryOptions.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 200px' }}>
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              Search
-            </span>
-            <input
-              className="form-input"
+              onValueChange={setCategoryFilter}
+              items={[
+                { label: 'All categories', value: 'all' },
+                ...categoryOptions.map((cat) => ({ label: cat, value: cat })),
+              ]}
+            />
+          </Field>
+          <Field className="min-w-52 flex-[2]">
+            <FieldLabel>Search</FieldLabel>
+            <Input
               placeholder="College, tier, category…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-          </label>
+          </Field>
           <span className="text-xs text-secondary" style={{ marginLeft: 'auto' }}>
             {loading ? 'Loading…' : `Showing ${filteredRows.length} of ${allRows.length}`}
           </span>
-        </div>
-      </div>
+      </CardContent></Card>
 
       {loading ? (
         <PageLoading message="Loading startup funding programs…" inline />
       ) : (
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>College</th>
-                <th>Category</th>
-                <th>Program tier</th>
-                <th>Indicative amount</th>
-                <th style={{ width: 1 }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <Card><CardContent><Table>
+            <TableHeader><TableRow>
+                <TableHead>College</TableHead><TableHead>Category</TableHead><TableHead>Program tier</TableHead><TableHead>Indicative amount</TableHead><TableHead className="w-px">Actions</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>
               {filteredRows.map((row) => (
-                <tr key={row.opportunityId}>
-                  <td>
+                <TableRow key={row.opportunityId}>
+                  <TableCell>
                     <div className="font-semibold">{row.collegeName}</div>
                     <div className="text-xs text-secondary">{row.collegeLocation}</div>
-                  </td>
-                  <td className="text-sm">{row.category}</td>
-                  <td>
+                  </TableCell>
+                  <TableCell>{row.category}</TableCell>
+                  <TableCell>
                     <div className="font-medium">{row.tierName}</div>
                     {row.label ? (
                       <div style={{ marginTop: 4 }}>
-                        <span className="badge badge-primary">{row.label}</span>
+                        <Badge variant="secondary">{row.label}</Badge>
                       </div>
                     ) : null}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <div className="font-semibold">{row.price}</div>
                     <div className="text-xs text-tertiary">Indicative — not a checkout price</div>
-                  </td>
-                  <td style={{ whiteSpace: 'nowrap' }}>
-                    <button
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-sm"
+                      variant="ghost"
+                      size="icon-sm"
                       title="View program details"
                       aria-label={`View details for ${row.tierName}`}
                       onClick={() => setDetailsRow(row)}
                     >
                       <Eye size={16} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
-                      className="btn btn-primary btn-sm"
-                      style={{ marginLeft: 6 }}
+                      size="sm"
+                      className="ml-1.5"
                       title="Email the college innovation office"
                       onClick={() => discussProgram(row)}
                     >
                       <Mail size={14} style={{ marginRight: 4 }} />
                       Inquire
-                    </button>
-                  </td>
-                </tr>
+                    </Button>
+                  </TableCell>
+                </TableRow>
               ))}
               {allRows.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="text-center text-secondary">
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No startup funding programs are published yet.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : null}
               {allRows.length > 0 && filteredRows.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="text-center text-secondary">
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No programs match your filters.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : null}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table></CardContent></Card>
       )}
 
-      {detailsRow ? (
-        <div style={modalBackdrop} role="presentation" onClick={() => setDetailsRow(null)}>
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="funding-details-title"
-            className="card"
-            style={{
-              maxWidth: 520,
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              padding: '1.25rem',
-              position: 'relative',
-              border: '1px solid var(--border-default)',
-              boxShadow: 'var(--shadow-lg)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              aria-label="Close"
-              style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
-              onClick={() => setDetailsRow(null)}
-            >
-              <X size={18} />
-            </button>
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
-              {detailsRow.collegeName}
-            </p>
-            <h2 id="funding-details-title" style={{ fontSize: '1.1rem', margin: '0.35rem 0' }}>
-              {detailsRow.tierName}
-            </h2>
-            <p className="text-sm text-secondary" style={{ marginBottom: '0.75rem' }}>
+      <Dialog open={Boolean(detailsRow)} onOpenChange={(open) => !open && setDetailsRow(null)}>
+        <DialogContent className="sm:max-w-lg">
+          {detailsRow ? <>
+            <DialogHeader><DialogTitle>{detailsRow.tierName}</DialogTitle><DialogDescription>{detailsRow.collegeName}</DialogDescription></DialogHeader>
+            <p className="text-sm text-muted-foreground">
               {detailsRow.category} · {detailsRow.price}{' '}
               <span className="text-tertiary">(indicative)</span>
             </p>
@@ -362,18 +291,18 @@ export default function EmployerStartupFundingPage() {
               Final investment structure, equity or grant terms, and startup selection are agreed outside PlacementHub
               with the college innovation / incubation team and legal counsel.
             </p>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setDetailsRow(null)}>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setDetailsRow(null)}>
                 Close
-              </button>
-              <button type="button" className="btn btn-primary btn-sm" onClick={() => discussProgram(detailsRow)}>
+              </Button>
+              <Button type="button" onClick={() => discussProgram(detailsRow)}>
                 <Mail size={14} style={{ marginRight: 4 }} />
                 Contact college
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+              </Button>
+            </DialogFooter>
+          </> : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

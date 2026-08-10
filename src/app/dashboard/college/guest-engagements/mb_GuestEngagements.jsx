@@ -5,6 +5,12 @@ import MobileHeader from '@/components/mobile/MobileHeader';
 import { useToast } from '@/components/ToastProvider';
 import { formatStatus } from '@/lib/utils';
 import { Mic, Plus, Search, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const KIND_LABEL = {
   guest_faculty: 'Guest faculty',
@@ -74,108 +80,113 @@ export default function mb_GuestEngagements() {
       <MobileHeader 
         title="Guest Engagements" 
         action={
-          <Link href="/dashboard/college/guest-engagements/add" className="btn btn-primary btn-sm">
-            <Plus size={16} /> Add
-          </Link>
+          <Button size="sm" render={<Link href="/dashboard/college/guest-engagements/add" />}><Plus data-icon="inline-start" />Add</Button>
         }
       />
       
-      <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
+      <div className="animate-fadeIn flex flex-col gap-3 px-4 pt-4 pb-20">
         
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-          <div style={{ position: 'relative', flex: 1 }}>
-            <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
-            <input 
-              className="form-input" 
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+            <Input
+              className="pl-9"
               placeholder="Search engagements..." 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
-              style={{ paddingLeft: '2.5rem', borderRadius: '999px', background: 'var(--surface)' }} 
             />
           </div>
-          <button 
+          <Button
             type="button" 
-            className={`btn btn-outline ${showFilters ? 'btn-active' : ''}`} 
+            variant={showFilters ? 'secondary' : 'outline'}
+            size="icon"
             onClick={() => setShowFilters(!showFilters)}
-            style={{ padding: '0 0.75rem', borderRadius: '999px', background: showFilters ? 'var(--primary-50)' : 'var(--surface)' }}
+            aria-label="Toggle filters"
           >
-            <Filter size={16} style={{ color: showFilters ? 'var(--primary-600)' : 'inherit' }} />
-          </button>
+            <Filter />
+          </Button>
         </div>
 
         {showFilters && (
-          <div className="card animate-fadeIn" style={{ padding: '1rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div>
-              <label className="text-xs text-secondary mb-1 block">Type</label>
-              <select className="form-select form-select-sm" value={kindFilter} onChange={(e) => setKindFilter(e.target.value)}>
-                <option value="">All types</option>
-                <option value="guest_lecture">{KIND_LABEL.guest_lecture}</option>
-                <option value="guest_faculty">{KIND_LABEL.guest_faculty}</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-xs text-secondary mb-1 block">Status</label>
-              <select className="form-select form-select-sm" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                <option value="">All statuses</option>
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="closed">Closed</option>
-              </select>
-            </div>
-          </div>
+          <Card className="animate-fadeIn py-4">
+            <CardContent>
+            <FieldGroup className="gap-4">
+            <Field>
+              <FieldLabel htmlFor="mobile-engagement-type">Type</FieldLabel>
+              <AdminFilterSelect
+                id="mobile-engagement-type"
+                className="w-full"
+                value={kindFilter}
+                onValueChange={setKindFilter}
+                items={[
+                  { label: 'All types', value: 'all' },
+                  { label: KIND_LABEL.guest_lecture, value: 'guest_lecture' },
+                  { label: KIND_LABEL.guest_faculty, value: 'guest_faculty' },
+                ]}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="mobile-engagement-status">Status</FieldLabel>
+              <AdminFilterSelect
+                id="mobile-engagement-status"
+                className="w-full"
+                value={statusFilter}
+                onValueChange={setStatusFilter}
+                items={[
+                  { label: 'All statuses', value: 'all' },
+                  { label: 'Draft', value: 'draft' },
+                  { label: 'Published', value: 'published' },
+                  { label: 'Closed', value: 'closed' },
+                ]}
+              />
+            </Field>
+            </FieldGroup>
+            </CardContent>
+          </Card>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div className="flex flex-col gap-3">
           {loading ? (
-            [1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 120, borderRadius: '12px' }} />)
+            [1, 2, 3].map(i => <div key={i} className="skeleton h-28 rounded-xl" />)
           ) : filteredListings.length === 0 ? (
-            <div className="card" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-              <Mic size={32} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
-              <div style={{ fontWeight: 600 }}>No engagements found</div>
-              <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <Card className="border-dashed py-10">
+              <CardContent className="flex flex-col items-center text-center">
+              <Mic className="text-muted-foreground mb-3 size-8" />
+              <CardTitle className="text-base">No engagements found</CardTitle>
+              <CardDescription className="mt-1">
                 {listings.length === 0 ? 'Create your first guest engagement listing.' : 'Try adjusting your filters.'}
-              </p>
-            </div>
+              </CardDescription>
+              </CardContent>
+            </Card>
           ) : (
             filteredListings.map((L) => (
-              <div key={L.id} className="card" style={{ padding: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                  <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', paddingRight: '1rem' }}>{L.title}</div>
-                  <span className={`badge badge-${L.status === 'published' ? 'green' : L.status === 'draft' ? 'amber' : 'gray'}`} style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem' }}>
-                    {formatStatus(L.status)}
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                  <Mic size={14} style={{ opacity: 0.7 }} />
-                  <span style={{ fontWeight: 500 }}>{KIND_LABEL[L.kind] || L.kind}</span>
-                </div>
-
+              <Card key={L.id} className="gap-3 py-4">
+                <CardHeader className="flex-row items-start justify-between gap-2 px-4">
+                  <CardTitle className="text-base">{L.title}</CardTitle>
+                  <StatusBadge tone={L.status === 'published' ? 'success' : L.status === 'draft' ? 'warning' : 'neutral'} showDot>
+                    {formatStatus(L.status) || 'Draft'}
+                  </StatusBadge>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3 px-4">
+                <div className="text-muted-foreground flex items-center gap-2 text-xs"><Mic className="size-3.5" />{KIND_LABEL[L.kind] || L.kind}</div>
                 {L.summary && (
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {L.summary}
-                  </div>
+                  <p className="text-muted-foreground line-clamp-2 text-sm">{L.summary}</p>
                 )}
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.75rem', borderTop: '1px solid var(--border-default)' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>
+                <div className="flex items-center justify-between gap-2 border-t pt-3">
+                  <div className="text-muted-foreground text-xs">
                     Updated: {L.updated_at ? new Date(L.updated_at).toLocaleDateString() : '—'}
                   </div>
-                  
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <div className="flex gap-2">
                     {L.status !== 'published' && (
-                      <button type="button" className="btn btn-outline btn-sm" onClick={() => setStatus(L.id, 'published')} style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}>
-                        Publish
-                      </button>
+                      <Button type="button" size="sm" onClick={() => setStatus(L.id, 'published')}>Publish</Button>
                     )}
                     {L.status === 'published' && (
-                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => setStatus(L.id, 'closed')} style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem', color: 'var(--danger-600)' }}>
-                        Close
-                      </button>
+                      <Button type="button" variant="outline" size="sm" onClick={() => setStatus(L.id, 'closed')}>Close</Button>
                     )}
                   </div>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             ))
           )}
         </div>

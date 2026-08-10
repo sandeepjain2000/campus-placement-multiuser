@@ -2,6 +2,10 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { CircleAlert } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { reportClientError } from '@/lib/clientErrorReport';
 
 export default function Error({ error, reset }) {
@@ -11,32 +15,30 @@ export default function Error({ error, reset }) {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
-      <div style={{ width: '100%', maxWidth: '420px', textAlign: 'center' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'inline-flex', height: '3.5rem', width: '3.5rem', alignItems: 'center', justifyContent: 'center', borderRadius: '1rem', backgroundColor: 'var(--danger-50)', color: 'var(--danger-600)', fontWeight: 'bold', fontSize: '1.5rem', marginBottom: '1.5rem', border: '1px solid var(--danger-100)' }}>
-            !
-          </div>
+      <Card className="w-full max-w-[420px]">
+        <CardHeader className="items-center text-center">
+          <CircleAlert className="text-destructive size-10" aria-hidden />
           <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>Something went wrong!</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>We apologize for the inconvenience. An unexpected error occurred.</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>An unexpected error occurred. Retry the request or return home.</p>
+        </CardHeader>
+        <CardContent>
           {process.env.NODE_ENV !== 'production' && error?.message ? (
-            <p style={{ color: 'var(--danger-700)', fontSize: '0.8rem', marginTop: '0.75rem', wordBreak: 'break-word' }}>
-              {error.message}
-            </p>
+            <Alert variant="destructive">
+              <CircleAlert aria-hidden />
+              <AlertTitle>Development error</AlertTitle>
+              <AlertDescription className="break-words">{error.message}</AlertDescription>
+            </Alert>
           ) : null}
-        </div>
-
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button
-            onClick={() => reset()}
-            className="btn btn-primary"
-          >
+        </CardContent>
+        <CardFooter className="justify-center gap-3">
+          <Button onClick={() => reset()}>
             Try again
-          </button>
-          <Link href="/" className="btn btn-secondary">
+          </Button>
+          <Link href="/" className={buttonVariants({ variant: 'outline' })}>
             Go back home
           </Link>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

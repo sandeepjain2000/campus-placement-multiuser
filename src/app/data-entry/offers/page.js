@@ -10,6 +10,16 @@ import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { validateDataEntryOfferPayload } from '@/lib/apiInputValidation';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { cn } from '@/lib/utils';
 
 export default function DataEntryOffersPage() {
   const [options, setOptions] = useState({ studentProfiles: [], drives: [], employers: [] });
@@ -168,106 +178,29 @@ export default function DataEntryOffersPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ minHeight: '100vh', background: 'var(--bg-secondary)', padding: '2rem' }}>
-      <div style={{ maxWidth: '1020px', margin: '0 auto' }}>
-        <div className="page-header">
-          <div className="page-header-left">
-            <h1>Data Entry • Offers</h1>
-            <p>Super-admin backfill only — same <code>offers</code> table as dashboards, but not the primary &quot;offer management&quot; flow.</p>
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <StandardTableIconAction action="add" variant="primary" onClick={openAdd} />
-            <button type="button" className="btn btn-secondary" onClick={loadData}>Refresh</button>
-            <Link href="/data-entry" className="btn btn-secondary">Back to list</Link>
-          </div>
-        </div>
-
-        <div className="directive-panel" style={{ marginBottom: '1rem' }} role="note">
-          <p className="directive-panel__title">Offer acceptance</p>
-          <p className="text-sm text-secondary" style={{ margin: 0, lineHeight: 1.55 }}>
-            Students record <strong>accept / decline</strong> on <strong>Dashboard → My Offers</strong>. Employers create offers from <strong>Dashboard → Offers</strong>.
-            Use this screen only for exceptional data entry; prefer the dashboard flows for normal operations.
-          </p>
-        </div>
+    <div className="animate-fadeIn mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-medium text-muted-foreground">Data entry</p><h1 className="text-3xl font-bold tracking-tight">Offers</h1><p className="mt-1 text-sm text-muted-foreground">Super-admin backfill for exceptional offer records.</p></div><div className="flex flex-wrap gap-2"><StandardTableIconAction action="add" variant="primary" onClick={openAdd} /><Button variant="outline" onClick={loadData}>Refresh</Button><Link href="/data-entry" className={cn(buttonVariants({ variant: 'outline' }))}>Back to list</Link></div></header>
+      <Alert><AlertDescription>Students accept or decline on Dashboard → My Offers. Employers create offers from Dashboard → Offers. Use this screen only for exceptional data entry.</AlertDescription></Alert>
+      {error ? <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert> : null}
+      {success ? <Alert><AlertDescription>{success}</AlertDescription></Alert> : null}
 
         {showForm && (
-          <form className="card" onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-            <div className="card-header">
-              <h3 className="card-title">{mode === 'add' ? 'Add Offer' : 'Edit Offer'}</h3>
-            </div>
-          <div className="grid grid-2" style={{ gap: '1rem' }}>
-            <div className="form-group">
-              <label className="form-label">Student profile</label>
-              <select className="form-select" value={form.studentId} onChange={onChange('studentId')} required disabled={isLoading || mode === 'edit'}>
-                <option value="">Select student profile</option>
-                {options.studentProfiles.map((sp) => (
-                  <option key={sp.id} value={sp.id}>
-                    {(sp.first_name || '').trim()} {(sp.last_name || '').trim()} ({sp.email || sp.id})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Drive (optional)</label>
-              <select className="form-select" value={form.driveId} onChange={onChange('driveId')} disabled={isLoading}>
-                <option value="">No drive selected</option>
-                {options.drives.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.title} ({d.status})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Employer (optional)</label>
-              <select className="form-select" value={form.employerId} onChange={onChange('employerId')} disabled={isLoading}>
-                <option value="">No employer selected</option>
-                {options.employers.map((e) => (
-                  <option key={e.id} value={e.id}>{e.company_name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Status</label>
-              <select className="form-select" value={form.status} onChange={onChange('status')}>
-                <option value="accepted">accepted</option>
-                <option value="pending">pending</option>
-                <option value="rejected">rejected</option>
-                <option value="expired">expired</option>
-                <option value="revoked">revoked</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Job title</label>
-              <input className="form-input" value={form.jobTitle} onChange={onChange('jobTitle')} required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Location</label>
-              <input className="form-input" value={form.location} onChange={onChange('location')} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Salary (INR)</label>
-              <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={form.salary} onChange={(v) => setForm((p) => ({ ...p, salary: v }))} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Joining date</label>
-              <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} value={form.joiningDate} onChange={(v) => setForm((p) => ({ ...p, joiningDate: v }))} />
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
-            <button className="btn btn-primary" type="submit" disabled={isSubmitting || isLoading}>
-              {isSubmitting ? 'Saving...' : mode === 'add' ? 'Create Offer' : 'Update Offer'}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
-          </div>
-          </form>
+          <Card><CardHeader><CardTitle>{mode === 'add' ? 'Add offer' : 'Edit offer'}</CardTitle><CardDescription>Link the offer to a student and optional drive or employer.</CardDescription></CardHeader><CardContent><form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <FieldGroup className="grid gap-5 md:grid-cols-2">
+            <Field><FieldLabel>Student profile</FieldLabel><AdminFilterSelect className="w-full" value={form.studentId} onValueChange={(v) => setForm((prev) => ({ ...prev, studentId: v }))} disabled={isLoading || mode === 'edit'} items={[{ label: 'Select student profile', value: 'all' }, ...options.studentProfiles.map((sp) => ({ label: `${(sp.first_name || '').trim()} ${(sp.last_name || '').trim()} (${sp.email || sp.id})`.trim(), value: String(sp.id) }))]} /></Field>
+            <Field><FieldLabel>Drive (optional)</FieldLabel><AdminFilterSelect className="w-full" value={form.driveId} onValueChange={(v) => setForm((prev) => ({ ...prev, driveId: v }))} disabled={isLoading} items={[{ label: 'No drive selected', value: 'all' }, ...options.drives.map((d) => ({ label: `${d.title} (${d.status})`, value: String(d.id) }))]} /></Field>
+            <Field><FieldLabel>Employer (optional)</FieldLabel><AdminFilterSelect className="w-full" value={form.employerId} onValueChange={(v) => setForm((prev) => ({ ...prev, employerId: v }))} disabled={isLoading} items={[{ label: 'No employer selected', value: 'all' }, ...options.employers.map((e) => ({ label: e.company_name, value: String(e.id) }))]} /></Field>
+            <Field><FieldLabel>Status</FieldLabel><AdminFilterSelect className="w-full" value={form.status} onValueChange={(v) => setForm((prev) => ({ ...prev, status: v }))} emptyMapsToAll={false} items={[{ label: 'accepted', value: 'accepted' }, { label: 'pending', value: 'pending' }, { label: 'rejected', value: 'rejected' }, { label: 'expired', value: 'expired' }, { label: 'revoked', value: 'revoked' }]} /></Field>
+            <Field><FieldLabel>Job title</FieldLabel><Input value={form.jobTitle} onChange={onChange('jobTitle')} required /></Field>
+            <Field><FieldLabel>Location</FieldLabel><Input value={form.location} onChange={onChange('location')} /></Field>
+            <Field><FieldLabel>Salary (INR)</FieldLabel><ValidatedNumberInput className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm" fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={form.salary} onChange={(v) => setForm((p) => ({ ...p, salary: v }))} /></Field>
+            <Field><FieldLabel>Joining date</FieldLabel><ValidatedDateInput className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm" fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} value={form.joiningDate} onChange={(v) => setForm((p) => ({ ...p, joiningDate: v }))} /></Field>
+          </FieldGroup>
+          <div className="flex gap-2"><Button type="submit" disabled={isSubmitting || isLoading}>{isSubmitting ? 'Saving...' : mode === 'add' ? 'Create offer' : 'Update offer'}</Button><Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button></div>
+          </form></CardContent></Card>
         )}
 
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">Existing Offers</h3>
-          </div>
+        <Card><CardHeader><CardTitle>Existing offers</CardTitle></CardHeader><CardContent>
           {!isLoading && totalCount > 0 ? (
             <DataTableToolbar
               search={search}
@@ -280,71 +213,25 @@ export default function DataEntryOffersPage() {
               totalCount={totalCount}
               hasActiveFilters={hasActiveFilters}
               onClear={clearFilters}
-              style={{ marginBottom: '1rem' }}
             />
           ) : null}
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Job Title</th>
-                  <th>Salary</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="mt-4 overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Student</TableHead><TableHead>Job title</TableHead><TableHead>Salary</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader><TableBody>
                 {displayRows.length === 0 && totalCount > 0 ? (
-                  <tr>
-                    <td colSpan={5} className="text-center text-secondary">No offers match your search.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">No offers match your search.</TableCell></TableRow>
                 ) : null}
                 {displayRows.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.first_name} {row.last_name || ''} ({row.email || '-'})</td>
-                    <td>{row.job_title}</td>
-                    <td>{row.salary ?? 0}</td>
-                    <td>{row.status}</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '0.4rem' }}>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
+                  <TableRow key={row.id}><TableCell>{row.first_name} {row.last_name || ''} ({row.email || '-'})</TableCell><TableCell>{row.job_title}</TableCell><TableCell>{row.salary ?? 0}</TableCell><TableCell><StatusBadge status={row.status} showDot>{row.status || '—'}</StatusBadge></TableCell><TableCell><div className="flex flex-wrap gap-1">
                           <StandardTableIconAction action="view" onClick={() => setViewRow(row)} />
                           <StandardTableIconAction action="edit" onClick={() => openEdit(row)} />
                           <StandardTableIconAction action="delete" variant="danger" onClick={() => handleDelete(row.id)} />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                  </div></TableCell></TableRow>
                 ))}
                 {!isLoading && totalCount === 0 ? (
-                  <tr><td colSpan={5} className="text-secondary">No offers found.</td></tr>
+                  <TableRow><TableCell colSpan={5} className="text-muted-foreground">No offers found.</TableCell></TableRow>
                 ) : null}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {viewRow ? (
-          <div className="card" style={{ marginTop: '1rem' }}>
-            <div className="card-header">
-              <h3 className="card-title">Offer Details</h3>
-              <button className="btn btn-secondary btn-sm" onClick={() => setViewRow(null)}>Close</button>
-            </div>
-            <div className="text-sm">
-              <div><strong>Student:</strong> {viewRow.first_name} {viewRow.last_name || ''}</div>
-              <div><strong>Job Title:</strong> {viewRow.job_title}</div>
-              <div><strong>Salary:</strong> {viewRow.salary ?? 0}</div>
-              <div><strong>Status:</strong> {viewRow.status}</div>
-              <div><strong>Drive:</strong> {viewRow.drive_title || '-'}</div>
-              <div><strong>Employer:</strong> {viewRow.company_name || '-'}</div>
-            </div>
-          </div>
-        ) : null}
-
-        {error ? <div className="card" style={{ marginTop: '1rem', borderColor: 'var(--danger-300)' }}>{error}</div> : null}
-        {success ? <div className="card" style={{ marginTop: '1rem', borderColor: 'var(--success-300)' }}>{success}</div> : null}
-      </div>
+              </TableBody></Table></div>
+        </CardContent></Card>
+        <Dialog open={Boolean(viewRow)} onOpenChange={(open) => !open && setViewRow(null)}><DialogContent><DialogHeader><DialogTitle>Offer details</DialogTitle><DialogDescription>Student, role, and placement linkage.</DialogDescription></DialogHeader>{viewRow ? <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm"><dt className="font-medium">Student</dt><dd>{viewRow.first_name} {viewRow.last_name || ''}</dd><dt className="font-medium">Job title</dt><dd>{viewRow.job_title}</dd><dt className="font-medium">Salary</dt><dd>{viewRow.salary ?? 0}</dd><dt className="font-medium">Status</dt><dd>{viewRow.status}</dd><dt className="font-medium">Drive</dt><dd>{viewRow.drive_title || '-'}</dd><dt className="font-medium">Employer</dt><dd>{viewRow.company_name || '-'}</dd></dl> : null}</DialogContent></Dialog>
     </div>
   );
 }

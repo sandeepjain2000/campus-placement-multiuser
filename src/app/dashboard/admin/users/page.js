@@ -24,6 +24,15 @@ import {
 } from '@/lib/adminUserForm';
 import { sanitizePhoneInput } from '@/lib/validators';
 import { isUuid } from '@/lib/tenantContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const KNOWN_ADMIN_USER_ERRORS = new Set(Object.values(ADMIN_USER_ERRORS));
 
@@ -275,11 +284,11 @@ export default function AdminUsersPage() {
   const isSelf = Boolean(sessionUserId && selectedId && sessionUserId === selectedId);
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>Manage Users</h1>
-          <p>All users across the platform</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Manage Users</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">All users across the platform</p>
         </div>
         <ExportCsvSplitButton
           filenameBase="admin_users"
@@ -313,30 +322,24 @@ export default function AdminUsersPage() {
         />
       ) : null}
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4"><CardTitle>User directory</CardTitle><CardDescription>{displayUsers.length} of {users.length} users</CardDescription></CardHeader>
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>{['User','Email','Role','Status','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableBody>
             {displayUsers.length === 0 && totalCount > 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={5} className="text-muted-foreground h-24 text-center">
                   No users match your search or filters.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
             {displayUsers.map((u) => (
-              <tr key={u.id}>
-                <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div className="avatar avatar-sm">
+              <TableRow key={u.id}>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full text-xs font-bold">
                       {(u.name || '?')
                         .split(' ')
                         .map((n) => n[0])
@@ -346,29 +349,15 @@ export default function AdminUsersPage() {
                     </div>
                     <span className="font-semibold">{u.name}</span>
                   </div>
-                </td>
-                <td className="text-sm">{u.email}</td>
-                <td>
-                  <span
-                    className={`badge badge-${
-                      u.role === 'super_admin'
-                        ? 'red'
-                        : u.role === 'college_admin'
-                          ? 'indigo'
-                          : u.role === 'employer'
-                            ? 'green'
-                            : 'blue'
-                    }`}
-                  >
+                </TableCell>
+                <TableCell className="text-sm">{u.email}</TableCell>
+                <TableCell>
+                  <StatusBadge tone={u.role === 'super_admin' ? 'red' : u.role === 'college_admin' ? 'indigo' : u.role === 'employer' ? 'green' : 'blue'}>
                     {getRoleDisplayName(u.role)}
-                  </span>
-                </td>
-                <td>
-                  <span className={`badge ${u.active ? 'badge-green' : 'badge-gray'} badge-dot`}>
-                    {u.active ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td>
+                  </StatusBadge>
+                </TableCell>
+                <TableCell><StatusBadge tone={u.active ? 'green' : 'gray'} showDot>{u.active ? 'Active' : 'Inactive'}</StatusBadge></TableCell>
+                <TableCell>
                   <StandardTableIconAction
                     action="edit"
                     variant="ghost"
@@ -378,19 +367,20 @@ export default function AdminUsersPage() {
                       void openUser(u.id, 'edit', u);
                     }}
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {!isLoading && totalCount === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={5} className="text-muted-foreground h-24 text-center">
                   {error || 'No users found.'}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
 
       <AdminRecordModal
         title={detail?.name || 'User'}
@@ -402,9 +392,8 @@ export default function AdminUsersPage() {
         onSave={saveUser}
         footer={
           panelMode === 'view' && detail && !panelLoading && !panelError ? (
-            <button
+            <Button
               type="button"
-              className="btn btn-primary"
               onClick={() => {
                 setForm(userToForm(detail));
                 setSaveError('');
@@ -412,7 +401,7 @@ export default function AdminUsersPage() {
               }}
             >
               Edit user
-            </button>
+            </Button>
           ) : null
         }
       >
@@ -428,91 +417,68 @@ export default function AdminUsersPage() {
         ) : null}
 
         {panelMode === 'edit' && detail ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <FieldGroup>
             {saveError ? (
-              <div
-                className="card"
-                role="alert"
-                style={{ borderColor: 'var(--danger-500)', padding: '0.85rem 1rem', marginBottom: 0 }}
-              >
-                <p style={{ margin: 0, color: 'var(--danger-600)', fontSize: '0.875rem' }}>{saveError}</p>
-              </div>
+              <Alert variant="destructive"><AlertDescription>{saveError}</AlertDescription></Alert>
             ) : null}
-            <div className="form-group">
-              <label className="form-label">First name</label>
-              <input
-                className="form-input"
+            <Field>
+              <FieldLabel htmlFor="admin-user-first-name">First name</FieldLabel>
+              <Input
+                id="admin-user-first-name"
                 value={form.firstName}
                 onChange={(e) => updateForm({ firstName: e.target.value })}
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Last name</label>
-              <input
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-user-last-name">Last name</FieldLabel>
+              <Input
+                id="admin-user-last-name"
                 value={form.lastName}
                 onChange={(e) => updateForm({ lastName: e.target.value })}
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Email</label>
-              <input className="form-input" value={detail.email} disabled readOnly />
-              <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0' }}>
-                Email cannot be changed here.
-              </p>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Phone</label>
-              <input
-                className="form-input"
+            </Field>
+            <Field data-disabled>
+              <FieldLabel htmlFor="admin-user-email">Email</FieldLabel>
+              <Input id="admin-user-email" value={detail.email} disabled readOnly />
+              <FieldDescription>Email cannot be changed here.</FieldDescription>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-user-phone">Phone</FieldLabel>
+              <Input
+                id="admin-user-phone"
                 value={form.phone}
                 onChange={(e) => updateForm({ phone: sanitizePhoneInput(e.target.value) })}
                 placeholder="+91 9876543210"
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Role</label>
-              <select
-                className="form-select"
+            </Field>
+            <Field data-disabled={isSelf || undefined}>
+              <FieldLabel htmlFor="admin-user-role">Role</FieldLabel>
+              <AdminFilterSelect
+                id="admin-user-role"
+                className="w-full"
                 value={form.role}
                 disabled={isSelf}
-                onChange={(e) => updateForm({ role: e.target.value })}
-              >
-                {ADMIN_USER_ROLES.map((role) => (
-                  <option key={role} value={role}>
-                    {getRoleDisplayName(role)}
-                  </option>
-                ))}
-              </select>
+                emptyMapsToAll={false}
+                onValueChange={(role) => updateForm({ role })}
+                items={ADMIN_USER_ROLES.map((role) => ({ label: getRoleDisplayName(role), value: role }))}
+              />
               {isSelf ? (
-                <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0' }}>
-                  You cannot change your own role.
-                </p>
+                <FieldDescription>You cannot change your own role.</FieldDescription>
               ) : null}
-            </div>
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: isSelf ? 'not-allowed' : 'pointer',
-                opacity: isSelf ? 0.65 : 1,
-              }}
-            >
-              <input
-                type="checkbox"
+            </Field>
+            <Field orientation="horizontal" data-disabled={isSelf || undefined}>
+              <FieldLabel htmlFor="admin-user-active">Account active</FieldLabel>
+              <Checkbox
+                id="admin-user-active"
                 checked={Boolean(form.active)}
                 disabled={isSelf}
-                onChange={(e) => updateForm({ active: e.target.checked })}
+                onCheckedChange={(v) => updateForm({ active: !!v })}
               />
-              <span className="text-sm">Account active</span>
-            </label>
+            </Field>
             {isSelf ? (
-              <p className="text-xs text-tertiary" style={{ margin: 0 }}>
-                You cannot deactivate your own account.
-              </p>
+              <FieldDescription>You cannot deactivate your own account.</FieldDescription>
             ) : null}
-          </div>
+          </FieldGroup>
         ) : null}
       </AdminRecordModal>
     </div>

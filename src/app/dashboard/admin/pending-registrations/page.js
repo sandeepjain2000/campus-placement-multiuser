@@ -8,6 +8,12 @@ import { COMMON_SORT_OPTIONS, PENDING_ROLE_FILTER_OPTIONS, roleFilterFn } from '
 import { useToast } from '@/components/ToastProvider';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function AdminPendingRegistrationsPage() {
   const { addToast } = useToast();
@@ -112,28 +118,22 @@ export default function AdminPendingRegistrationsPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>Onboard colleges & employers</h1>
-          <p>Approve pending college and employer sign-ups before they can sign in.</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Onboard colleges & employers</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">Approve pending sign-ups before they can sign in.</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap gap-2">
           <ExportCsvSplitButton 
             filenameBase="admin_pending_registrations" 
             currentCount={displayRows.length}
             fullCount={rows.length}
             getRows={getExportRows} 
           />
-          <Link href="/dashboard/admin/colleges/add" className="btn btn-secondary btn-sm">
-            + Add college
-          </Link>
-          <Link href="/dashboard/admin/colleges" className="btn btn-secondary btn-sm">
-            Colleges directory
-          </Link>
-          <Link href="/dashboard/admin/employers" className="btn btn-secondary btn-sm">
-            Employers directory
-          </Link>
+          <Button size="sm" variant="outline" render={<Link href="/dashboard/admin/colleges/add" />}>Add college</Button>
+          <Button size="sm" variant="outline" render={<Link href="/dashboard/admin/colleges" />}>Colleges directory</Button>
+          <Button size="sm" variant="outline" render={<Link href="/dashboard/admin/employers" />}>Employers directory</Button>
         </div>
       </div>
 
@@ -156,43 +156,34 @@ export default function AdminPendingRegistrationsPage() {
         />
       ) : null}
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Party</th>
-              <th>Contact</th>
-              <th>Role</th>
-              <th>Email verified</th>
-              <th>Requested</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4"><CardTitle>Pending registrations</CardTitle><CardDescription>{displayRows.length} awaiting review</CardDescription></CardHeader>
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>{['Party','Contact','Role','Email verified','Requested','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableBody>
             {displayRows.length === 0 && totalCount > 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center text-secondary">
+              <TableRow><TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                   No registrations match your search or filters.
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
             {displayRows.map((r) => (
-              <tr key={r.id}>
-                <td className="font-semibold">{r.label}</td>
-                <td>
+              <TableRow key={r.id}>
+                <TableCell className="font-semibold">{r.label}</TableCell>
+                <TableCell>
                   <div>{r.firstName} {r.lastName}</div>
                   <div className="text-sm text-secondary font-mono">{r.email}</div>
-                </td>
-                <td>
-                  <span className={`badge badge-${r.role === 'college_admin' ? 'indigo' : 'green'}`}>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge tone={r.role === 'college_admin' ? 'indigo' : 'green'}>
                     {r.role === 'college_admin' ? 'College' : 'Employer'}
-                  </span>
-                </td>
-                <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className={`badge badge-${r.emailVerified ? 'green' : 'amber'}`} style={{ fontSize: '0.75rem' }}>
+                  </StatusBadge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <StatusBadge tone={r.emailVerified ? 'green' : 'amber'} showDot>
                       {r.emailVerified ? 'Yes' : 'Pending'}
-                    </span>
+                    </StatusBadge>
                     {!r.emailVerified && (
                       <StandardTableIconAction
                         action="resend"
@@ -204,12 +195,12 @@ export default function AdminPendingRegistrationsPage() {
                       />
                     )}
                   </div>
-                </td>
-                <td className="text-sm text-secondary">
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
                   {r.createdAt ? new Date(r.createdAt).toLocaleString() : '—'}
-                </td>
-                <td style={{ whiteSpace: 'nowrap' }}>
-                  <div className="table-actions" style={{ display: 'inline-flex', gap: '0.35rem' }}>
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  <div className="inline-flex gap-1">
                     <StandardTableIconAction
                       action="approve"
                       variant="success"
@@ -224,63 +215,47 @@ export default function AdminPendingRegistrationsPage() {
                       onClick={() => setRejectFor(r)}
                     />
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {!loading && totalCount === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center text-secondary">
+              <TableRow><TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                   No accounts awaiting approval.
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
 
-      {rejectFor && (
-        <div
-          className="modal-overlay"
-          role="presentation"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setRejectFor(null);
-          }}
-        >
-          <div className="modal" role="dialog" aria-modal="true">
-            <div className="modal-header">
-              <h2 className="modal-title">Reject registration</h2>
-              <button type="button" className="modal-close" aria-label="Close" onClick={() => setRejectFor(null)}>
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <p className="text-sm text-secondary" style={{ marginBottom: '0.75rem' }}>
-                {rejectFor.email} — optional note is emailed to the registrant.
-              </p>
-              <textarea
-                className="form-input"
+      <Dialog open={Boolean(rejectFor)} onOpenChange={(open) => !open && setRejectFor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject registration</DialogTitle>
+            <DialogDescription>
+                {rejectFor?.email} — optional note is emailed to the registrant.
+            </DialogDescription>
+          </DialogHeader>
+              <Textarea
                 rows={3}
                 placeholder="Reason (optional)"
                 value={rejectNote}
                 onChange={(e) => setRejectNote(e.target.value)}
               />
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={() => setRejectFor(null)}>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setRejectFor(null)}>
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="btn btn-primary"
-                disabled={processing === rejectFor.id + 'reject'}
-                onClick={() => act(rejectFor.id, 'reject', rejectNote)}
+                disabled={!rejectFor || processing === rejectFor.id + 'reject'}
+                onClick={() => rejectFor && act(rejectFor.id, 'reject', rejectNote)}
               >
                 Confirm reject
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              </Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

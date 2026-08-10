@@ -19,6 +19,11 @@ import TableBulkActionBar from '@/components/table/TableBulkActionBar';
 import AdminPlacementListingEmailComposeModal from '@/components/admin/AdminPlacementListingEmailComposeModal';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 import { Briefcase, Target, GraduationCap, FolderDot, Trophy, LayoutList, Mail } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const fetcher = async (url) => {
   const res = await fetch(url, { cache: 'no-store', credentials: 'include' });
@@ -48,17 +53,12 @@ const STATUS_FILTER_OPTIONS = [
 
 function StatChip({ icon: Icon, label, value }) {
   return (
-    <div
-      className="stats-card"
-      style={{ padding: '1rem 1.15rem', minHeight: 0 }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
-        <Icon size={18} strokeWidth={1.5} className="text-secondary" aria-hidden />
-        <span className="text-xs font-semibold text-secondary" style={{ textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+    <div className="bg-muted/50 flex items-center gap-3 rounded-lg border px-4 py-3">
+        <Icon className="text-muted-foreground size-5" strokeWidth={1.5} aria-hidden />
+        <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wide">
           {label}
         </span>
-      </div>
-      <div className="stats-card-value" style={{ fontSize: '1.5rem' }}>{value}</div>
+      <strong className="ml-auto font-mono text-lg">{value}</strong>
     </div>
   );
 }
@@ -162,41 +162,41 @@ export default function AdminPlacementListingsPage() {
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <LayoutList size={28} className="text-secondary" strokeWidth={1.5} />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <LayoutList className="text-muted-foreground size-7" strokeWidth={1.5} />
             Placement listings
           </h1>
-          <p className="text-secondary">
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             All jobs, internships, projects, hackathons, and placement drives across every college and employer.
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           {totalCount > 0 ? (
             <>
-              <button
+              <Button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                variant="outline"
+                size="sm"
                 onClick={emailFilteredListings}
                 title="Compose email for listings in the current view"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
               >
-                <Mail size={15} aria-hidden />
+                <Mail data-icon="inline-start" aria-hidden />
                 Email view ({typeFilteredCount})
-              </button>
+              </Button>
               {typeFilteredCount !== totalCount ? (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-ghost btn-sm"
+                  variant="ghost"
+                  size="sm"
                   onClick={emailAllListings}
                   title="Compose email for every listing"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
-                  <Mail size={15} aria-hidden />
+                  <Mail data-icon="inline-start" aria-hidden />
                   Email all ({totalCount})
-                </button>
+                </Button>
               ) : null}
             </>
           ) : null}
@@ -210,7 +210,7 @@ export default function AdminPlacementListingsPage() {
         </div>
       </div>
 
-      <div className="grid grid-3" style={{ marginBottom: '1.5rem', gap: '1rem' }}>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <StatChip icon={Briefcase} label="Jobs" value={counts.job ?? 0} />
         <StatChip icon={GraduationCap} label="Internships" value={counts.internship ?? 0} />
         <StatChip icon={Target} label="Drives" value={counts.drive ?? 0} />
@@ -219,7 +219,7 @@ export default function AdminPlacementListingsPage() {
         <StatChip icon={LayoutList} label="Total" value={counts.all ?? totalCount} />
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem' }}>
+      <div className="flex flex-wrap gap-2">
         {ADMIN_LISTING_TAB_OPTIONS.map((tab) => {
           const active = typeTab === tab.value;
           const n =
@@ -227,17 +227,18 @@ export default function AdminPlacementListingsPage() {
               ? counts.all ?? totalCount
               : counts[tab.value] ?? 0;
           return (
-            <button
+            <Button
               key={tab.value || 'all'}
               type="button"
               onClick={() => setTypeTab(tab.value)}
-              className={active ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'}
+              variant={active ? 'secondary' : 'outline'}
+              size="sm"
             >
               {tab.label}
               <span className="font-mono" style={{ marginLeft: '0.35rem', opacity: 0.85 }}>
                 {n}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -274,76 +275,64 @@ export default function AdminPlacementListingsPage() {
       ) : null}
 
       {totalCount === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+        <Card><CardContent className="text-muted-foreground py-12 text-center text-sm">
             No job postings or placement drives in the database yet.
-          </p>
-        </div>
+        </CardContent></Card>
       ) : (
-        <div className="card card-table-shell">
-          <div className="table-container">
-            <table className="data-table student-opportunities-table">
+        <Card className="gap-0 py-0">
+          <CardHeader className="border-b py-4"><CardTitle>All listings</CardTitle><CardDescription>{typeFilteredCount} shown</CardDescription></CardHeader>
+          <CardContent className="p-0">
+            <Table className="student-opportunities-table">
               <colgroup>
                 <col className="student-opportunities-col-select" />
               </colgroup>
-              <thead>
-                <tr>
-                  <th className="student-opportunities-col-select" style={{ paddingLeft: '0.75rem' }}>
-                    <input
-                      type="checkbox"
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="student-opportunities-col-select pl-3">
+                    <Checkbox
                       aria-label="Select all listings on this page"
                       checked={pageAllSelected}
-                      ref={(el) => {
-                        if (el) el.indeterminate = pageSomeSelected;
-                      }}
-                      onChange={() => selection.toggleAll(typeFiltered)}
+                      indeterminate={pageSomeSelected}
+                      onCheckedChange={() => selection.toggleAll(typeFiltered)}
                     />
-                  </th>
-                  <th style={{ paddingLeft: '0.5rem' }}>Type</th>
-                  <th>Title</th>
-                  <th>Employer</th>
-                  <th>College(s)</th>
-                  <th>Status</th>
-                  <th>Apps / reg.</th>
-                  <th>Date</th>
-                  <th>Posted</th>
-                  <th className="student-opportunities-col-actions" style={{ textAlign: 'right', paddingRight: '1.25rem' }}>
+                  </TableHead>
+                  {['Type','Title','Employer','College(s)','Status','Apps / reg.','Date','Posted'].map((label) => <TableHead key={label}>{label}</TableHead>)}
+                  <TableHead className="student-opportunities-col-actions pr-5 text-right">
                     Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {typeFiltered.length === 0 ? (
-                  <tr>
-                    <td colSpan={10} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-muted-foreground h-24 text-center">
                       No listings match your filters.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
                 {typeFiltered.map((row) => (
-                  <tr
+                  <TableRow
                     key={listingRowSelectionId(row)}
                     className={selection.isSelected(row) ? 'is-row-selected' : undefined}
                   >
-                    <td className="student-opportunities-col-select" style={{ paddingLeft: '0.75rem' }}>
-                      <input
-                        type="checkbox"
+                    <TableCell className="student-opportunities-col-select pl-3">
+                      <Checkbox
                         aria-label={`Select ${row.title || 'listing'}`}
                         checked={selection.isSelected(row)}
-                        onChange={() => selection.toggle(row)}
+                        onCheckedChange={() => selection.toggle(row)}
                       />
-                    </td>
-                    <td style={{ paddingLeft: '0.5rem' }} className="text-sm">
+                    </TableCell>
+                    <TableCell className="text-sm">
                       {row.typeLabel}
-                    </td>
-                    <td className="font-semibold text-sm cell-truncate" title={row.title || undefined}>
+                    </TableCell>
+                    <TableCell className="cell-truncate text-sm font-semibold" title={row.title || undefined}>
                       {row.title || '—'}
-                    </td>
-                    <td className="text-sm cell-truncate" title={row.employerName || undefined}>
+                    </TableCell>
+                    <TableCell className="cell-truncate text-sm" title={row.employerName || undefined}>
                       {row.employerId ? (
                         <Link
                           href={`/dashboard/admin/employers?view=${encodeURIComponent(row.employerId)}`}
-                          className="admin-entity-name-btn"
+                          className="text-primary font-medium hover:underline"
                           style={{ display: 'inline' }}
                         >
                           {row.employerName}
@@ -351,12 +340,12 @@ export default function AdminPlacementListingsPage() {
                       ) : (
                         row.employerName || '—'
                       )}
-                    </td>
-                    <td className="text-sm cell-truncate" title={row.collegeNames || undefined}>
+                    </TableCell>
+                    <TableCell className="cell-truncate text-sm" title={row.collegeNames || undefined}>
                       {row.collegeId ? (
                         <Link
                           href={`/dashboard/admin/colleges/${row.collegeId}`}
-                          className="admin-entity-name-btn"
+                          className="text-primary font-medium hover:underline"
                           style={{ display: 'inline' }}
                         >
                           {row.collegeNames}
@@ -364,23 +353,20 @@ export default function AdminPlacementListingsPage() {
                       ) : (
                         row.collegeNames || '—'
                       )}
-                    </td>
-                    <td>
-                      <span className={`badge badge-${getStatusColor(row.status)} badge-dot`}>
-                        {formatStatus(row.status)}
-                      </span>
-                    </td>
-                    <td className="text-sm">{row.applicationCount ?? '—'}</td>
-                    <td className="text-sm text-secondary">
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={getStatusColor(row.status)} showDot>
+                        {formatStatus(row.status) || '—'}
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell className="text-sm">{row.applicationCount ?? '—'}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
                       {row.eventDate ? formatDate(row.eventDate) : '—'}
-                    </td>
-                    <td className="text-sm text-secondary">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
                       {row.createdAt ? formatDate(row.createdAt) : '—'}
-                    </td>
-                    <td
-                      className="student-opportunities-col-actions"
-                      style={{ textAlign: 'right', paddingRight: '1.25rem' }}
-                    >
+                    </TableCell>
+                    <TableCell className="student-opportunities-col-actions pr-5 text-right">
                       <div
                         className="table-actions"
                         style={{
@@ -399,13 +385,13 @@ export default function AdminPlacementListingsPage() {
                           tooltip="Email this listing"
                         />
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
 
       {emailComposeRows ? (

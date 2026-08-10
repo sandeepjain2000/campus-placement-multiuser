@@ -8,6 +8,12 @@ import {
   EDITABLE_SYSTEM_EMAIL_TEMPLATE_KEYS,
   SYSTEM_EMAIL_TEMPLATE_META,
 } from '@/lib/systemEmailTemplates';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 function emptyForms() {
   /** @type {Record<string, { subject: string, body: string, description: string, updated_at: string | null, versions: any[] }>} */
@@ -114,42 +120,11 @@ export default function AdminEmailTemplatesPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <Link
-          href="/dashboard/admin/overview"
-          className="btn btn-ghost btn-sm"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.75rem', paddingLeft: 0 }}
-        >
-          <ArrowLeft size={16} />
-          Back to Admin
-        </Link>
-        <h1
-          style={{
-            fontSize: '1.75rem',
-            fontWeight: 800,
-            color: 'var(--text-primary)',
-            margin: '0 0 0.35rem',
-            letterSpacing: '-0.02em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          <span
-            style={{
-              display: 'flex',
-              padding: '0.35rem',
-              background: 'var(--primary-50)',
-              borderRadius: '8px',
-              color: 'var(--primary-600)',
-            }}
-          >
-            <Mail size={22} />
-          </span>
-          Email templates
-        </h1>
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0, maxWidth: 720 }}>
+    <div className="animate-fadeIn flex max-w-4xl flex-col gap-4 pb-12">
+      <div>
+        <Button variant="ghost" size="sm" render={<Link href="/dashboard/admin/overview" />}><ArrowLeft data-icon="inline-start" />Back to Admin</Button>
+        <h1 className="mt-3 mb-0 flex items-center gap-2 text-2xl font-semibold tracking-tight"><Mail aria-hidden />Email templates</h1>
+        <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
           Edit platform-wide email copy. Each save keeps the original baseline and adds a system version so colleges can
           undo their campus edits later. Use <code className="text-xs">{`{{placeholder}}`}</code> in subject or body;
           unknown placeholders are removed when a message is rendered.
@@ -157,86 +132,56 @@ export default function AdminEmailTemplatesPage() {
       </div>
 
       {loading ? (
-        <div className="skeleton" style={{ height: 280 }} />
+        <Card><CardHeader><CardTitle>Email templates</CardTitle><CardDescription>Loading templates…</CardDescription></CardHeader></Card>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: 900 }}>
+        <div className="flex flex-col gap-5">
           {EDITABLE_SYSTEM_EMAIL_TEMPLATE_KEYS.map((templateKey) => {
             const meta = SYSTEM_EMAIL_TEMPLATE_META[templateKey];
             const f = forms[templateKey] || { subject: '', body: '', description: '', updated_at: null };
             const placeholders = meta?.placeholders || [];
             return (
-              <div key={templateKey} className="card" style={{ padding: '1.25rem' }}>
-                <h2 style={{ fontSize: '1.05rem', marginTop: 0 }}>{meta?.title || templateKey}</h2>
-                {meta?.summary ? (
-                  <p className="text-sm text-secondary" style={{ marginBottom: '0.75rem' }}>
-                    {meta.summary}
-                  </p>
-                ) : null}
-                {f.description ? (
-                  <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
-                    {f.description}
-                  </p>
-                ) : null}
+              <Card key={templateKey}>
+                <CardHeader><CardTitle>{meta?.title || templateKey}</CardTitle><CardDescription>{[meta?.summary, f.description].filter(Boolean).join(' ')}</CardDescription></CardHeader>
+                <CardContent><FieldGroup>
                 {f.updated_at ? (
-                  <p className="text-xs text-secondary" style={{ marginBottom: '1rem' }}>
+                  <p className="text-muted-foreground text-xs">
                     Last updated: {new Date(f.updated_at).toLocaleString()}
                   </p>
                 ) : null}
 
-                <div
-                  className="text-xs"
-                  style={{
-                    marginBottom: '1rem',
-                    padding: '0.75rem',
-                    background: 'var(--bg-secondary)',
-                    borderRadius: '8px',
-                    border: '1px solid var(--border-default)',
-                  }}
-                >
+                <Alert><AlertDescription>
                   <strong>Placeholders</strong> (double curly braces):
-                  <code style={{ display: 'block', marginTop: '0.35rem', whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+                  <code className="mt-1 block whitespace-pre-wrap text-xs">
                     {placeholders.map((p) => `{{${p}}}`).join('  ')}
                   </code>
-                </div>
+                </AlertDescription></Alert>
 
-                <div className="form-group">
-                  <label className="form-label">Subject template</label>
-                  <input
-                    className="form-input"
+                <Field>
+                  <FieldLabel htmlFor={`${templateKey}-subject`}>Subject template</FieldLabel>
+                  <Input
+                    id={`${templateKey}-subject`}
                     value={f.subject}
                     onChange={(e) => setFormField(templateKey, 'subject', e.target.value)}
                     autoComplete="off"
                   />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Body template (plain text)</label>
-                  <textarea
-                    className="form-input"
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`${templateKey}-body`}>Body template (plain text)</FieldLabel>
+                  <Textarea
+                    id={`${templateKey}-body`}
                     rows={14}
                     value={f.body}
                     onChange={(e) => setFormField(templateKey, 'body', e.target.value)}
-                    style={{ fontFamily: 'var(--font-mono, ui-monospace, monospace)', fontSize: '0.85rem' }}
+                    className="font-mono text-sm"
                   />
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => void save(templateKey)}
-                  disabled={savingKey === templateKey}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Save size={16} />
-                    {savingKey === templateKey ? 'Saving…' : 'Save template'}
-                  </span>
-                </button>
+                </Field>
                 {Array.isArray(f.versions) && f.versions.length > 0 ? (
-                  <div style={{ marginTop: '1rem' }}>
-                    <div className="text-xs text-tertiary" style={{ textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                      Retained system versions
-                    </div>
-                    <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                  <Field>
+                    <FieldLabel>Retained system versions</FieldLabel>
+                    <div>
+                    <ul className="text-muted-foreground m-0 list-disc pl-5 text-sm">
                       {f.versions.map((v) => (
-                        <li key={v.id} style={{ marginBottom: '0.25rem' }}>
+                        <li key={v.id}>
                           <strong>
                             {v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}
                           </strong>
@@ -245,9 +190,12 @@ export default function AdminEmailTemplatesPage() {
                         </li>
                       ))}
                     </ul>
-                  </div>
+                    </div>
+                  </Field>
                 ) : null}
-              </div>
+                </FieldGroup></CardContent>
+                <CardFooter className="border-t"><Button type="button" onClick={() => void save(templateKey)} disabled={savingKey === templateKey}><Save data-icon="inline-start" />{savingKey === templateKey ? 'Saving…' : 'Save template'}</Button></CardFooter>
+              </Card>
             );
           })}
         </div>

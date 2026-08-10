@@ -12,6 +12,8 @@ import {
   readActiveAcademicYearContext,
 } from '@/lib/collegeAcademicYearContext';
 import { usePlacementCommitteeReadOnly } from '@/lib/placementCommittee';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 export default function CollegeStudentProfilePage({ mobile = false }) {
   const { addToast } = useToast();
@@ -74,14 +76,13 @@ export default function CollegeStudentProfilePage({ mobile = false }) {
     }
     if (loadError || !student) {
       return (
-        <div className="card" style={{ padding: '1.5rem' }}>
-          <p style={{ color: 'var(--danger-600)', marginBottom: '0.75rem' }}>
-            {loadError || 'Student not found.'}
-          </p>
-          <Link href="/dashboard/college/students" className="btn btn-secondary">
-            Back to students
-          </Link>
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Unable to load student</AlertTitle>
+          <AlertDescription className="flex flex-col items-start gap-3">
+            <p>{loadError || 'Student not found.'}</p>
+            <Button variant="outline" render={<Link href="/dashboard/college/students" />}>Back to students</Button>
+          </AlertDescription>
+        </Alert>
       );
     }
     return (
@@ -97,10 +98,10 @@ export default function CollegeStudentProfilePage({ mobile = false }) {
     return (
       <>
         <MobileHeader title="Student profile" />
-        <div style={{ padding: '1rem', paddingBottom: '5rem' }}>{content}</div>
+        <div className="p-4 pb-20">{content}</div>
       </>
     );
   }
 
-  return <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>{content}</div>;
+  return <div className="animate-fadeIn pb-12">{content}</div>;
 }

@@ -9,6 +9,13 @@ import { useSession } from 'next-auth/react';
 import { useToast } from '@/components/ToastProvider';
 import { formatDate, formatStatus } from '@/lib/utils';
 import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const historyFetcher = async (url) => {
   const res = await fetch(url);
@@ -34,7 +41,7 @@ export default function MyExportsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [sectionFilter, setSectionFilter] = useState('');
 
-  const exports = hist?.exports || [];
+  const exports = useMemo(() => hist?.exports || [], [hist?.exports]);
   const screens = reg?.screens || [];
   const defaultExportExt = 'csv';
   const preFilteredExports = useMemo(() => {
@@ -112,41 +119,40 @@ export default function MyExportsPage() {
   }, [addToast, mutate, defaultExportExt]);
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>📦 My data export</h1>
-          <p>
+    <div className="animate-fadeIn mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="text-sm font-medium text-muted-foreground">Privacy and portability</p><h1 className="text-3xl font-bold tracking-tight">My data export</h1>
+          <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
             Download a CSV snapshot of the data this platform associates with your login ({session?.user?.role?.replace(/_/g, ' ') || '…'}).
             Each request is recorded for audit. Use the <strong>Screens</strong> button in the top bar to jump to any page.
-          </p>
-        </div>
-        <div className="page-header-actions">
-          <button className="btn btn-primary" type="button" disabled={busy} onClick={runExport}>
+          </p></div>
+          <Button type="button" disabled={busy} onClick={runExport}>
             {busy ? 'Preparing…' : 'Download full export'}
-          </button>
-        </div>
-      </div>
+          </Button>
+      </header>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <h3 className="card-title">Export history</h3>
-        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-          <select className="form-input" style={{ width: 180 }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="">All statuses</option>
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
-            <option value="failed">Failed</option>
-          </select>
-          <input
-            className="form-input"
-            style={{ width: 240 }}
+      <Card><CardHeader><CardTitle>Export history</CardTitle><CardDescription>Every request is recorded for audit.</CardDescription></CardHeader><CardContent>
+        <div className="mb-4 flex flex-wrap gap-2">
+          <AdminFilterSelect
+            className="w-44"
+            value={statusFilter}
+            onValueChange={setStatusFilter}
+            items={[
+              { label: 'All statuses', value: 'all' },
+              { label: 'Completed', value: 'completed' },
+              { label: 'Pending', value: 'pending' },
+              { label: 'Failed', value: 'failed' },
+            ]}
+          />
+          <Input
+            className="w-60"
             placeholder="Filter by section..."
             value={sectionFilter}
             onChange={(e) => setSectionFilter(e.target.value)}
           />
         </div>
         {isLoading && <PageLoading message="Loading export history…" inline />}
-        {error && <p className="text-sm" style={{ color: 'var(--danger-600)' }}>{error.message}</p>}
+        {error && <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>}
         {!isLoading && !error && exports.length === 0 && (
           <p className="text-sm text-secondary">No exports yet. Run a download to create the first entry.</p>
         )}
@@ -169,30 +175,12 @@ export default function MyExportsPage() {
           />
         )}
         {filteredExports.length > 0 && (
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>When</th>
-                  <th>Status</th>
-                  <th>Format</th>
-                  <th>Size</th>
-                  <th>Sections</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>When</TableHead><TableHead>Status</TableHead><TableHead>Format</TableHead><TableHead>Size</TableHead><TableHead>Sections</TableHead></TableRow></TableHeader><TableBody>
                 {filteredExports.length === 0 && exportsTableTotal > 0 ? (
-                  <tr>
-                    <td colSpan={5} className="text-center text-secondary">No exports match your search.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">No exports match your search.</TableCell></TableRow>
                 ) : null}
                 {filteredExports.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.created_at ? formatDate(row.created_at) : '—'}</td>
-                    <td>{formatStatus(row.status)}</td>
-                    <td>{(row.format || 'csv').toUpperCase()}</td>
-                    <td>{row.byte_size != null ? `${row.byte_size} B` : '—'}</td>
-                    <td className="text-sm text-secondary">
+                  <TableRow key={row.id}><TableCell>{row.created_at ? formatDate(row.created_at) : '—'}</TableCell><TableCell><StatusBadge status={row.status} showDot>{formatStatus(row.status) || '—'}</StatusBadge></TableCell><TableCell>{(row.format || 'csv').toUpperCase()}</TableCell><TableCell>{row.byte_size != null ? `${row.byte_size} B` : '—'}</TableCell><TableCell className="text-sm text-muted-foreground">
                       {(() => {
                         let s = row.section_summary;
                         if (typeof s === 'string') {
@@ -204,54 +192,29 @@ export default function MyExportsPage() {
                         }
                         return Array.isArray(s) ? s.map((x) => x.key).filter(Boolean).join(', ') : '—';
                       })()}
-                    </td>
-                  </tr>
+                    </TableCell></TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody></Table>
           </div>
         )}
-      </div>
+      </CardContent></Card>
 
-      <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <h3 className="card-title" style={{ margin: 0 }}>Screens available to you</h3>
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowAllScreens((v) => !v)}>
+      <Card><CardHeader className="flex-row items-center justify-between"><div><CardTitle>Screens available to you</CardTitle><CardDescription>Same directory as the Screens search in the header.</CardDescription></div><Button type="button" variant="outline" size="sm" onClick={() => setShowAllScreens((v) => !v)}>
             {showAllScreens ? 'Hide list' : `Show all (${screens.length})`}
-          </button>
-        </div>
-        <p className="text-sm text-secondary" style={{ marginTop: '0.5rem' }}>
-          Same directory as the <strong>Screens</strong> search in the header. Optional smart matching may be unavailable on this deployment.
-        </p>
+          </Button></CardHeader><CardContent>
         {showAllScreens && (
-          <div className="table-container" style={{ marginTop: '0.75rem' }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Label</th>
-                  <th>Section</th>
-                  <th>Screen tag</th>
-                  <th>Path</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Label</TableHead><TableHead>Section</TableHead><TableHead>Screen tag</TableHead><TableHead>Path</TableHead></TableRow></TableHeader><TableBody>
                 {screens.map((s) => (
-                  <tr key={s.href}>
-                    <td>
+                  <TableRow key={s.href}><TableCell>
                       <a href={s.href}>{s.label}</a>
-                    </td>
-                    <td>{s.section}</td>
-                    <td>
+                    </TableCell><TableCell>{s.section}</TableCell><TableCell>
                       <code>{s.screenId}</code>
-                    </td>
-                    <td className="text-xs text-secondary">{s.href}</td>
-                  </tr>
+                    </TableCell><TableCell className="text-xs text-muted-foreground">{s.href}</TableCell></TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody></Table>
           </div>
         )}
-      </div>
+      </CardContent></Card>
     </div>
   );
 }

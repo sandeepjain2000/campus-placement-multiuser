@@ -7,6 +7,14 @@ import { formatDate } from '@/lib/utils';
 import { buildDriveReminderDefaults } from '@/lib/collegeBulkStudentNotifyShared';
 import { useToast } from '@/components/ToastProvider';
 import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldLegend } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -157,184 +165,169 @@ export default function CollegeBulkNotificationsPage() {
   if (isLoading) return <PageLoading message="Loading audience options…" variant="skeleton-card" />;
   if (error) {
     return (
-      <div className="card" style={{ padding: '2rem' }}>
-        <p style={{ color: 'var(--danger-600)', margin: 0 }}>{error.message || 'Failed to load'}</p>
-      </div>
+      <Alert variant="destructive"><AlertDescription>{error.message || 'Failed to load'}</AlertDescription></Alert>
     );
   }
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem', maxWidth: '920px' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <Megaphone size={26} aria-hidden />
+    <div className="animate-fadeIn flex max-w-4xl flex-col gap-6 pb-12">
+      <div className="flex max-w-3xl flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Megaphone className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
             Bulk campus notifications
           </h1>
-          <p className="text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.55 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Send drive reminders (or custom messages) to students by <strong>batch year</strong> and{' '}
             <strong>branch</strong>. Delivered as in-app alerts and/or email.
           </p>
-        </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1.25rem' }}>
-        <h2 className="card-title" style={{ marginBottom: '1rem' }}>
-          1 — Optional: upcoming drive
-        </h2>
-        <div className="form-group" style={{ marginBottom: 0 }}>
-          <label className="form-label">Placement drive (prefills reminder text)</label>
-          <select
-            className="form-select"
+      <Card>
+        <CardHeader><CardTitle>1 — Optional: upcoming drive</CardTitle><CardDescription>Choose a drive to prefill the reminder text.</CardDescription></CardHeader>
+        <CardContent>
+        <Field>
+          <FieldLabel htmlFor="bulk-notification-drive">Placement drive</FieldLabel>
+          <AdminFilterSelect
+            id="bulk-notification-drive"
+            className="w-full"
             value={driveId}
-            onChange={(e) => {
-              setDriveId(e.target.value);
+            emptyMapsToAll={false}
+            onValueChange={(id) => {
+              setDriveId(id);
               setPreviewCount(null);
             }}
-          >
-            <option value="">Custom message (no drive)</option>
-            {drives.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.company} — {d.title}
-                {d.driveDate ? ` (${formatDate(d.driveDate)})` : ''}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-tertiary" style={{ margin: '0.5rem 0 0' }}>
+            items={[
+              { label: 'Custom message (no drive)', value: '' },
+              ...drives.map((d) => ({
+                label: `${d.company} — ${d.title}${d.driveDate ? ` (${formatDate(d.driveDate)})` : ''}`,
+                value: String(d.id),
+              })),
+            ]}
+          />
+          <FieldDescription>
             Approved or scheduled drives with today&apos;s date or later. Students are linked to Browse Drives.
-          </p>
-        </div>
-      </div>
+          </FieldDescription>
+        </Field>
+        </CardContent>
+      </Card>
 
-      <div className="card" style={{ marginBottom: '1.25rem' }}>
-        <h2 className="card-title" style={{ marginBottom: '1rem' }}>
-          2 — Audience
-        </h2>
-        <div className="grid grid-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label">Batch / graduation year</label>
-            <select
-              className="form-select"
+      <Card>
+        <CardHeader><CardTitle>2 — Audience</CardTitle><CardDescription>Target students by graduation year and branch.</CardDescription></CardHeader>
+        <CardContent className="flex flex-col gap-5">
+        <FieldGroup className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="bulk-notification-year">Batch / graduation year</FieldLabel>
+            <AdminFilterSelect
+              id="bulk-notification-year"
+              className="w-full"
               value={batchYear}
-              onChange={(e) => {
-                setBatchYear(e.target.value);
+              emptyMapsToAll={false}
+              onValueChange={(year) => {
+                setBatchYear(year);
                 setPreviewCount(null);
               }}
-            >
-              <option value="">Select year</option>
-              {batchYears.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label">Branch scope</label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', minHeight: '2.5rem' }}>
-              <input
-                type="checkbox"
+              items={[
+                { label: 'Select year', value: '' },
+                ...batchYears.map((y) => ({ label: String(y), value: String(y) })),
+              ]}
+            />
+          </Field>
+          <Field>
+            <FieldLabel>Branch scope</FieldLabel>
+            <label className="flex min-h-10 cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
                 checked={allBranches}
-                onChange={(e) => onAllBranchesChange(e.target.checked)}
+                onCheckedChange={(v) => onAllBranchesChange(!!v)}
               />
               <span>All branches for this year</span>
             </label>
-          </div>
-        </div>
+          </Field>
+        </FieldGroup>
 
         {!allBranches && (
-          <div>
-            <p className="form-label" style={{ marginBottom: '0.5rem' }}>
-              Branches (multi-select)
-            </p>
+          <FieldSet>
+            <FieldLegend variant="label">Branches (multi-select)</FieldLegend>
             {branches.length === 0 ? (
               <p className="text-sm text-secondary" style={{ margin: 0 }}>
                 No branches on student profiles yet — import students with branch/department filled.
               </p>
             ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  maxHeight: '200px',
-                  overflowY: 'auto',
-                  padding: '0.75rem',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: 'var(--radius-md)',
-                }}
-              >
+              <div className="border-border flex max-h-[200px] flex-wrap gap-2 overflow-y-auto rounded-md border p-3">
                 {branches.map((b) => {
                   const on = selectedBranches.includes(b);
                   return (
-                    <button
+                    <Button
                       key={b}
                       type="button"
-                      className={on ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'}
+                      variant={on ? 'default' : 'outline'}
+                      size="sm"
                       onClick={() => toggleBranch(b)}
                     >
                       {b}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
             )}
-          </div>
+          </FieldSet>
         )}
 
-        <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-secondary btn-sm" disabled={previewing} onClick={runPreview}>
-            <Users size={14} aria-hidden /> {previewing ? 'Counting…' : 'Preview audience'}
-          </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="button" variant="outline" size="sm" disabled={previewing} onClick={runPreview}>
+            <Users data-icon="inline-start" aria-hidden /> {previewing ? 'Counting…' : 'Preview audience'}
+          </Button>
           {previewCount != null && (
             <span className="text-sm text-secondary">
               <strong>{previewCount}</strong> student(s) match
             </span>
           )}
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="card" style={{ marginBottom: '1.25rem' }}>
-        <h2 className="card-title" style={{ marginBottom: '1rem' }}>
-          3 — Message
-        </h2>
-        <div className="form-group">
-          <label className="form-label">Alert title</label>
-          <input
-            className="form-input"
+      <Card>
+        <CardHeader><CardTitle>3 — Message</CardTitle><CardDescription>Write the message and choose delivery channels.</CardDescription></CardHeader>
+        <CardContent>
+        <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="bulk-notification-title">Alert title</FieldLabel>
+          <Input
+            id="bulk-notification-title"
             value={title}
             maxLength={250}
             onChange={(e) => setTitle(e.target.value)}
           />
-        </div>
-        <div className="form-group" style={{ marginBottom: '1rem' }}>
-          <label className="form-label">Message body</label>
-          <textarea
-            className="form-textarea"
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="bulk-notification-message">Message body</FieldLabel>
+          <Textarea
+            id="bulk-notification-message"
             rows={6}
             value={message}
             maxLength={4000}
             onChange={(e) => setMessage(e.target.value)}
           />
-        </div>
-        <p className="form-label" style={{ marginBottom: '0.5rem' }}>
-          Channels
-        </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-            <input type="checkbox" checked={sendAlert} onChange={(e) => setSendAlert(e.target.checked)} />
+        </Field>
+        <FieldSet>
+        <FieldLegend variant="label">Channels</FieldLegend>
+        <div className="flex flex-wrap gap-5">
+          <label className="flex cursor-pointer items-center gap-2 text-sm">
+            <Checkbox checked={sendAlert} onCheckedChange={(v) => setSendAlert(!!v)} />
             <Bell size={16} aria-hidden /> In-app alert
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-            <input type="checkbox" checked={sendEmail} onChange={(e) => setSendEmail(e.target.checked)} />
+          <label className="flex cursor-pointer items-center gap-2 text-sm">
+            <Checkbox checked={sendEmail} onCheckedChange={(v) => setSendEmail(!!v)} />
             <Mail size={16} aria-hidden /> Email
           </label>
         </div>
-      </div>
+        </FieldSet>
+        </FieldGroup>
+        </CardContent>
+      </Card>
 
-      <button type="button" className="btn btn-primary" disabled={sending} onClick={runSend}>
+      <Button type="button" className="w-fit" disabled={sending} onClick={runSend}>
         {sending ? 'Sending…' : 'Send to selected students'}
-      </button>
+      </Button>
     </div>
   );
 }

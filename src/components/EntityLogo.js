@@ -106,6 +106,7 @@ export default function EntityLogo({
           width: '100%',
           height: '100%',
           objectFit: 'contain',
+          objectPosition: 'center',
           padding: size === 'xs' ? 2 : 4,
           display: 'block',
         }}

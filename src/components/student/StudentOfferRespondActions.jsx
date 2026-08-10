@@ -7,6 +7,7 @@ import { useToast } from '@/components/ToastProvider';
 import { formatDate } from '@/lib/utils';
 import { isOfferDeadlinePassed } from '@/lib/offerDeadline';
 import { isPendingOfferStatus, normalizeOfferStatus } from '@/lib/offerStatusNormalize';
+import { Button } from '@/components/ui/button';
 import {
   STUDENT_OFFER_LETTER_ERRORS,
   resolveStudentOfferRespondErrorMessage,
@@ -34,9 +35,9 @@ export default function StudentOfferRespondActions({
   if (!offer?.id) {
     if (showMyOffersLink) {
       return (
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+        <p className="text-muted-foreground m-0 text-sm leading-relaxed">
           No pending offer is waiting for your response. If you received an offer letter, check{' '}
-          <Link href="/dashboard/student/offers" style={{ fontWeight: 600, color: 'var(--primary-600)' }}>
+          <Link href="/dashboard/student/offers" className="text-primary font-semibold hover:underline">
             My Offers
           </Link>{' '}
           or ask your placement office to mark it as <strong>pending</strong>.
@@ -84,21 +85,21 @@ export default function StudentOfferRespondActions({
   if (!canRespond) {
     if (effectiveStatus === 'accepted') {
       return (
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--success-700)' }}>
+        <p className="m-0 text-sm text-green-600 dark:text-green-400">
           You accepted this offer.
         </p>
       );
     }
     if (effectiveStatus === 'rejected') {
       return (
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+        <p className="text-muted-foreground m-0 text-sm">
           You declined this offer.
         </p>
       );
     }
     if (effectiveStatus === 'expired') {
       return (
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>
+        <p className="text-muted-foreground m-0 text-sm">
           This offer expired{offer.deadline ? ` on ${formatDate(offer.deadline)}` : ''}.
         </p>
       );
@@ -114,13 +115,12 @@ export default function StudentOfferRespondActions({
   return (
     <>
       {!compact && deadlineHint ? (
-        <p style={{ margin: '0 0 0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{deadlineHint}</p>
+        <p className="text-muted-foreground mb-3 text-xs">{deadlineHint}</p>
       ) : null}
-      <div className={compact ? '' : 'offer-actions'} style={compact ? { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' } : undefined}>
-        <button
+      <div className={compact ? 'flex flex-wrap gap-2' : 'grid gap-2 sm:grid-cols-2'}>
+        <Button
           type="button"
-          className="btn btn-success"
-          style={compact ? undefined : { flex: 1 }}
+          className={compact ? undefined : 'w-full'}
           disabled={responding}
           onClick={() =>
             setConfirmAction({
@@ -131,11 +131,11 @@ export default function StudentOfferRespondActions({
           }
         >
           {responding ? 'Saving…' : 'Accept offer'}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="btn btn-danger"
-          style={compact ? undefined : { flex: 1 }}
+          variant="destructive"
+          className={compact ? undefined : 'w-full'}
           disabled={responding}
           onClick={() =>
             setConfirmAction({
@@ -146,7 +146,7 @@ export default function StudentOfferRespondActions({
           }
         >
           {responding ? 'Saving…' : 'Decline offer'}
-        </button>
+        </Button>
       </div>
 
       <ConfirmDialog

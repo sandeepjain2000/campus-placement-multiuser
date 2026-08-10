@@ -3,25 +3,22 @@
 import Link from 'next/link';
 import CollegeSystemEmailTemplates from '@/components/college/CollegeSystemEmailTemplates';
 import { ArrowLeft, FileEdit, Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function CollegeCommunicationTemplatesPage() {
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '2rem' }}>
-      <div className="page-header">
-        <div className="page-header-left">
-          <Link
-            href="/dashboard/college/overview"
-            className="btn btn-ghost btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: '0.5rem', paddingLeft: 0 }}
-          >
-            <ArrowLeft size={16} />
+    <div className="animate-fadeIn flex flex-col gap-6 pb-8">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex max-w-3xl flex-col gap-1">
+          <Button render={<Link href="/dashboard/college/overview" />} variant="ghost" size="sm" className="mb-1 w-fit">
+            <ArrowLeft data-icon="inline-start" />
             Overview
-          </Link>
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Mail size={22} className="text-primary" aria-hidden />
+          </Button>
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Mail className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
             Email templates
           </h1>
-          <p>
+          <p className="text-muted-foreground m-0 text-sm">
             Customize automated sponsorship emails sent from <strong>your campus</strong> after employers pay. For
             reusable interview reminders and other drafts, use{' '}
             <Link href="/dashboard/college/message-templates" className="text-primary">
@@ -30,10 +27,10 @@ export default function CollegeCommunicationTemplatesPage() {
             .
           </p>
         </div>
-        <Link href="/dashboard/college/message-templates" className="btn btn-secondary btn-sm">
-          <FileEdit size={14} style={{ marginRight: 6 }} />
+        <Button render={<Link href="/dashboard/college/message-templates" />} variant="outline">
+          <FileEdit data-icon="inline-start" />
           Message templates
-        </Link>
+        </Button>
       </div>
 
       <CollegeSystemEmailTemplates variant="page" />

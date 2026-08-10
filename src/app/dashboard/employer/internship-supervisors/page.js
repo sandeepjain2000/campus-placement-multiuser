@@ -10,6 +10,10 @@ import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { SORT_DATE_ASC, SORT_DATE_DESC } from '@/lib/dataTableQuery';
 import { useToast } from '@/components/ToastProvider';
 import { formatDate, formatStatus } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const SUPERVISOR_SORT_OPTIONS = [
   {
@@ -158,8 +162,8 @@ export default function EmployerInternshipSupervisorsPage() {
 
   return (
     <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
             <UserCog size={26} aria-hidden />
             Internship supervisors
@@ -170,15 +174,15 @@ export default function EmployerInternshipSupervisorsPage() {
           </p>
           <p className="text-sm text-tertiary" style={{ margin: '0.35rem 0 0' }}>{statLine}</p>
         </div>
-        <div className="page-header-actions">
-          <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={!filtered.length}>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" size="sm" onClick={exportCsv} disabled={!filtered.length}>
             Export CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {error ? (
-        <div className="card" style={{ padding: '1.5rem', color: 'var(--danger-600)' }}>{error.message}</div>
+        <Alert variant="destructive"><AlertTitle>Could not load interns</AlertTitle><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : null}
 
       <DataTableToolbar
@@ -198,7 +202,8 @@ export default function EmployerInternshipSupervisorsPage() {
           const isEditing = editingId === row.programApplicationId;
           const isSaving = savingId === row.programApplicationId;
           return (
-            <div key={row.programApplicationId} className="card" style={{ padding: '1.25rem' }}>
+            <Card key={row.programApplicationId}>
+              <CardHeader>
               <div
                 style={{
                   display: 'flex',
@@ -216,29 +221,33 @@ export default function EmployerInternshipSupervisorsPage() {
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span className={`badge badge-${row.status === 'selected' ? 'green' : 'amber'} badge-dot`}>
-                    {formatStatus(row.status)}
-                  </span>
+                  <StatusBadge status={row.status} showDot>
+                    {formatStatus(row.status) || '—'}
+                  </StatusBadge>
                   {!isEditing ? (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-secondary btn-sm"
+                      variant="outline"
+                      size="sm"
                       onClick={() => setEditingId(row.programApplicationId)}
                     >
                       {row.supervisor ? 'Edit supervisor' : 'Assign supervisor'}
-                    </button>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-sm"
+                      variant="ghost"
+                      size="sm"
                       disabled={isSaving}
                       onClick={() => setEditingId(null)}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
+              </CardHeader>
+              <CardContent>
 
               {!isEditing && row.supervisor ? (
                 <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
@@ -259,14 +268,15 @@ export default function EmployerInternshipSupervisorsPage() {
                   onClear={row.supervisor ? () => clearSupervisor(row.programApplicationId) : null}
                 />
               ) : null}
-            </div>
+              </CardContent>
+            </Card>
           );
         })}
 
         {!error && filtered.length === 0 ? (
-          <div className="card" style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <Card><CardContent className="py-10 text-center text-muted-foreground">
             No selected or in-progress interns yet.
-          </div>
+          </CardContent></Card>
         ) : null}
       </div>
     </div>

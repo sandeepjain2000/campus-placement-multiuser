@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckCircle2, RefreshCw, ShieldCheck, XCircle } from 'lucide-react';
 import { verifyCaptchaAnswer } from '@/lib/captchaClient';
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 export default function LoginCaptchaField({
   token,
@@ -71,9 +75,7 @@ export default function LoginCaptchaField({
         return;
       }
       setQuestion(data.question || 'Answer the question below');
-      setDummyHint(
-        data.dummyAnswer != null ? `Dev test: answer is always ${data.dummyAnswer}.` : '',
-      );
+      setDummyHint(data.dummyAnswer != null ? `Dev test: answer is always ${data.dummyAnswer}.` : '');
       onTokenChange(data.token || '');
       if (data.dummyAnswer != null) {
         onAnswerChange(String(data.dummyAnswer));
@@ -102,55 +104,38 @@ export default function LoginCaptchaField({
     if (verifyEarly) resetVerification();
   };
 
-  const verifyBorderColor =
-    verifyState === 'valid'
-      ? 'var(--success-200)'
-      : verifyState === 'invalid'
-        ? 'var(--danger-200)'
-        : 'var(--border-default)';
-
   return (
-    <div
-      className="form-group"
-      style={{
-        marginBottom: '1.25rem',
-        padding: '0.875rem 1rem',
-        borderRadius: 'var(--radius-md)',
-        border: `1px solid ${verifyBorderColor}`,
-        background: 'var(--bg-secondary)',
-      }}
+    <Field
+      className={cn(
+        'bg-muted/40 gap-2 rounded-lg border p-3.5',
+        verifyState === 'valid' && 'border-green-600/30',
+        verifyState === 'invalid' && 'border-destructive/40'
+      )}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <label className="form-label" htmlFor={inputId} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-          <ShieldCheck size={14} aria-hidden="true" />
+      <div className="flex items-center justify-between gap-2">
+        <FieldLabel htmlFor={inputId} className="m-0 flex items-center gap-1.5">
+          <ShieldCheck className="size-3.5" aria-hidden="true" />
           Verification
-        </label>
-        <button
+        </FieldLabel>
+        <Button
           type="button"
-          className="btn btn-ghost btn-sm"
+          variant="ghost"
+          size="icon-sm"
           onClick={loadChallenge}
           disabled={disabled || loading}
           aria-label="New verification question"
           title="New question"
-          style={{ padding: '0.25rem 0.5rem', minHeight: 0 }}
         >
-          <RefreshCw size={14} aria-hidden="true" />
-        </button>
+          <RefreshCw />
+        </Button>
       </div>
-      <p className="text-sm text-secondary" style={{ margin: '0 0 0.5rem', lineHeight: 1.4 }}>
-        {loading ? 'Loading question…' : question}
-      </p>
-      {dummyHint ? (
-        <p className="text-sm" style={{ margin: '0 0 0.5rem', color: 'var(--primary-700)', fontWeight: 600 }}>
-          {dummyHint}
-        </p>
-      ) : null}
-      <input
+      <FieldDescription className="m-0">{loading ? 'Loading question…' : question}</FieldDescription>
+      {dummyHint ? <p className="text-primary m-0 text-sm font-semibold">{dummyHint}</p> : null}
+      <Input
         id={inputId}
         type="text"
         inputMode="numeric"
         autoComplete="off"
-        className="form-input"
         placeholder="Your answer"
         value={answer}
         onChange={(e) => handleAnswerChange(e.target.value.replace(/[^\d-]/g, ''))}
@@ -170,30 +155,22 @@ export default function LoginCaptchaField({
       {verifyEarly && verifyMessage ? (
         <p
           id={`${inputId}-verify-status`}
-          className="text-sm"
+          className={cn(
+            'm-0 flex items-start gap-1.5 text-sm leading-relaxed',
+            verifyState === 'valid' && 'text-green-700 dark:text-green-400',
+            verifyState === 'invalid' && 'text-destructive',
+            verifyState !== 'valid' && verifyState !== 'invalid' && 'text-muted-foreground'
+          )}
           role="status"
-          style={{
-            margin: '0.5rem 0 0',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '0.35rem',
-            lineHeight: 1.4,
-            color:
-              verifyState === 'valid'
-                ? 'var(--success-700)'
-                : verifyState === 'invalid'
-                  ? 'var(--danger-600)'
-                  : 'var(--text-secondary)',
-          }}
         >
           {verifyState === 'valid' ? (
-            <CheckCircle2 size={15} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
+            <CheckCircle2 className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
           ) : verifyState === 'invalid' ? (
-            <XCircle size={15} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
+            <XCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
           ) : null}
           {verifyMessage}
         </p>
       ) : null}
-    </div>
+    </Field>
   );
 }

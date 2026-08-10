@@ -5,8 +5,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { mutate } from 'swr';
 import { useToast } from '@/components/ToastProvider';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import { FIELD_IDS, validateFieldOrError } from '@/lib/inputConstraints';
 import { MAX_FEEDBACK_TITLE_LENGTH } from '@/lib/validators';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 
 const categories = ['Feature Request', 'Bug Report', 'General Feedback'];
 
@@ -56,37 +63,17 @@ export default function NewFeedbackPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>New feedback</h1>
-          <p>Describe a feature, bug, or general note for the Super Admin team.</p>
-        </div>
-        <Link href="/dashboard/feedback" className="btn btn-outline">
-          Back to threads
-        </Link>
-      </div>
-
-      <div className="card" style={{ maxWidth: 640 }}>
-        <div className="card-header">
-          <h3 className="card-title">Submit</h3>
-        </div>
-        <form onSubmit={submit} style={{ display: 'grid', gap: '0.75rem', padding: '0.75rem 1rem 1rem' }}>
-          <input className="form-input" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={submitting} />
-          <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} disabled={submitting}>
-            {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <textarea className="form-input" placeholder="Describe your request or issue…" rows={6} value={description} onChange={(e) => setDescription(e.target.value)} disabled={submitting} />
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-            <Link href="/dashboard/feedback" className="btn btn-outline" aria-disabled={submitting}>
-              Cancel
-            </Link>
-            <button className="btn btn-primary" type="submit" disabled={submitting}>
-              {submitting ? 'Submitting…' : 'Submit feedback'}
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className="animate-fadeIn mx-auto flex max-w-4xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-medium text-muted-foreground">Product feedback</p><h1 className="text-3xl font-bold tracking-tight">New feedback</h1><p className="mt-1 text-sm text-muted-foreground">Describe a feature, bug, or general note for the Super Admin team.</p></div><Link href="/dashboard/feedback" className={cn(buttonVariants({ variant: 'outline' }))}>Back to threads</Link></header>
+      <Card className="max-w-2xl">
+        <CardHeader><CardTitle>Submit feedback</CardTitle><CardDescription>Provide enough context for the platform team to review your request.</CardDescription></CardHeader>
+        <CardContent><form onSubmit={submit}><FieldGroup>
+          <Field><FieldLabel>Title</FieldLabel><Input placeholder="Short summary" value={title} onChange={(e) => setTitle(e.target.value)} disabled={submitting} /></Field>
+          <Field><FieldLabel>Category</FieldLabel><AdminFilterSelect className="w-full" value={category} onValueChange={setCategory} disabled={submitting} emptyMapsToAll={false} items={categories.map((c) => ({ label: c, value: c }))} /></Field>
+          <Field><FieldLabel>Description</FieldLabel><Textarea placeholder="Describe your request or issue…" rows={6} value={description} onChange={(e) => setDescription(e.target.value)} disabled={submitting} /></Field>
+          <div className="flex justify-end gap-2"><Link href="/dashboard/feedback" className={cn(buttonVariants({ variant: 'outline' }))} aria-disabled={submitting}>Cancel</Link><Button type="submit" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit feedback'}</Button></div>
+        </FieldGroup></form></CardContent>
+      </Card>
     </div>
   );
 }

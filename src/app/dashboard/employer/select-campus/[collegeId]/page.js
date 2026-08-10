@@ -11,38 +11,30 @@ import {
   UNIVERSITY_TYPE_CLASSIFICATIONS,
 } from '@/lib/tenantInstitutionClassifications';
 import { EMPLOYER_USE_CAMPUS_DISABLED_TITLE } from '@/lib/employerActiveCampus';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 function InstitutionClassificationSection({ title, icon: Icon, fields, values }) {
   return (
-    <div className="card card-hover" style={{ margin: 0 }}>
-      <div className="card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1rem' }}>
-        <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-          <Icon size={18} className="text-primary-600" aria-hidden="true" />
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Icon className="text-muted-foreground size-5" aria-hidden="true" />
           {title}
-        </h3>
-      </div>
-      <div className="drive-info-grid" style={{ gap: '1rem' }}>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {fields.map((field) => (
-          <div key={field.key} className="drive-info-item">
-            <div
-              className="drive-info-label"
-              style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}
-            >
-              {field.label}
-            </div>
-            <div
-              className="drive-info-value"
-              style={{
-                fontWeight: 600,
-                color: values?.[field.key] ? 'var(--success-700, var(--primary-600))' : 'var(--text-secondary)',
-              }}
-            >
+          <div key={field.key} className="bg-muted/50 rounded-lg border px-3.5 py-3">
+            <div className="text-muted-foreground text-xs font-medium tracking-wide uppercase">{field.label}</div>
+            <div className="mt-1 text-sm font-semibold">
               {values?.[field.key] ? 'Yes' : 'No'}
             </div>
           </div>
         ))}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -84,139 +76,131 @@ export default function EmployerCampusDetailsPage() {
   ].filter(Boolean).join(' · ');
 
   if (isLoading) {
-    return <div className="skeleton" style={{ height: 260, borderRadius: 'var(--radius-lg)' }} />;
+    return <Card><CardContent className="text-muted-foreground py-20 text-center">Loading campus details…</CardContent></Card>;
   }
 
   if (error || !college) {
     return (
-      <div className="card">
-        <p style={{ color: 'var(--danger-600)', marginBottom: '0.75rem' }}>
+      <Card>
+        <CardContent className="flex flex-col items-start gap-3 py-6">
+        <p className="text-destructive m-0">
           {error?.message || 'Campus not found.'}
         </p>
-        <Link href="/dashboard/employer/select-campus" className="btn btn-secondary">
+        <Button variant="secondary" render={<Link href="/dashboard/employer/select-campus" />}>
           Back to campuses
-        </Link>
-      </div>
+        </Button>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="animate-fadeIn" style={{ display: 'grid', gap: '1rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-        <button type="button" className="btn btn-ghost" onClick={() => router.push('/dashboard/employer/select-campus')}>
-          <ArrowLeft size={15} style={{ marginRight: '0.35rem' }} />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Button type="button" variant="ghost" onClick={() => router.push('/dashboard/employer/select-campus')}>
+          <ArrowLeft data-icon="inline-start" />
           Back to campuses
-        </button>
+        </Button>
         {status === 'approved' && (
-          <button
+          <Button
             type="button"
-            className="btn btn-primary"
             disabled
             title={EMPLOYER_USE_CAMPUS_DISABLED_TITLE}
           >
             Open campus workspace
-          </button>
+          </Button>
         )}
       </div>
 
-      <div className="card" style={{ display: 'grid', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+      <Card>
+        <CardHeader className="flex-row flex-wrap items-center gap-3">
           <EntityLogo name={college.name} website={college.website} size="md" shape="rounded" />
-          <div>
-            <h1 style={{ margin: 0, fontSize: '1.25rem' }}>{college.name}</h1>
-            <p className="text-secondary" style={{ margin: '0.15rem 0 0' }}>
+          <div className="min-w-0">
+            <CardTitle className="text-xl">{college.name}</CardTitle>
+            <CardDescription className="mt-1">
               {[college.city, college.state].filter(Boolean).join(', ') || 'Location not set'}
-            </p>
+            </CardDescription>
             {website ? (
               <a
                 href={website.href}
                 target="_blank"
                 rel="noreferrer"
-                style={{ fontSize: '0.85rem', color: 'var(--text-link)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.35rem' }}
+                className="text-primary mt-1 inline-flex items-center gap-1.5 text-sm underline-offset-2 hover:underline"
               >
-                <Globe size={14} aria-hidden="true" />
+                <Globe className="size-4" aria-hidden="true" />
                 {website.label}
               </a>
             ) : null}
           </div>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            ['Partnership status', <StatusBadge key="status" status={status || 'not_requested'} showDot>{formatStatus(status || 'not requested') || '—'}</StatusBadge>],
+            ['Students on campus', college.total_students || 0],
+            ['Students placed', college.placed_students || 0],
+            ['Placement rate', placementPct != null ? `${placementPct}%` : '—'],
+            ['Average CGPA', college.avg_cgpa != null ? Number(college.avg_cgpa).toFixed(2) : '—'],
+            ['Your active drives here', college.active_drives || 0],
+          ].map(([label, value]) => (
+            <div key={label} className="bg-muted/50 rounded-lg border px-3.5 py-3">
+              <p className="text-muted-foreground m-0 text-xs font-medium tracking-wide uppercase">{label}</p>
+              <div className="mt-1.5 text-sm font-semibold">{value}</div>
+            </div>
+          ))}
         </div>
 
-        <div style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Partnership status</p>
-            <p style={{ margin: '0.25rem 0 0', fontWeight: 700 }}>{formatStatus(status || 'not requested')}</p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Students on campus</p>
-            <p style={{ margin: '0.25rem 0 0', fontWeight: 700 }}>{college.total_students || 0}</p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Students placed</p>
-            <p style={{ margin: '0.25rem 0 0', fontWeight: 700 }}>{college.placed_students || 0}</p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Placement rate</p>
-            <p style={{ margin: '0.25rem 0 0', fontWeight: 700 }}>{placementPct != null ? `${placementPct}%` : '—'}</p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Average CGPA</p>
-            <p style={{ margin: '0.25rem 0 0', fontWeight: 700 }}>{college.avg_cgpa != null ? Number(college.avg_cgpa).toFixed(2) : '—'}</p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Your active drives here</p>
-            <p style={{ margin: '0.25rem 0 0', fontWeight: 700 }}>{college.active_drives || 0}</p>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Contact</p>
-            <p style={{ margin: '0.4rem 0 0', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Mail size={14} aria-hidden="true" />
+        <div className="grid gap-3 md:grid-cols-3">
+          <section className="rounded-lg border p-4">
+            <h3 className="text-sm font-semibold">Contact</h3>
+            <p className="mt-3 flex items-center gap-2 text-sm">
+              <Mail aria-hidden="true" />
               {college.email ? (
-                <a href={`mailto:${college.email}`} style={{ color: 'var(--text-link)', textDecoration: 'none' }}>
+                <a href={`mailto:${college.email}`} className="text-primary hover:underline">
                   {college.email}
                 </a>
               ) : '—'}
             </p>
-            <p style={{ margin: '0.35rem 0 0', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Phone size={14} aria-hidden="true" />
+            <p className="mt-2 flex items-center gap-2 text-sm">
+              <Phone aria-hidden="true" />
               {college.phone ? (
-                <a href={`tel:${String(college.phone).replace(/\s+/g, '')}`} style={{ color: 'var(--text-link)', textDecoration: 'none' }}>
+                <a href={`tel:${String(college.phone).replace(/\s+/g, '')}`} className="text-primary hover:underline">
                   {college.phone}
                 </a>
               ) : '—'}
             </p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Accreditation</p>
-            <p style={{ margin: '0.4rem 0 0', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <GraduationCap size={14} aria-hidden="true" />
+          </section>
+          <section className="rounded-lg border p-4">
+            <h3 className="text-sm font-semibold">Accreditation</h3>
+            <p className="mt-3 flex items-center gap-2 text-sm">
+              <GraduationCap aria-hidden="true" />
               {accreditationLine || 'Not set'}
             </p>
-            <p style={{ margin: '0.35rem 0 0', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <TrendingUp size={14} aria-hidden="true" />
+            <p className="mt-2 flex items-center gap-2 text-sm">
+              <TrendingUp aria-hidden="true" />
               {college.nirf_rank ? `NIRF rank #${college.nirf_rank}` : 'NIRF rank not set'}
             </p>
-          </div>
-          <div className="card" style={{ margin: 0 }}>
-            <p className="text-tertiary text-xs">Partnership timeline</p>
-            <p style={{ margin: '0.4rem 0 0', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Users size={14} aria-hidden="true" />
+          </section>
+          <section className="rounded-lg border p-4">
+            <h3 className="text-sm font-semibold">Partnership Timeline</h3>
+            <p className="mt-3 flex items-center gap-2 text-sm">
+              <Users aria-hidden="true" />
               Requested: {college.requested_at ? formatDate(college.requested_at) : '—'}
             </p>
-            <p style={{ margin: '0.35rem 0 0', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Briefcase size={14} aria-hidden="true" />
+            <p className="mt-2 flex items-center gap-2 text-sm">
+              <Briefcase aria-hidden="true" />
               Approved: {college.approved_at ? formatDate(college.approved_at) : '—'}
             </p>
-          </div>
+          </section>
         </div>
 
-        <p className="text-sm text-secondary" style={{ margin: 0, lineHeight: 1.5 }}>
+        <p className="text-muted-foreground text-sm leading-6">
           This profile shows campus and partnership data available to employers. Fields such as full postal address or
           internal college settings are managed by the college and are not shared here.
         </p>
-      </div>
+        </CardContent>
+      </Card>
 
       <InstitutionClassificationSection
         title="University types (degree granting)"
@@ -232,7 +216,7 @@ export default function EmployerCampusDetailsPage() {
         values={college.institutionClassifications}
       />
 
-      <p className="text-xs text-tertiary" style={{ margin: 0, lineHeight: 1.45 }}>
+      <p className="text-muted-foreground text-xs leading-5">
         Institution type classifications above are maintained by the platform administrator and are not editable by the college.
       </p>
     </div>

@@ -27,8 +27,15 @@ import {
   formatLogReference,
   parseLogDetails,
   postgresHintFromLog,
-  severityBadgeClass,
 } from '@/lib/platformErrorLogDisplay';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url, { credentials: 'include' });
@@ -39,6 +46,10 @@ const fetcher = async (url) => {
 
 function summaryLine(row) {
   return row.user_message || row.error_message || '—';
+}
+
+function severityTone(severity) {
+  return severity === 'warning' ? 'amber' : severity === 'info' || severity === 'debug' ? 'blue' : 'red';
 }
 
 function DetailField({ label, children, mono = false }) {
@@ -82,7 +93,7 @@ function ErrorLogDetailPanel({ row }) {
           </DetailField>
           <DetailField label="When">{formatDateTime(row.created_at)}</DetailField>
           <DetailField label="Severity">
-            <span className={`badge ${severityBadgeClass(row.severity)}`}>{row.severity || 'error'}</span>
+            <StatusBadge tone={severityTone(row.severity)} showDot>{row.severity || 'error'}</StatusBadge>
           </DetailField>
           <DetailField label="Functionality">
             {contextLabel(row.context)}
@@ -146,20 +157,7 @@ function ErrorLogDetailPanel({ row }) {
               {details.systemErrorCode}
             </DetailField>
           ) : null}
-          {pgHint ? (
-            <div
-              style={{
-                padding: '0.65rem 0.75rem',
-                borderRadius: 'var(--radius-md)',
-                background: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.35)',
-                fontSize: '0.85rem',
-                lineHeight: 1.5,
-              }}
-            >
-              <strong>Likely cause:</strong> {pgHint}
-            </div>
-          ) : null}
+          {pgHint ? <Alert><AlertDescription><strong>Likely cause:</strong> {pgHint}</AlertDescription></Alert> : null}
           {details.pgDetail ? (
             <DetailField label="Postgres detail" mono>
               {details.pgDetail}
@@ -306,36 +304,26 @@ export default function AdminErrorLogsPage() {
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div style={{ marginBottom: '1.25rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <AlertTriangle size={22} className="text-primary-600" aria-hidden="true" />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div>
+        <h1 className="m-0 flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <AlertTriangle aria-hidden="true" />
           Platform error logs
         </h1>
-        <p className="text-secondary text-sm" style={{ margin: '0.35rem 0 0', maxWidth: '48rem', lineHeight: 1.55 }}>
+        <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
           Full diagnostics for failed API operations. Employers see a short message and reference code — search by reference,
           email, route, or error text. Open a row for stack traces, request payloads, and Postgres hints.
         </p>
       </div>
 
-      <div
-        className="card"
-        style={{
-          marginBottom: '1rem',
-          display: 'grid',
-          gap: '0.75rem',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))',
-          alignItems: 'end',
-        }}
-      >
-        <div className="form-group" style={{ margin: 0, gridColumn: '1 / -1' }}>
-          <label className="form-label" htmlFor="error-log-search">
-            Search
-          </label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <input
+      <Card>
+        <CardHeader><CardTitle>Filter diagnostics</CardTitle><CardDescription>Search references and narrow results by date, severity, or functionality.</CardDescription></CardHeader>
+        <CardContent><FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="error-log-search">Search</FieldLabel>
+          <div className="flex gap-2">
+            <Input
               id="error-log-search"
-              className="form-input"
               placeholder="Reference, email, route, error message…"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -343,130 +331,119 @@ export default function AdminErrorLogsPage() {
                 if (e.key === 'Enter') runSearch();
               }}
             />
-            <button type="button" className="btn btn-secondary" onClick={runSearch}>
-              <Search size={16} aria-hidden="true" />
-            </button>
+            <Button type="button" variant="outline" size="icon" aria-label="Search error logs" onClick={runSearch}><Search /></Button>
           </div>
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">From</label>
-          <input className="form-input" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">To</label>
-          <input className="form-input" type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Severity</label>
-          <select className="form-select" value={severityFilter} onChange={(e) => setSeverityFilter(e.target.value)}>
-            <option value="">All severities</option>
-            <option value="error">Error</option>
-            <option value="warning">Warning</option>
-            <option value="info">Info / Debug</option>
-          </select>
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Functionality</label>
-          <select className="form-select" value={contextFilter} onChange={(e) => setContextFilter(e.target.value)}>
-            <option value="">All functionalities</option>
-            {contextOptions.map((c) => (
-              <option key={c} value={c}>
-                {contextLabel(c)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+        </Field>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Field><FieldLabel htmlFor="error-from">From</FieldLabel><Input id="error-from" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} /></Field>
+        <Field><FieldLabel htmlFor="error-to">To</FieldLabel><Input id="error-to" type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} /></Field>
+        <Field>
+          <FieldLabel htmlFor="error-severity">Severity</FieldLabel>
+          <AdminFilterSelect
+            id="error-severity"
+            className="h-9 w-full"
+            value={severityFilter}
+            onValueChange={setSeverityFilter}
+            items={[
+              { label: 'All severities', value: 'all' },
+              { label: 'Error', value: 'error' },
+              { label: 'Warning', value: 'warning' },
+              { label: 'Info / Debug', value: 'info' },
+            ]}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="error-context">Functionality</FieldLabel>
+          <AdminFilterSelect
+            id="error-context"
+            className="h-9 w-full"
+            value={contextFilter}
+            onValueChange={setContextFilter}
+            items={[
+              { label: 'All functionalities', value: 'all' },
+              ...contextOptions.map((c) => ({ label: contextLabel(c), value: c })),
+            ]}
+          />
+        </Field></div>
+        </FieldGroup></CardContent>
+      </Card>
 
       {data?.migrationRequired ? (
-        <div className="card" style={{ borderColor: 'var(--warning-300, #fcd34d)', marginBottom: '1rem' }}>
-          <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+        <Alert>
+          <AlertDescription>
             {data.error || 'Run migration 083_platform_error_logs.sql to enable error logging.'}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4"><CardTitle>Diagnostics</CardTitle><CardDescription>{logs.length} matching error logs</CardDescription></CardHeader>
+        <CardContent className="p-0">
         {isLoading ? (
-          <div className="skeleton" style={{ height: 220, margin: '1rem' }} />
+          <p className="text-muted-foreground p-6">Loading error logs…</p>
         ) : logs.length === 0 ? (
-          <p className="text-secondary" style={{ padding: '1.5rem', margin: 0 }}>
+          <p className="text-muted-foreground p-6">
             No error logs match your filters.
           </p>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ width: '100%' }}>
-              <thead>
-                <tr>
-                  <th>When</th>
-                  <th>Unique Code</th>
-                  <th>Severity</th>
-                  <th>Functionality</th>
-                  <th>Route</th>
-                  <th>User</th>
-                  <th>Status</th>
-                  <th>Summary</th>
-                  <th style={{ width: 56 }} />
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader><TableRow>{['When','Unique Code','Severity','Functionality','Route','User','Status','Summary','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+              <TableBody>
                 {logs.map((row) => (
-                  <tr key={row.id}>
-                    <td className="text-sm" style={{ whiteSpace: 'nowrap' }}>{formatDateTime(row.created_at)}</td>
-                    <td className="font-mono text-xs">
+                  <TableRow key={row.id}>
+                    <TableCell className="whitespace-nowrap text-sm">{formatDateTime(row.created_at)}</TableCell>
+                    <TableCell className="font-mono text-xs">
                       <div>{row.reference || formatLogReference(row.id)}</div>
-                      {row.error_code ? (
-                        <div className="text-xs text-tertiary">{row.error_code}</div>
-                      ) : null}
-                    </td>
-                    <td className="text-sm">
-                      <span className={`badge ${severityBadgeClass(row.severity)}`}>
+                      {row.error_code ? <div className="text-muted-foreground text-xs">{row.error_code}</div> : null}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      <StatusBadge tone={severityTone(row.severity)} showDot>
                         {(row.severity || 'error').toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="text-sm" style={{ minWidth: 140 }}>
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell className="min-w-36 text-sm">
                       {contextLabel(row.context)}
-                    </td>
-                    <td className="font-mono text-xs" style={{ maxWidth: 160 }}>
+                    </TableCell>
+                    <TableCell className="max-w-40 font-mono text-xs">
                       {row.route || parseLogDetails(row).route || '—'}
-                    </td>
-                    <td className="text-sm">
+                    </TableCell>
+                    <TableCell className="text-sm">
                       <div>{row.user_name || '—'}</div>
-                      <div className="text-xs text-tertiary">{row.user_email || '—'}</div>
-                    </td>
-                    <td>
-                      <span className={`badge ${severityBadgeClass(row.severity)}`} style={{ marginBottom: '0.2rem' }}>
+                      <div className="text-muted-foreground text-xs">{row.user_email || '—'}</div>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={severityTone(row.severity)}>
                         {row.status_code ?? '—'}
-                      </span>
+                      </StatusBadge>
                       {row.error_code && !String(row.error_code).startsWith('PH-') ? (
-                        <div className="text-xs text-tertiary font-mono">{row.error_code}</div>
+                        <div className="text-muted-foreground mt-1 font-mono text-xs">{row.error_code}</div>
                       ) : null}
-                    </td>
-                    <td className="text-sm" style={{ maxWidth: 260 }}>
-                      <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{summaryLine(row)}</div>
+                    </TableCell>
+                    <TableCell className="max-w-64 text-sm">
+                      <div className="truncate">{summaryLine(row)}</div>
                       {postgresHintFromLog(row) ? (
-                        <div className="text-xs text-tertiary" style={{ marginTop: '0.2rem' }}>
+                        <div className="text-muted-foreground mt-1 text-xs">
                           {postgresHintFromLog(row)}
                         </div>
                       ) : null}
-                    </td>
-                    <td>
-                      <button
+                    </TableCell>
+                    <TableCell>
+                      <Button
                         type="button"
-                        className="btn btn-ghost btn-sm"
+                        variant="ghost" size="icon"
                         aria-label="View full log"
                         onClick={() => setSelected(row)}
                       >
-                        <Eye size={15} />
-                      </button>
-                    </td>
-                  </tr>
+                        <Eye />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       <AdminRecordModal
         title={selected ? `Error log — ${formatLogReference(selected.id) || 'details'}` : 'Error log details'}
@@ -474,10 +451,10 @@ export default function AdminErrorLogsPage() {
         onClose={() => setSelected(null)}
         footer={
           selected ? (
-            <button type="button" className="btn btn-secondary" onClick={() => void copyFullLog()}>
-              <Copy size={15} aria-hidden="true" style={{ marginRight: '0.35rem' }} />
+            <Button type="button" variant="outline" onClick={() => void copyFullLog()}>
+              <Copy data-icon="inline-start" aria-hidden="true" />
               Copy full log
-            </button>
+            </Button>
           ) : null
         }
       >

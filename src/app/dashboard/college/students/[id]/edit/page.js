@@ -13,6 +13,9 @@ import {
 } from '@/lib/collegeAcademicYearContext';
 import ResponsiveWrapper from '@/components/mobile/ResponsiveWrapper';
 import MobileHeader from '@/components/mobile/MobileHeader';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 function EditStudentContent({ mobile = false }) {
   const router = useRouter();
@@ -58,27 +61,23 @@ function EditStudentContent({ mobile = false }) {
     }
     if (loadError || !student || !initialValues) {
       return (
-        <div className="card" style={{ padding: '1.5rem' }}>
-          <p style={{ color: 'var(--danger-600)', marginBottom: '0.75rem' }}>
-            {loadError || 'Student not found.'}
-          </p>
-          <Link href="/dashboard/college/students" className="btn btn-secondary">
-            Back to students
-          </Link>
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Unable to load student</AlertTitle>
+          <AlertDescription className="flex flex-col items-start gap-3">
+            <p>{loadError || 'Student not found.'}</p>
+            <Button variant="outline" render={<Link href="/dashboard/college/students" />}>Back to students</Button>
+          </AlertDescription>
+        </Alert>
       );
     }
 
     return (
-      <div
-        className="card"
-        style={{
-          width: '100%',
-          padding: 0,
-          overflow: 'hidden',
-          border: '1px solid var(--border-default)',
-        }}
-      >
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-5">
+          <CardTitle>Student details</CardTitle>
+          <CardDescription>Update profile, academic, placement, and preference information.</CardDescription>
+        </CardHeader>
+        <CardContent className="px-0">
         <AddStudentForm
           active
           editStudentId={studentId}
@@ -87,56 +86,26 @@ function EditStudentContent({ mobile = false }) {
           onCancel={() => router.push(`/dashboard/college/students/${studentId}`)}
           bodyPadding="1.5rem 1.5rem 0.5rem"
         />
-      </div>
+        </CardContent>
+      </Card>
     );
   })();
 
   const header = (
-    <div style={{ marginBottom: '1.5rem' }}>
-      <Link
-        href={`/dashboard/college/students/${studentId}`}
-        className="btn btn-ghost btn-sm"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.35rem',
-          marginBottom: '0.75rem',
-          paddingLeft: 0,
-        }}
-      >
-        <ArrowLeft size={16} aria-hidden />
+    <div className="mb-6">
+      <Button variant="ghost" size="sm" className="mb-2" render={<Link href={`/dashboard/college/students/${studentId}`} />}>
+        <ArrowLeft data-icon="inline-start" aria-hidden />
         Back to profile
-      </Link>
-      <h1
-        style={{
-          fontSize: mobile ? '1.35rem' : '1.75rem',
-          fontWeight: 800,
-          color: 'var(--text-primary)',
-          margin: '0 0 0.35rem',
-          letterSpacing: '-0.02em',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-        }}
-      >
-        <span
-          style={{
-            display: 'flex',
-            padding: '0.35rem',
-            background: 'var(--primary-50)',
-            borderRadius: '8px',
-            color: 'var(--primary-600)',
-          }}
-        >
-          <Pencil size={22} aria-hidden />
-        </span>
+      </Button>
+      <h1 className="flex items-center gap-2 font-heading text-2xl font-semibold tracking-tight">
+        <span className="rounded-lg bg-muted p-2 text-muted-foreground"><Pencil aria-hidden /></span>
         Edit student
       </h1>
       {student?.name ? (
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+        <p className="mt-2 text-sm text-muted-foreground">
           {student.name}
           {student.systemId ? (
-            <span style={{ fontFamily: 'var(--font-mono, monospace)', marginLeft: '0.5rem' }}>
+            <span className="ml-2 font-mono">
               {student.systemId}
             </span>
           ) : null}
@@ -149,7 +118,7 @@ function EditStudentContent({ mobile = false }) {
     return (
       <>
         <MobileHeader title="Edit student" />
-        <div style={{ padding: '1rem', paddingBottom: '5rem' }}>
+        <div className="p-4 pb-20">
           {header}
           {body}
         </div>
@@ -158,7 +127,7 @@ function EditStudentContent({ mobile = false }) {
   }
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
+    <div className="animate-fadeIn pb-12">
       {header}
       {body}
     </div>

@@ -14,6 +14,13 @@ import EmployerListFormLayout from '@/components/employer/EmployerListFormLayout
 import OfferEventTypeTabs, { OFFER_EVENT_TABS } from '@/components/employer/OfferEventTypeTabs';
 import { countOfferEventTypes, normalizeOfferEventType, templateMatchesEventTab } from '@/lib/offerEventType';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -33,6 +40,9 @@ const emptyForm = {
   eventType: 'drive',
 };
 
+const ADMIN_INPUT_CLASS =
+  'border-input bg-transparent focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
+
 function eventTypeLabel(id) {
   return OFFER_EVENT_TABS.find((t) => t.id === id)?.label || id;
 }
@@ -40,7 +50,7 @@ function eventTypeLabel(id) {
 export default function EmployerOfferTemplatesPage() {
   const { addToast } = useToast();
   const { data, error, isLoading, mutate } = useSWR('/api/employer/offer-templates', fetcher);
-  const templates = Array.isArray(data?.templates) ? data.templates : [];
+  const templates = useMemo(() => (Array.isArray(data?.templates) ? data.templates : []), [data?.templates]);
 
   const [eventTab, setEventTab] = useState('drive');
   const [mode, setMode] = useState(null);
@@ -130,77 +140,73 @@ export default function EmployerOfferTemplatesPage() {
         subtitle="CTC and dates are fixed for every student when you bulk-generate. Use placeholders in the letter body for student-specific text."
         onBack={() => setMode(null)}
         footer={
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-            <button type="button" className="btn btn-secondary" onClick={() => setMode(null)} disabled={saving}>
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="secondary" onClick={() => setMode(null)} disabled={saving}>
               Cancel
-            </button>
-            <button type="button" className="btn btn-primary" onClick={saveTemplate} disabled={saving}>
+            </Button>
+            <Button type="button" onClick={saveTemplate} disabled={saving}>
               {saving ? 'Saving…' : 'Save template'}
-            </button>
+            </Button>
           </div>
         }
       >
-        <div className="grid grid-2">
-          <div className="form-group">
-            <label className="form-label">Template name</label>
-            <input className="form-input" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="e.g. TechCorp SDE — Mar 2026" />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Event type</label>
-            <select
-              className="form-select"
+        <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel>Template name</FieldLabel>
+            <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="e.g. TechCorp SDE — Mar 2026" />
+          </Field>
+          <Field>
+            <FieldLabel>Event type</FieldLabel>
+            <AdminFilterSelect
+              className="w-full"
               value={form.eventType}
-              onChange={(e) => setForm((p) => ({ ...p, eventType: e.target.value }))}
-            >
-              {OFFER_EVENT_TABS.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Role / job title</label>
-            <input className="form-input" value={form.jobTitle} onChange={(e) => setForm((p) => ({ ...p, jobTitle: e.target.value }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">CTC (INR annual — fixed for all offers from this template)</label>
-            <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={form.salary} onChange={(v) => setForm((p) => ({ ...p, salary: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Location</label>
-            <input className="form-input" value={form.location} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Joining date</label>
-            <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} context={{ deadline: form.responseDeadline }} value={form.joiningDate} onChange={(v) => setForm((p) => ({ ...p, joiningDate: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Response deadline</label>
-            <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_DEADLINE} value={form.responseDeadline} onChange={(v) => setForm((p) => ({ ...p, responseDeadline: v }))} />
-          </div>
-        </div>
-        <div className="form-group">
-          <label className="form-label">Letter body</label>
-          <p className="text-xs text-secondary" style={{ margin: '0 0 0.5rem' }}>
+              onValueChange={(eventType) => setForm((p) => ({ ...p, eventType }))}
+              emptyMapsToAll={false}
+              items={OFFER_EVENT_TABS.map((t) => ({ label: t.label, value: t.id }))}
+            />
+          </Field>
+          <Field>
+            <FieldLabel>Role / job title</FieldLabel>
+            <Input value={form.jobTitle} onChange={(e) => setForm((p) => ({ ...p, jobTitle: e.target.value }))} />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="offer-template-salary">CTC (INR annual — fixed for all offers from this template)</FieldLabel>
+            <ValidatedNumberInput id="offer-template-salary" className={ADMIN_INPUT_CLASS} fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={form.salary} onChange={(v) => setForm((p) => ({ ...p, salary: v }))} />
+          </Field>
+          <Field>
+            <FieldLabel>Location</FieldLabel>
+            <Input value={form.location} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="offer-template-joining-date">Joining date</FieldLabel>
+            <ValidatedDateInput id="offer-template-joining-date" className={ADMIN_INPUT_CLASS} fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} context={{ deadline: form.responseDeadline }} value={form.joiningDate} onChange={(v) => setForm((p) => ({ ...p, joiningDate: v }))} />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="offer-template-response-deadline">Response deadline</FieldLabel>
+            <ValidatedDateInput id="offer-template-response-deadline" className={ADMIN_INPUT_CLASS} fieldId={FIELD_IDS.EMPLOYER_OFFER_DEADLINE} value={form.responseDeadline} onChange={(v) => setForm((p) => ({ ...p, responseDeadline: v }))} />
+          </Field>
+        </FieldGroup>
+        <Field className="mt-4">
+          <FieldLabel>Letter body</FieldLabel>
+          <FieldDescription>
             Placeholders:{' '}
             {OFFER_TEMPLATE_PLACEHOLDERS.map((p) => `{{${p.key}}}`).join(', ')}. CTC is <strong>not</strong> a placeholder — it
             comes from the CTC field above.
-          </p>
-          <textarea className="form-textarea" rows={12} value={form.bodyTemplate} onChange={(e) => setForm((p) => ({ ...p, bodyTemplate: e.target.value }))} />
-        </div>
+          </FieldDescription>
+          <Textarea rows={12} value={form.bodyTemplate} onChange={(e) => setForm((p) => ({ ...p, bodyTemplate: e.target.value }))} />
+        </Field>
       </EmployerListFormLayout>
     );
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <FileEdit size={22} /> Offer templates
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <FileEdit className="text-muted-foreground size-7" /> Offer templates
           </h1>
-          <p className="text-secondary" style={{ margin: '0.25rem 0 0', lineHeight: 1.55 }}>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm leading-relaxed">
             Reusable letter layouts with fixed CTC. Use{' '}
             <Link href="/dashboard/employer/offers" className="link-inline" style={{ fontWeight: 600 }}>
               Offers → Generate from selections
@@ -208,19 +214,17 @@ export default function EmployerOfferTemplatesPage() {
             to create pending offers and email all new selections.
           </p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={openCreate}>
-          <Plus size={16} aria-hidden /> New template
-        </button>
+        <Button type="button" onClick={openCreate}><Plus data-icon="inline-start" /> New template</Button>
       </div>
 
       <OfferEventTypeTabs activeTab={eventTab} onTabChange={setEventTab} counts={eventCounts} />
 
-      {error ? <p style={{ color: 'var(--danger-600)' }}>{error.message}</p> : null}
+      {error ? <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert> : null}
       {isLoading ? <div className="skeleton skeleton-card" style={{ height: 200 }} /> : null}
 
       {!isLoading && tabTemplates.length === 0 ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p className="text-secondary">
+        <Card><CardContent className="flex flex-col items-center gap-4 py-10 text-center">
+          <p className="text-muted-foreground m-0">
             No {eventTypeLabel(eventTab).toLowerCase()} templates yet.
             {eventTab === 'drive'
               ? ' Create one before bulk-generating drive offers.'
@@ -228,28 +232,28 @@ export default function EmployerOfferTemplatesPage() {
                 ? ' Create one for internship selection offers (and PPO job offers after internship).'
                 : ' Create one for alumni job offer letters.'}
           </p>
-          <button type="button" className="btn btn-primary" style={{ marginTop: '1rem' }} onClick={openCreate}>
+          <Button type="button" onClick={openCreate}>
             Create {eventTypeLabel(eventTab).toLowerCase()} template
-          </button>
-        </div>
+          </Button>
+        </CardContent></Card>
       ) : null}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="flex flex-col gap-4">
         {tabTemplates.map((t) => (
-          <div key={t.id} className="card" style={{ padding: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-              <div>
-                <h3 style={{ margin: '0 0 0.25rem', fontSize: '1.05rem' }}>{t.name}</h3>
-                <p className="text-sm text-secondary" style={{ margin: 0 }}>
+          <Card key={t.id}>
+            <CardHeader className="flex-row items-start justify-between gap-4">
+              <div className="min-w-0">
+                <CardTitle className="text-base">{t.name}</CardTitle>
+                <CardDescription className="mt-1">
                   {t.jobTitle} · CTC {formatCurrency(Number(t.salary) || 0)} · {t.location || 'Location TBD'}
-                </p>
+                </CardDescription>
               </div>
               <div style={{ display: 'flex', gap: '0.35rem' }}>
                 <StandardTableIconAction action="edit" onClick={() => openEdit(t)} />
                 <StandardTableIconAction action="delete" variant="danger" onClick={() => deactivate(t.id)} />
               </div>
-            </div>
-          </div>
+            </CardHeader>
+          </Card>
         ))}
       </div>
     </div>

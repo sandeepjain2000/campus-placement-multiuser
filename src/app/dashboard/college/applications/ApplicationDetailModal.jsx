@@ -1,106 +1,67 @@
 'use client';
 
-import { X } from 'lucide-react';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import CompanyNameLink from '@/components/CompanyNameLink';
+import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/status-badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  applicationKindLabel,
+  getApplicationKindMeta,
+  getApplicationStatusMeta,
+  openingLabel,
+} from './applicationRowUtils';
 
 function DetailField({ label, children }) {
   return (
-    <div
-      style={{
-        padding: '0.75rem 0.85rem',
-        borderRadius: 'var(--radius-md)',
-        border: '1px solid var(--border-default)',
-        background: 'var(--bg-secondary)',
-      }}
-    >
-      <div
-        style={{
-          fontSize: '0.6875rem',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          color: 'var(--text-tertiary)',
-          marginBottom: '0.35rem',
-        }}
-      >
-        {label}
-      </div>
-      <div style={{ fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>{children}</div>
+    <div className="bg-muted/50 rounded-lg border px-3.5 py-3">
+      <div className="text-muted-foreground mb-1.5 text-xs font-medium tracking-wide uppercase">{label}</div>
+      <div className="text-foreground text-sm leading-relaxed">{children}</div>
     </div>
   );
-}
-
-function applicationKindLabel(a) {
-  if (a?.source_kind === 'drive') return 'Placement drive';
-  const jt = String(a?.job_type || '').toLowerCase();
-  if (jt === 'internship') return 'Internship';
-  if (jt === 'short_project' || jt === 'hackathon') return 'Project';
-  if (jt === 'full_time' || jt === 'part_time' || jt === 'contract') return 'Job';
-  return 'Program';
 }
 
 export default function ApplicationDetailModal({ row, onClose }) {
   if (!row) return null;
 
-  const opening = row.opening_title || row.drive_title || '—';
+  const kindMeta = getApplicationKindMeta(row);
+  const statusMeta = getApplicationStatusMeta(row.status);
+  const opening = openingLabel(row);
 
   return (
-    <div
-      className="modal-overlay"
-      role="presentation"
-      style={{ overflowY: 'auto', alignItems: 'flex-start' }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+    <Dialog
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
       }}
     >
-      <div
-        className="modal modal-lg"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="college-application-detail-title"
-        style={{
-          borderRadius: 'var(--radius-xl)',
-          margin: '2rem auto',
-          maxWidth: 'min(640px, calc(100vw - 2rem))',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div
-          style={{
-            padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid var(--border-default)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            gap: '1rem',
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', marginBottom: '0.35rem' }}>
-              <span className={`badge badge-${getStatusColor(row.status)} badge-dot`}>{formatStatus(row.status)}</span>
-              <span className="badge badge-gray badge-dot">{applicationKindLabel(row)}</span>
-            </div>
-            <h2 id="college-application-detail-title" style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
-              {row.student_name || 'Student application'}
-            </h2>
-            <p style={{ margin: '0.35rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-              {row.roll_number || '—'}
-            </p>
+      <DialogContent className="gap-4 sm:max-w-xl" showCloseButton>
+        <DialogHeader className="gap-3 pr-8">
+          <div className="flex flex-wrap items-center gap-2">
+            <StatusBadge tone={statusMeta.tone} showDot>
+              {statusMeta.label}
+            </StatusBadge>
+            <StatusBadge tone={kindMeta.tone} showDot>
+              {kindMeta.label || applicationKindLabel(row)}
+            </StatusBadge>
           </div>
-          <button type="button" className="btn btn-ghost btn-icon btn-sm" onClick={onClose} aria-label="Close details">
-            <X size={18} />
-          </button>
-        </div>
+          <div>
+            <DialogTitle id="college-application-detail-title" className="text-xl font-semibold">
+              {row.student_name || 'Student application'}
+            </DialogTitle>
+            <DialogDescription className="mt-1.5 font-mono">{row.roll_number || '—'}</DialogDescription>
+          </div>
+        </DialogHeader>
 
-        <div style={{ padding: '1.25rem 1.5rem', display: 'grid', gap: '0.75rem' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-              gap: '0.75rem',
-            }}
-          >
+        <div className="grid max-h-[min(60vh,28rem)] gap-3 overflow-y-auto pr-1">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <DetailField label="Department">{row.department || '—'}</DetailField>
             <DetailField label="Applied">{row.applied_at ? formatDate(row.applied_at) : '—'}</DetailField>
             {row.current_round != null ? <DetailField label="Current round">{row.current_round}</DetailField> : null}
@@ -117,19 +78,12 @@ export default function ApplicationDetailModal({ row, onClose }) {
           ) : null}
         </div>
 
-        <div
-          style={{
-            padding: '0.85rem 1.5rem 1.25rem',
-            borderTop: '1px solid var(--border-default)',
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
+        <DialogFooter>
+          <Button type="button" variant="secondary" size="sm" onClick={onClose}>
             Close
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

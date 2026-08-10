@@ -1,8 +1,21 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { X, Upload, CalendarDays, AlertTriangle } from 'lucide-react';
+import { Upload, CalendarDays, AlertTriangle } from 'lucide-react';
 import { toDateOnlyString } from '@/lib/dateOnly';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 function todayYmd() {
   return toDateOnlyString(new Date());
@@ -85,61 +98,29 @@ export default function ImportCollegeCalendarModal({ open, onClose, onImported }
     }
   }, [buildForm, onClose, onImported]);
 
-  if (!open) return null;
-
   return (
-    <div className="modal-overlay modal-overlay-solid" role="presentation" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="import-college-calendar-title"
-        className="card animate-fadeIn"
-        style={{
-          width: 'min(560px, calc(100vw - 2rem))',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          margin: 'auto',
-          padding: 0,
-        }}
-        onClick={(ev) => ev.stopPropagation()}
-      >
-        <div
-          className="card-header"
-          style={{
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            borderBottom: '1px solid var(--border-default)',
-          }}
-        >
-          <div>
-            <h2
-              id="import-college-calendar-title"
-              className="card-title"
-              style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-            >
-              <Upload size={20} />
-              Import calendar (.ics)
-            </h2>
-            <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0' }}>
-              Upload a Google Calendar or Outlook export to add campus events in bulk.
-            </p>
-          </div>
-          <button type="button" className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
+    <Dialog open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose(); }}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Upload aria-hidden />
+            Import calendar (.ics)
+          </DialogTitle>
+          <DialogDescription>
+            Upload a Google Calendar or Outlook export to add campus events in bulk.
+          </DialogDescription>
+        </DialogHeader>
 
-        <div style={{ padding: '1.25rem 1.5rem 1.5rem' }}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="ics-file">
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="ics-file">
               ICS file <span className="required">*</span>
-            </label>
-            <input
+            </FieldLabel>
+            <Input
               ref={inputRef}
               id="ics-file"
               type="file"
               accept=".ics,.ical,text/calendar"
-              className="form-input"
               onChange={(e) => {
                 const next = e.target.files?.[0] || null;
                 setFile(next);
@@ -147,89 +128,76 @@ export default function ImportCollegeCalendarModal({ open, onClose, onImported }
                 setError('');
               }}
             />
-            <p className="text-sm text-secondary" style={{ margin: '0.4rem 0 0' }}>
+            <FieldDescription>
               Google Calendar: Settings → Import &amp; export → Export, then pick the calendar .ics file.
-            </p>
-          </div>
+            </FieldDescription>
+          </Field>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="ics-from">
+          <Field>
+            <FieldLabel htmlFor="ics-from">
               Import events from
-            </label>
-            <input
+            </FieldLabel>
+            <Input
               id="ics-from"
               type="date"
-              className="form-input"
               value={fromDate}
               onChange={(e) => {
                 setFromDate(e.target.value);
                 setPreview(null);
               }}
             />
-            <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0' }}>
+            <FieldDescription>
               Defaults to today so historical personal events are not dumped onto the placement calendar.
-            </p>
-          </div>
+            </FieldDescription>
+          </Field>
 
-          <div className="form-group">
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
+          <Field orientation="horizontal">
+            <FieldLabel className="flex items-start gap-2">
+              <Checkbox
                 checked={expandRrule}
-                onChange={(e) => {
-                  setExpandRrule(e.target.checked);
+                onCheckedChange={(v) => {
+                  setExpandRrule(!!v);
                   setPreview(null);
                 }}
-                style={{ marginTop: '0.2rem' }}
               />
               <span>
-                <span className="form-label" style={{ display: 'block', margin: 0 }}>
+                <span className="block font-medium">
                   Expand weekly / daily recurring events
                 </span>
-                <span className="text-sm text-secondary">
+                <span className="text-muted-foreground text-sm">
                   Creates individual dates for simple RRULE series (capped per series).
                 </span>
               </span>
-            </label>
-          </div>
+            </FieldLabel>
+          </Field>
 
-          <div className="form-group">
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
+          <Field orientation="horizontal">
+            <FieldLabel className="flex items-start gap-2">
+              <Checkbox
                 checked={markBlocking}
-                onChange={(e) => setMarkBlocking(e.target.checked)}
-                style={{ marginTop: '0.2rem' }}
+                onCheckedChange={(v) => setMarkBlocking(!!v)}
               />
               <span>
-                <span className="form-label" style={{ display: 'block', margin: 0 }}>
+                <span className="block font-medium">
                   Mark all imported events as blocking drives
                 </span>
-                <span className="text-sm text-secondary">
+                <span className="text-muted-foreground text-sm">
                   Leave off unless this file is an official no-placement academic calendar.
                 </span>
               </span>
-            </label>
-          </div>
+            </FieldLabel>
+          </Field>
 
           {preview ? (
-            <div
-              className="card"
-              style={{
-                padding: '0.875rem 1rem',
-                marginBottom: '1rem',
-                background: 'var(--bg-secondary)',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                <CalendarDays size={18} style={{ flexShrink: 0, marginTop: 2, color: 'var(--primary-600)' }} />
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>
+            <Alert>
+              <CalendarDays aria-hidden />
+              <AlertTitle>
                     {preview.calendarName || 'Calendar file'} · {preview.wouldImport ?? 0} event
                     {(preview.wouldImport ?? 0) === 1 ? '' : 's'} to import
-                  </div>
+              </AlertTitle>
+              <AlertDescription>
                   {Array.isArray(preview.preview) && preview.preview.length > 0 ? (
-                    <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.1rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    <ul className="mt-2 list-disc pl-4">
                       {preview.preview.map((row) => (
                         <li key={`${row.title}-${row.startDate}`}>
                           {row.title} · {row.startDate}
@@ -239,33 +207,21 @@ export default function ImportCollegeCalendarModal({ open, onClose, onImported }
                       ))}
                     </ul>
                   ) : null}
-                </div>
-              </div>
-            </div>
+              </AlertDescription>
+            </Alert>
           ) : null}
 
           {preview?.hasDriveClashes ? (
-            <div
-              className="card"
-              style={{
-                padding: '0.875rem 1rem',
-                marginBottom: '1rem',
-                borderColor: 'var(--warning-300)',
-                background: 'var(--warning-50)',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                <AlertTriangle size={18} style={{ color: 'var(--warning-700)', flexShrink: 0, marginTop: 2 }} />
-                <div>
-                  <div style={{ fontWeight: 600, color: 'var(--warning-800)', fontSize: '0.9rem' }}>
+            <Alert variant="destructive">
+              <AlertTriangle aria-hidden />
+              <AlertTitle>
                     Placement drive clashes detected
-                  </div>
-                  <p className="text-sm" style={{ margin: '0.35rem 0 0', color: 'var(--warning-900)' }}>
+              </AlertTitle>
+              <AlertDescription>
                     {preview.warning ||
                       'Some imported exams/holidays overlap existing placement drives.'}
-                  </p>
                   {Array.isArray(preview.clashByEvent) && preview.clashByEvent.length > 0 ? (
-                    <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.1rem', fontSize: '0.85rem', color: 'var(--warning-900)' }}>
+                    <ul className="mt-2 list-disc pl-4">
                       {preview.clashByEvent.slice(0, 4).map((row) => (
                         <li key={`${row.title}-${row.startDate}`}>
                           {row.title} ({row.startDate}) → {row.clashes?.[0]?.title || 'drive clash'}
@@ -273,28 +229,26 @@ export default function ImportCollegeCalendarModal({ open, onClose, onImported }
                       ))}
                     </ul>
                   ) : null}
-                </div>
-              </div>
-            </div>
+              </AlertDescription>
+            </Alert>
           ) : null}
 
           {error ? (
-            <p style={{ color: 'var(--danger-600)', fontSize: '0.875rem', margin: '0 0 1rem' }}>{error}</p>
+            <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>
           ) : null}
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={busy}>
+        </FieldGroup>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose} disabled={busy}>
               Cancel
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={runPreview} disabled={busy || !file}>
+            </Button>
+            <Button type="button" variant="outline" onClick={runPreview} disabled={busy || !file}>
               {busy && !preview ? 'Reading…' : 'Preview'}
-            </button>
-            <button type="button" className="btn btn-primary" onClick={runImport} disabled={busy || !file}>
+            </Button>
+            <Button type="button" onClick={runImport} disabled={busy || !file}>
               {busy && preview ? 'Importing…' : 'Import events'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Button>
+          </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

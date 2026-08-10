@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MessageCircleQuestion, Send } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ToastProvider';
 import { publicJobPostPath } from '@/lib/opportunityPublicLinks';
 
@@ -41,10 +48,9 @@ export default function PublicJobQuestionsPage({ params }) {
         <div style={{ maxWidth: '640px', margin: '0 auto' }}>
           <Link
             href={publicJobPostPath(jobId)}
-            className="btn btn-ghost btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+            className={buttonVariants({ variant: 'ghost', size: 'sm' })}
           >
-            <ArrowLeft size={16} aria-hidden /> Back to job
+            <ArrowLeft data-icon="inline-start" aria-hidden /> Back to job
           </Link>
         </div>
       </header>
@@ -52,7 +58,7 @@ export default function PublicJobQuestionsPage({ params }) {
       <main style={{ maxWidth: '640px', margin: '0 auto', padding: '2.5rem 1.5rem 4rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
           <MessageCircleQuestion size={22} className="text-secondary" aria-hidden />
-          <span className="badge badge-blue">Applicant questions</span>
+          <Badge variant="secondary">Applicant questions</Badge>
         </div>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.5rem' }}>
           Ask about this job
@@ -62,58 +68,63 @@ export default function PublicJobQuestionsPage({ params }) {
         </p>
 
         {submitted ? (
-          <div className="card" style={{ padding: '1.5rem' }}>
-            <p style={{ margin: 0 }}>
+          <Alert>
+            <MessageCircleQuestion aria-hidden />
+            <AlertTitle>Question submitted</AlertTitle>
+            <AlertDescription>
               Thank you — your question was submitted. Responses appear on the campus clarifications board when answered.
-            </p>
-            <Link href={publicJobPostPath(jobId)} className="btn btn-secondary btn-sm" style={{ marginTop: '1rem' }}>
+            </AlertDescription>
+            <Link href={publicJobPostPath(jobId)} className={buttonVariants({ variant: 'outline', size: 'sm', className: 'mt-3' })}>
               Return to job post
             </Link>
-          </div>
+          </Alert>
         ) : (
-          <form onSubmit={submit} className="card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label" htmlFor="public-q-name">Your name</label>
-              <input
+          <form onSubmit={submit}>
+          <Card>
+            <CardContent>
+            <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="public-q-name">Your name</FieldLabel>
+              <Input
                 id="public-q-name"
-                className="form-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
-            </div>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label" htmlFor="public-q-email">Your email</label>
-              <input
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="public-q-email">Your email</FieldLabel>
+              <Input
                 id="public-q-email"
-                className="form-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-            </div>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label" htmlFor="public-q-text">Question</label>
-              <textarea
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="public-q-text">Question</FieldLabel>
+              <Textarea
                 id="public-q-text"
-                className="form-input"
                 rows={5}
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder="Eligibility, interview process, relocation, etc."
                 required
               />
-            </div>
-            <button
+            </Field>
+            </FieldGroup>
+            </CardContent>
+            <CardFooter>
+            <Button
               type="submit"
-              className="btn btn-primary"
               disabled={submitting}
-              style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
             >
-              <Send size={16} aria-hidden />
+              <Send data-icon="inline-start" aria-hidden />
               {submitting ? 'Sending…' : 'Submit question'}
-            </button>
+            </Button>
+            </CardFooter>
+          </Card>
           </form>
         )}
       </main>

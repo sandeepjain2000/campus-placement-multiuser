@@ -34,6 +34,17 @@ import StudentSystemIdBatchCell, {
 } from './StudentSystemIdBatchCell';
 import { usePlacementCommitteeReadOnly } from '@/lib/placementCommittee';
 import StudentCvVerificationBadge from '@/components/college/StudentCvVerificationBadge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export default function DesktopCollegeStudents() {
   const router = useRouter();
@@ -219,33 +230,30 @@ export default function DesktopCollegeStudents() {
   }, [setSectionFilters]);
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-
-      {/* Page Header — v0 standard */}
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 0.35rem', letterSpacing: '-0.02em' }}>
-            Students
-          </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">Students</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             AY {sessionMeta?.academicYearLabel || getCurrentAcademicYear()} · Semester{' '}
             {sessionMeta?.semesterNumber ?? sessionMeta?.semesterLabel ?? CURRENT_SEMESTER} · {students.length}{' '}
             enrolled
           </p>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', margin: '0.35rem 0 0', maxWidth: 520 }}>
+          <p className="mt-1 max-w-xl text-xs text-muted-foreground">
             {readOnly
               ? 'Read-only placement committee view — browse and export student records for your college.'
               : 'CSV import: fill every column in the template; only Remarks may be left blank.'}
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           {!readOnly ? (
             <>
               <div className="export-csv-wrap">
                 <div className="export-csv-split-inner export-csv-split-inner--single">
-                  <button
+                  <Button
                     type="button"
-                    className="btn export-csv-primary btn-sm"
+                    variant="outline"
+                    size="sm"
                     onClick={downloadTemplate}
                     disabled={templateBusy}
                     title="Download CSV import template (same columns as Export CSV)"
@@ -258,7 +266,7 @@ export default function DesktopCollegeStudents() {
                         Template
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
               <ImportCsvSplitButton
@@ -270,13 +278,9 @@ export default function DesktopCollegeStudents() {
           ) : null}
           <ExportCsvSplitButton filenameBase="students" currentCount={filtered.length} fullCount={students.length} getRows={getStudentCsv} />
           {!readOnly ? (
-            <Link
-              href="/dashboard/college/students/add"
-              className="btn btn-primary"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-            >
-              <UserPlus size={15} /> Add Student
-            </Link>
+            <Button render={<Link href="/dashboard/college/students/add" />}>
+              <UserPlus data-icon="inline-start" /> Add Student
+            </Button>
           ) : null}
         </div>
       </div>
@@ -324,9 +328,9 @@ export default function DesktopCollegeStudents() {
 
       {!isLoading && (
         <>
-          <div className="card card-table-shell desktop-table">
-            <div className="table-container" style={{ border: 'none' }}>
-              <table className="data-table college-students-table">
+          <Card className="desktop-table py-0">
+            <CardContent className="px-0">
+              <Table className="college-students-table">
                 <colgroup>
                   <col className="college-students-col-num" />
                   <col className="college-students-col-name" />
@@ -338,67 +342,63 @@ export default function DesktopCollegeStudents() {
                   {requireCvVerification ? <col className="college-students-col-cv" /> : null}
                   <col className="college-students-col-actions" />
                 </colgroup>
-                <thead>
-                  <tr style={{ background: 'var(--bg-secondary)' }}>
-                    <th style={{ paddingLeft: '1.5rem' }}>#</th>
-                    <th>Name</th>
+                <TableHeader>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead className="pl-6">#</TableHead>
+                    <TableHead>Name</TableHead>
                     <StudentSystemIdBatchHeader />
                     <StudentDegreeSpecializationHeader />
-                    <th>CGPA</th>
-                    <th>Job Status</th>
-                    <th title="Student profile approved by college">Profile</th>
-                    {requireCvVerification ? <th title="Uploaded CV verified for drives &amp; internships">CV</th> : null}
-                    <th className="college-students-col-actions" style={{ paddingRight: '1.5rem', textAlign: 'right' }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+                    <TableHead>CGPA</TableHead>
+                    <TableHead>Job Status</TableHead>
+                    <TableHead title="Student profile approved by college">Profile</TableHead>
+                    {requireCvVerification ? <TableHead title="Uploaded CV verified for drives &amp; internships">CV</TableHead> : null}
+                    <TableHead className="college-students-col-actions pr-6 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {filtered.map((s, index) => {
                     return (
-                      <tr key={s.id} style={{ transition: 'background 0.15s' }}>
-                        <td style={{ color: 'var(--text-tertiary)', paddingLeft: '1.5rem', fontSize: '0.85rem' }}>{index + 1}</td>
-                        <td className="college-students-name-cell">
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
+                      <TableRow key={s.id}>
+                        <TableCell className="pl-6 text-muted-foreground">{index + 1}</TableCell>
+                        <TableCell className="college-students-name-cell">
+                          <div className="flex min-w-0 items-center gap-3">
                             <StudentListAvatar photo={s.photo} name={s.name} size={34} />
-                            <div style={{ minWidth: 0, flex: 1 }}>
-                              <Link href={`/dashboard/college/students/${s.id}`} className="student-name-link">
+                            <div className="min-w-0 flex-1">
+                              <Link href={`/dashboard/college/students/${s.id}`} className="font-medium text-foreground hover:underline">
                                 {s.name}
                               </Link>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{s.skills.slice(0, 2).join(', ')}</div>
+                              <div className="truncate text-xs text-muted-foreground">{s.skills.slice(0, 2).join(', ')}</div>
                             </div>
                           </div>
-                        </td>
-                        <td>
+                        </TableCell>
+                        <TableCell>
                           <StudentSystemIdBatchCell
                             systemId={s.systemId}
                             roll={s.roll}
                             batch={s.batch}
                             joiningAcademicYear={s.joiningAcademicYear}
                           />
-                        </td>
-                        <td>
+                        </TableCell>
+                        <TableCell>
                           <StudentDegreeSpecializationCell
                             degree={s.degreePursued}
                             specialization={s.specialization}
                           />
-                        </td>
-                        <td>
-                          <span style={{ fontWeight: 700, color: s.cgpa >= 8 ? 'var(--success-600)' : s.cgpa >= 6 ? 'var(--text-primary)' : 'var(--warning-600)' }}>
-                            {s.cgpa ?? '—'}
-                          </span>
-                        </td>
-                        <td><span className={`badge badge-${getStatusColor(s.jobStatus)} badge-dot`} style={{ fontSize: '0.75rem' }}>{formatStatus(s.jobStatus)}</span></td>
-                        <td>
+                        </TableCell>
+                        <TableCell className="font-semibold">{s.cgpa ?? '—'}</TableCell>
+                        <TableCell><StatusBadge tone={getStatusColor(s.jobStatus)} showDot>{formatStatus(s.jobStatus) || '—'}</StatusBadge></TableCell>
+                        <TableCell>
                           {s.verified
-                            ? <span className="badge badge-green" style={{ fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}><CheckCircle2 size={12} /> Verified</span>
-                            : <span className="badge badge-amber" style={{ fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}><CircleAlert size={12} /> Pending</span>}
-                        </td>
+                            ? <StatusBadge tone="green"><CheckCircle2 aria-hidden /> Verified</StatusBadge>
+                            : <StatusBadge tone="amber"><CircleAlert aria-hidden /> Pending</StatusBadge>}
+                        </TableCell>
                         {requireCvVerification ? (
-                          <td>
+                          <TableCell>
                             <StudentCvVerificationBadge status={s.cvStatus} compact />
-                          </td>
+                          </TableCell>
                         ) : null}
-                        <td className="college-students-col-actions" style={{ paddingRight: '1.5rem', textAlign: 'right' }}>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TableCell className="college-students-col-actions pr-6 text-right">
+                          <div className="flex flex-wrap items-center justify-end gap-1">
                             <StandardTableIconAction
                               action="view"
                               showLabel={false}
@@ -421,23 +421,23 @@ export default function DesktopCollegeStudents() {
                               </>
                             ) : null}
                           </div>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
                   {!isLoading && filtered.length === 0 && (
-                    <tr>
-                      <td colSpan={requireCvVerification ? 9 : 8} style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-tertiary)' }}>
-                        <GraduationCap size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
-                        <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>No students found</div>
+                    <TableRow>
+                      <TableCell colSpan={requireCvVerification ? 9 : 8} className="h-52 text-center text-muted-foreground">
+                        <GraduationCap className="mx-auto mb-4 size-12 opacity-30" />
+                        <div className="mb-1 font-medium text-foreground">No students found</div>
                         <div>Try adjusting your filters or import a student CSV.</div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
 
 
         </>

@@ -8,6 +8,9 @@ import { formatDate } from '@/lib/utils';
 import PageError from '@/components/PageError';
 import DriveVenueUnconfirmedWarning from '@/components/student/DriveVenueUnconfirmedWarning';
 import { formatDriveVenueForStudent } from '@/lib/driveVenueWarning';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -62,45 +65,41 @@ export default function StudentEmailRemindersPage() {
   if (error) return <PageError error={error} />;
 
   return (
-    <div style={{ minHeight: '100%', color: 'var(--text-primary)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-        <Link href="/dashboard/student" className="btn btn-ghost btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-          <ArrowLeft size={16} /> Back to dashboard
-        </Link>
-        <span className="text-sm text-secondary">Preview inbox — no email is sent from this screen</span>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 12,
-            background: 'rgba(99, 102, 241, 0.12)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--primary-600)',
-          }}
-        >
-          <Mail size={24} />
-        </div>
-        <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>Reminders & email preview</h1>
-          <p className="text-sm text-secondary" style={{ margin: '0.25rem 0 0' }}>
+    <div className="flex min-h-full flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Mail className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+            Reminders & Email Preview
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             Reminder previews for upcoming companies, deadlines, and off-campus venues.
           </p>
         </div>
+        <Button variant="outline" size="sm" render={<Link href="/dashboard/student" />} nativeButton={false}>
+          <ArrowLeft data-icon="inline-start" aria-hidden="true" />
+          Back to Dashboard
+        </Button>
       </div>
 
-      <div className="card" style={{ marginBottom: '1.25rem' }}>
-        <h2 className="card-title" style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Bell size={18} /> Sample notification you might receive
-        </h2>
-        <div style={{ border: '1px dashed var(--border-strong)', borderRadius: 'var(--radius-md)', padding: '1rem', background: 'var(--bg-tertiary)' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '0.5rem' }}>Subject</div>
-          <div style={{ fontWeight: 700, marginBottom: '1rem' }}>[PlacementHub] Reminder: TechCorp visit tomorrow</div>
-          <div className="text-sm" style={{ lineHeight: 1.6 }}>
+      <Alert>
+        <Bell aria-hidden="true" />
+        <AlertTitle>Preview Inbox</AlertTitle>
+        <AlertDescription>No email is sent from this screen.</AlertDescription>
+      </Alert>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bell aria-hidden="true" /> Sample Notification
+          </CardTitle>
+          <CardDescription>An example of the reminder you might receive.</CardDescription>
+        </CardHeader>
+        <CardContent>
+        <div className="bg-muted/40 border-border rounded-lg border border-dashed p-4">
+          <div className="text-muted-foreground mb-2 text-xs font-medium uppercase tracking-wide">Subject</div>
+          <div className="text-foreground mb-4 font-semibold">[PlacementHub] Reminder: TechCorp Visit Tomorrow</div>
+          <div className="text-sm leading-relaxed">
             Hi,
             <br />
             <br />
@@ -109,43 +108,46 @@ export default function StudentEmailRemindersPage() {
             Check your <Link href="/dashboard/student/interviews">interviews</Link> and <Link href="/dashboard/student/drives">drives</Link> for the latest.
           </div>
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <h2 className="text-sm font-bold" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)', marginBottom: '0.75rem' }}>
-        Upcoming reminders
-      </h2>
-      <div style={{ display: 'grid', gap: '0.75rem' }}>
-        {isLoading && <div className="skeleton skeleton-card" style={{ height: 140 }} />}
+      <div className="flex items-end justify-between gap-3">
+        <div>
+          <h2 className="text-foreground m-0 text-lg font-semibold">Upcoming Reminders</h2>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">Drives scheduled during the next 7 days.</p>
+        </div>
+      </div>
+      <div className="grid gap-3">
+        {isLoading && <Card className="h-32 animate-pulse" aria-label="Loading reminders" />}
         {!isLoading && reminders.length === 0 && (
-          <div className="card" style={{ padding: '1rem' }}>
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
-              No upcoming drives in the next 7 days.
-            </p>
-          </div>
+          <Card size="sm">
+            <CardContent className="text-muted-foreground py-6 text-center">No upcoming drives in the next 7 days.</CardContent>
+          </Card>
         )}
         {!isLoading && reminders.map((r) => (
-          <div key={r.id} className="card" style={{ padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-            <CalendarClock size={20} className="text-tertiary" style={{ flexShrink: 0, marginTop: '0.15rem' }} />
-            <div>
-              <div style={{ fontWeight: 700 }}>{r.title}</div>
-              <div className="text-sm text-secondary" style={{ marginTop: '0.25rem' }}>
-                {r.when}
-              </div>
-              <p className="text-sm" style={{ margin: '0.5rem 0 0', lineHeight: 1.5 }}>
+          <Card key={r.id} size="sm">
+            <CardContent className="flex items-start gap-3">
+            <CalendarClock className="text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+            <div className="min-w-0">
+              <div className="text-foreground font-medium">{r.title}</div>
+              <div className="text-muted-foreground mt-1 text-sm">{r.when}</div>
+              <p className="mt-2 mb-0 text-sm leading-relaxed">
                 {r.detail}
               </p>
               <DriveVenueUnconfirmedWarning venue={r.venue} driveDate={r.date} />
             </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      <div className="card" style={{ marginTop: '1.5rem', padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-        <Building2 size={22} color="var(--primary-600)" />
-        <p className="text-sm text-secondary" style={{ margin: 0 }}>
+      <Alert>
+        <Building2 aria-hidden="true" />
+        <AlertTitle>Delivery Preferences</AlertTitle>
+        <AlertDescription>
           When email delivery is enabled, preferences from your <Link href="/dashboard/student/profile">profile</Link> (college vs personal email) will control where these reminders go.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }

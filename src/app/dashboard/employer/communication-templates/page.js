@@ -4,6 +4,13 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import { ArrowLeft, Mail, RotateCcw, Save } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 function emptyForms() {
   return {};
@@ -16,6 +23,7 @@ export default function EmployerCommunicationTemplatesPage() {
   const [catalog, setCatalog] = useState([]);
   const [forms, setForms] = useState(emptyForms);
   const [savingKey, setSavingKey] = useState(null);
+  const [versionPickerReset, setVersionPickerReset] = useState({});
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -122,22 +130,18 @@ export default function EmployerCommunicationTemplatesPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '2rem' }}>
-      <div className="page-header">
-        <div className="page-header-left">
-          <Link
-            href="/dashboard/employer/overview"
-            className="btn btn-ghost btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: '0.5rem', paddingLeft: 0 }}
-          >
-            <ArrowLeft size={16} />
+    <div className="animate-fadeIn flex flex-col gap-5 pb-8">
+      <div className="flex flex-col gap-3">
+        <div>
+          <Button variant="ghost" size="sm" render={<Link href="/dashboard/employer/overview" />}>
+            <ArrowLeft data-icon="inline-start" aria-hidden />
             Overview
-          </Link>
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Mail size={22} className="text-primary" aria-hidden />
-            Email templates
+          </Button>
+          <h1 className="mt-3 flex items-center gap-2 text-2xl font-semibold tracking-tight">
+            <Mail className="text-muted-foreground" aria-hidden />
+            Email Templates
           </h1>
-          <p>
+          <p className="text-muted-foreground mt-1 max-w-3xl text-sm leading-6">
             Customize email wording for <strong>your organization</strong>. Changes apply when you send guest confirmations
             or sponsorship thank-you messages. Platform defaults remain available via reset; Super Admins can still edit
             global defaults.
@@ -146,125 +150,118 @@ export default function EmployerCommunicationTemplatesPage() {
       </div>
 
       {loading ? (
-        <div className="skeleton" style={{ height: 280 }} />
+        <Card><CardContent className="text-muted-foreground py-16 text-center">Loading templates…</CardContent></Card>
       ) : catalog.length === 0 ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+        <Card className="border-dashed">
+          <CardContent className="text-muted-foreground py-12 text-center text-sm">
             No editable templates are configured. Ask your administrator to apply database migration{' '}
             <code className="text-xs">058_email_template_overrides.sql</code>.
-          </p>
-        </div>
+          </CardContent>
+        </Card>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: 900 }}>
+        <div className="flex max-w-4xl flex-col gap-5">
           {catalog.map((row) => {
             const f = forms[row.template_key] || { subject: '', body: '', updated_at: null, has_override: false };
             const placeholders = row.placeholders || [];
             return (
-              <div key={row.template_key} className="card" style={{ padding: '1.25rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  <h2 style={{ fontSize: '1.05rem', marginTop: 0 }}>{row.title}</h2>
-                  <span className={`badge ${f.has_override ? 'badge-indigo' : 'badge-gray'}`}>
+              <Card key={row.template_key}>
+                <CardHeader className="flex-row flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <CardTitle>{row.title}</CardTitle>
+                    {row.summary ? <CardDescription className="mt-1">{row.summary}</CardDescription> : null}
+                  </div>
+                  <Badge variant={f.has_override ? 'default' : 'secondary'}>
                     {f.has_override ? 'Your organization' : 'Platform default'}
-                  </span>
-                </div>
-                {row.summary ? (
-                  <p className="text-sm text-secondary" style={{ marginBottom: '0.75rem' }}>
-                    {row.summary}
-                  </p>
-                ) : null}
-                {f.updated_at ? (
-                  <p className="text-xs text-secondary" style={{ marginBottom: '1rem' }}>
+                  </Badge>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-5">
+                  {f.updated_at ? (
+                  <p className="text-muted-foreground text-xs">
                     Last updated: {new Date(f.updated_at).toLocaleString()}
                   </p>
                 ) : null}
 
-                <div
-                  className="text-xs"
-                  style={{
-                    marginBottom: '1rem',
-                    padding: '0.75rem',
-                    background: 'var(--bg-secondary)',
-                    borderRadius: '8px',
-                    border: '1px solid var(--border-default)',
-                  }}
-                >
+                <div className="bg-muted/50 rounded-lg border p-3 text-xs">
                   <strong>Placeholders</strong> (double curly braces):
-                  <code style={{ display: 'block', marginTop: '0.35rem', whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+                  <code className="mt-1 block break-words whitespace-pre-wrap text-xs">
                     {placeholders.map((p) => `{{${p}}}`).join('  ')}
                   </code>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Subject template</label>
-                  <input
-                    className="form-input"
+                <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor={`${row.template_key}-subject`}>Subject template</FieldLabel>
+                  <Input
+                    id={`${row.template_key}-subject`}
+                    name={`${row.template_key}-subject`}
                     value={f.subject}
                     onChange={(e) => setFormField(row.template_key, 'subject', e.target.value)}
                     autoComplete="off"
                   />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Body template (plain text)</label>
-                  <textarea
-                    className="form-input"
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`${row.template_key}-body`}>Body template (plain text)</FieldLabel>
+                  <Textarea
+                    id={`${row.template_key}-body`}
+                    name={`${row.template_key}-body`}
                     rows={12}
                     value={f.body}
                     onChange={(e) => setFormField(row.template_key, 'body', e.target.value)}
-                    style={{ fontFamily: 'var(--font-mono, ui-monospace, monospace)', fontSize: '0.85rem' }}
+                    className="font-mono text-sm"
                   />
-                </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
+                  <FieldDescription>Use only the listed placeholders; messages are sent as plain text.</FieldDescription>
+                </Field>
+                </FieldGroup>
+                </CardContent>
+                <CardFooter className="flex-wrap">
+                  <Button
                     onClick={() => void save(row.template_key)}
                     disabled={savingKey === row.template_key}
                   >
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <Save size={16} />
-                      {savingKey === row.template_key ? 'Saving…' : 'Save for my organization'}
-                    </span>
-                  </button>
+                    <Save data-icon="inline-start" aria-hidden />
+                    {savingKey === row.template_key ? 'Saving…' : 'Save for My Organization'}
+                  </Button>
                   {f.has_override ? (
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
+                    <Button
+                      variant="outline"
                       onClick={() => void resetToPlatform(row.template_key)}
                       disabled={savingKey === row.template_key}
                     >
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <RotateCcw size={16} />
-                        Current platform default
-                      </span>
-                    </button>
+                      <RotateCcw data-icon="inline-start" aria-hidden />
+                      Current Platform Default
+                    </Button>
                   ) : null}
                   {Array.isArray(row.versions) && row.versions.length > 0 ? (
-                    <label className="text-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                      <span className="text-secondary">Restore system version</span>
-                      <select
-                        className="form-select"
-                        style={{ width: 'auto', minWidth: 180 }}
-                        defaultValue=""
+                    <Field orientation="horizontal" className="w-auto">
+                      <FieldLabel htmlFor={`${row.template_key}-version`}>Restore system version</FieldLabel>
+                      <AdminFilterSelect
+                        key={`${row.template_key}-version-${versionPickerReset[row.template_key] ?? 0}`}
+                        id={`${row.template_key}-version`}
+                        className="min-w-44"
+                        value=""
                         disabled={savingKey === row.template_key}
-                        onChange={(e) => {
-                          const id = e.target.value;
-                          e.target.value = '';
-                          if (id) void restoreSystemVersion(row.template_key, id);
+                        emptyMapsToAll={false}
+                        onValueChange={(id) => {
+                          if (id) {
+                            void restoreSystemVersion(row.template_key, id);
+                            setVersionPickerReset((prev) => ({
+                              ...prev,
+                              [row.template_key]: (prev[row.template_key] ?? 0) + 1,
+                            }));
+                          }
                         }}
-                      >
-                        <option value="">Choose…</option>
-                        {row.versions.map((v) => (
-                          <option key={v.id} value={v.id}>
-                            {v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}
-                            {v.is_current ? ' (current)' : ''}
-                            {` — v${v.version_number}`}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                        items={[
+                          { label: 'Choose…', value: '' },
+                          ...row.versions.map((v) => ({
+                            label: `${v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}${v.is_current ? ' (current)' : ''} — v${v.version_number}`,
+                            value: String(v.id),
+                          })),
+                        ]}
+                      />
+                    </Field>
                   ) : null}
-                </div>
-              </div>
+                </CardFooter>
+              </Card>
             );
           })}
         </div>

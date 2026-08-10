@@ -1,5 +1,7 @@
 'use client';
 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 /**
  * Hiring result outcome counts (students), one row per roll (newest upload wins).
  */
@@ -9,16 +11,17 @@ export function HiringResultBreakdown({ summary }) {
   const withoutResult = summary?.withoutHiringResult ?? 0;
 
   return (
-    <div className="card" style={{ marginBottom: '1.25rem' }}>
-      <h3 className="card-title" style={{ marginBottom: '0.35rem' }}>
-        Hiring result breakdown
-      </h3>
-      <p className="text-sm text-secondary" style={{ marginBottom: '1rem', lineHeight: 1.55 }}>
+    <Card className="mb-5">
+      <CardHeader>
+        <CardTitle>Hiring Result Breakdown</CardTitle>
+        <CardDescription>
         Totals use <strong>one line per roll number</strong> — when the same student appears in several uploads, the{' '}
         <strong>newest upload</strong> row is used.
-      </p>
-      <div className="stats-card" style={{ alignItems: 'stretch', textAlign: 'left', padding: '1rem', maxWidth: 480 }}>
-        <div className="text-xs text-tertiary" style={{ marginBottom: '0.5rem' }}>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+      <div className="bg-muted/50 max-w-[480px] rounded-lg border p-4 text-left">
+        <div className="text-muted-foreground mb-2 text-xs tabular-nums">
           With result: {withResult}
           {withoutResult > 0 ? ` · No decision yet: ${withoutResult}` : ''}
         </div>
@@ -29,15 +32,16 @@ export function HiringResultBreakdown({ summary }) {
             </li>
           ))}
           {byStatus.length === 0 && withoutResult === 0 ? (
-            <li className="text-tertiary">No hiring results recorded yet</li>
+            <li className="text-muted-foreground">No hiring results recorded yet</li>
           ) : null}
           {withoutResult > 0 ? (
-            <li className="text-tertiary">
+            <li className="text-muted-foreground">
               No decision / blank: <strong>{withoutResult}</strong>
             </li>
           ) : null}
         </ul>
       </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

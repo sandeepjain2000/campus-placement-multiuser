@@ -3,6 +3,9 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { formatCommaList, parseCommaList } from '@/lib/internshipPostingMeta';
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
@@ -77,8 +80,7 @@ export default function EligibilityGroupPicker({ value, onChange, style }) {
 
   if (!groups.length && !isLoading) {
     return (
-      <input
-        className="form-input"
+      <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="CSE, ECE, IT — or All for every branch"
@@ -87,41 +89,42 @@ export default function EligibilityGroupPicker({ value, onChange, style }) {
   }
 
   return (
-    <div style={style}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <button
+    <Field style={style}>
+      <div className="flex flex-wrap gap-2">
+        <Button
           type="button"
-          className={`btn btn-sm ${openToAll ? 'btn-primary' : 'btn-secondary'}`}
+          size="sm"
+          variant={openToAll ? 'default' : 'outline'}
           title="No branch filter — every student is eligible"
           onClick={() => onChange('')}
         >
           All branches
-        </button>
+        </Button>
         {groups.map((g) => {
           const active = selectedNames.has(g.name);
           return (
-            <button
+            <Button
               key={g.code}
               type="button"
-              className={`btn btn-sm ${active ? 'btn-primary' : 'btn-secondary'}`}
+              size="sm"
+              variant={active ? 'default' : 'outline'}
               disabled={isLoading}
               onClick={() => toggleGroup(g)}
             >
               {g.name}
-            </button>
+            </Button>
           );
         })}
       </div>
-      <input
-        className="form-input"
+      <Input
         value={formatCommaList(customTokens)}
         onChange={(e) => emitValue(selectedNames, parseCommaList(e.target.value))}
         placeholder="Optional: add custom branch names (comma-separated)"
         aria-label="Eligible branches (custom)"
       />
-      <span className="form-hint">
+      <FieldDescription>
         Use <strong>All branches</strong> for no filter. Pick groups above and/or type legacy codes (CSE, ECE) below.
-      </span>
-    </div>
+      </FieldDescription>
+    </Field>
   );
 }

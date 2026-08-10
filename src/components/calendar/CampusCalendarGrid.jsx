@@ -2,6 +2,9 @@
 
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -490,33 +493,25 @@ export function CampusCalendarGrid({
           }
 
           return (
-            <div
+            <Card
               key={monthName}
-              className="card animate-fadeIn"
-              style={{ cursor: 'pointer', padding: '1.25rem', transition: 'all 0.2s', border: '1px solid transparent' }}
+              className="cursor-pointer gap-4 transition-colors hover:bg-muted/40"
               onClick={() => {
                 updateCursor(y, idx, 1);
                 if (onChangeView) onChangeView('month');
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1)';
-                e.currentTarget.style.borderColor = 'var(--primary-200)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                e.currentTarget.style.borderColor = 'transparent';
-              }}
             >
-              <h4 style={{ margin: '0 0 1.25rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '1.1rem', fontWeight: 700 }}>
+              <CardHeader className="grid-cols-[1fr_auto] items-center">
+                <CardTitle>
                 {monthName}
+                </CardTitle>
                 {eventCount > 0 && (
-                  <span className="badge badge-blue" style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '12px' }}>
+                  <StatusBadge tone="blue" showDot>
                     {eventCount} events
-                  </span>
+                  </StatusBadge>
                 )}
-              </h4>
+              </CardHeader>
+              <CardContent>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                 {weekdays.map((w) => (
                   <div key={w} style={{ fontWeight: 600, marginBottom: '0.5rem' }}>
@@ -578,7 +573,8 @@ export function CampusCalendarGrid({
                   );
                 })}
               </div>
-            </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
@@ -603,32 +599,32 @@ export function CampusCalendarGrid({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-default)' }}>
           <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{label}</h3>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button
+            <Button
               type="button"
-              className="btn btn-secondary btn-sm"
+              variant="outline"
+              size="sm"
               onClick={prev}
               aria-label="Previous"
-              style={{ padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)' }}
             >
               ← Prev
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-secondary btn-sm"
+              variant="outline"
+              size="sm"
               onClick={() => updateCursor(today.getFullYear(), today.getMonth(), today.getDate())}
-              style={{ padding: '0.4rem 1rem', borderRadius: 'var(--radius-md)' }}
             >
               Today
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-secondary btn-sm"
+              variant="outline"
+              size="sm"
               onClick={next}
               aria-label="Next"
-              style={{ padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)' }}
             >
               Next →
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}

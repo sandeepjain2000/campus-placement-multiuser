@@ -2,10 +2,14 @@
 
 import { useCallback, useState } from 'react';
 import { validateField, validateFieldWithConfirm } from '@/lib/inputConstraints';
-import SegmentedDateInput from '@/components/form/SegmentedDateInput';
+import { Field, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 /**
- * Date input with shared constraints (DD / MM / YYYY segments) and optional calendar picker.
+ * Date field — AdminCN Input type="date".
+ * Do not paint a left calendar icon: the native date control already provides
+ * the picker affordance (left icon overlaps the value in Chromium).
  */
 export default function ValidatedDateInput({
   fieldId,
@@ -13,7 +17,7 @@ export default function ValidatedDateInput({
   onChange,
   onValidatedChange,
   context = {},
-  className = 'form-input',
+  className,
   confirmWarnings = true,
   disabled = false,
   id,
@@ -47,7 +51,8 @@ export default function ValidatedDateInput({
     [fieldId, context, confirmWarnings],
   );
 
-  const handleChange = (next) => {
+  const handleChange = (e) => {
+    const next = e.target.value || '';
     onChange(next);
     if (!next) {
       setError('');
@@ -68,24 +73,23 @@ export default function ValidatedDateInput({
   };
 
   return (
-    <div>
-      <SegmentedDateInput
+    <Field data-invalid={Boolean(error)} data-disabled={disabled || undefined}>
+      <Input
         id={id}
+        type="date"
         value={value || ''}
         onChange={handleChange}
         onBlur={handleBlur}
-        className={`${className}${error ? ' input-error' : ''}`}
+        className={cn(className)}
+        aria-invalid={Boolean(error)}
+        aria-label={ariaLabel}
         disabled={disabled}
         min={min}
         max={max}
-        showPicker={showPicker}
-        aria-label={ariaLabel}
+        // showPicker kept for API compat; native date UI owns the calendar control
+        data-show-picker={showPicker ? 'true' : 'false'}
       />
-      {error ? (
-        <p className="text-xs" style={{ color: 'var(--danger-600)', marginTop: '0.35rem' }}>
-          {error}
-        </p>
-      ) : null}
-    </div>
+      {error ? <FieldError>{error}</FieldError> : null}
+    </Field>
   );
 }

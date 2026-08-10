@@ -17,8 +17,13 @@ export function salaryLabel(min, max) {
 }
 
 export function getAlumniJobTypeMeta(jobType) {
-  const label = ALUMNI_EMPLOYMENT_TYPE_LABELS[jobType] || String(jobType || 'job').replace(/_/g, ' ');
-  return { label, badge: 'badge-indigo' };
+  if (jobType === 'contract') {
+    return { label: 'Contract', badge: 'badge-amber', tone: 'amber' };
+  }
+  const label =
+    ALUMNI_EMPLOYMENT_TYPE_LABELS[jobType] ||
+    (jobType ? String(jobType).replace(/_/g, ' ') : 'Full-time');
+  return { label, badge: 'badge-indigo', tone: 'indigo' };
 }
 
 export function computeAlumniJobStats(list) {

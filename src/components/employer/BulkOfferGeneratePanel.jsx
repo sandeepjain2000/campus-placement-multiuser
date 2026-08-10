@@ -3,8 +3,14 @@
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import { useToast } from '@/components/ToastProvider';
 import { formatDate } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -89,13 +95,12 @@ export default function BulkOfferGeneratePanel({ scope = 'drive', postings, temp
   const previewTitle = preview?.posting?.title || preview?.drive?.title;
 
   return (
-    <section className="app-content-card app-content-card--padded" style={{ marginBottom: 0 }}>
-      <div className="app-content-card__header" style={{ marginBottom: '1rem' }}>
-        <div className="app-content-card__heading">
-          <h2 className="app-content-card__title">
+    <Card>
+      <CardHeader>
+        <CardTitle>
             {isInternship ? 'Generate internship offers from selections' : 'Generate offers from selections'}
-          </h2>
-          <p className="app-content-card__description">
+        </CardTitle>
+        <CardDescription>
             {isInternship ? (
               <>
                 Mark students <strong>selected</strong> on an internship, pick an <strong>Internship</strong> template, then
@@ -107,58 +112,63 @@ export default function BulkOfferGeneratePanel({ scope = 'drive', postings, temp
                 Safe to run again when new selections arrive.
               </>
             )}
-          </p>
-        </div>
-        <Link href="/dashboard/employer/offer-templates" className="btn btn-secondary btn-sm">
+        </CardDescription>
+        <CardAction>
+          <Button render={<Link href="/dashboard/employer/offer-templates" />} variant="outline" size="sm">
           Manage templates
-        </Link>
-      </div>
+          </Button>
+        </CardAction>
+      </CardHeader>
 
-      <div className="grid grid-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">{postingLabel}</label>
-          <select className="form-select" value={postingId} onChange={(e) => setPostingId(e.target.value)}>
-            <option value="">Select {isInternship ? 'posting' : 'drive'}</option>
-            {postings.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.title}
-                {p.drive_date ? ` · ${formatDate(p.drive_date)}` : ''}
-                {p.internship_start_date ? ` · starts ${formatDate(p.internship_start_date)}` : ''}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Offer template</label>
-          <select className="form-select" value={templateId} onChange={(e) => setTemplateId(e.target.value)}>
-            <option value="">Select template</option>
-            {templates.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name} · {t.jobTitle || t.job_title}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+      <CardContent className="flex flex-col gap-4">
+      <FieldGroup className="grid gap-4 md:grid-cols-2">
+        <Field>
+          <FieldLabel htmlFor={`bulk-offer-${scope}-posting`}>{postingLabel}</FieldLabel>
+          <AdminFilterSelect
+            id={`bulk-offer-${scope}-posting`}
+            className="w-full"
+            value={postingId}
+            onValueChange={setPostingId}
+            items={[
+              { label: `Select ${isInternship ? 'posting' : 'drive'}`, value: 'all' },
+              ...postings.map((p) => ({
+                label: `${p.title}${p.drive_date ? ` · ${formatDate(p.drive_date)}` : ''}${p.internship_start_date ? ` · starts ${formatDate(p.internship_start_date)}` : ''}`,
+                value: p.id,
+              })),
+            ]}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor={`bulk-offer-${scope}-template`}>Offer template</FieldLabel>
+          <AdminFilterSelect
+            id={`bulk-offer-${scope}-template`}
+            className="w-full"
+            value={templateId}
+            onValueChange={setTemplateId}
+            items={[
+              { label: 'Select template', value: 'all' },
+              ...templates.map((t) => ({
+                label: `${t.name} · ${t.jobTitle || t.job_title}`,
+                value: t.id,
+              })),
+            ]}
+          />
+        </Field>
+      </FieldGroup>
 
       {previewLoading && postingId ? (
         <p className="text-sm text-secondary">Checking selections…</p>
       ) : null}
 
       {preview && postingId ? (
-        <div className="app-stat-card app-stat-card--indigo" style={{ marginBottom: '1rem', minHeight: 'auto' }}>
-          <div className="app-stat-card__label" style={{ marginTop: 0 }}>
-            <strong>{previewTitle}</strong>
-          </div>
-          <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
-            Selected: <strong>{preview.selectedCount}</strong> · Offers already created:{' '}
-            <strong>{preview.offersExistingCount}</strong> ·{' '}
-            <span style={{ color: 'var(--primary-700)' }}>
-              Ready to generate: <strong>{preview.readyToGenerateCount}</strong>
-            </span>
-          </div>
+        <Alert>
+          <AlertTitle>{previewTitle}</AlertTitle>
+          <AlertDescription className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">Selected: {preview.selectedCount}</Badge>
+            <Badge variant="outline">Existing: {preview.offersExistingCount}</Badge>
+            <Badge>Ready: {preview.readyToGenerateCount}</Badge>
           {preview.readyToGenerateCount > 0 && preview.pendingStudents?.length ? (
-            <p className="text-xs text-tertiary" style={{ margin: '0.5rem 0 0' }}>
+            <p className="basis-full text-xs text-muted-foreground">
               Includes:{' '}
               {preview.pendingStudents
                 .slice(0, 5)
@@ -167,7 +177,8 @@ export default function BulkOfferGeneratePanel({ scope = 'drive', postings, temp
               {preview.pendingStudents.length > 5 ? ` +${preview.pendingStudents.length - 5} more` : ''}
             </p>
           ) : null}
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {selectedTemplate ? (
@@ -177,14 +188,14 @@ export default function BulkOfferGeneratePanel({ scope = 'drive', postings, temp
         </p>
       ) : null}
 
-      <button
+      <Button
         type="button"
-        className="btn btn-primary"
         disabled={generating || !postingId || !templateId || !templates.length}
         onClick={runGenerate}
       >
         {generating ? 'Generating…' : 'Generate offers & send emails'}
-      </button>
-    </section>
+      </Button>
+      </CardContent>
+    </Card>
   );
 }

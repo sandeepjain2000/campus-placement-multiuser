@@ -6,6 +6,12 @@ import { useToast } from '@/components/ToastProvider';
 import { formatStatus } from '@/lib/utils';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { Mic, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const KIND_LABEL = {
   guest_faculty: 'Guest faculty',
@@ -107,159 +113,124 @@ export default function CollegeGuestEngagementsPage() {
   );
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div
-        style={{
-          marginBottom: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-          <span
-            style={{
-              display: 'flex',
-              padding: '0.5rem',
-              background: 'var(--primary-50)',
-              borderRadius: '10px',
-              color: 'var(--primary-600)',
-            }}
-            aria-hidden
-          >
-            <Mic size={24} />
-          </span>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <Mic className="text-muted-foreground mt-0.5 size-7" aria-hidden />
           <div>
-            <h1
-              style={{
-                fontSize: '1.75rem',
-                fontWeight: 800,
-                color: 'var(--text-primary)',
-                margin: '0 0 0.35rem',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              Guest faculty & lectures
-            </h1>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+            <h1 className="text-foreground m-0 text-2xl font-semibold tracking-tight">Guest faculty & lectures</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
               {listings.length} listing{listings.length === 1 ? '' : 's'}
               {' · '}
               Published posts are visible to employer partners.
             </p>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           <ExportCsvSplitButton
             filenameBase="guest_engagements"
             currentCount={filteredListings.length}
             fullCount={listings.length}
             getRows={getEngagementsCsv}
           />
-          <Link
-            href="/dashboard/college/guest-engagements/add"
-            className="btn btn-primary"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            Add
-          </Link>
-          <Link href="/dashboard/college/overview" className="btn btn-ghost btn-sm">
-            Overview
-          </Link>
+          <Button render={<Link href="/dashboard/college/guest-engagements/add" />}><Plus data-icon="inline-start" />Add</Button>
+          <Button variant="outline" size="sm" render={<Link href="/dashboard/college/overview" />}>Overview</Button>
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1.25rem', padding: '1.25rem' }}>
-        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <input
-            className="form-input"
-            style={{ flex: '1 1 220px', minWidth: 180 }}
+      <Card>
+        <CardContent className="flex flex-wrap items-center gap-3">
+          <Input
+            className="min-w-48 flex-1"
             placeholder="Filter by title, summary, requirements…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <select
-            className="form-select"
-            style={{ width: 'auto', minWidth: 200 }}
+          <AdminFilterSelect
+            id="guest-engagement-type"
+            className="min-w-48"
             value={kindFilter}
-            onChange={(e) => setKindFilter(e.target.value)}
-          >
-            <option value="">All types</option>
-            <option value="guest_lecture">{KIND_LABEL.guest_lecture}</option>
-            <option value="guest_faculty">{KIND_LABEL.guest_faculty}</option>
-          </select>
-          <select
-            className="form-select"
-            style={{ width: 'auto', minWidth: 160 }}
+            onValueChange={setKindFilter}
+            items={[
+              { label: 'All types', value: 'all' },
+              { label: KIND_LABEL.guest_lecture, value: 'guest_lecture' },
+              { label: KIND_LABEL.guest_faculty, value: 'guest_faculty' },
+            ]}
+          />
+          <AdminFilterSelect
+            id="guest-engagement-status"
+            className="min-w-40"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All statuses</option>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-            <option value="closed">Closed</option>
-          </select>
-        </div>
-      </div>
+            onValueChange={setStatusFilter}
+            items={[
+              { label: 'All statuses', value: 'all' },
+              { label: 'Draft', value: 'draft' },
+              { label: 'Published', value: 'published' },
+              { label: 'Closed', value: 'closed' },
+            ]}
+          />
+        </CardContent>
+      </Card>
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Updated</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 overflow-hidden py-0">
+        <CardHeader className="border-b px-4 py-3">
+          <CardTitle className="text-base">Engagement listings</CardTitle>
+          <CardDescription>Showing {filteredListings.length} of {listings.length}</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Updated</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {loading ? (
-              <tr>
-                <td colSpan={5} className="text-secondary">
+              <TableRow>
+                <TableCell colSpan={5} className="text-muted-foreground h-24 text-center">
                   Loading…
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               filteredListings.map((L) => (
-                <tr key={L.id}>
-                  <td className="font-semibold">{L.title}</td>
-                  <td>{KIND_LABEL[L.kind] || L.kind}</td>
-                  <td>
-                    <span
-                      className={`badge badge-${L.status === 'published' ? 'green' : L.status === 'draft' ? 'amber' : 'gray'}`}
-                    >
-                      {formatStatus(L.status)}
-                    </span>
-                  </td>
-                  <td className="text-sm text-secondary">
+                <TableRow key={L.id}>
+                  <TableCell className="font-medium">{L.title}</TableCell>
+                  <TableCell>{KIND_LABEL[L.kind] || L.kind}</TableCell>
+                  <TableCell>
+                    <StatusBadge tone={L.status === 'published' ? 'success' : L.status === 'draft' ? 'warning' : 'neutral'} showDot>
+                      {formatStatus(L.status) || 'Draft'}
+                    </StatusBadge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {L.updated_at ? new Date(L.updated_at).toLocaleString() : '—'}
-                  </td>
-                  <td style={{ whiteSpace: 'nowrap' }}>
+                  </TableCell>
+                  <TableCell className="text-right">
                     {L.status !== 'published' ? (
-                      <button type="button" className="btn btn-success btn-sm" onClick={() => setStatus(L.id, 'published')}>
+                      <Button type="button" size="sm" onClick={() => setStatus(L.id, 'published')}>
                         Publish
-                      </button>
+                      </Button>
                     ) : null}
                     {L.status === 'published' ? (
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-ghost btn-sm"
-                        style={{ marginLeft: 8 }}
+                        variant="outline"
+                        size="sm"
                         onClick={() => setStatus(L.id, 'closed')}
                       >
                         Close
-                      </button>
+                      </Button>
                     ) : null}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
             {!loading && filteredListings.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={5} className="text-muted-foreground h-24 text-center">
                   {listings.length === 0 ? (
                     <>
                       No listings yet.{' '}
@@ -268,12 +239,13 @@ export default function CollegeGuestEngagementsPage() {
                   ) : (
                     'No listings match your filters.'
                   )}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { CalendarDays } from 'lucide-react';
 import { parseYmdToLocalDate, toDateOnlyString } from '@/lib/dateOnly';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group';
 
 export const SEGMENT_ORDER = ['day', 'month', 'year'];
 
@@ -61,6 +67,7 @@ export default function SegmentedDateInput({
   max,
   showPicker = true,
   'aria-label': ariaLabel = 'Date',
+  'aria-invalid': ariaInvalid,
 }) {
   const autoId = useId();
   const groupId = id || autoId;
@@ -150,7 +157,7 @@ export default function SegmentedDateInput({
     });
   };
 
-  const segmentClass = `segmented-date-input__segment form-input${className ? ` ${className}` : ''}`;
+  const segmentClass = `min-w-0 border-0 text-center shadow-none ${className || ''}`;
 
   const openNativePicker = () => {
     const el = nativeDateRef.current;
@@ -175,15 +182,15 @@ export default function SegmentedDateInput({
   };
 
   return (
-    <div className={`segmented-date-input-wrap${disabled ? ' segmented-date-input-wrap--disabled' : ''}`}>
-    <div
-      className={`segmented-date-input${disabled ? ' segmented-date-input--disabled' : ''}`}
+    <InputGroup
+      className="h-auto"
       role="group"
       aria-label={ariaLabel}
+      aria-invalid={ariaInvalid}
       data-min={min || undefined}
       data-max={max || undefined}
     >
-      <input
+      <InputGroupInput
         ref={dayRef}
         id={`${groupId}-day`}
         type="text"
@@ -199,10 +206,8 @@ export default function SegmentedDateInput({
         onKeyDown={(e) => handleSegmentKeyDown('day', e)}
         onBlur={handleSegmentBlur}
       />
-      <span className="segmented-date-input__sep" aria-hidden="true">
-        /
-      </span>
-      <input
+      <InputGroupAddon className="px-0" aria-hidden="true">/</InputGroupAddon>
+      <InputGroupInput
         ref={monthRef}
         id={`${groupId}-month`}
         type="text"
@@ -218,10 +223,8 @@ export default function SegmentedDateInput({
         onKeyDown={(e) => handleSegmentKeyDown('month', e)}
         onBlur={handleSegmentBlur}
       />
-      <span className="segmented-date-input__sep" aria-hidden="true">
-        /
-      </span>
-      <input
+      <InputGroupAddon className="px-0" aria-hidden="true">/</InputGroupAddon>
+      <InputGroupInput
         ref={yearRef}
         id={`${groupId}-year`}
         type="text"
@@ -237,13 +240,12 @@ export default function SegmentedDateInput({
         onKeyDown={(e) => handleSegmentKeyDown('year', e)}
         onBlur={handleSegmentBlur}
       />
-    </div>
     {showPicker ? (
-      <div className="segmented-date-input__picker">
+      <InputGroupAddon align="inline-end">
         <input
           ref={nativeDateRef}
           type="date"
-          className="segmented-date-input__native"
+          className="sr-only"
           value={value || ''}
           min={min}
           max={max}
@@ -252,18 +254,19 @@ export default function SegmentedDateInput({
           aria-hidden="true"
           onChange={handleNativeDateChange}
         />
-        <button
+        <InputGroupButton
           type="button"
-          className="btn btn-ghost btn-icon segmented-date-input__picker-btn"
+          variant="ghost"
+          size="icon-sm"
           disabled={disabled}
           aria-label={`${ariaLabel} — open calendar`}
           title="Open calendar"
           onClick={openNativePicker}
         >
-          <CalendarDays size={18} aria-hidden />
-        </button>
-      </div>
+          <CalendarDays aria-hidden />
+        </InputGroupButton>
+      </InputGroupAddon>
     ) : null}
-    </div>
+    </InputGroup>
   );
 }

@@ -10,10 +10,9 @@ import {
   GraduationCap, Plus, Users, IndianRupee, Activity, FileText, Settings,
   LayoutGrid, List, Ban, ArrowRight, Undo2,
 } from 'lucide-react';
-import { formatCurrency, formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
-import SegmentedDateInput from '@/components/form/SegmentedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import {
   mapEmployerInternshipApiError,
@@ -22,6 +21,24 @@ import {
 import EmployerCampusTargetPicker from '@/components/employer/EmployerCampusTargetPicker';
 import EligibilityGroupPicker from '@/components/employer/EligibilityGroupPicker';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { buildPostingEligibilityChecks } from '@/lib/buildPostingEligibilityChecks';
 import {
   buildInternshipDescription,
@@ -49,12 +66,7 @@ async function swrFetcher(url) {
 }
 
 function InternFieldError({ message }) {
-  if (!message) return null;
-  return (
-    <p className="form-error" style={{ margin: '0.35rem 0 0' }}>
-      {message}
-    </p>
-  );
+  return <FieldError>{message}</FieldError>;
 }
 
 export default function EmployerInternshipsPage() {
@@ -97,6 +109,7 @@ export default function EmployerInternshipsPage() {
   const [withdrawingId, setWithdrawingId] = useState(null);
   const [savedDraftId, setSavedDraftId] = useState(null);
   const [viewMode, setViewMode] = useState('card');
+  const [formTab, setFormTab] = useState('basics'); // basics | eligibility | details
 
   const approvedCampuses = useEmployerPostingCampuses(campusData, 'internship');
 
@@ -151,12 +164,14 @@ export default function EmployerInternshipsPage() {
   const closeForm = useCallback(() => {
     setShowForm(false);
     setSavedDraftId(null);
+    setFormTab('basics');
     resetFormFields();
   }, [resetFormFields]);
 
   const openForm = () => {
     resetFormFields();
     setSavedDraftId(null);
+    setFormTab('basics');
     setSelectedTenantIds(buildDefaultTenantSelection(approvedCampuses));
     setShowForm(true);
   };
@@ -186,6 +201,7 @@ export default function EmployerInternshipsPage() {
       setBatchYear(intern.batchYear != null ? String(intern.batchYear) : '');
       setNotes(parsed.notes);
       setSelectedTenantIds(buildDefaultTenantSelection(approvedCampuses, intern.tenantIds));
+      setFormTab('basics');
       setShowForm(true);
       setDetailInternship(null);
     },
@@ -307,6 +323,10 @@ export default function EmployerInternshipsPage() {
 
       if (validation.formError || Object.keys(validation.fieldErrors).length) {
         setFieldErrors(validation.fieldErrors);
+        const errs = validation.fieldErrors || {};
+        if (errs.title || errs.startDate || errs.endDate) setFormTab('basics');
+        else if (errs.batchYear || errs.maxBacklogs || errs.minCgpa) setFormTab('eligibility');
+        else if (errs._campuses) setFormTab('details');
         addToast(validation.formError || 'Fix the highlighted fields and try again.', 'warning');
         return;
       }
@@ -523,51 +543,43 @@ export default function EmployerInternshipsPage() {
         }
         onBack={closeForm}
         footer={
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
             {editingId && editingInternship?.status === 'published' ? (
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <button
+              <div className="flex flex-wrap gap-2">
+                <Button
                   type="button"
-                  className="btn btn-secondary btn-sm"
+                  variant="secondary"
+                  size="sm"
                   disabled={submitting || closingId === editingId || withdrawingId === editingId}
                   onClick={() => void closePublishedInternship(editingInternship)}
                 >
                   {closingId === editingId ? 'Closing…' : 'Close posting'}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="btn btn-ghost btn-sm"
+                  variant="ghost"
+                  size="sm"
                   disabled={submitting || withdrawingId === editingId || closingId === editingId}
                   onClick={() => void withdrawPublishedInternship(editingInternship)}
                   title="Withdraw posting and move student applications to Withdrawn"
                 >
-                  <Undo2 size={14} aria-hidden style={{ marginRight: '0.25rem' }} />
+                  <Undo2 data-icon="inline-start" />
                   {withdrawingId === editingId ? 'Withdrawing…' : 'Withdraw'}
-                </button>
+                </Button>
               </div>
             ) : (
               <span />
             )}
-            <div style={{ display: 'flex', gap: '0.75rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn-secondary" disabled={submitting} onClick={closeForm}>
+            <div className="ml-auto flex flex-wrap gap-3">
+              <Button type="button" variant="secondary" disabled={submitting} onClick={closeForm}>
                 Cancel
-              </button>
+              </Button>
               {canSaveAsDraft ? (
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  disabled={submitting}
-                  onClick={() => void submitInternship(true)}
-                >
+                <Button type="button" variant="secondary" disabled={submitting} onClick={() => void submitInternship(true)}>
                   {submitting ? 'Saving…' : 'Save as Draft'}
-                </button>
+                </Button>
               ) : null}
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={submitting}
-                onClick={() => void submitInternship(false)}
-              >
+              <Button type="button" disabled={submitting} onClick={() => void submitInternship(false)}>
                 {submitting
                   ? editingInternship?.status === 'published'
                     ? 'Saving…'
@@ -575,175 +587,239 @@ export default function EmployerInternshipsPage() {
                   : editingInternship?.status === 'published'
                     ? 'Save changes'
                     : 'Publish Internship'}
-              </button>
+              </Button>
             </div>
           </div>
         }
       >
         {editingId && editingInternship?.status === 'published' ? (
-          <p className="text-sm text-secondary" style={{ marginTop: 0, marginBottom: '1rem' }}>
+          <p className="text-muted-foreground mb-4 mt-0 text-sm">
             Campus visibility is unchanged here. Use <strong>Sync</strong> on a published row to add campuses.
           </p>
         ) : null}
-        <div className="grid grid-2">
-          {showCampusPicker ? (
-            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-              <EmployerCampusTargetPicker
-                campuses={approvedCampuses}
-                selection={selectedTenantIds}
-                onSelectionChange={setSelectedTenantIds}
-                label="Target campuses (approved)"
-                required={!canSaveAsDraft || !!savedDraftId || editingInternship?.status === 'draft'}
-                hint={
-                  savedDraftId || editingInternship?.status === 'draft'
-                    ? 'Required when you publish. Drafts are not visible to students.'
-                    : 'Required to publish. Optional if you only Save as Draft.'
-                }
-                emptyMessage="No approved campuses. Request access from the campus directory first."
-              />
-              <InternFieldError message={fieldErrors._campuses} />
-            </div>
-          ) : null}
-          <div className="form-group">
-            <label className="form-label">Internship Title <span className="required">*</span></label>
-            <input
-              className={`form-input${fieldErrors.title ? ' input-error' : ''}`}
-              placeholder="e.g., Summer Data Intern"
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                if (fieldErrors.title) setFieldErrors((prev) => ({ ...prev, title: '' }));
-              }}
-            />
-            <InternFieldError message={fieldErrors.title} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Start date <span className="required">*</span></label>
-            <SegmentedDateInput
-              value={startDate}
-              onChange={(v) => {
-                setStartDate(v);
-                if (fieldErrors.startDate) setFieldErrors((prev) => ({ ...prev, startDate: '' }));
-              }}
-              aria-label="Internship start date"
-            />
-            <InternFieldError message={fieldErrors.startDate} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">End date <span className="required">*</span></label>
-            <SegmentedDateInput
-              value={endDate}
-              min={startDate || undefined}
-              onChange={(v) => {
-                setEndDate(v);
-                if (fieldErrors.endDate) setFieldErrors((prev) => ({ ...prev, endDate: '' }));
-              }}
-              aria-label="Internship end date"
-            />
-            <InternFieldError message={fieldErrors.endDate} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Stipend / month (min, INR)</label>
-            <ValidatedNumberInput
-              fieldId={FIELD_IDS.EMPLOYER_STIPEND_MIN}
-              placeholder="40000"
-              value={stipend}
-              onChange={setStipend}
-              stepperStep={1}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Stipend / month (max, optional)</label>
-            <ValidatedNumberInput
-              fieldId={FIELD_IDS.EMPLOYER_STIPEND_MAX}
-              context={{ salaryMin: stipend }}
-              placeholder="Same as min if empty"
-              value={stipendMax}
-              onChange={setStipendMax}
-              stepperStep={1}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Openings</label>
-            <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_VACANCIES} value={vacancies} onChange={setVacancies} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Min CGPA</label>
-            <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_MIN_CGPA} step="0.1" value={minCgpa} onChange={setMinCgpa} />
-          </div>
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-            <label className="form-label">Eligible branches / groups</label>
-            <EligibilityGroupPicker value={eligibleBranches} onChange={setEligibleBranches} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Specializations</label>
-            <input
-              className="form-input"
-              placeholder="AI/ML, Data Science, Cloud"
-              value={specializations}
-              onChange={(e) => setSpecializations(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Max active backlogs</label>
-            <ValidatedNumberInput
-              fieldId={FIELD_IDS.COLLEGE_RULE_MAX_BACKLOGS}
-              value={maxBacklogs}
-              onChange={(v) => {
-                setMaxBacklogs(v);
-                if (fieldErrors.maxBacklogs) setFieldErrors((prev) => ({ ...prev, maxBacklogs: '' }));
-              }}
-              className={fieldErrors.maxBacklogs ? 'input-error' : undefined}
-            />
-            <p className="text-xs text-secondary" style={{ margin: '0.35rem 0 0' }}>
-              0 means students with no active backlogs only. Increase if you allow backlogs.
-            </p>
-            <InternFieldError message={fieldErrors.maxBacklogs} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Batch year <span className="required">*</span></label>
-            <ValidatedNumberInput
-              fieldId={FIELD_IDS.EMPLOYER_INTERNSHIP_BATCH_YEAR}
-              value={batchYear}
-              step="1"
-              placeholder="e.g. 2026"
-              context={{ required: !canSaveAsDraft || !!savedDraftId || editingInternship?.status === 'draft' }}
-              onChange={(v) => {
-                setBatchYear(v);
-                if (fieldErrors.batchYear) setFieldErrors((prev) => ({ ...prev, batchYear: '' }));
-              }}
-              className={fieldErrors.batchYear ? 'form-input input-error' : 'form-input'}
-            />
-            <p className="text-xs text-secondary" style={{ margin: '0.35rem 0 0' }}>
-              Required when publishing. Current year through 4 years ahead (e.g. {new Date().getFullYear()}–{new Date().getFullYear() + 4}).
-            </p>
-            <InternFieldError message={fieldErrors.batchYear} />
-          </div>
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-            <label className="form-label">Skills (comma-separated)</label>
-            <input className="form-input" placeholder="Python, SQL, ML" value={keywords} onChange={(e) => setKeywords(e.target.value)} />
-          </div>
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-            <label className="form-label">Additional notes</label>
-            <textarea className="form-textarea" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Location, PPO hint, project details…" />
-          </div>
-        </div>
+
+        <Tabs value={formTab} onValueChange={setFormTab} className="w-full gap-4">
+          <TabsList variant="line" className="h-auto w-full flex-wrap justify-start gap-1 bg-transparent p-0">
+            {[
+              { id: 'basics', title: 'Basics', sub: 'Title, dates, stipend' },
+              { id: 'eligibility', title: 'Eligibility', sub: 'Branches, CGPA, batch' },
+              { id: 'details', title: 'Details', sub: 'Skills, campuses, notes' },
+            ].map((tab) => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="flex h-auto flex-col items-start gap-0.5 px-3 py-2 data-active:shadow-none"
+              >
+                <span className="text-sm font-medium">{tab.title}</span>
+                <span className="text-muted-foreground text-xs font-normal">{tab.sub}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <TabsContent value="basics" className="mt-2 outline-none">
+            <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field className="gap-2 sm:col-span-2" data-invalid={fieldErrors.title ? true : undefined}>
+                <FieldLabel>
+                  Internship Title <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  aria-invalid={fieldErrors.title ? true : undefined}
+                  placeholder="e.g., Summer Data Intern"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (fieldErrors.title) setFieldErrors((prev) => ({ ...prev, title: '' }));
+                  }}
+                />
+                <InternFieldError message={fieldErrors.title} />
+              </Field>
+              <Field className="gap-2" data-invalid={fieldErrors.startDate ? true : undefined}>
+                <FieldLabel>
+                  Start date <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  type="date"
+                  aria-invalid={fieldErrors.startDate ? true : undefined}
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    if (fieldErrors.startDate) setFieldErrors((prev) => ({ ...prev, startDate: '' }));
+                  }}
+                  aria-label="Internship start date"
+                />
+                <InternFieldError message={fieldErrors.startDate} />
+              </Field>
+              <Field className="gap-2" data-invalid={fieldErrors.endDate ? true : undefined}>
+                <FieldLabel>
+                  End date <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  type="date"
+                  aria-invalid={fieldErrors.endDate ? true : undefined}
+                  value={endDate}
+                  min={startDate || undefined}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    if (fieldErrors.endDate) setFieldErrors((prev) => ({ ...prev, endDate: '' }));
+                  }}
+                  aria-label="Internship end date"
+                />
+                <InternFieldError message={fieldErrors.endDate} />
+              </Field>
+              <Field className="gap-2">
+                <FieldLabel>Stipend / month (min, INR)</FieldLabel>
+                <ValidatedNumberInput
+                  fieldId={FIELD_IDS.EMPLOYER_STIPEND_MIN}
+                  placeholder="40000"
+                  value={stipend}
+                  onChange={setStipend}
+                  stepperStep={1}
+                />
+              </Field>
+              <Field className="gap-2">
+                <FieldLabel>Stipend / month (max, optional)</FieldLabel>
+                <ValidatedNumberInput
+                  fieldId={FIELD_IDS.EMPLOYER_STIPEND_MAX}
+                  context={{ salaryMin: stipend }}
+                  placeholder="Same as min if empty"
+                  value={stipendMax}
+                  onChange={setStipendMax}
+                  stepperStep={1}
+                />
+              </Field>
+              <Field className="gap-2">
+                <FieldLabel>Openings</FieldLabel>
+                <ValidatedNumberInput
+                  fieldId={FIELD_IDS.EMPLOYER_VACANCIES}
+                  value={vacancies}
+                  onChange={setVacancies}
+                />
+              </Field>
+            </FieldGroup>
+          </TabsContent>
+
+          <TabsContent value="eligibility" className="mt-2 outline-none">
+            <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field className="gap-2">
+                <FieldLabel>Min CGPA</FieldLabel>
+                <ValidatedNumberInput
+                  fieldId={FIELD_IDS.EMPLOYER_MIN_CGPA}
+                  step="0.1"
+                  value={minCgpa}
+                  onChange={setMinCgpa}
+                />
+              </Field>
+              <Field className="gap-2" data-invalid={fieldErrors.maxBacklogs ? true : undefined}>
+                <FieldLabel>Max active backlogs</FieldLabel>
+                <ValidatedNumberInput
+                  fieldId={FIELD_IDS.COLLEGE_RULE_MAX_BACKLOGS}
+                  value={maxBacklogs}
+                  onChange={(v) => {
+                    setMaxBacklogs(v);
+                    if (fieldErrors.maxBacklogs) setFieldErrors((prev) => ({ ...prev, maxBacklogs: '' }));
+                  }}
+                  className={fieldErrors.maxBacklogs ? 'input-error' : undefined}
+                />
+                <FieldDescription>
+                  0 means students with no active backlogs only. Increase if you allow backlogs.
+                </FieldDescription>
+                <InternFieldError message={fieldErrors.maxBacklogs} />
+              </Field>
+              <Field className="gap-2" data-invalid={fieldErrors.batchYear ? true : undefined}>
+                <FieldLabel>
+                  Batch year <span className="text-destructive">*</span>
+                </FieldLabel>
+                <ValidatedNumberInput
+                  fieldId={FIELD_IDS.EMPLOYER_INTERNSHIP_BATCH_YEAR}
+                  value={batchYear}
+                  step="1"
+                  placeholder="e.g. 2026"
+                  context={{ required: !canSaveAsDraft || !!savedDraftId || editingInternship?.status === 'draft' }}
+                  onChange={(v) => {
+                    setBatchYear(v);
+                    if (fieldErrors.batchYear) setFieldErrors((prev) => ({ ...prev, batchYear: '' }));
+                  }}
+                  className={fieldErrors.batchYear ? 'input-error' : undefined}
+                />
+                <FieldDescription>
+                  Required when publishing. Current year through 4 years ahead (e.g. {new Date().getFullYear()}–
+                  {new Date().getFullYear() + 4}).
+                </FieldDescription>
+                <InternFieldError message={fieldErrors.batchYear} />
+              </Field>
+              <Field className="gap-2">
+                <FieldLabel>Specializations</FieldLabel>
+                <Input
+                  placeholder="AI/ML, Data Science, Cloud"
+                  value={specializations}
+                  onChange={(e) => setSpecializations(e.target.value)}
+                />
+              </Field>
+              <Field className="gap-2 sm:col-span-2">
+                <FieldLabel>Eligible branches / groups</FieldLabel>
+                <EligibilityGroupPicker value={eligibleBranches} onChange={setEligibleBranches} />
+              </Field>
+            </FieldGroup>
+          </TabsContent>
+
+          <TabsContent value="details" className="mt-2 outline-none">
+            <FieldGroup className="grid grid-cols-1 gap-4">
+              {showCampusPicker ? (
+                <Field className="gap-2" data-invalid={fieldErrors._campuses ? true : undefined}>
+                  <EmployerCampusTargetPicker
+                    campuses={approvedCampuses}
+                    selection={selectedTenantIds}
+                    onSelectionChange={setSelectedTenantIds}
+                    label="Target campuses (approved)"
+                    required={!canSaveAsDraft || !!savedDraftId || editingInternship?.status === 'draft'}
+                    hint={
+                      savedDraftId || editingInternship?.status === 'draft'
+                        ? 'Required when you publish. Drafts are not visible to students.'
+                        : 'Required to publish. Optional if you only Save as Draft.'
+                    }
+                    emptyMessage="No approved campuses. Request access from the campus directory first."
+                  />
+                  <InternFieldError message={fieldErrors._campuses} />
+                </Field>
+              ) : null}
+              <Field className="gap-2">
+                <FieldLabel>Skills (comma-separated)</FieldLabel>
+                <Input
+                  placeholder="Python, SQL, ML"
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                />
+              </Field>
+              <Field className="gap-2">
+                <FieldLabel>Additional notes</FieldLabel>
+                <Textarea
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Location, PPO hint, project details…"
+                />
+              </Field>
+            </FieldGroup>
+          </TabsContent>
+        </Tabs>
       </EmployerListFormLayout>
     );
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <GraduationCap size={28} className="text-secondary" strokeWidth={1.5} /> Internship Programs
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <GraduationCap className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+            Internship Programs
           </h1>
-          <p className="text-secondary">
-            Post internships to <span className="font-mono text-xs">job_postings</span> (same pipeline as Job Postings). Stipend fields are stored as monthly INR.
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
+            Post internships to <span className="font-mono text-xs">job_postings</span> (same pipeline as Job Postings).
+            Stipend fields are stored as monthly INR.
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           {totalCount > 0 ? (
             <ExportCsvSplitButton
               mode="dual"
@@ -753,48 +829,104 @@ export default function EmployerInternshipsPage() {
               getRows={getInternshipsCsv}
             />
           ) : null}
-          <button type="button" className="btn btn-primary" onClick={openForm}>
-            <Plus size={16} /> Post Internship
-          </button>
+          <Button type="button" onClick={openForm}>
+            <Plus data-icon="inline-start" />
+            Post Internship
+          </Button>
         </div>
       </div>
 
-      {jobsError && (
-        <div className="card" style={{ marginBottom: '1rem', borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0 }}>
-            Could not load internships: {jobsError.message}. Check login and database configuration.
-          </p>
-        </div>
-      )}
+      {jobsError ? (
+        <Alert variant="destructive">
+          <AlertTitle>Could not load internships</AlertTitle>
+          <AlertDescription>
+            {jobsError.message}. Check login and database configuration.
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
-      <div className="grid grid-3" style={{ marginBottom: '2rem' }}>
-        <div className="stats-card">
-          <div className="stats-card-icon indigo"><Users size={24} strokeWidth={1.5} /></div>
-          <div className="stats-card-value">{stats.published}</div>
-          <div className="stats-card-label">Published internships</div>
-        </div>
-        <div className="stats-card green">
-          <div className="stats-card-icon green"><IndianRupee size={24} strokeWidth={1.5} /></div>
-          <div className="stats-card-value">{stats.avgStipend != null ? formatCurrency(stats.avgStipend) : '—'}</div>
-          <div className="stats-card-label">Avg monthly stipend</div>
-        </div>
-        <div className="stats-card amber">
-          <div className="stats-card-icon amber"><Activity size={24} strokeWidth={1.5} /></div>
-          <div className="stats-card-value">{stats.count}</div>
-          <div className="stats-card-label">All internship records</div>
-        </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Card size="sm" className="gap-2">
+          <CardHeader className="gap-1 px-4">
+            <CardDescription className="flex items-center gap-2">
+              <Users className="size-4" strokeWidth={1.5} />
+              Published internships
+            </CardDescription>
+            <CardTitle className="text-2xl">{stats.published}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card size="sm" className="gap-2">
+          <CardHeader className="gap-1 px-4">
+            <CardDescription className="flex items-center gap-2">
+              <IndianRupee className="size-4" strokeWidth={1.5} />
+              Avg monthly stipend
+            </CardDescription>
+            <CardTitle className="text-2xl">
+              {stats.avgStipend != null ? formatCurrency(stats.avgStipend) : '—'}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+        <Card size="sm" className="gap-2">
+          <CardHeader className="gap-1 px-4">
+            <CardDescription className="flex items-center gap-2">
+              <Activity className="size-4" strokeWidth={1.5} />
+              All internship records
+            </CardDescription>
+            <CardTitle className="text-2xl">{stats.count}</CardTitle>
+          </CardHeader>
+        </Card>
       </div>
 
-      {jobsLoading && <PageLoading message="Loading internships…" variant="skeleton-list" inline />}
-      {!jobsLoading && !jobsError && internships.length === 0 && (
-        <div className="card" style={{ textAlign: 'center', padding: '3rem 2rem', border: '1px dashed var(--border-default)' }}>
-          <GraduationCap size={40} style={{ color: 'var(--text-tertiary)', margin: '0 auto 1rem', opacity: 0.35 }} />
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>No internship postings yet. Use Post Internship to publish one.</p>
-        </div>
-      )}
-      {!jobsLoading && !jobsError && totalCount > 0 && (
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-          <div style={{ flex: '1 1 320px', minWidth: 0 }}>
+      {jobsLoading ? <PageLoading message="Loading internships…" variant="skeleton-list" inline /> : null}
+
+      {!jobsLoading && !jobsError && internships.length === 0 ? (
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+              <GraduationCap className="size-7" />
+            </div>
+            <CardTitle className="mb-1 text-lg">No internship postings yet</CardTitle>
+            <CardDescription>Use Post Internship to publish one.</CardDescription>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {!jobsLoading && !jobsError && totalCount > 0 ? (
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-3 border-b px-4 py-3">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <CardTitle className="text-base">Your internship postings</CardTitle>
+                <CardDescription>
+                  Showing {filteredCount} of {totalCount}
+                </CardDescription>
+              </div>
+              <div
+                className="bg-muted flex w-fit items-center gap-0.5 rounded-lg p-[3px]"
+                role="group"
+                aria-label="View mode"
+              >
+                {[
+                  { mode: 'card', icon: LayoutGrid, label: 'Card view', short: 'Cards' },
+                  { mode: 'list', icon: List, label: 'List view', short: 'List' },
+                ].map(({ mode, icon: Icon, label, short }) => (
+                  <Button
+                    key={mode}
+                    type="button"
+                    size="sm"
+                    variant={viewMode === mode ? 'secondary' : 'ghost'}
+                    title={label}
+                    aria-label={label}
+                    aria-pressed={viewMode === mode}
+                    onClick={() => setViewMode(mode)}
+                    className="h-8 gap-1.5 px-2.5"
+                  >
+                    <Icon data-icon="inline-start" />
+                    {short}
+                  </Button>
+                ))}
+              </div>
+            </div>
             <DataTableToolbar
               search={search}
               onSearchChange={setSearch}
@@ -811,150 +943,121 @@ export default function EmployerInternshipsPage() {
               hasActiveFilters={hasActiveFilters}
               onClear={clearFilters}
             />
-          </div>
-          <div style={{ display: 'flex', background: 'var(--bg-secondary)', borderRadius: '10px', padding: '3px', gap: '2px', border: '1px solid var(--border-default)', flexShrink: 0 }}>
-            {[{ mode: 'card', icon: LayoutGrid, label: 'Card view' }, { mode: 'list', icon: List, label: 'List view' }].map(({ mode, icon: Icon, label }) => (
-              <button
-                key={mode}
-                type="button"
-                title={label}
-                aria-label={label}
-                aria-pressed={viewMode === mode}
-                onClick={() => setViewMode(mode)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  padding: '0.4rem 0.85rem',
-                  borderRadius: '7px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  transition: 'all 0.15s ease',
-                  background: viewMode === mode ? 'var(--bg-primary)' : 'transparent',
-                  color: viewMode === mode ? 'var(--primary-600)' : 'var(--text-tertiary)',
-                  boxShadow: viewMode === mode ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                }}
-              >
-                <Icon size={15} aria-hidden />
-                {mode === 'card' ? 'Cards' : 'List'}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-      {!jobsLoading && !jobsError && totalCount > 0 && viewMode === 'card' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem' }}>
-          {displayInternships.map((intern) => (
-            <InternshipCard
-              key={String(intern.id)}
-              intern={intern}
-              closingId={closingId}
-              withdrawingId={withdrawingId}
-              onCampusSync={openCampusSync}
-              onDetails={openDetails}
-              onManage={openManage}
-              onClosePosting={closePublishedInternship}
-              onWithdrawPosting={withdrawPublishedInternship}
-            />
-          ))}
-          {displayInternships.length === 0 && (
-            <div style={{ gridColumn: '1 / -1', padding: '4rem 2rem', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-xl)', border: '1px dashed var(--border-default)' }}>
-              <GraduationCap size={48} className="text-tertiary" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>No internships match</h3>
-              <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Try adjusting your search or status filter.</p>
-            </div>
-          )}
-        </div>
-      )}
-      {!jobsLoading && !jobsError && totalCount > 0 && viewMode === 'list' && (
-        <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border-default)' }}>
-          <div className="table-container" style={{ border: 'none', overflowX: 'auto' }}>
-            <table className="data-table" style={{ minWidth: 880 }}>
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)' }}>
-                  <th style={{ paddingLeft: '1.25rem' }}>Title</th>
-                  <th>Stipend / month</th>
-                  <th>Period</th>
-                  <th>Min CGPA</th>
-                  <th>Openings</th>
-                  <th>Status</th>
-                  <th>Posted</th>
-                  <th style={{ textAlign: 'right', paddingRight: '1.25rem', width: 1 }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          </CardHeader>
+          <CardContent className="p-0">
+            {viewMode === 'list' ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Stipend / month</TableHead>
+                    <TableHead>Period</TableHead>
+                    <TableHead>Min CGPA</TableHead>
+                    <TableHead>Openings</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Posted</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {displayInternships.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
+                        No internships match your search or filters.
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                  {displayInternships.map((intern) => {
+                    const listDates = resolveInternshipDatesFromRow(intern);
+                    return (
+                      <TableRow key={String(intern.id)}>
+                        <TableCell className="max-w-[16rem]">
+                          <div className="font-medium">{intern.title}</div>
+                          {intern.keywords ? (
+                            <div className="text-muted-foreground mt-0.5 truncate text-xs">{intern.keywords}</div>
+                          ) : null}
+                        </TableCell>
+                        <TableCell>{stipendLabel(intern.salaryMin, intern.salaryMax)}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatInternshipPeriodLabel(listDates.startDate, listDates.endDate, formatDate) || '—'}
+                        </TableCell>
+                        <TableCell>{formatEmployerMinCgpa(intern.minCgpa ?? intern.cgpa)}</TableCell>
+                        <TableCell>{intern.vacancies ?? '—'}</TableCell>
+                        <TableCell className="min-w-[6.5rem]">
+                          <StatusBadge status={intern.status || 'draft'} showDot>
+                            {formatJobPostingStatus(intern.status) || 'Draft'}
+                          </StatusBadge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {intern.createdAt ? formatDate(intern.createdAt) : '—'}
+                        </TableCell>
+                        <TableCell className="text-right whitespace-nowrap">
+                          <div className="inline-flex items-center justify-end gap-1">
+                            {intern.status === 'published' ? (
+                              <StandardTableIconAction
+                                action="sync"
+                                variant="ghost"
+                                showLabel={false}
+                                disabled={campusSyncSubmitting && campusSyncJobId === intern.id}
+                                tooltip={
+                                  campusSyncSubmitting && campusSyncJobId === intern.id
+                                    ? 'Syncing campuses…'
+                                    : undefined
+                                }
+                                onClick={() => openCampusSync(intern.id)}
+                              />
+                            ) : null}
+                            <StandardTableIconAction
+                              action="details"
+                              variant="ghost"
+                              showLabel={false}
+                              onClick={() => openDetails(intern)}
+                            />
+                            <StandardTableIconAction
+                              action="manage"
+                              variant="ghost"
+                              showLabel={false}
+                              onClick={() => openManage(intern)}
+                            />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
                 {displayInternships.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} className="text-center text-secondary">
-                      No internships match your search or filters.
-                    </td>
-                  </tr>
-                ) : null}
-                {displayInternships.map((intern) => {
-                  const listDates = resolveInternshipDatesFromRow(intern);
-                  return (
-                  <tr key={String(intern.id)}>
-                    <td style={{ paddingLeft: '1.25rem', maxWidth: 280 }}>
-                      <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{intern.title}</div>
-                      {intern.keywords ? (
-                        <div className="text-xs text-tertiary" style={{ marginTop: '0.2rem' }}>{intern.keywords}</div>
-                      ) : null}
-                    </td>
-                    <td className="text-sm">{stipendLabel(intern.salaryMin, intern.salaryMax)}</td>
-                    <td className="text-sm text-secondary">
-                      {formatInternshipPeriodLabel(listDates.startDate, listDates.endDate, formatDate) || '—'}
-                    </td>
-                    <td className="text-sm">{formatEmployerMinCgpa(intern.minCgpa ?? intern.cgpa)}</td>
-                    <td className="text-sm">{intern.vacancies ?? '—'}</td>
-                    <td>
-                      <span className={`badge badge-${getStatusColor(intern.status)} badge-dot`}>{formatJobPostingStatus(intern.status)}</span>
-                    </td>
-                    <td className="text-sm text-secondary">{intern.createdAt ? formatDate(intern.createdAt) : '—'}</td>
-                    <td style={{ textAlign: 'right', paddingRight: '1.25rem', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        {intern.status === 'published' ? (
-                          <StandardTableIconAction
-                            action="sync"
-                            variant="ghost"
-                            showLabel={false}
-                            disabled={campusSyncSubmitting && campusSyncJobId === intern.id}
-                            tooltip={
-                              campusSyncSubmitting && campusSyncJobId === intern.id
-                                ? 'Syncing campuses…'
-                                : undefined
-                            }
-                            onClick={() => openCampusSync(intern.id)}
-                          />
-                        ) : null}
-                        <StandardTableIconAction
-                          action="details"
-                          variant="ghost"
-                          showLabel={false}
-                          onClick={() => openDetails(intern)}
-                        />
-                        <StandardTableIconAction
-                          action="manage"
-                          variant="ghost"
-                          showLabel={false}
-                          onClick={() => openManage(intern)}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );})}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+                  <div className="col-span-full py-12 text-center">
+                    <GraduationCap className="text-muted-foreground mx-auto mb-3 size-12 opacity-50" />
+                    <CardTitle className="mb-1 text-lg">No internships match</CardTitle>
+                    <CardDescription>Try adjusting your search or status filter.</CardDescription>
+                  </div>
+                ) : (
+                  displayInternships.map((intern) => (
+                    <InternshipCard
+                      key={String(intern.id)}
+                      intern={intern}
+                      closingId={closingId}
+                      withdrawingId={withdrawingId}
+                      onCampusSync={openCampusSync}
+                      onDetails={openDetails}
+                      onManage={openManage}
+                      onClosePosting={closePublishedInternship}
+                      onWithdrawPosting={withdrawPublishedInternship}
+                    />
+                  ))
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ) : null}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-        <div className="text-sm text-secondary">
-          {internships.length} internship posting{internships.length === 1 ? '' : 's'} from your company
-        </div>
-      </div>
+      <p className="text-muted-foreground m-0 text-sm">
+        {internships.length} internship posting{internships.length === 1 ? '' : 's'} from your company
+      </p>
 
       {detailInternship ? (
         <InternshipDetailDialog
@@ -997,140 +1100,113 @@ function InternshipCard({
   const apps = Number(intern.applications) || 0;
 
   return (
-    <div
-      className="card card-hover"
-      style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', height: '100%', border: '1px solid var(--border-default)' }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-        <div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.35rem', letterSpacing: '-0.01em' }}>
-            {intern.title}
-          </h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <span className={`badge badge-${getStatusColor(intern.status)}`} style={{ padding: '0.2rem 0.5rem' }}>
-              {formatJobPostingStatus(intern.status)}
-            </span>
-            {periodLabel ? (
-              <span className="badge badge-gray" style={{ padding: '0.2rem 0.5rem' }}>
-                {periodLabel}
-              </span>
-            ) : null}
+    <Card size="sm" className="h-full gap-3">
+      <CardHeader className="gap-2 px-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <CardTitle className="text-base">{intern.title}</CardTitle>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <StatusBadge status={intern.status} showDot>
+                {formatJobPostingStatus(intern.status)}
+              </StatusBadge>
+              {periodLabel ? <Badge variant="secondary">{periodLabel}</Badge> : null}
+            </div>
+          </div>
+          <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-md">
+            <GraduationCap className="size-4" />
           </div>
         </div>
-        <div style={{ background: 'var(--success-50)', padding: '0.5rem', borderRadius: 'var(--radius-md)' }}>
-          <GraduationCap size={20} className="text-success-700" />
-        </div>
-      </div>
-      {intern.keywords ? (
-        <p className="text-xs" style={{ margin: '0 0 1rem', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
-          <span className="font-semibold text-tertiary">Skills:</span> {intern.keywords}
-        </p>
-      ) : null}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-          marginTop: 'auto',
-          padding: '1rem 0',
-          borderTop: '1px solid var(--border-default)',
-          borderBottom: '1px solid var(--border-default)',
-        }}
-      >
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            <IndianRupee size={14} style={{ color: 'var(--text-tertiary)' }} />
+        {intern.keywords ? (
+          <CardDescription className="line-clamp-2">
+            <span className="font-medium">Skills:</span> {intern.keywords}
+          </CardDescription>
+        ) : null}
+      </CardHeader>
+      <CardContent className="flex flex-1 flex-col gap-3 px-4">
+        <div className="text-muted-foreground grid grid-cols-2 gap-2 text-sm">
+          <span className="inline-flex items-center gap-1.5">
+            <IndianRupee className="size-3.5" />
             {stipendLabel(intern.salaryMin, intern.salaryMax)}
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            <Users size={14} style={{ color: 'var(--text-tertiary)' }} />
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="size-3.5" />
             {intern.vacancies ?? '—'} openings
           </span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            <GraduationCap size={14} style={{ color: 'var(--text-tertiary)' }} />
+          <span className="inline-flex items-center gap-1.5">
+            <GraduationCap className="size-3.5" />
             Min CGPA: {formatEmployerMinCgpa(intern.minCgpa ?? intern.cgpa)}
           </span>
-          <span
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.85rem',
-              color: 'var(--primary-700)',
-              fontWeight: 600,
-              background: 'var(--primary-50)',
-              padding: '0.1rem 0.4rem',
-              borderRadius: 'var(--radius-sm)',
-              width: 'fit-content',
-            }}
-          >
-            <FileText size={14} aria-hidden />
+          <span className="text-primary bg-primary/10 inline-flex w-fit items-center gap-1.5 rounded-md px-1.5 py-0.5 text-sm font-semibold">
+            <FileText className="size-3.5" aria-hidden />
             {apps} App{apps === 1 ? '' : 's'}
           </span>
         </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1.25rem' }}>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: '0.6rem' }} onClick={() => onManage(intern)}>
-            Manage
-          </button>
-          <a
-            className="btn btn-primary"
-            href={`/dashboard/employer/applications?tab=internships&jobId=${intern.id}`}
-            style={{ flex: 1, padding: '0.6rem', textAlign: 'center', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
-          >
-            Pipeline <ArrowRight size={14} aria-hidden />
-          </a>
-        </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-ghost" style={{ flex: 1, padding: '0.55rem', fontSize: '0.85rem' }} onClick={() => onDetails(intern)}>
-            Details
-          </button>
-          {intern.status === 'published' && (
-            <button
-              type="button"
-              className="btn btn-ghost"
-              style={{ flex: 1, padding: '0.55rem', fontSize: '0.85rem' }}
-              onClick={() => onCampusSync(intern.id)}
-              title="Sync campuses"
+
+        <div className="mt-auto flex flex-col gap-2 border-t pt-3">
+          <div className="flex gap-2">
+            <Button type="button" variant="secondary" className="flex-1" onClick={() => onManage(intern)}>
+              Manage
+            </Button>
+            <Button
+              className="flex-1"
+              render={<a href={`/dashboard/employer/applications?tab=internships&jobId=${intern.id}`} />}
+              nativeButton={false}
             >
-              <Users size={14} style={{ marginRight: '0.25rem' }} aria-hidden />
-              Sync campuses
-            </button>
-          )}
-        </div>
-        {intern.status === 'published' && (
-          <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              style={{ flex: 1, padding: '0.55rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: 'var(--text-secondary)' }}
-              disabled={closingId === intern.id || withdrawingId === intern.id}
-              onClick={() => void onClosePosting(intern)}
-            >
-              <Ban size={16} aria-hidden />
-              {closingId === intern.id ? 'Closing…' : 'Close'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              style={{ flex: 1, padding: '0.55rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', color: 'var(--danger-600)' }}
-              disabled={withdrawingId === intern.id || closingId === intern.id}
-              onClick={() => void onWithdrawPosting(intern)}
-              title="Withdraw posting; students see applications under Withdrawn"
-            >
-              <Undo2 size={16} aria-hidden />
-              {withdrawingId === intern.id ? 'Withdrawing…' : 'Withdraw'}
-            </button>
+              Pipeline
+              <ArrowRight data-icon="inline-end" />
+            </Button>
           </div>
-        )}
-      </div>
-      <div className="text-xs text-tertiary" style={{ textAlign: 'center', marginTop: '1rem' }}>
-        Posted {intern.createdAt ? formatDate(intern.createdAt) : '—'}
-      </div>
-    </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={() => onDetails(intern)}>
+              Details
+            </Button>
+            {intern.status === 'published' ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="flex-1"
+                onClick={() => onCampusSync(intern.id)}
+                title="Sync campuses"
+              >
+                <Users data-icon="inline-start" />
+                Sync campuses
+              </Button>
+            ) : null}
+          </div>
+          {intern.status === 'published' ? (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="flex-1"
+                disabled={closingId === intern.id || withdrawingId === intern.id}
+                onClick={() => void onClosePosting(intern)}
+              >
+                <Ban data-icon="inline-start" />
+                {closingId === intern.id ? 'Closing…' : 'Close'}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive flex-1"
+                disabled={withdrawingId === intern.id || closingId === intern.id}
+                onClick={() => void onWithdrawPosting(intern)}
+                title="Withdraw posting; students see applications under Withdrawn"
+              >
+                <Undo2 data-icon="inline-start" />
+                {withdrawingId === intern.id ? 'Withdrawing…' : 'Withdraw'}
+              </Button>
+            </div>
+          ) : null}
+          <p className="text-muted-foreground m-0 text-center text-xs">
+            Posted {intern.createdAt ? formatDate(intern.createdAt) : '—'}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -1156,101 +1232,89 @@ function InternshipDetailDialog({
   }).filter((row) => row.id !== 'status' && row.id !== 'resume' && row.id !== 'placement' && row.id !== 'cgpa');
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="internship-detail-title"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem',
+    <Dialog
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
       }}
     >
-      <button
-        type="button"
-        aria-label="Close details"
-        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', border: 'none', cursor: 'pointer' }}
-        onClick={onClose}
-      />
-      <div
-        className="card animate-slideUp"
-        style={{ position: 'relative', width: '100%', maxWidth: 560, maxHeight: '90vh', overflow: 'auto' }}
-      >
-        <div className="card-header">
-          <h3 id="internship-detail-title" className="card-title">{internship.title}</h3>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onClose}>
-            ✕ Close
-          </button>
-        </div>
-        <div style={{ display: 'grid', gap: '0.85rem' }}>
-          <DetailRow label="Status">
-            <span className={`badge badge-${getStatusColor(internship.status)} badge-dot`}>{formatJobPostingStatus(internship.status)}</span>
-          </DetailRow>
-          <DetailRow label="Stipend / month">{stipendLabel(internship.salaryMin, internship.salaryMax)}</DetailRow>
-          <DetailRow label="Start date">{dates.startDate ? formatDate(dates.startDate) : '—'}</DetailRow>
-          <DetailRow label="End date">{dates.endDate ? formatDate(dates.endDate) : '—'}</DetailRow>
-          <DetailRow label="Branch">{branchLabel}</DetailRow>
-          <DetailRow label="Specialization">{specializationLabel}</DetailRow>
-          <DetailRow label="Min CGPA">{formatEmployerMinCgpa(internship.minCgpa ?? internship.cgpa)}</DetailRow>
-          <DetailRow label="Openings">{internship.vacancies ?? '—'}</DetailRow>
-          <DetailRow label="Posted">{internship.createdAt ? formatDate(internship.createdAt) : '—'}</DetailRow>
-          {internship.keywords ? <DetailRow label="Skills">{internship.keywords}</DetailRow> : null}
+      <DialogContent className="sm:max-w-xl gap-4" showCloseButton>
+        <DialogHeader className="gap-2 pr-8">
+          <DialogTitle id="internship-detail-title" className="text-xl font-semibold">
+            {internship.title}
+          </DialogTitle>
+          <DialogDescription>
+            <StatusBadge status={internship.status} showDot>
+              {formatJobPostingStatus(internship.status)}
+            </StatusBadge>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid max-h-[min(60vh,28rem)] gap-3 overflow-y-auto pr-1">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <DetailField label="Stipend / month">{stipendLabel(internship.salaryMin, internship.salaryMax)}</DetailField>
+            <DetailField label="Start date">{dates.startDate ? formatDate(dates.startDate) : '—'}</DetailField>
+            <DetailField label="End date">{dates.endDate ? formatDate(dates.endDate) : '—'}</DetailField>
+            <DetailField label="Branch">{branchLabel}</DetailField>
+            <DetailField label="Specialization">{specializationLabel}</DetailField>
+            <DetailField label="Min CGPA">{formatEmployerMinCgpa(internship.minCgpa ?? internship.cgpa)}</DetailField>
+            <DetailField label="Openings">{internship.vacancies ?? '—'}</DetailField>
+            <DetailField label="Posted">{internship.createdAt ? formatDate(internship.createdAt) : '—'}</DetailField>
+          </div>
+          {internship.keywords ? <DetailField label="Skills">{internship.keywords}</DetailField> : null}
           {eligibilityChecks.length > 0 ? (
-            <div style={{ marginTop: '0.25rem' }}>
-              <div className="text-xs font-semibold text-tertiary" style={{ marginBottom: '0.5rem' }}>Eligibility</div>
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+            <DetailField label="Eligibility">
+              <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
                 {eligibilityChecks.map((row) => (
-                  <li key={row.id} className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-                    <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{row.label}:</span>{' '}
-                    {row.requirement}
+                  <li key={row.id} className="text-sm leading-relaxed">
+                    <span className="font-semibold">{row.label}:</span> {row.requirement}
                   </li>
                 ))}
               </ul>
-            </div>
+            </DetailField>
           ) : (
-            <DetailRow label="Eligibility">Open to all eligible students</DetailRow>
+            <DetailField label="Eligibility">Open to all eligible students</DetailField>
           )}
-          {parsed.notes ? <DetailRow label="Notes">{parsed.notes}</DetailRow> : null}
+          {parsed.notes ? <DetailField label="Notes">{parsed.notes}</DetailField> : null}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
+
+        <DialogFooter className="gap-2 sm:justify-end">
           {internship.status === 'published' ? (
             <>
-              <button
+              <Button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                variant="secondary"
+                size="sm"
                 disabled={closingId === internship.id || withdrawingId === internship.id}
                 onClick={() => void onClosePosting(internship)}
               >
                 {closingId === internship.id ? 'Closing…' : 'Close posting'}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="btn btn-ghost btn-sm"
+                variant="ghost"
+                size="sm"
                 disabled={withdrawingId === internship.id || closingId === internship.id}
                 onClick={() => void onWithdrawPosting(internship)}
               >
                 {withdrawingId === internship.id ? 'Withdrawing…' : 'Withdraw'}
-              </button>
+              </Button>
             </>
           ) : null}
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => onManage(internship)}>
+          <Button type="button" variant="secondary" size="sm" onClick={() => onManage(internship)}>
             Manage
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
-function DetailRow({ label, children }) {
+function DetailField({ label, children }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '0.75rem', alignItems: 'start' }}>
-      <span className="text-xs font-semibold text-tertiary" style={{ paddingTop: '0.15rem' }}>{label}</span>
-      <span className="text-sm" style={{ color: 'var(--text-primary)', lineHeight: 1.5 }}>{children}</span>
+    <div className="bg-muted/50 rounded-lg border px-3.5 py-3">
+      <div className="text-muted-foreground mb-1.5 text-xs font-medium tracking-wide uppercase">{label}</div>
+      <div className="text-foreground text-sm leading-relaxed">{children}</div>
     </div>
   );
 }
@@ -1263,6 +1327,5 @@ function stipendLabel(min, max) {
   if (min != null && max != null) {
     return `${formatCurrency(Number(min))}–${formatCurrency(Number(max))}/mo`;
   }
-  if (min != null) return `${formatCurrency(Number(min))}/mo`;
-  return `${formatCurrency(Number(max))}/mo`;
+  return `${formatCurrency(Number(min ?? max))}/mo`;
 }

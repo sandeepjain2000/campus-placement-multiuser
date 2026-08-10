@@ -5,6 +5,9 @@ import useSWR from 'swr';
 import { List, CalendarDays, Calendar as CalendarIcon, LayoutGrid } from 'lucide-react';
 import { CampusCalendarGrid } from '@/components/calendar/CampusCalendarGrid';
 import { studentEventsToCalendarItems } from '@/lib/calendarItems';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -24,89 +27,84 @@ export default function StudentPlacementCalendarPage() {
   const calItems = useMemo(() => studentEventsToCalendarItems(events), [events]);
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <CalendarIcon size={24} style={{ color: 'var(--primary-500)' }} />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-12">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <CalendarIcon className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} aria-hidden="true" />
             Placement Calendar
           </h1>
-          <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             See when companies visit, deadlines land, and off-campus venues are scheduled.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.25rem', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
+        <Tabs value={viewMode} onValueChange={setViewMode}>
+          <TabsList aria-label="Calendar view">
           {[
             { id: 'list', label: 'List', icon: List },
             { id: 'week', label: 'Week', icon: CalendarDays },
             { id: 'month', label: 'Month', icon: CalendarIcon },
             { id: 'year', label: 'Year', icon: LayoutGrid }
           ].map((v) => (
-            <button
+            <TabsTrigger
               key={v.id}
-              onClick={() => setViewMode(v.id)}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
-                padding: '0.35rem 0.75rem', borderRadius: '6px', border: 'none',
-                background: viewMode === v.id ? 'var(--bg-primary)' : 'transparent',
-                color: viewMode === v.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-                fontWeight: viewMode === v.id ? 600 : 500, fontSize: '0.85rem',
-                boxShadow: viewMode === v.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                cursor: 'pointer', transition: 'all 0.15s ease',
-              }}
+              value={v.id}
             >
-              <v.icon size={14} />
+              <v.icon data-icon="inline-start" aria-hidden="true" />
               {v.label}
-            </button>
+            </TabsTrigger>
           ))}
-        </div>
+          </TabsList>
+        </Tabs>
       </div>
 
-      <div className="card" style={{ padding: viewMode === 'list' ? '1.5rem' : 0, overflow: 'hidden' }}>
+      <Card className="gap-0 overflow-hidden py-0">
         {/* --- LIST VIEW --- */}
         {viewMode === 'list' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-default)' }}>
-              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Upcoming Events</h3>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{events.length} total</div>
-            </div>
+          <>
+          <CardHeader className="border-border border-b">
+            <CardTitle>Upcoming Events</CardTitle>
+            <CardDescription>{events.length} total</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 py-4">
             {isLoading ? (
-              <div className="text-secondary text-sm">Loading...</div>
+              <p className="text-muted-foreground m-0 text-sm">Loading…</p>
             ) : events.length === 0 ? (
-              <div className="text-secondary text-sm" style={{ padding: '2rem 0', textAlign: 'center' }}>No upcoming events found.</div>
+              <p className="text-muted-foreground m-0 py-8 text-center text-sm">No upcoming events found.</p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {events.sort((a,b) => new Date(a.date) - new Date(b.date)).map((ev, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-secondary)' }}>
-                    <div style={{ minWidth: '100px' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-tertiary)' }}>
+              <div className="flex flex-col gap-3">
+                {[...events].sort((a,b) => new Date(a.date) - new Date(b.date)).map((ev, i) => (
+                  <Card key={ev.id || i} size="sm" className="bg-muted/30">
+                    <CardContent className="flex min-w-0 items-start gap-4">
+                    <div className="min-w-24 shrink-0">
+                      <div className="text-muted-foreground text-xs font-semibold uppercase tracking-wide">
                         {new Date(ev.date).toLocaleDateString('en-US', { weekday: 'short' })}
                       </div>
-                      <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      <div className="text-foreground font-semibold">
                         {new Date(ev.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </div>
                       {new Date(ev.date).getFullYear() !== today.getFullYear() && (
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{new Date(ev.date).getFullYear()}</div>
+                        <div className="text-muted-foreground text-xs">{new Date(ev.date).getFullYear()}</div>
                       )}
                     </div>
-                    <div style={{ width: '1px', background: 'var(--border-default)', alignSelf: 'stretch' }} />
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 0.25rem', fontSize: '1rem', fontWeight: 600 }}>{ev.title}</h4>
-                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        <span className={`badge badge-${ev.type === 'virtual' ? 'blue' : 'indigo'} badge-dot`} style={{ fontSize: '0.75rem' }}>
+                    <div className="border-border min-w-0 flex-1 border-l pl-4">
+                      <h3 className="text-foreground m-0 truncate font-medium" title={ev.title}>{ev.title}</h3>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <StatusBadge tone={ev.type === 'virtual' ? 'blue' : 'indigo'} showDot>
                           {ev.type === 'virtual' ? 'Virtual' : 'On-Campus'}
-                        </span>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>•</span>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
+                        </StatusBadge>
+                        <StatusBadge status={ev.status} showDot>
                           {ev.status}
-                        </span>
+                        </StatusBadge>
                       </div>
                     </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             )}
-          </div>
+          </CardContent>
+          </>
         )}
 
         {viewMode !== 'list' && !isLoading ? (
@@ -119,11 +117,13 @@ export default function StudentPlacementCalendarPage() {
             onChangeView={setViewMode}
           />
         ) : null}
-      </div>
+      </Card>
 
-      <p className="text-sm text-secondary" style={{ marginTop: '1rem' }}>
-        Tip: Use <strong>Browse drives</strong> to apply to upcoming events. This calendar is a read-only snapshot for planning.
-      </p>
+      <Card size="sm" className="bg-muted/30">
+        <CardContent className="text-muted-foreground">
+          Tip: Use <strong className="text-foreground">Browse Drives</strong> to apply to upcoming events. This calendar is a read-only snapshot for planning.
+        </CardContent>
+      </Card>
     </div>
   );
 }

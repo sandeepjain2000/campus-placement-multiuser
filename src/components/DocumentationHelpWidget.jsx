@@ -4,6 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { X, Sparkles, MessageCircleQuestion, ExternalLink } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getDevScreenId } from '@/config/devScreenIds';
 import { appendClientDebugLog } from '@/lib/clientDebugLog';
 import { clientSafeMessageFromBody, stripInternalApiFields } from '@/lib/publicApiErrorClient';
@@ -223,103 +230,45 @@ export default function DocumentationHelpWidget({ fullDocHref = '/dashboard/help
   return (
     <>
       {!open && (
-        <button
+        <Button
           type="button"
-          className="documentation-help-fab"
+          className="documentation-help-fab fixed right-5 bottom-5 z-40 rounded-full shadow-lg"
           onClick={() => setOpen(true)}
           title="Help — answers from your documentation (Esc to close when open)"
           aria-expanded="false"
           aria-label="Open help panel"
-          style={{
-            position: 'fixed',
-            bottom: '1.25rem',
-            right: '1.25rem',
-            zIndex: 1200,
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.45rem',
-            padding: '0.65rem 1rem',
-            borderRadius: '999px',
-            border: '1px solid var(--border-default)',
-            background: 'var(--primary-600)',
-            color: '#fff',
-            fontWeight: 600,
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
-          }}
         >
-          <Sparkles size={18} aria-hidden />
+          <Sparkles data-icon="inline-start" aria-hidden />
           Help
-        </button>
+        </Button>
       )}
 
       {open && (
-        <>
-          <button
-            type="button"
-            aria-label="Close help overlay"
-            onClick={() => setOpen(false)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 1298,
-              background: 'rgba(15,23,42,0.35)',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          />
-          <aside
-            className="documentation-help-panel"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="documentation-help-title"
-            style={{
-              position: 'fixed',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: 'min(420px, 100vw)',
-              zIndex: 1299,
-              background: 'var(--bg-primary)',
-              borderLeft: '1px solid var(--border-default)',
-              boxShadow: '-4px 0 24px rgba(0,0,0,0.12)',
-              display: 'flex',
-              flexDirection: 'column',
-              fontSize: '0.875rem',
-            }}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent
+            showCloseButton={false}
+            className="documentation-help-panel top-0 right-0 bottom-0 left-auto flex h-svh w-full max-w-[420px] translate-x-0 translate-y-0 flex-col gap-0 rounded-none p-0 sm:max-w-[420px]"
           >
-            <header
-              style={{
-                padding: '1rem 1rem 0.75rem',
-                borderBottom: '1px solid var(--border-default)',
-                display: 'flex',
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                gap: '0.75rem',
-              }}
-            >
+            <DialogHeader className="flex-row items-start justify-between gap-3 border-b p-4">
               <div>
-                <h2
-                  id="documentation-help-title"
-                  style={{ margin: 0, fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-                >
-                  <MessageCircleQuestion size={20} style={{ opacity: 0.9 }} aria-hidden />
+                <DialogTitle id="documentation-help-title" className="flex items-center gap-2">
+                  <MessageCircleQuestion aria-hidden />
                   PlacementHub help
-                </h2>
-                <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0' }}>
+                </DialogTitle>
+                <DialogDescription className="mt-1">
                   Screen <strong>{screenTag}</strong> · full help library + AI (like Cursor on docs/help)
-                </p>
+                </DialogDescription>
               </div>
-              <button
+              <Button
                 type="button"
-                className="btn btn-ghost btn-icon"
+                variant="ghost"
+                size="icon"
                 onClick={() => setOpen(false)}
                 aria-label="Close help"
               >
-                <X size={20} />
-              </button>
-            </header>
+                <X />
+              </Button>
+            </DialogHeader>
 
             <div
               style={{
@@ -329,59 +278,48 @@ export default function DocumentationHelpWidget({ fullDocHref = '/dashboard/help
               }}
             >
               <form onSubmit={onSubmit}>
-                <label htmlFor="documentation-help-query" className="form-label text-xs" style={{ display: 'block', marginBottom: '0.35rem' }}>
-                  Ask a question
-                </label>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <input
-                    id="documentation-help-query"
-                    className="form-input"
-                    placeholder="e.g. How do I upload assessment results CSV?"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoComplete="off"
-                    style={{ flex: 1 }}
-                  />
-                  <button type="submit" className="btn btn-primary" disabled={loading}>
-                    Search
-                  </button>
-                </div>
+                <Field>
+                  <FieldLabel htmlFor="documentation-help-query">Ask a Question</FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      id="documentation-help-query"
+                      name="documentation-help-query"
+                      placeholder="How do I upload assessment results CSV?…"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      autoComplete="off"
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <Button type="submit" size="sm" disabled={loading}>Search</Button>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </Field>
               </form>
               <p className="text-secondary" style={{ margin: '0.65rem 0 0', fontSize: '0.8125rem' }}>
                 Answers are drawn from the in-app help library. AI-powered answers may be limited when smart search is not enabled.
               </p>
-              {hint && (
-                <p className="text-xs text-warning-600" style={{ margin: '0.5rem 0 0' }}>
-                  {hint}
-                </p>
-              )}
-              {error && (
-                <p className="text-xs" style={{ margin: '0.5rem 0 0', color: 'var(--danger-600)' }}>
-                  {error}
-                </p>
-              )}
+              {hint ? <Alert className="mt-3"><AlertDescription>{hint}</AlertDescription></Alert> : null}
+              {error ? <Alert className="mt-3" variant="destructive"><AlertDescription>{error}</AlertDescription></Alert> : null}
             </div>
 
             <div style={{ padding: '1rem', flex: 1, overflowY: 'auto', minHeight: 0 }}>
               {loading && !aiAnswer && suggestions.length === 0 && !query.trim() && (
-                <p className="text-tertiary text-sm">Loading…</p>
+                <div className="flex flex-col gap-2" aria-label="Loading help">
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-9 w-4/5" />
+                </div>
               )}
 
               {aiAnswer && (
-                <div
-                  className="card"
-                  style={{
-                    marginBottom: '1rem',
-                    padding: '0.85rem',
-                    background: 'var(--primary-50, #eef2ff)',
-                    border: '1px solid var(--primary-200, #c7d2fe)',
-                  }}
-                >
-                  <div style={{ fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Sparkles size={16} aria-hidden />
+                <Card className="mb-4 bg-primary/5">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                    <Sparkles aria-hidden />
                     Answer
-                  </div>
-                  <div className="text-secondary" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.55 }}>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                  <div className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                     {aiAnswer}
                   </div>
                   {aiSources.length > 0 && (
@@ -405,30 +343,22 @@ export default function DocumentationHelpWidget({ fullDocHref = '/dashboard/help
                       </ul>
                     </div>
                   )}
-                </div>
+                  </CardContent>
+                </Card>
               )}
 
               {suggestionRows.length > 0 && !query.trim() && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
                   {suggestionRows.map((row) => (
-                    <button
+                    <Button
                       key={row.id}
                       type="button"
+                      variant="outline"
+                      className="h-auto justify-start whitespace-normal text-left"
                       onClick={() => pickSuggestion(row.question)}
-                      style={{
-                        textAlign: 'left',
-                        padding: '0.55rem 0.75rem',
-                        borderRadius: '999px',
-                        border: '1px solid var(--border-default)',
-                        background: 'var(--primary-50, #eef2ff)',
-                        color: 'var(--primary-800, #3730a3)',
-                        cursor: 'pointer',
-                        fontSize: '0.8125rem',
-                        lineHeight: 1.4,
-                      }}
                     >
                       {row.question}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -440,19 +370,13 @@ export default function DocumentationHelpWidget({ fullDocHref = '/dashboard/help
                   </p>
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {relatedFaqs.map((row) => (
-                      <li
-                        key={row.id}
-                        className="card"
-                        style={{
-                          padding: '0.75rem',
-                          background: 'var(--bg-secondary)',
-                          border: '1px solid var(--border-default)',
-                        }}
-                      >
-                        <div style={{ fontWeight: 600, marginBottom: '0.35rem' }}>{row.question}</div>
-                        <div className="text-secondary" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                      <li key={row.id}>
+                        <Card size="sm">
+                          <CardHeader><CardTitle>{row.question}</CardTitle></CardHeader>
+                          <CardContent className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                           {row.answer}
-                        </div>
+                          </CardContent>
+                        </Card>
                       </li>
                     ))}
                   </ul>
@@ -489,8 +413,8 @@ export default function DocumentationHelpWidget({ fullDocHref = '/dashboard/help
                   Open full help documentation
                 </Link>
             </div>
-          </aside>
-        </>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

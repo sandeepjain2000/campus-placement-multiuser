@@ -2,8 +2,32 @@
  * Shared utility functions for the Campus Placement platform
  */
 
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { parseYmdToLocalDate, toDateOnlyString } from '@/lib/dateOnly';
 import { formatIndianSalaryRangeInWords } from '@/lib/amountInWords';
+
+/** Merge Tailwind class names (shadcn `cn`). */
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+/**
+ * Soft status tone → Tailwind utility (light filled pill).
+ * Use with `<Badge className={statusBadgeClass(getStatusColor(s))} />`.
+ */
+export function statusBadgeClass(tone) {
+  const t = String(tone || 'gray').toLowerCase();
+  const map = {
+    gray: 'badge-status-gray',
+    blue: 'badge-status-blue',
+    indigo: 'badge-status-indigo',
+    green: 'badge-status-green',
+    amber: 'badge-status-amber',
+    red: 'badge-status-red',
+  };
+  return map[t] || map.gray;
+}
 
 /**
  * Format currency value (INR)
@@ -231,13 +255,6 @@ export function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
-}
-
-/**
- * Class name merger
- */
-export function cn(...classes) {
-  return classes.filter(Boolean).join(' ');
 }
 
 /**

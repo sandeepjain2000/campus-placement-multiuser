@@ -4,6 +4,7 @@ import { useId, useState } from 'react';
 import { ShieldAlert } from 'lucide-react';
 import PostingEligibilitySection from '@/components/student/PostingEligibilitySection';
 import { resolveApplyBlockReason } from '@/lib/getApplyBlockReason';
+import { Button } from '@/components/ui/button';
 
 /**
  * Apply button with upfront disable, helper text, tooltip, and eligibility explainer.
@@ -43,28 +44,27 @@ export default function StudentApplyEligibilityControls({
       internshipLocked,
     });
   const blocked = Boolean(blockReason);
-  const btnClass = size === 'sm' ? 'btn btn-primary btn-sm' : 'btn btn-primary';
 
   return (
     <div className="student-apply-eligibility-controls" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '0.5rem' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', justifyContent: 'flex-end' }}>
         {blocked ? (
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost btn-sm"
+            variant="ghost"
+            size="sm"
             aria-expanded={showWhy}
             aria-controls={showWhy ? `${helperId}-panel` : undefined}
             onClick={() => setShowWhy((v) => !v)}
             title="Why am I not eligible?"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           >
-            <ShieldAlert size={16} aria-hidden />
+            <ShieldAlert data-icon="inline-start" />
             Why not eligible?
-          </button>
+          </Button>
         ) : null}
-        <button
+        <Button
           type="button"
-          className={btnClass}
+          size={size === 'sm' ? 'sm' : 'default'}
           disabled={blocked || applying}
           aria-disabled={blocked || applying ? 'true' : undefined}
           title={blocked ? blockReason : undefined}
@@ -75,7 +75,7 @@ export default function StudentApplyEligibilityControls({
           }}
         >
           {applying ? 'Applying…' : applyLabel}
-        </button>
+        </Button>
       </div>
 
       {blocked ? (

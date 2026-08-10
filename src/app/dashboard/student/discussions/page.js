@@ -4,6 +4,12 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ConvBubble, ConvThread } from '@/components/messaging/ConvBubble';
 import { fetchJson } from '@/lib/fetchJson';
+import { MessageSquareText, Search } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 export default function StudentDiscussionsPage() {
   const [threads, setThreads] = useState([]);
@@ -46,75 +52,67 @@ export default function StudentDiscussionsPage() {
   const activeThread = threads.find((t) => t.id === activeId) || visibleThreads[0];
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>💬 Discussions</h1>
-          <p>
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <MessageSquareText className="text-muted-foreground size-7" strokeWidth={1.5} />
+            Discussions
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
             Threads between your placement office and recruiters. For official Q&amp;A batches from the committee, use{' '}
-            <Link href="/dashboard/student/clarifications" style={{ fontWeight: 600 }}>
+            <Link href="/dashboard/student/clarifications" className="text-foreground font-medium hover:underline">
               Clarifications
             </Link>
             .
           </p>
-        </div>
       </div>
 
-      {loadError ? (
-        <div className="card" style={{ marginBottom: '1rem', borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0, color: 'var(--danger-600)' }}>
-            {loadError}
-          </p>
-        </div>
-      ) : null}
+      {loadError ? <Alert variant="destructive"><AlertTitle>Could not load discussions</AlertTitle><AlertDescription>{loadError}</AlertDescription></Alert> : null}
 
-      <div
-        className="card student-discussions-grid"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(240px, 300px) 1fr',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ borderRight: '1px solid var(--border-default)', paddingRight: '1rem', minWidth: 0 }}>
-          <input
-            className="form-input"
+      <Card className="student-discussions-grid gap-0 overflow-hidden py-0 lg:grid lg:grid-cols-[minmax(240px,300px)_1fr]">
+        <div className="border-b p-4 lg:border-r lg:border-b-0">
+          <div className="relative">
+          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <Input
+            type="search"
+            name="discussion-search"
+            aria-label="Search discussions"
+            className="pl-9"
             placeholder="Search company or topic…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <div style={{ marginTop: '0.75rem', display: 'grid', gap: '0.5rem' }}>
+          </div>
+          <div className="mt-3 flex flex-col gap-2">
             {visibleThreads.map((t) => (
-              <button
+              <Button
                 key={t.id}
                 type="button"
-                className="btn btn-ghost"
-                style={{
-                  justifyContent: 'space-between',
-                  border: activeId === t.id ? '1px solid var(--primary-500)' : '1px solid var(--border-default)',
-                  textAlign: 'left',
-                }}
+                variant={activeId === t.id ? 'secondary' : 'outline'}
+                className="h-auto w-full justify-between px-3 py-2 text-left whitespace-normal"
                 onClick={() => setActiveId(t.id)}
               >
-                <span>
-                  <span className="badge badge-indigo">{t.company}</span>
-                  <div className="text-sm" style={{ marginTop: '0.25rem' }}>
-                    {t.topic}
-                  </div>
-                  <div className="text-xs text-tertiary">{t.lastActivity}</div>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold">{t.company}</span>
+                  <span className="text-muted-foreground mt-0.5 block truncate text-xs">{t.topic}</span>
+                  <span className="text-muted-foreground block text-xs">{t.lastActivity}</span>
                 </span>
-                <span className="badge badge-gray">{(t.replies || []).length}</span>
-              </button>
+                <StatusBadge tone="gray">{(t.replies || []).length}</StatusBadge>
+              </Button>
             ))}
+            {!loadError && visibleThreads.length === 0 ? <p className="text-muted-foreground m-0 py-6 text-center text-sm">No matching threads.</p> : null}
           </div>
         </div>
 
-        <div style={{ minWidth: 0 }}>
+        <div className="min-w-0">
           {activeThread ? (
             <>
-              <span className="badge badge-blue">{activeThread.company}</span>
-              <h3 style={{ marginTop: '0.5rem' }}>{activeThread.topic}</h3>
-              <div className="text-sm text-secondary">Last activity: {activeThread.lastActivity}</div>
+              <CardHeader className="border-b">
+                <StatusBadge tone="blue" className="w-fit">{activeThread.company}</StatusBadge>
+                <CardTitle>{activeThread.topic}</CardTitle>
+                <CardDescription>Last activity: {activeThread.lastActivity}</CardDescription>
+              </CardHeader>
+              <CardContent className="p-5">
               <ConvThread>
                 {(activeThread.replies || []).map((r, idx) => (
                   <ConvBubble
@@ -127,15 +125,16 @@ export default function StudentDiscussionsPage() {
                   </ConvBubble>
                 ))}
               </ConvThread>
-              <p className="text-xs text-tertiary" style={{ marginTop: '1rem' }}>
+              <p className="text-muted-foreground mt-4 mb-0 text-xs">
                 Replies are managed by your college and employers. You can follow the thread here; posting is not available on the student portal.
               </p>
+              </CardContent>
             </>
           ) : (
-            <div className="text-sm text-tertiary">No discussion threads yet.</div>
+            <CardContent className="text-muted-foreground py-16 text-center">No discussion threads yet.</CardContent>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

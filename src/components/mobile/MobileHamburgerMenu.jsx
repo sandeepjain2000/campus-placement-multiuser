@@ -13,6 +13,7 @@ import {
 import { DEFAULT_ENTITY_LOGO_URL } from '@/lib/clientAssetUrl';
 import EntityLogo from '@/components/EntityLogo';
 import { useResolvedBrandLogoUrl } from '@/hooks/useResolvedBrandLogoUrl';
+import { Button } from '@/components/ui/button';
 
 export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
   const brandLogoUrl = useResolvedBrandLogoUrl();
@@ -60,9 +61,9 @@ export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
             </div>
             <span style={{ fontWeight: 700, fontSize: '1.25rem', letterSpacing: '-0.02em' }}>PlacementHub</span>
           </div>
-          <button type="button" onClick={onClose} className="btn btn-ghost btn-icon" style={{ marginRight: '-0.5rem' }} aria-label="Close menu">
-            <X size={24} strokeWidth={2.5} />
-          </button>
+          <Button type="button" onClick={onClose} variant="ghost" size="icon" className="-mr-2" aria-label="Close menu">
+            <X aria-hidden="true" />
+          </Button>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 0' }}>
@@ -160,14 +161,14 @@ export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
               </div>
             </div>
           </Link>
-          <button
+          <Button
             type="button"
             onClick={() => signOut({ callbackUrl: '/login?force=1' })}
-            className="btn btn-secondary"
-            style={{ width: '100%', justifyContent: 'flex-start', gap: '0.75rem', padding: '0.75rem 1rem' }}
+            variant="outline"
+            className="w-full justify-start"
           >
-            <LogOut size={18} strokeWidth={2} /> Sign out
-          </button>
+            <LogOut data-icon="inline-start" /> Sign out
+          </Button>
         </div>
       </div>
 

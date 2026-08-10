@@ -7,6 +7,17 @@ import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS, ROLE_FILTER_OPTIONS, roleFilterFn } from '@/lib/tableQueryPresets';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { cn } from '@/lib/utils';
 
 export default function DataEntryUsersPage() {
   const { data: session } = useSession();
@@ -164,102 +175,51 @@ export default function DataEntryUsersPage() {
   const studentNameLocked = mode === 'edit' && form.role === 'student' && !isSuperAdmin;
 
   return (
-    <div className="animate-fadeIn" style={{ minHeight: '100vh', background: 'var(--bg-secondary)', padding: '2rem' }}>
-      <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-        <div className="page-header">
-          <div className="page-header-left">
-            <h1>Data Entry • Users</h1>
-            <p>Create base user records for your tenant.</p>
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <StandardTableIconAction action="add" variant="primary" onClick={openAdd} />
-            <button type="button" className="btn btn-secondary" onClick={loadRows}>Refresh</button>
-            <Link href="/data-entry" className="btn btn-secondary">Back to list</Link>
-          </div>
+    <div className="animate-fadeIn mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-medium text-muted-foreground">Data entry</p>
+          <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Create base user records for your tenant.</p>
         </div>
+        <div className="flex flex-wrap gap-2">
+          <StandardTableIconAction action="add" variant="primary" onClick={openAdd} />
+          <Button type="button" variant="outline" onClick={loadRows}>Refresh</Button>
+          <Link href="/data-entry" className={cn(buttonVariants({ variant: 'outline' }))}>Back to list</Link>
+        </div>
+      </header>
 
-        {showForm && (
-          <form className="card" onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-            <div className="card-header">
-              <h3 className="card-title">{mode === 'add' ? 'Add User' : 'Edit User'}</h3>
-            </div>
-            <div className="grid grid-2" style={{ gap: '1rem' }}>
-              <div className="form-group">
-                <label className="form-label">Email</label>
-                <input className="form-input" type="email" value={form.email} onChange={onChange('email')} required disabled={mode === 'edit'} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Role</label>
-                <select className="form-select" value={form.role} onChange={onChange('role')}>
-                  <option value="student">student</option>
-                  <option value="college_admin">college_admin</option>
-                  <option value="employer">employer</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">First name</label>
-                <input
-                  className="form-input"
-                  value={form.firstName}
-                  onChange={onChange('firstName')}
-                  required
-                  disabled={studentNameLocked}
-                  readOnly={studentNameLocked}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Last name</label>
-                <input
-                  className="form-input"
-                  value={form.lastName}
-                  onChange={onChange('lastName')}
-                  disabled={studentNameLocked}
-                  readOnly={studentNameLocked}
-                />
-              </div>
-              {studentNameLocked ? (
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <p className="text-xs text-secondary" style={{ margin: 0 }}>
-                    Student names can only be changed by a super admin.
-                  </p>
-                </div>
-              ) : null}
-              {mode === 'add' ? (
-                <div className="form-group">
-                  <label className="form-label">Password</label>
-                  <input
-                    className="form-input"
-                    type="password"
-                    autoComplete="new-password"
-                    placeholder="Choose initial password"
-                    value={form.password}
-                    onChange={onChange('password')}
-                    required
-                  />
-                </div>
-              ) : <div />}
-              <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1.8rem' }}>
-                <label className="form-label" style={{ margin: 0 }}>
-                  <input type="checkbox" checked={form.isVerified} onChange={onChange('isVerified')} /> Verified
-                </label>
-                <label className="form-label" style={{ margin: 0 }}>
-                  <input type="checkbox" checked={form.isActive} onChange={onChange('isActive')} /> Active
-                </label>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Saving...' : mode === 'add' ? 'Create User' : 'Update User'}
-              </button>
-              <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
-            </div>
-          </form>
-        )}
+      {error ? <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert> : null}
+      {success ? <Alert><AlertDescription>{success}</AlertDescription></Alert> : null}
 
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">Existing Users</h3>
-          </div>
+      {showForm && (
+        <Card>
+          <CardHeader><CardTitle>{mode === 'add' ? 'Add user' : 'Edit user'}</CardTitle></CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <FieldGroup className="grid gap-5 md:grid-cols-2">
+                <Field><FieldLabel>Email</FieldLabel><Input type="email" value={form.email} onChange={onChange('email')} required disabled={mode === 'edit'} /></Field>
+                <Field><FieldLabel>Role</FieldLabel><AdminFilterSelect className="w-full" value={form.role} onValueChange={(v) => setForm((prev) => ({ ...prev, role: v }))} emptyMapsToAll={false} items={[{ label: 'student', value: 'student' }, { label: 'college_admin', value: 'college_admin' }, { label: 'employer', value: 'employer' }]} /></Field>
+                <Field><FieldLabel>First name</FieldLabel><Input value={form.firstName} onChange={onChange('firstName')} required disabled={studentNameLocked} readOnly={studentNameLocked} />{studentNameLocked ? <FieldDescription>Student names can only be changed by a super admin.</FieldDescription> : null}</Field>
+                <Field><FieldLabel>Last name</FieldLabel><Input value={form.lastName} onChange={onChange('lastName')} disabled={studentNameLocked} readOnly={studentNameLocked} /></Field>
+                {mode === 'add' ? <Field><FieldLabel>Password</FieldLabel><Input type="password" autoComplete="new-password" placeholder="Choose initial password" value={form.password} onChange={onChange('password')} required /></Field> : null}
+                <Field orientation="horizontal" className="items-center gap-4">
+                  <FieldLabel className="flex items-center gap-2"><Checkbox checked={form.isVerified} onCheckedChange={(v) => setForm((prev) => ({ ...prev, isVerified: !!v }))} /> Verified</FieldLabel>
+                  <FieldLabel className="flex items-center gap-2"><Checkbox checked={form.isActive} onCheckedChange={(v) => setForm((prev) => ({ ...prev, isActive: !!v }))} /> Active</FieldLabel>
+                </Field>
+              </FieldGroup>
+              <div className="flex gap-2">
+                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Saving...' : mode === 'add' ? 'Create user' : 'Update user'}</Button>
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader><CardTitle>Existing users</CardTitle></CardHeader>
+        <CardContent>
           {!isLoading && totalCount > 0 ? (
             <DataTableToolbar
               search={search}
@@ -276,74 +236,45 @@ export default function DataEntryUsersPage() {
               totalCount={totalCount}
               hasActiveFilters={hasActiveFilters}
               onClear={clearFilters}
-              style={{ marginBottom: '1rem' }}
+              className="mb-4"
             />
           ) : null}
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Name</th>
-                  <th>Role</th>
-                  <th>Verified</th>
-                  <th>Active</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader><TableRow><TableHead>Email</TableHead><TableHead>Name</TableHead><TableHead>Role</TableHead><TableHead>Verified</TableHead><TableHead>Active</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+              <TableBody>
                 {displayRows.length === 0 && totalCount > 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-center text-secondary">No users match your search or filters.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">No users match your search or filters.</TableCell></TableRow>
                 ) : null}
                 {displayRows.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.email}</td>
-                    <td>{row.first_name} {row.last_name || ''}</td>
-                    <td>{row.role}</td>
-                    <td>{row.is_verified ? 'Yes' : 'No'}</td>
-                    <td>{row.is_active ? 'Yes' : 'No'}</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '0.4rem' }}>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
+                  <TableRow key={row.id}>
+                    <TableCell>{row.email}</TableCell>
+                    <TableCell>{row.first_name} {row.last_name || ''}</TableCell>
+                    <TableCell><Badge variant="secondary">{row.role}</Badge></TableCell>
+                    <TableCell><Badge variant={row.is_verified ? 'default' : 'outline'}>{row.is_verified ? 'Yes' : 'No'}</Badge></TableCell>
+                    <TableCell><Badge variant={row.is_active ? 'default' : 'outline'}>{row.is_active ? 'Yes' : 'No'}</Badge></TableCell>
+                    <TableCell><div className="flex flex-wrap items-center gap-1">
                           <StandardTableIconAction action="view" onClick={() => setViewRow(row)} />
                           <StandardTableIconAction action="edit" onClick={() => openEdit(row)} />
                           <StandardTableIconAction action="delete" variant="danger" onClick={() => handleDelete(row.id)} />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                    </div></TableCell>
+                  </TableRow>
                 ))}
                 {!isLoading && totalCount === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-secondary">No users found.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={6} className="text-muted-foreground">No users found.</TableCell></TableRow>
                 ) : null}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {viewRow ? (
-          <div className="card" style={{ marginTop: '1rem' }}>
-            <div className="card-header">
-              <h3 className="card-title">User Details</h3>
-              <button className="btn btn-secondary btn-sm" onClick={() => setViewRow(null)}>Close</button>
-            </div>
-            <div className="text-sm">
-              <div><strong>Email:</strong> {viewRow.email}</div>
-              <div><strong>Name:</strong> {viewRow.first_name} {viewRow.last_name || ''}</div>
-              <div><strong>Role:</strong> {viewRow.role}</div>
-              <div><strong>Verified:</strong> {viewRow.is_verified ? 'Yes' : 'No'}</div>
-              <div><strong>Active:</strong> {viewRow.is_active ? 'Yes' : 'No'}</div>
-            </div>
-          </div>
-        ) : null}
-
-        {error ? <div className="card" style={{ marginTop: '1rem', borderColor: 'var(--danger-300)' }}>{error}</div> : null}
-        {success ? <div className="card" style={{ marginTop: '1rem', borderColor: 'var(--success-300)' }}>{success}</div> : null}
-      </div>
+      <Dialog open={Boolean(viewRow)} onOpenChange={(open) => !open && setViewRow(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>User details</DialogTitle><DialogDescription>Account and access status for this user.</DialogDescription></DialogHeader>
+          {viewRow ? <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm"><dt className="font-medium">Email</dt><dd>{viewRow.email}</dd><dt className="font-medium">Name</dt><dd>{viewRow.first_name} {viewRow.last_name || ''}</dd><dt className="font-medium">Role</dt><dd>{viewRow.role}</dd><dt className="font-medium">Verified</dt><dd>{viewRow.is_verified ? 'Yes' : 'No'}</dd><dt className="font-medium">Active</dt><dd>{viewRow.is_active ? 'Yes' : 'No'}</dd></dl> : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

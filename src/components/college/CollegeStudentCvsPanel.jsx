@@ -8,6 +8,10 @@ import { collegeStudentCvDownloadUrl, collegeStudentCvViewUrl } from '@/lib/stud
 import { studentCvRowMissingFile } from '@/lib/studentCvLoadClient';
 import { reportClientApiFailure } from '@/lib/clientPlatformErrorReport';
 import { formatErrorReference } from '@/lib/errorReference';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 function formatVerifiedAt(value) {
   if (!value) return '';
@@ -158,70 +162,62 @@ export default function CollegeStudentCvsPanel({ studentId }) {
   };
 
   if (loading) {
-    return <p className="text-sm text-secondary">Loading uploaded CVs…</p>;
+    return <p className="text-sm text-muted-foreground">Loading uploaded CVs…</p>;
   }
 
   if (!items.length) {
     const isFailed = loadKind === 'request_failed' || loadKind === 'unavailable';
-    return (
-      <p
-        className="text-sm"
-        style={{
-          margin: 0,
-          color: isFailed ? 'var(--warning-800, #92400e)' : 'var(--text-secondary)',
-        }}
-        role={isFailed ? 'status' : undefined}
-      >
+    return isFailed ? (
+      <Alert>
+        <CircleAlert aria-hidden />
+        <AlertTitle>CVs unavailable</AlertTitle>
+        <AlertDescription>{emptyHint || EMPTY_HINT}</AlertDescription>
+      </Alert>
+    ) : (
+      <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
         {emptyHint || EMPTY_HINT}
         {loadKind === 'empty' && meta.requireCvVerification
           ? ' When CV verification is enabled, students need a verified CV before applying to drives and internships.'
           : ''}
-      </p>
+      </div>
     );
   }
 
   return (
-    <div className="student-list-stack">
+    <div className="flex flex-col gap-3">
       {meta.requireCvVerification ? (
-        <p className="text-sm text-secondary" style={{ margin: '0 0 0.75rem' }}>
-          CV verification is required for drives and internships.
-          {!meta.canVerify ? ' Only college admins can verify CVs unless delegation is enabled in Settings.' : ''}
-        </p>
+        <Alert>
+          <CircleAlert aria-hidden />
+          <AlertTitle>CV verification required</AlertTitle>
+          <AlertDescription>
+            Students need a verified CV for drives and internships.
+            {!meta.canVerify ? ' Only college admins can verify CVs unless delegation is enabled in Settings.' : ''}
+          </AlertDescription>
+        </Alert>
       ) : null}
       {items.map((cv) => (
-        <article key={cv.id} className="student-list-row">
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '0.75rem',
-              width: '100%',
-            }}
-          >
+        <Card key={cv.id} size="sm">
+          <CardContent className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="student-list-title" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <FileText size={15} aria-hidden />
+              <div className="flex items-center gap-2 font-medium">
+                <FileText aria-hidden />
                 {cv.label}
                 {cv.isDefault ? (
-                  <span className="badge badge-green" style={{ marginLeft: 4 }}>
-                    Default
-                  </span>
+                  <StatusBadge tone="green">Default</StatusBadge>
                 ) : null}
               </div>
-              <div className="student-list-meta">
+              <div className="mt-1 text-sm text-muted-foreground">
                 {studentCvRowMissingFile(cv) ? (
                   'File missing — ask the student to re-upload'
                 ) : cv.isVerified ? (
                   <>
-                    <CheckCircle2 size={13} style={{ display: 'inline', verticalAlign: 'text-bottom' }} aria-hidden />
+                    <CheckCircle2 className="inline" aria-hidden />
                     {' '}
                     Verified{cv.cvVerifiedAt ? ` · ${formatVerifiedAt(cv.cvVerifiedAt)}` : ''}
                   </>
                 ) : meta.requireCvVerification ? (
                   <>
-                    <CircleAlert size={13} style={{ display: 'inline', verticalAlign: 'text-bottom' }} aria-hidden />
+                    <CircleAlert className="inline" aria-hidden />
                     {' '}
                     Pending verification
                   </>
@@ -230,7 +226,7 @@ export default function CollegeStudentCvsPanel({ studentId }) {
                 )}
               </div>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="flex flex-wrap items-center gap-2">
               {!studentCvRowMissingFile(cv) ? (
                 <CvViewDownloadButtons
                   viewUrl={collegeStudentCvViewUrl(studentId, cv.id)}
@@ -239,30 +235,30 @@ export default function CollegeStudentCvsPanel({ studentId }) {
               ) : null}
               {meta.canVerify && !studentCvRowMissingFile(cv) ? (
                 cv.isVerified ? (
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-ghost btn-sm"
+                    variant="ghost"
+                    size="sm"
                     disabled={updatingId === cv.id}
                     onClick={() => toggleVerify(cv.id, false)}
                   >
                     Clear verification
-                  </button>
+                  </Button>
                 ) : (
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-primary btn-sm"
+                    size="sm"
                     disabled={updatingId === cv.id}
                     onClick={() => toggleVerify(cv.id, true)}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                   >
-                    <CheckCircle2 size={14} aria-hidden />
+                    <CheckCircle2 data-icon="inline-start" aria-hidden />
                     Mark verified
-                  </button>
+                  </Button>
                 )
               ) : null}
             </div>
-          </div>
-        </article>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

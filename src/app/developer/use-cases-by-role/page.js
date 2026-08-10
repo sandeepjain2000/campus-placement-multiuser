@@ -10,6 +10,8 @@ import {
   USE_CASE_ROLE_LABELS,
   useCaseAutoRunnerCommand,
   useCaseApiRunnerCommand,
+  getUseCaseAutoRunnerCommand,
+  getUseCaseApiRunnerCommand,
 } from '@/content/developerNotes';
 
 function RoleSection({ role, cases }) {
@@ -43,13 +45,13 @@ function RoleSection({ role, cases }) {
                 </td>
                 <td>
                   <code className="dev-notes-inline-code" style={{ fontSize: '0.75rem', whiteSpace: 'normal' }}>
-                    {useCaseAutoRunnerCommand(row.runnerSlug)}
+                    {getUseCaseAutoRunnerCommand(row.runnerSlug)}
                   </code>
                 </td>
                 <td className="dev-notes-muted">
                   {row.apiRunner ? (
                     <code className="dev-notes-inline-code" style={{ fontSize: '0.75rem' }}>
-                      {useCaseApiRunnerCommand(row.runnerSlug)}
+                      {getUseCaseApiRunnerCommand(row.runnerSlug)}
                     </code>
                   ) : (
                     'Guided only'

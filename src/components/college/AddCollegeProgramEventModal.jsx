@@ -1,12 +1,27 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { X, AlertTriangle, GraduationCap } from 'lucide-react';
+import { AlertTriangle, GraduationCap } from 'lucide-react';
 import {
   COLLEGE_PROGRAM_EVENT_TYPES,
   defaultBlockingForEventType,
 } from '@/lib/calendarClashDetection';
 import { toDateOnlyString } from '@/lib/dateOnly';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 function todayYmd() {
   return toDateOnlyString(new Date());
@@ -143,94 +158,60 @@ export default function AddCollegeProgramEventModal({
   if (!open) return null;
 
   return (
-    <div
-      className="modal-overlay modal-overlay-solid"
-      role="presentation"
-      onClick={onClose}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="add-college-program-title"
-        className="card animate-fadeIn"
-        style={{
-          width: 'min(520px, calc(100vw - 2rem))',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          margin: 'auto',
-          padding: 0,
-        }}
-        onClick={(ev) => ev.stopPropagation()}
-      >
-        <div
-          className="card-header"
-          style={{
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            borderBottom: '1px solid var(--border-default)',
-          }}
-        >
-          <div>
-            <h2 id="add-college-program-title" className="card-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <GraduationCap size={20} />
+    <Dialog open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose(); }}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+            <DialogTitle id="add-college-program-title" className="flex items-center gap-2">
+              <GraduationCap aria-hidden="true" />
               {isBlockMode ? 'Block dates for placements' : 'Add college program'}
-            </h2>
-            <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0' }}>
+            </DialogTitle>
+            <DialogDescription>
               {isBlockMode
                 ? 'Mark holidays or exam periods when placement drives should not be scheduled.'
                 : 'Add exams, workshops, and other academic events to prevent drive clashes.'}
-            </p>
-          </div>
-          <button type="button" className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
+            </DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} style={{ padding: '1.25rem 1.5rem 1.5rem' }}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="program-title">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <FieldGroup className="gap-5">
+          <Field>
+            <FieldLabel htmlFor="program-title">
               Title <span className="required">*</span>
-            </label>
-            <input
+            </FieldLabel>
+            <Input
               id="program-title"
-              className="form-input"
               value={title}
               onChange={(ev) => setTitle(ev.target.value)}
               placeholder={isBlockMode ? 'e.g. Diwali break' : 'e.g. End Semester Exam — CSE'}
               maxLength={255}
               required
             />
-          </div>
+          </Field>
 
           {!isBlockMode ? (
-            <div className="form-group">
-              <label className="form-label" htmlFor="program-type">
+            <Field>
+              <FieldLabel htmlFor="program-type">
                 Program type
-              </label>
-              <select
+              </FieldLabel>
+              <AdminFilterSelect
                 id="program-type"
-                className="form-input"
+                className="w-full"
                 value={eventType}
-                onChange={(ev) => setEventType(ev.target.value)}
-              >
-                {programTypes.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                onValueChange={setEventType}
+                emptyMapsToAll={false}
+                items={programTypes.map((t) => ({ label: t.label, value: t.value }))}
+              />
+            </Field>
           ) : null}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label" htmlFor="program-start">
+          <div className="grid grid-cols-2 gap-4">
+            <Field>
+              <FieldLabel htmlFor="program-start">
                 Start date <span className="required">*</span>
-              </label>
-              <input
+              </FieldLabel>
+              <Input
                 id="program-start"
                 type="date"
-                className="form-input"
                 value={startDate}
                 onChange={(ev) => {
                   setStartDate(ev.target.value);
@@ -238,100 +219,88 @@ export default function AddCollegeProgramEventModal({
                 }}
                 required
               />
-            </div>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label" htmlFor="program-end">
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="program-end">
                 End date
-              </label>
-              <input
+              </FieldLabel>
+              <Input
                 id="program-end"
                 type="date"
-                className="form-input"
                 value={endDate}
                 min={startDate}
                 onChange={(ev) => setEndDate(ev.target.value)}
               />
-            </div>
+            </Field>
           </div>
 
           {!isBlockMode ? (
-            <div className="form-group" style={{ marginTop: '1rem' }}>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
+            <Field orientation="horizontal">
+              <FieldLabel className="items-start">
+                <Checkbox
+                  className="mt-0.5"
                   checked={isBlocking}
-                  onChange={(ev) => setIsBlocking(ev.target.checked)}
-                  style={{ marginTop: '0.2rem' }}
+                  onCheckedChange={(v) => setIsBlocking(!!v)}
                 />
                 <span>
-                  <span className="form-label" style={{ display: 'block', margin: 0 }}>Block placement drives on these dates</span>
-                  <span className="text-sm text-secondary">
+                  <span className="block text-sm font-medium">Block placement drives on these dates</span>
+                  <span className="text-sm text-muted-foreground">
                     Recommended for exams and holidays. Drive approval will warn when dates overlap.
                   </span>
                 </span>
-              </label>
-            </div>
+              </FieldLabel>
+            </Field>
           ) : null}
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="program-notes">
+          <Field>
+            <FieldLabel htmlFor="program-notes">
               Notes (optional)
-            </label>
-            <textarea
+            </FieldLabel>
+            <Textarea
               id="program-notes"
-              className="form-input"
               rows={2}
               value={description}
               onChange={(ev) => setDescription(ev.target.value)}
               placeholder="Batch, department, or venue details"
             />
-          </div>
+          </Field>
+          </FieldGroup>
 
           {clashLoading ? (
             <p className="text-sm text-secondary" style={{ margin: '0 0 1rem' }}>Checking placement drive clashes…</p>
           ) : null}
 
           {!clashLoading && driveClashes.length > 0 ? (
-            <div
-              className="card"
-              style={{
-                padding: '0.875rem 1rem',
-                marginBottom: '1rem',
-                borderColor: 'var(--warning-300)',
-                background: 'var(--warning-50)',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                <AlertTriangle size={18} style={{ color: 'var(--warning-700)', flexShrink: 0, marginTop: 2 }} />
-                <div>
-                  <div style={{ fontWeight: 600, color: 'var(--warning-800)', fontSize: '0.9rem' }}>
+            <Alert className="border-amber-500/40 bg-amber-500/5">
+                <AlertTriangle aria-hidden="true" />
+                <AlertTitle>
                     {driveClashes.length} placement drive{driveClashes.length === 1 ? '' : 's'} in this period
-                  </div>
-                  <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.1rem', fontSize: '0.85rem', color: 'var(--warning-900)' }}>
+                </AlertTitle>
+                <AlertDescription>
+                  <ul className="mt-2 list-disc pl-4">
                     {driveClashes.slice(0, 4).map((c) => (
                       <li key={c.id}>{c.title} · {c.driveDate} ({c.status})</li>
                     ))}
                     {driveClashes.length > 4 ? <li>…and {driveClashes.length - 4} more</li> : null}
                   </ul>
-                </div>
-              </div>
-            </div>
+                </AlertDescription>
+            </Alert>
           ) : null}
 
           {error ? (
-            <p style={{ color: 'var(--danger-600)', fontSize: '0.875rem', margin: '0 0 1rem' }}>{error}</p>
+            <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>
           ) : null}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={saving}>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
               Cancel
-            </button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
+            </Button>
+            <Button type="submit" disabled={saving}>
               {saving ? 'Saving…' : isBlockMode ? 'Block dates' : 'Add program'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

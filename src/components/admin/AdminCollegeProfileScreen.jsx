@@ -15,6 +15,14 @@ import {
 import { FIELD_IDS, validateFieldOrError } from '@/lib/inputConstraints';
 import { useToast } from '@/components/ToastProvider';
 import { formatDate } from '@/lib/utils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 function DetailRow({ label, children }) {
   return (
@@ -33,23 +41,14 @@ function DetailRow({ label, children }) {
 }
 
 function YesNoBadge({ value }) {
-  return (
-    <span className={`badge ${value ? 'badge-green' : 'badge-gray'}`} style={{ fontSize: '0.75rem' }}>
-      {value ? 'Yes' : 'No'}
-    </span>
-  );
+  return <StatusBadge tone={value ? 'green' : 'gray'} showDot>{value ? 'Yes' : 'No'}</StatusBadge>;
 }
 
 function InstitutionClassificationView({ title, subtitle, fields, values }) {
   return (
-    <section className="card" style={{ margin: 0 }}>
-      <h2 className="card-title" style={{ fontSize: '1rem' }}>{title}</h2>
-      {subtitle ? (
-        <p className="text-sm text-secondary" style={{ margin: '0 0 0.85rem', lineHeight: 1.5 }}>
-          {subtitle}
-        </p>
-      ) : null}
-      <div style={{ display: 'grid', gap: '0.65rem' }}>
+    <Card>
+      <CardHeader><CardTitle>{title}</CardTitle>{subtitle ? <CardDescription>{subtitle}</CardDescription> : null}</CardHeader>
+      <CardContent className="grid gap-3">
         {fields.map((field) => (
           <div
             key={field.key}
@@ -60,13 +59,13 @@ function InstitutionClassificationView({ title, subtitle, fields, values }) {
               justifyContent: 'space-between',
               gap: '0.5rem',
               paddingBottom: '0.65rem',
-              borderBottom: '1px solid var(--border-subtle, rgba(0,0,0,0.06))',
             }}
+            className="border-b pb-3 last:border-0 last:pb-0"
           >
             <div style={{ flex: '1 1 12rem', minWidth: 0 }}>
               <div className="text-sm" style={{ fontWeight: 600 }}>{field.label}</div>
               {field.hint ? (
-                <div className="text-xs text-secondary" style={{ marginTop: '0.15rem', lineHeight: 1.45 }}>
+                <div className="text-muted-foreground mt-1 text-xs">
                   {field.hint}
                 </div>
               ) : null}
@@ -74,59 +73,43 @@ function InstitutionClassificationView({ title, subtitle, fields, values }) {
             <YesNoBadge value={Boolean(values?.[field.key])} />
           </div>
         ))}
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 }
 
 function InstitutionClassificationEdit({ title, subtitle, fields, values, onChange }) {
   return (
-    <section className="card" style={{ margin: 0 }}>
-      <h2 className="card-title" style={{ fontSize: '1rem' }}>{title}</h2>
-      {subtitle ? (
-        <p className="text-sm text-secondary" style={{ margin: '0 0 0.85rem', lineHeight: 1.5 }}>
-          {subtitle}
-        </p>
-      ) : null}
-      <div style={{ display: 'grid', gap: '0.75rem' }}>
+    <Card>
+      <CardHeader><CardTitle>{title}</CardTitle>{subtitle ? <CardDescription>{subtitle}</CardDescription> : null}</CardHeader>
+      <CardContent><FieldGroup>
         {fields.map((field) => (
-          <div key={field.key} className="form-group" style={{ margin: 0 }}>
-            <label className="form-label">{field.label}</label>
+          <Field key={field.key}>
+            <FieldLabel htmlFor={`classification-${field.key}`}>{field.label}</FieldLabel>
             {field.hint ? (
-              <p className="text-xs text-secondary" style={{ margin: '0.15rem 0 0.35rem', lineHeight: 1.45 }}>
-                {field.hint}
-              </p>
+              <FieldDescription>{field.hint}</FieldDescription>
             ) : null}
-            <select
-              className="form-input"
+            <AdminFilterSelect
+              id={`classification-${field.key}`}
+              className="w-full"
               value={values?.[field.key] ? 'yes' : 'no'}
-              onChange={(e) =>
-                onChange(field.key, e.target.value === 'yes')
-              }
-            >
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
+              emptyMapsToAll={false}
+              onValueChange={(v) => onChange(field.key, v === 'yes')}
+              items={[
+                { label: 'No', value: 'no' },
+                { label: 'Yes', value: 'yes' },
+              ]}
+            />
+          </Field>
         ))}
-      </div>
-    </section>
+      </FieldGroup></CardContent>
+    </Card>
   );
 }
 
 function StatCard({ label, value, hint }) {
   return (
-    <div className="card admin-profile-stat-card" style={{ margin: 0 }}>
-      <p className="text-xs text-tertiary" style={{ margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-        {label}
-      </p>
-      <p style={{ margin: '0.35rem 0 0', fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>{value}</p>
-      {hint ? (
-        <p className="text-xs text-secondary" style={{ margin: '0.25rem 0 0' }}>
-          {hint}
-        </p>
-      ) : null}
-    </div>
+    <Card size="sm"><CardContent><p className="text-muted-foreground m-0 text-xs font-medium uppercase tracking-wide">{label}</p><p className="mt-1 mb-0 text-xl font-semibold">{value}</p>{hint ? <p className="text-muted-foreground mt-1 mb-0 text-xs">{hint}</p> : null}</CardContent></Card>
   );
 }
 
@@ -264,91 +247,77 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
 
   if (!collegeId) {
     return (
-      <div className="card">
-        <p style={{ color: 'var(--danger-600)' }}>Invalid college.</p>
-        <Link href="/dashboard/admin/colleges" className="btn btn-secondary" style={{ marginTop: '0.75rem' }}>
-          Back to colleges
-        </Link>
-      </div>
+      <Alert variant="destructive"><AlertDescription>Invalid college.</AlertDescription><Button className="mt-3" variant="outline" render={<Link href="/dashboard/admin/colleges" />}>Back to colleges</Button></Alert>
     );
   }
 
   if (loading) {
     return (
-      <div className="admin-entity-profile-page">
-        <div className="skeleton" style={{ height: 48, borderRadius: 'var(--radius-md)', marginBottom: '1rem' }} />
-        <div className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-lg)' }} />
-      </div>
+      <Card><CardHeader><CardTitle>College profile</CardTitle><CardDescription>Loading college details…</CardDescription></CardHeader></Card>
     );
   }
 
   if (loadError || !detail) {
     return (
-      <div className="admin-entity-profile-page animate-fadeIn">
-        <div className="card">
-          <p style={{ color: 'var(--danger-600)', marginBottom: '0.75rem' }}>{loadError || 'College not found.'}</p>
-          <Link href="/dashboard/admin/colleges" className="btn btn-secondary">
-            Back to colleges
-          </Link>
-        </div>
-      </div>
+      <Alert variant="destructive"><AlertDescription>{loadError || 'College not found.'}</AlertDescription><Button className="mt-3" variant="outline" render={<Link href="/dashboard/admin/colleges" />}>Back to colleges</Button></Alert>
     );
   }
 
   const placementPct = collegePlacementRate(detail.students, detail.placed);
 
   return (
-    <div className="admin-entity-profile-page animate-fadeIn">
-      <div className="admin-entity-profile-toolbar">
-        <button
+    <div className="animate-fadeIn flex flex-col gap-5 pb-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Button
           type="button"
-          className="btn btn-ghost"
+          variant="ghost"
           onClick={() => router.push('/dashboard/admin/colleges')}
         >
-          <ArrowLeft size={16} aria-hidden style={{ marginRight: '0.35rem' }} />
+          <ArrowLeft data-icon="inline-start" aria-hidden />
           All colleges
-        </button>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        </Button>
+        <div className="flex flex-wrap gap-2">
           {editing ? (
             <>
-              <button type="button" className="btn btn-secondary" onClick={cancelEdit} disabled={saving}>
+              <Button type="button" variant="outline" onClick={cancelEdit} disabled={saving}>
                 Cancel
-              </button>
-              <button type="button" className="btn btn-primary" onClick={saveCollege} disabled={saving}>
+              </Button>
+              <Button type="button" onClick={saveCollege} disabled={saving}>
                 {saving ? 'Saving…' : 'Save changes'}
-              </button>
+              </Button>
             </>
           ) : (
             <>
               {detail.active ? (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-secondary"
+                  variant="outline"
                   disabled={togglingActive}
                   onClick={() => toggleCollegeActive(false)}
                 >
                   {togglingActive ? 'Updating…' : 'Deactivate college'}
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-secondary"
+                  variant="outline"
                   disabled={togglingActive}
                   onClick={() => toggleCollegeActive(true)}
                 >
                   {togglingActive ? 'Updating…' : 'Reactivate college'}
-                </button>
+                </Button>
               )}
-              <button type="button" className="btn btn-primary" onClick={startEdit}>
-                <Pencil size={15} aria-hidden style={{ marginRight: '0.35rem' }} />
+              <Button type="button" onClick={startEdit}>
+                <Pencil data-icon="inline-start" aria-hidden />
                 Edit college
-              </button>
+              </Button>
             </>
           )}
         </div>
       </div>
 
-      <header className="card admin-entity-profile-hero">
+      <Card>
+        <CardContent>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem' }}>
           <EntityLogo name={detail.name} website={detail.website} size="lg" shape="rounded" />
           <div style={{ flex: '1 1 16rem', minWidth: 0 }}>
@@ -363,17 +332,18 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               {detail.pincode ? ` · ${detail.pincode}` : ''}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.65rem' }}>
-              <span className={`badge badge-dot ${detail.active ? 'badge-green' : 'badge-gray'}`}>
+              <StatusBadge tone={detail.active ? 'green' : 'gray'} showDot>
                 {detail.active ? 'Active' : 'Inactive'}
-              </span>
-              {detail.naac ? <span className="badge badge-indigo">NAAC {detail.naac}</span> : null}
+              </StatusBadge>
+              {detail.naac ? <StatusBadge tone="indigo">NAAC {detail.naac}</StatusBadge> : null}
               {detail.nirfRank != null ? (
-                <span className="badge badge-gray">NIRF #{detail.nirfRank}</span>
+                <StatusBadge tone="gray">NIRF #{detail.nirfRank}</StatusBadge>
               ) : null}
             </div>
           </div>
         </div>
-      </header>
+        </CardContent>
+      </Card>
 
       {!editing ? (
         <>
@@ -403,17 +373,17 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             }}
           >
-            <section className="card" style={{ margin: 0 }}>
-              <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem' }}>
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2">
                 <MapPin size={18} className="text-secondary" aria-hidden />
                 Location & contact
-              </h2>
+              </CardTitle></CardHeader><CardContent>
               <DetailRow label="City">{detail.city || '—'}</DetailRow>
               <DetailRow label="State">{detail.state || '—'}</DetailRow>
               <DetailRow label="Pincode">{detail.pincode || '—'}</DetailRow>
               <DetailRow label="Contact email">
                 {detail.email ? (
-                  <a href={`mailto:${detail.email}`} className="admin-entity-name-btn" style={{ display: 'inline' }}>
+                  <a href={`mailto:${detail.email}`} className="text-primary font-medium hover:underline">
                     {detail.email}
                   </a>
                 ) : (
@@ -428,13 +398,13 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
                   '—'
                 )}
               </DetailRow>
-            </section>
+              </CardContent></Card>
 
-            <section className="card" style={{ margin: 0 }}>
-              <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem' }}>
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2">
                 <GraduationCap size={18} className="text-secondary" aria-hidden />
                 Academics & admin
-              </h2>
+              </CardTitle></CardHeader><CardContent>
               <DetailRow label="NAAC grade">{detail.naac || '—'}</DetailRow>
               <DetailRow label="NIRF rank">{detail.nirfRank != null ? detail.nirfRank : '—'}</DetailRow>
               <DetailRow label="Primary admin">
@@ -449,7 +419,7 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               </DetailRow>
               <DetailRow label="Admin email">
                 {detail.adminEmail ? (
-                  <a href={`mailto:${detail.adminEmail}`} className="admin-entity-name-btn" style={{ display: 'inline' }}>
+                  <a href={`mailto:${detail.adminEmail}`} className="text-primary font-medium hover:underline">
                     {detail.adminEmail}
                   </a>
                 ) : (
@@ -459,20 +429,20 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               <DetailRow label="Platform slug">
                 <span className="font-mono text-xs">{detail.slug}</span>
               </DetailRow>
-            </section>
+              </CardContent></Card>
 
-            <section className="card" style={{ margin: 0 }}>
-              <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem' }}>
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2">
                 <Building2 size={18} className="text-secondary" aria-hidden />
                 Platform record
-              </h2>
+              </CardTitle></CardHeader><CardContent>
               <DetailRow label="College ID">
                 <span className="font-mono text-xs">{detail.id}</span>
               </DetailRow>
               <DetailRow label="Status on platform">{detail.active ? 'Active' : 'Inactive'}</DetailRow>
               <DetailRow label="Students enrolled">{detail.students}</DetailRow>
               <DetailRow label="Students placed">{detail.placed}</DetailRow>
-            </section>
+              </CardContent></Card>
           </div>
 
           <div
@@ -498,42 +468,38 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
           </div>
         </>
       ) : (
-        <section className="card" style={{ maxWidth: '42rem' }}>
-          <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem' }}>
+        <Card className="max-w-3xl">
+          <CardHeader><CardTitle className="flex items-center gap-2">
             <School size={18} className="text-secondary" aria-hidden />
             Edit college
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div className="form-group">
-              <label className="form-label">College name</label>
-              <input
-                className="form-input"
+          </CardTitle><CardDescription>Update institution contact details, rankings, and platform access.</CardDescription></CardHeader>
+          <CardContent><FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="college-profile-name">College name</FieldLabel>
+              <Input id="college-profile-name"
                 value={form.name}
                 onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
               />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-              <div className="form-group">
-                <label className="form-label">City</label>
-                <input
-                  className="form-input"
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="college-profile-city">City</FieldLabel>
+                <Input id="college-profile-city"
                   value={form.city}
                   onChange={(e) => setForm((p) => ({ ...p, city: e.target.value }))}
                 />
-              </div>
-              <div className="form-group">
-                <label className="form-label">State</label>
-                <input
-                  className="form-input"
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="college-profile-state">State</FieldLabel>
+                <Input id="college-profile-state"
                   value={form.state}
                   onChange={(e) => setForm((p) => ({ ...p, state: e.target.value }))}
                 />
-              </div>
+              </Field>
             </div>
-            <div className="form-group">
-              <label className="form-label">Pincode</label>
-              <input
-                className="form-input"
+            <Field>
+              <FieldLabel htmlFor="college-profile-pincode">Pincode</FieldLabel>
+              <Input id="college-profile-pincode"
                 inputMode="numeric"
                 autoComplete="postal-code"
                 maxLength={6}
@@ -545,60 +511,58 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
                   }))
                 }
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Website</label>
-              <input
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="college-profile-website">Website</FieldLabel>
+              <Input id="college-profile-website"
                 value={form.website}
                 onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))}
                 placeholder="https://…"
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Contact email</label>
-              <input
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="college-profile-email">Contact email</FieldLabel>
+              <Input id="college-profile-email"
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
               />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Phone</label>
-              <input
-                className="form-input"
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="college-profile-phone">Phone</FieldLabel>
+              <Input id="college-profile-phone"
                 value={form.phone}
                 onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
               />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-              <div className="form-group">
-                <label className="form-label">NAAC grade</label>
-                <input
-                  className="form-input"
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="college-profile-naac">NAAC grade</FieldLabel>
+                <Input id="college-profile-naac"
                   value={form.naac}
                   onChange={(e) => setForm((p) => ({ ...p, naac: e.target.value }))}
                 />
-              </div>
-              <div className="form-group">
-                <label className="form-label">NIRF rank</label>
+              </Field>
+              <Field>
+                <FieldLabel>NIRF rank</FieldLabel>
                 <ValidatedNumberInput
+                  className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border px-2.5 text-sm shadow-xs outline-none focus-visible:ring-3"
                   fieldId={FIELD_IDS.ADMIN_NIRF_RANK}
                   value={form.nirfRank}
                   onChange={(v) => setForm((p) => ({ ...p, nirfRank: v }))}
                 />
-              </div>
+              </Field>
             </div>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="college-profile-active">College is active on the platform</FieldLabel>
+              <Checkbox
+                id="college-profile-active"
                 checked={form.active}
-                onChange={(e) => setForm((p) => ({ ...p, active: e.target.checked }))}
+                onCheckedChange={(v) => setForm((p) => ({ ...p, active: !!v }))}
               />
-              <span className="text-sm">College is active on the platform (visible to employers; admins can sign in)</span>
-            </label>
-          </div>
+              <FieldDescription>Visible to employers; college admins can sign in.</FieldDescription>
+            </Field>
+          </FieldGroup></CardContent>
 
           <div
             style={{
@@ -639,7 +603,7 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               }
             />
           </div>
-        </section>
+        </Card>
       )}
     </div>
   );

@@ -18,6 +18,28 @@ import { appendClientDebugLog } from '@/lib/clientDebugLog';
 import ThemeToggleButton from '@/components/ThemeToggleButton';
 import DevScreenTag from '@/components/DevScreenTag';
 import SandboxEnvironmentBanner from '@/components/SandboxEnvironmentBanner';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+const BUILTIN_MARKETING_ROUTES = new Set(['/features', '/about', '/contact']);
+
+/** Same-tab navigation so browser Back returns to the landing page. */
+function MarketingNavLink({ marketingUrl, internalHref, children, alwaysInternal = false, ...rest }) {
+  const useBuiltIn = alwaysInternal || BUILTIN_MARKETING_ROUTES.has(internalHref);
+  if (marketingUrl && !useBuiltIn) {
+    return (
+      <a href={marketingUrl} {...rest}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={internalHref} {...rest}>
+      {children}
+    </Link>
+  );
+}
+
 export default function LandingPage() {
   const router = useRouter();
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION || '?';
@@ -57,25 +79,6 @@ export default function LandingPage() {
     });
   }, [appVersion, buildTimeIso, gitSha, deployId]);
 
-  const BUILTIN_MARKETING_ROUTES = new Set(['/features', '/about', '/contact']);
-
-  /** Same-tab navigation so browser Back returns to the landing page. */
-  function MarketingNavLink({ internalHref, children, alwaysInternal = false, ...rest }) {
-    const useBuiltIn = alwaysInternal || BUILTIN_MARKETING_ROUTES.has(internalHref);
-    if (marketingUrl && !useBuiltIn) {
-      return (
-        <a href={marketingUrl} {...rest}>
-          {children}
-        </a>
-      );
-    }
-    return (
-      <Link href={internalHref} {...rest}>
-        {children}
-      </Link>
-    );
-  }
-
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', display: 'flex', flexDirection: 'column' }}>
       <SandboxEnvironmentBanner />
@@ -101,17 +104,17 @@ export default function LandingPage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', marginLeft: 'auto' }}>
             <nav style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }} aria-label="Primary">
-              <MarketingNavLink internalHref="/features" style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Features</MarketingNavLink>
-              <MarketingNavLink internalHref="/about" style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>About</MarketingNavLink>
-              <MarketingNavLink internalHref="/contact" style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Contact</MarketingNavLink>
+              <MarketingNavLink marketingUrl={marketingUrl} internalHref="/features" style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Features</MarketingNavLink>
+              <MarketingNavLink marketingUrl={marketingUrl} internalHref="/about" style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>About</MarketingNavLink>
+              <MarketingNavLink marketingUrl={marketingUrl} internalHref="/contact" style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Contact</MarketingNavLink>
             </nav>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <DevScreenTag />
               <ThemeToggleButton />
-              <Link href="/register" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+              <Link href="/register" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
                 Register
               </Link>
-              <Link href="/sign-in" className="btn btn-primary" style={{ padding: '0.5rem 1.25rem' }}>
+              <Link href="/sign-in" className={buttonVariants({ size: 'sm' })}>
                 Sign In
               </Link>
             </div>
@@ -139,10 +142,18 @@ export default function LandingPage() {
               year-round ecosystem—not just recruitment season.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link href="/register" className="btn btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '1.125rem', background: 'linear-gradient(135deg, var(--primary-600), var(--primary-500))', border: 'none' }}>
-                Get Started Free <ArrowRight size={18} />
+              <Link
+                href="/register"
+                className={cn(buttonVariants({ size: 'lg' }), 'px-8 text-base')}
+                style={{ background: 'linear-gradient(135deg, var(--primary-600), var(--primary-500))' }}
+              >
+                Get Started Free <ArrowRight data-icon="inline-end" />
               </Link>
-              <MarketingNavLink internalHref="/features" className="btn btn-secondary" style={{ padding: '0.875rem 2rem', fontSize: '1.125rem' }}>
+              <MarketingNavLink
+                marketingUrl={marketingUrl}
+                internalHref="/features"
+                className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'px-8 text-base')}
+              >
                 Explore Features
               </MarketingNavLink>
             </div>
@@ -286,7 +297,10 @@ export default function LandingPage() {
             <p style={{ fontSize: '1.125rem', color: 'var(--banner-fg-muted)', marginBottom: '2.5rem', maxWidth: '42rem', marginLeft: 'auto', marginRight: 'auto' }}>
               Join colleges and employers using PlacementHub to connect learning, mentoring, and hiring in one ecosystem.
             </p>
-            <Link href="/register" className="btn gradient-banner-solid-btn" style={{ padding: '1rem 2.5rem', fontSize: '1.125rem', fontWeight: 700, borderRadius: 'var(--radius-lg)' }}>
+            <Link
+              href="/register"
+              className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }), 'gradient-banner-solid-btn px-10 text-base font-bold')}
+            >
               Start Your Free Trial
             </Link>
           </div>
@@ -300,9 +314,9 @@ export default function LandingPage() {
               PlacementHub
             </div>
             <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }} aria-label="Footer">
-              <MarketingNavLink internalHref="/features" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Features</MarketingNavLink>
-              <MarketingNavLink internalHref="/about" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>About</MarketingNavLink>
-              <MarketingNavLink internalHref="/contact" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Contact</MarketingNavLink>
+              <MarketingNavLink marketingUrl={marketingUrl} internalHref="/features" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Features</MarketingNavLink>
+              <MarketingNavLink marketingUrl={marketingUrl} internalHref="/about" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>About</MarketingNavLink>
+              <MarketingNavLink marketingUrl={marketingUrl} internalHref="/contact" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Contact</MarketingNavLink>
               <Link href="/register" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Register</Link>
               <Link href="/login" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Sign in (Testing)</Link>
               <Link href="/developer" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Developer Notes</Link>

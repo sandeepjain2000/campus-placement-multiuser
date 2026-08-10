@@ -7,32 +7,48 @@ This version has breaking changes — APIs, conventions, and file structure may 
 <!-- BEGIN:skills-auto-fetch -->
 # Skills Auto-Fetch Rules
 
+Registry: [https://www.skills.sh](https://www.skills.sh)
+
 Before starting any non-trivial task, check whether a relevant skill exists in `.agents/skills/`. If no matching skill is found locally, proactively install it from skills.sh using:
 
 ```bash
-npx -y skills add <author>/<skill-name>
+npx -y skills add <owner/repo> --skill <skill-name> -y
 ```
+
+## Mandatory for UI / shadcn / design work (do not freestyle without these)
+
+Before any UI migration, restyle, component, page layout, or design-system work in this app, **read and follow** these local `SKILL.md` files (installed from skills.sh):
+
+| Skill | Path | Use for |
+|-------|------|---------|
+| **shadcn** | `.agents/skills/shadcn/SKILL.md` | Components, registries, forms, overlays, composition |
+| **frontend-design** | `.agents/skills/frontend-design/SKILL.md` | Distinctive UI direction, typography, layout quality |
+| **web-design-guidelines** | `.agents/skills/web-design-guidelines/SKILL.md` | Accessibility / Web Interface Guidelines review |
+| **tailwind-design-system** | `.agents/skills/tailwind-design-system/SKILL.md` | Tokens, Tailwind patterns, scalable styling |
+
+Also useful when already present: `impeccable`, `ui-ux-pro-max`, `ckm-ui-styling`.
+
+**Rule:** Do not invent ad-hoc UI kits or ignore these skills when they apply. Prefer them over freestyle design advice.
 
 ## When to auto-install skills
 
 | Task type | Skill(s) to install if missing |
 |---|---|
-| UI/UX design, redesign, or critique | `nextlevelbuilder/ui-ux-pro-max-skill`, `pbakaus/impeccable` |
-| Frontend component or page building | `nextlevelbuilder/frontend-design-skill` |
+| UI/UX design, redesign, restyle, or critique | `shadcn`, `frontend-design`, `web-design-guidelines`, `tailwind-design-system` (plus `impeccable` / `ui-ux-pro-max` if helpful) |
+| Frontend component or page building | `shadcn`, `frontend-design`, `tailwind-design-system` |
 | Writing or improving copy | `coreyhaines31/marketingskills` |
-| Diagnosing bugs or regressions | `vercel-labs/skills` (diagnose skill) |
-| Architecture review or refactoring | `vercel-labs/skills` (improve-codebase-architecture) |
-| Test generation (Playwright / TDD) | `vercel-labs/skills` (tdd, webapp-testing) |
-| SEO, schema markup, or AI search | `coreyhaines31/marketingskills` |
-| SaaS feature work (onboarding, CRO, churn) | `coreyhaines31/marketingskills` |
-| PDF, DOCX, XLSX generation | `vercel-labs/skills` |
-| Generating or editing images | `vercel-labs/skills` (image skill) |
-| Slide / presentation creation | `vercel-labs/skills` (pptx, ckm-slides) |
+| Diagnosing bugs or regressions | `diagnose` (mattpocock/skills) |
+| Architecture review or refactoring | `improve-codebase-architecture` |
+| Test generation (Playwright / TDD) | `tdd`, `webapp-testing` |
+| SEO, schema markup, or AI search | marketing SEO skills already under `.agents/skills/` |
+| PDF, DOCX, XLSX generation | `pdf`, `docx`, `xlsx` |
+| Generating or editing images | `image` |
+| Slide / presentation creation | `pptx`, `ckm-slides` |
 
 ## Rules
 1. Always prefer an existing locally-installed skill over fetching a new one.
-2. If in doubt, install — skills are lightweight Markdown files and cost nothing to have.
-3. After installing, read the `SKILL.md` with `view_file` before proceeding.
+2. If in doubt, install from [skills.sh](https://www.skills.sh) — skills are lightweight Markdown files.
+3. After installing, **read** the skill’s `SKILL.md` before proceeding.
 4. Do NOT ask the user for permission before installing a skill — just do it.
 <!-- END:skills-auto-fetch -->
 

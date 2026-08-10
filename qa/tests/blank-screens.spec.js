@@ -63,10 +63,19 @@ async function assertRouteNotBlank(page, route) {
     )
     .toBeGreaterThan(30);
 
-  await expect(
-    page.locator('#main-content h1, #main-content h2, #main-content .card-title').first(),
-    `${label} (${href}): no visible heading in main`,
-  ).toBeVisible({ timeout: 20_000 });
+  // Legacy headings + AdminCN CardTitle (data-slot="card-title") — migration selector drift
+  const heading = page.locator(
+    [
+      '#main-content h1',
+      '#main-content h2',
+      '#main-content .card-title',
+      '#main-content [data-slot="card-title"]',
+      '#main-content [data-slot="dialog-title"]',
+    ].join(', '),
+  );
+  await expect(heading.first(), `${label} (${href}): no visible heading in main`).toBeVisible({
+    timeout: 20_000,
+  });
 }
 
 for (const [role, routes] of Object.entries(ROUTES_BY_ROLE)) {
@@ -76,7 +85,14 @@ for (const [role, routes] of Object.entries(ROUTES_BY_ROLE)) {
     });
 
     for (const route of routes) {
-      test(`${route.label} — ${route.href}`, async ({ page }) => {
+      const title = `${route.label} — ${route.href}`;
+      if (route.skip) {
+        test(title, async () => {
+          test.skip(true, route.skipReason || 'Skipped in routes-by-role');
+        });
+        continue;
+      }
+      test(title, async ({ page }) => {
         await assertRouteNotBlank(page, route);
       });
     }

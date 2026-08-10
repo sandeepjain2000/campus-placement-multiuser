@@ -8,6 +8,10 @@ import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { SORT_DATE_ASC, SORT_DATE_DESC } from '@/lib/dataTableQuery';
 import { formatDate, formatStatus } from '@/lib/utils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const PPO_SORT_OPTIONS = [
   {
@@ -41,7 +45,10 @@ export default function CollegeInternshipPpoPage() {
   const { data, error, isLoading } = useSWR('/api/college/internship-ppo', fetcher);
 
   const items = Array.isArray(data?.items) ? data.items : [];
-  const summary = data?.summary || { total: 0, awaitingStudent: 0, accepted: 0, withJobOffer: 0 };
+  const summary = useMemo(
+    () => data?.summary || { total: 0, awaitingStudent: 0, accepted: 0, withJobOffer: 0 },
+    [data?.summary],
+  );
 
   const {
     search,
@@ -112,28 +119,28 @@ export default function CollegeInternshipPpoPage() {
   if (isLoading) return <PageLoading message="Loading PPO…" variant="skeleton-card" />;
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <Award size={26} aria-hidden />
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex max-w-3xl flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Award className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
             Internship PPO
           </h1>
-          <p className="text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.55 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Read-only view of Pre-Placement Offers for interns on your campus. PPO is separate from internship selection
             and formal job offers.
           </p>
-          <p className="text-sm text-tertiary" style={{ margin: '0.35rem 0 0' }}>{statLine}</p>
+          <p className="text-muted-foreground m-0 text-xs">{statLine}</p>
         </div>
-        <div className="page-header-actions">
-          <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={!filtered.length}>
+        <div>
+          <Button type="button" variant="outline" size="sm" onClick={exportCsv} disabled={!filtered.length}>
             Export CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {error ? (
-        <div className="card" style={{ padding: '1.5rem', color: 'var(--danger-600)' }}>{error.message}</div>
+        <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : null}
 
       <DataTableToolbar
@@ -148,40 +155,40 @@ export default function CollegeInternshipPpoPage() {
         onClearFilters={clearFilters}
       />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="flex flex-col gap-4">
         {filtered.map((row) => (
-          <div key={row.programApplicationId} className="card" style={{ padding: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+          <Card key={row.programApplicationId}>
+            <CardContent className="flex flex-col gap-3">
+            <div className="flex flex-wrap justify-between gap-4">
               <div>
-                <div style={{ fontWeight: 600 }}>{row.studentName}</div>
-                <div className="text-sm text-secondary">
+                <div className="font-medium">{row.studentName}</div>
+                <div className="text-muted-foreground text-sm">
                   {row.rollNumber} · {row.branch}
                   {row.batchYear ? ` · Batch ${row.batchYear}` : ''}
                 </div>
-                <div className="text-sm" style={{ marginTop: '0.35rem' }}>
+                <div className="mt-1 text-sm">
                   {row.companyName} — {row.openingTitle}
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-                <span className="badge badge-blue badge-dot">{row.ppoStatusLabel}</span>
+              <div className="flex flex-wrap items-start gap-2">
+                <StatusBadge tone="blue" showDot>{row.ppoStatusLabel || '—'}</StatusBadge>
                 {row.jobOfferStatus ? (
-                  <span className="badge badge-green badge-dot">Offer: {formatStatus(row.jobOfferStatus)}</span>
+                  <StatusBadge tone="green" showDot>Offer: {formatStatus(row.jobOfferStatus) || '—'}</StatusBadge>
                 ) : null}
               </div>
             </div>
             {row.ppo?.confirmedAt ? (
-              <p className="text-xs text-tertiary" style={{ margin: '0.5rem 0 0' }}>
+              <p className="text-muted-foreground m-0 text-xs">
                 PPO confirmed {formatDate(row.ppo.confirmedAt)}
                 {row.ppo.studentRespondedAt ? ` · Student responded ${formatDate(row.ppo.studentRespondedAt)}` : ''}
               </p>
             ) : null}
-          </div>
+            </CardContent>
+          </Card>
         ))}
 
         {!error && filtered.length === 0 ? (
-          <div className="card" style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            No PPO records yet for your campus interns.
-          </div>
+          <Card><CardContent className="text-muted-foreground py-10 text-center">No PPO records yet for your campus interns.</CardContent></Card>
         ) : null}
       </div>
     </div>

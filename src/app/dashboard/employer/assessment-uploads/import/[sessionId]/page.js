@@ -5,6 +5,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastProvider';
 import { HIRING_RESULT_OPTIONS } from '@/lib/hiringResult';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 function rowDraftFromApi(r) {
   return {
@@ -137,24 +143,24 @@ export default function AssessmentImportReviewPage({ params }) {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Review CSV import</h1>
           <p>
             Fix rows below, then <strong>Accept import</strong>. Or reject and re-upload a corrected CSV from{' '}
             <Link href="/dashboard/employer/assessment-uploads">Assessment uploads</Link>.
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Link href={`/dashboard/employer/assessment-uploads/review?kind=${payload?.session?.opportunity_kind || 'jobs'}`} className="btn btn-ghost">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" render={<Link href={`/dashboard/employer/assessment-uploads/review?kind=${payload?.session?.opportunity_kind || 'jobs'}`} />}>
             All pending imports
-          </Link>
-          <button type="button" className="btn btn-secondary" disabled={rejecting} onClick={() => void rejectImport()}>
+          </Button>
+          <Button type="button" variant="destructive" disabled={rejecting} onClick={() => void rejectImport()}>
             {rejecting ? 'Rejecting…' : 'Reject import'}
-          </button>
-          <button type="button" className="btn btn-primary" disabled={!canAccept || accepting} onClick={() => void acceptImport()}>
+          </Button>
+          <Button type="button" disabled={!canAccept || accepting} onClick={() => void acceptImport()}>
             {accepting ? 'Accepting…' : 'Accept import'}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -162,110 +168,117 @@ export default function AssessmentImportReviewPage({ params }) {
         <div className="skeleton skeleton-card" style={{ height: 280 }} />
       ) : (
         <>
-          <div className="card" style={{ marginBottom: '1rem' }}>
-            <p className="text-sm" style={{ margin: 0 }}>
+          <Alert className="mb-4" variant={invalidCount ? 'destructive' : 'default'}>
+            <AlertTitle>{invalidCount ? 'Corrections required' : 'Ready to accept'}</AlertTitle>
+            <AlertDescription>
               File: <strong>{payload?.session?.original_file_name || '—'}</strong> · Rows: <strong>{draftRows.length}</strong> · Errors:{' '}
-              <strong style={{ color: invalidCount ? 'var(--danger-600)' : undefined }}>{invalidCount}</strong>
+              <strong>{invalidCount}</strong>
               {invalidCount > 0 ? (
                 <span className="text-secondary"> — save each fixed row, then Accept import.</span>
               ) : draftRows.length > 0 ? (
                 <span className="text-secondary"> — all rows valid. You can accept the import.</span>
               ) : null}
-            </p>
-          </div>
+            </AlertDescription>
+          </Alert>
 
-          <div className="card">
-            <div className="table-container" style={{ overflowX: 'auto', border: 'none' }}>
-              <table className="data-table" style={{ minWidth: 1200 }}>
-                <thead>
-                  <tr>
-                    <th>Row</th>
-                    <th>System ID</th>
-                    <th>Roll</th>
-                    <th>Candidate name</th>
-                    <th>Hiring result</th>
-                    <th>Remarks</th>
-                    <th>Errors</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
+          <Card>
+            <CardHeader>
+              <CardTitle>Import rows</CardTitle>
+            </CardHeader>
+            <CardContent className="overflow-x-auto p-0">
+              <Table className="min-w-[1100px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-14 pl-4">Row</TableHead>
+                    <TableHead>System ID</TableHead>
+                    <TableHead>Roll</TableHead>
+                    <TableHead>Candidate name</TableHead>
+                    <TableHead>Hiring result</TableHead>
+                    <TableHead>Remarks</TableHead>
+                    <TableHead className="min-w-[16rem]">Errors</TableHead>
+                    <TableHead className="w-[7.5rem] pr-4 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {draftRows.map((r) => (
-                    <tr key={r.id} style={!r.is_valid ? { background: 'rgba(239, 68, 68, 0.06)' } : undefined}>
-                      <td>{r.row_num}</td>
-                      <td>
-                        <input
-                          className="form-input text-sm font-mono"
-                          style={{ minWidth: 100 }}
+                    <TableRow key={r.id} className={!r.is_valid ? 'bg-destructive/5' : undefined}>
+                      <TableCell className="pl-4 align-top tabular-nums">{r.row_num}</TableCell>
+                      <TableCell className="align-top">
+                        <Input
+                          className="min-w-24 font-mono"
                           value={r.system_id}
                           onChange={(e) => patchDraft(r.id, 'system_id', e.target.value)}
                         />
-                      </td>
-                      <td>
-                        <input
-                          className="form-input text-sm font-mono"
-                          style={{ minWidth: 88 }}
+                      </TableCell>
+                      <TableCell className="align-top">
+                        <Input
+                          className="min-w-20 font-mono"
                           value={r.college_roll_no}
                           onChange={(e) => patchDraft(r.id, 'college_roll_no', e.target.value)}
                         />
-                      </td>
-                      <td>
-                        <input
-                          className="form-input text-sm"
-                          style={{ minWidth: 120 }}
+                      </TableCell>
+                      <TableCell className="align-top">
+                        <Input
+                          className="min-w-28"
                           value={r.candidate_name}
                           onChange={(e) => patchDraft(r.id, 'candidate_name', e.target.value)}
                           placeholder="Optional"
                         />
-                      </td>
-                      <td>
-                        <select
-                          className="form-select text-sm"
-                          style={{ minWidth: 120 }}
+                      </TableCell>
+                      <TableCell className="align-top">
+                        <AdminFilterSelect
+                          className="min-w-28"
                           value={r.hiring_result}
-                          onChange={(e) => patchDraft(r.id, 'hiring_result', e.target.value)}
-                        >
-                          {HIRING_RESULT_OPTIONS.map((o) => (
-                            <option key={o.value || 'empty'} value={o.value}>
-                              {o.label}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <input
-                          className="form-input text-sm"
-                          style={{ minWidth: 140 }}
+                          emptyMapsToAll={false}
+                          onValueChange={(v) => patchDraft(r.id, 'hiring_result', v)}
+                          items={HIRING_RESULT_OPTIONS.map((o) => ({ label: o.label, value: o.value }))}
+                        />
+                      </TableCell>
+                      <TableCell className="align-top">
+                        <Input
+                          className="min-w-36"
                           value={r.remarks}
                           onChange={(e) => patchDraft(r.id, 'remarks', e.target.value)}
                         />
-                      </td>
-                      <td className="text-xs text-secondary" style={{ maxWidth: 220 }}>
-                        {r.validation_errors.length ? r.validation_errors.join('; ') : '—'}
-                      </td>
-                      <td>
-                        <button
+                      </TableCell>
+                      <TableCell className="max-w-xs align-top whitespace-normal">
+                        {r.validation_errors.length ? (
+                          <ul className="text-destructive m-0 list-none space-y-1 p-0 text-xs leading-snug">
+                            {r.validation_errors.map((err) => (
+                              <li key={err} className="break-words">
+                                {err}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="pr-4 align-top text-right">
+                        <Button
                           type="button"
-                          className="btn btn-secondary btn-sm"
+                          variant="outline"
+                          size="sm"
+                          className="shrink-0 whitespace-nowrap"
                           disabled={savingRowId === r.id}
                           onClick={() => void saveRow(r)}
                         >
                           {savingRowId === r.id ? 'Saving…' : 'Save row'}
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
                   {draftRows.length === 0 && (
-                    <tr>
-                      <td colSpan={8} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                         No rows in this session.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </>
       )}
     </div>

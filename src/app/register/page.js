@@ -14,9 +14,26 @@ import {
 } from '@/lib/validators';
 import { isRegistrationJobAidEnabled } from '@/lib/registrationJobAid';
 import RegisterJobAidPanel from '@/components/auth/RegisterJobAidPanel';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import { verifyCaptchaAnswer } from '@/lib/captchaClient';
 import { redirectToLoginAfterRegistration } from '@/lib/postRegistrationRedirect';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group';
+import { Input } from '@/components/ui/input';
 
 function buildRegisterPhone(formData) {
   return buildRegistrationPhoneE164({
@@ -297,7 +314,7 @@ export default function RegisterPage() {
   return (
     <div className={`auth-page${showStudentJobAid ? ' auth-page--with-job-aid' : ''}`}>
       <div className="auth-left">
-        <div
+        <Card
           className="auth-card animate-slideUp"
           style={{ maxWidth: showStudentJobAid ? '520px' : undefined }}
         >
@@ -326,15 +343,8 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div style={{ 
-              padding: '0.75rem 1rem', 
-              background: 'var(--danger-50)', 
-              border: '1px solid var(--danger-100)',
-              borderRadius: 'var(--radius-lg)',
-              color: 'var(--danger-600)',
-              fontSize: '0.875rem',
-              marginBottom: '1rem'
-            }}>
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>
               {error}
               {showSignInLink ? (
                 <p style={{ margin: '0.5rem 0 0', color: 'var(--text-secondary)' }}>
@@ -344,7 +354,8 @@ export default function RegisterPage() {
                   {' if you already have an account.'}
                 </p>
               ) : null}
-            </div>
+              </AlertDescription>
+            </Alert>
           )}
 
           {/* Step 1: Role Selection */}
@@ -369,20 +380,22 @@ export default function RegisterPage() {
                   Sign in
                 </Link>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              <div className="mb-6 flex flex-col gap-3">
                 {roles.map((role) => (
-                  <div
+                  <Button
                     key={role.id}
-                    className={`role-card ${formData.role === role.id ? 'selected' : ''}`}
+                    type="button"
+                    variant={formData.role === role.id ? 'secondary' : 'outline'}
                     onClick={() => selectRegisterRole(role.id)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '1rem', textAlign: 'left', padding: '1.25rem' }}
+                    aria-pressed={formData.role === role.id}
+                    className="h-auto justify-start gap-4 px-5 py-4 text-left whitespace-normal"
                   >
-                    <div style={{ fontSize: '2rem' }}>{role.icon}</div>
+                    <span className="text-2xl" aria-hidden="true">{role.icon}</span>
                     <div>
-                      <div className="role-card-name" style={{ fontSize: '0.9375rem' }}>{role.label}</div>
-                      <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>{role.desc}</div>
+                      <div className="text-sm font-semibold">{role.label}</div>
+                      <div className="text-muted-foreground mt-0.5 text-xs font-normal">{role.desc}</div>
                     </div>
-                  </div>
+                  </Button>
                 ))}
               </div>
               {formData.role ? (
@@ -398,9 +411,8 @@ export default function RegisterPage() {
                   disabled={captchaChecking}
                 />
               ) : null}
-              <button
-                className="btn btn-primary"
-                style={{ width: '100%' }}
+              <Button
+                className="w-full"
                 disabled={!formData.role || !captchaReady || captchaChecking}
                 onClick={async () => {
                   const ok = await ensureCaptchaVerified();
@@ -408,40 +420,43 @@ export default function RegisterPage() {
                 }}
               >
                 {captchaChecking ? 'Verifying…' : captchaVerified ? 'Continue →' : 'Verify & continue →'}
-              </button>
+              </Button>
             </div>
           )}
 
           {/* Step 2: Personal Details */}
           {step === 2 && (
-            <div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                <div className="form-group">
-                  <label className="form-label">First Name <span className="required">*</span></label>
-                  <input
-                    className={`form-input${fieldErrors.firstName ? ' input-error' : ''}`}
+            <FieldGroup className="gap-5">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <Field data-invalid={Boolean(fieldErrors.firstName)}>
+                  <FieldLabel htmlFor="register-first-name">First Name <span aria-hidden="true">*</span></FieldLabel>
+                  <Input
+                    id="register-first-name"
+                    name="firstName"
                     placeholder="First name"
                     value={formData.firstName}
                     onChange={(e) => {
                       clearFieldError('firstName');
                       setFormData({ ...formData, firstName: e.target.value.replace(/\d/g, '') });
                     }}
+                    aria-invalid={Boolean(fieldErrors.firstName)}
                     required
                   />
-                  {fieldErrors.firstName ? <p className="form-error">{fieldErrors.firstName}</p> : null}
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Last Name</label>
-                  <input className="form-input" placeholder="Last name" value={formData.lastName}
+                  <FieldError>{fieldErrors.firstName}</FieldError>
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="register-last-name">Last Name</FieldLabel>
+                  <Input id="register-last-name" name="lastName" placeholder="Last name" value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value.replace(/\d/g, '') })} />
-                </div>
+                </Field>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Email <span className="required">*</span></label>
-                <input
+              <Field data-invalid={Boolean(fieldErrors.email)}>
+                <FieldLabel htmlFor="register-email">Email <span aria-hidden="true">*</span></FieldLabel>
+                <Input
+                  id="register-email"
+                  name="email"
                   type="email"
-                  className={`form-input${fieldErrors.email ? ' input-error' : ''}`}
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => {
@@ -449,34 +464,32 @@ export default function RegisterPage() {
                     setFormData({ ...formData, email: e.target.value.trim() });
                   }}
                   onBlur={validateEmailField}
+                  aria-invalid={Boolean(fieldErrors.email)}
                   required
                 />
-                {fieldErrors.email ? <p className="form-error">{fieldErrors.email}</p> : null}
-              </div>
+                <FieldError>{fieldErrors.email}</FieldError>
+              </Field>
 
-              <div className="form-group">
-                <label className="form-label">Mobile <span className="text-xs text-tertiary">(optional)</span></label>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <select
-                    className="form-select"
-                    style={{ width: 'auto', minWidth: '10rem', maxWidth: '100%' }}
-                    value={formData.phoneDialCode}
-                    onChange={(e) => {
-                      clearFieldError('phone');
-                      setFormData({ ...formData, phoneDialCode: e.target.value, phoneNational: '' });
-                    }}
-                    aria-label="Country calling code"
-                  >
-                    {PHONE_DIAL_CODES.map((o) => (
-                      <option key={o.code || o.label} value={o.code}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
+              <Field data-invalid={Boolean(fieldErrors.phone)}>
+                <FieldLabel htmlFor="register-phone">Mobile <span className="text-muted-foreground text-xs">(optional)</span></FieldLabel>
+                <InputGroup>
+                  <InputGroupAddon className="p-0">
+                    <AdminFilterSelect
+                      className="h-9 min-w-[5.5rem] border-0 bg-transparent shadow-none"
+                      value={formData.phoneDialCode}
+                      onValueChange={(v) => {
+                        clearFieldError('phone');
+                        setFormData({ ...formData, phoneDialCode: v, phoneNational: '' });
+                      }}
+                      aria-label="Country calling code"
+                      emptyMapsToAll={false}
+                      items={PHONE_DIAL_CODES.map((o) => ({ label: o.label, value: o.code }))}
+                    />
+                  </InputGroupAddon>
                   {formData.phoneDialCode !== PHONE_FULL_E164 ? (
-                    <input
-                      className={`form-input${fieldErrors.phone ? ' input-error' : ''}`}
-                      style={{ flex: '1', minWidth: '140px' }}
+                    <InputGroupInput
+                      id="register-phone"
+                      name="phoneNational"
                       placeholder="National number (no leading 0)"
                       inputMode="numeric"
                       autoComplete="tel-national"
@@ -486,11 +499,12 @@ export default function RegisterPage() {
                         setFormData({ ...formData, phoneNational: e.target.value.replace(/\D/g, '') });
                       }}
                       onBlur={validatePhoneField}
+                      aria-invalid={Boolean(fieldErrors.phone)}
                     />
                   ) : (
-                    <input
-                      className={`form-input${fieldErrors.phone ? ' input-error' : ''}`}
-                      style={{ flex: '1', minWidth: '180px' }}
+                    <InputGroupInput
+                      id="register-phone"
+                      name="phoneNational"
                       placeholder="e.g. +44 7911 123456"
                       inputMode="tel"
                       autoComplete="tel"
@@ -500,145 +514,162 @@ export default function RegisterPage() {
                         setFormData({ ...formData, phoneNational: e.target.value });
                       }}
                       onBlur={validatePhoneField}
+                      aria-invalid={Boolean(fieldErrors.phone)}
                     />
                   )}
-                </div>
-                {fieldErrors.phone ? (
-                  <p className="form-error">{fieldErrors.phone}</p>
-                ) : (
-                  <span className="form-hint">
+                </InputGroup>
+                {fieldErrors.phone ? <FieldError>{fieldErrors.phone}</FieldError> : (
+                  <FieldDescription>
                     Defaults to <strong>India (+91)</strong>; change the country if needed, or pick <strong>Other</strong> for any region not listed.
-                  </span>
+                  </FieldDescription>
                 )}
-              </div>
+              </Field>
 
               {/* Role-specific fields */}
               {formData.role === 'student' && (
                 <>
-                  <div className="form-group">
-                    <label className="form-label">Campus enrollment key <span className="required">*</span></label>
-                    <input
-                      className="form-input font-mono"
+                  <Field>
+                    <FieldLabel htmlFor="campus-binding-token">Campus enrollment key <span aria-hidden="true">*</span></FieldLabel>
+                    <Input
+                      id="campus-binding-token"
+                      name="campusBindingToken"
+                      className="font-mono"
                       placeholder="Provided by your placement office"
                       autoComplete="off"
                       value={formData.campusBindingToken}
                       onChange={(e) => setFormData({ ...formData, campusBindingToken: e.target.value })}
                     />
-                    <span className="form-hint">
+                    <FieldDescription>
                       Paste the full enrollment key from your college (spaces are ignored; typically 15 characters). Not your roll number.
-                    </span>
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Department <span className="required">*</span></label>
-                    <select
-                      className="form-select"
+                    </FieldDescription>
+                  </Field>
+                  <Field data-invalid={Boolean(fieldErrors.departmentId)}>
+                    <FieldLabel htmlFor="register-department">Department <span aria-hidden="true">*</span></FieldLabel>
+                    <AdminFilterSelect
+                      id="register-department"
+                      className="w-full"
                       value={formData.departmentId}
-                      onChange={(e) => setFormData({ ...formData, departmentId: e.target.value })}
-                      required
-                    >
-                      <option value="">Select department</option>
-                      {departments.map((d) => (
-                        <option key={d.id} value={d.id}>
-                          {d.name}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="form-hint">Choose the program that matches your official enrollment.</span>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                    <div className="form-group">
-                      <label className="form-label">Roll Number</label>
-                      <input className="form-input" placeholder="CS2021001" value={formData.rollNumber}
+                      onValueChange={(v) => {
+                        clearFieldError('departmentId');
+                        setFormData({ ...formData, departmentId: v });
+                      }}
+                      items={[
+                        { label: 'Select department', value: 'all' },
+                        ...departments.map((d) => ({ label: d.name, value: String(d.id) })),
+                      ]}
+                    />
+                    <FieldError>{fieldErrors.departmentId}</FieldError>
+                    <FieldDescription>Choose the program that matches your official enrollment.</FieldDescription>
+                  </Field>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field>
+                      <FieldLabel htmlFor="register-roll-number">Roll Number</FieldLabel>
+                      <Input id="register-roll-number" name="rollNumber" placeholder="CS2021001" value={formData.rollNumber}
                         onChange={(e) => setFormData({ ...formData, rollNumber: e.target.value })} />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Batch Year <span className="required">*</span></label>
-                      <input
-                        className="form-input"
+                    </Field>
+                    <Field data-invalid={Boolean(fieldErrors.batchYear)}>
+                      <FieldLabel htmlFor="register-batch-year">Batch Year <span aria-hidden="true">*</span></FieldLabel>
+                      <Input
+                        id="register-batch-year"
+                        name="batchYear"
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
                         placeholder="2025"
                         autoComplete="off"
                         value={formData.batchYear}
-                        onChange={(e) => setFormData({ ...formData, batchYear: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                        onChange={(e) => {
+                          clearFieldError('batchYear');
+                          setFormData({ ...formData, batchYear: e.target.value.replace(/\D/g, '').slice(0, 4) });
+                        }}
+                        aria-invalid={Boolean(fieldErrors.batchYear)}
                       />
-                      <span className="form-hint">4-digit admission batch year (validated on continue).</span>
-                    </div>
+                      <FieldError>{fieldErrors.batchYear}</FieldError>
+                      <FieldDescription>4-digit admission batch year (validated on continue).</FieldDescription>
+                    </Field>
                   </div>
                 </>
               )}
 
               {formData.role === 'employer' && (
                 <>
-                  <div className="form-group">
-                    <label className="form-label">Company Name <span className="required">*</span></label>
-                    <input
-                      className={`form-input${fieldErrors.companyName ? ' input-error' : ''}`}
+                  <Field data-invalid={Boolean(fieldErrors.companyName)}>
+                    <FieldLabel htmlFor="register-company-name">Company Name <span aria-hidden="true">*</span></FieldLabel>
+                    <Input
+                      id="register-company-name"
+                      name="companyName"
                       placeholder="TechCorp Solutions"
                       value={formData.companyName}
                       onChange={(e) => {
                         clearFieldError('companyName');
                         setFormData({ ...formData, companyName: e.target.value });
                       }}
+                      aria-invalid={Boolean(fieldErrors.companyName)}
                       required
                     />
-                    {fieldErrors.companyName ? <p className="form-error">{fieldErrors.companyName}</p> : null}
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Industry</label>
-                    <select className="form-select" value={formData.industry}
-                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}>
-                      <option value="">Select Industry</option>
-                      <option value="Information Technology">Information Technology</option>
-                      <option value="Finance">Finance & Banking</option>
-                      <option value="Consulting">Consulting</option>
-                      <option value="Manufacturing">Manufacturing</option>
-                      <option value="Healthcare">Healthcare</option>
-                      <option value="Education">Education</option>
-                      <option value="E-commerce">E-commerce</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
+                    <FieldError>{fieldErrors.companyName}</FieldError>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="register-industry">Industry</FieldLabel>
+                    <AdminFilterSelect
+                      id="register-industry"
+                      className="w-full"
+                      value={formData.industry}
+                      onValueChange={(v) => setFormData({ ...formData, industry: v })}
+                      items={[
+                        { label: 'Select Industry', value: 'all' },
+                        { label: 'Information Technology', value: 'Information Technology' },
+                        { label: 'Finance & Banking', value: 'Finance' },
+                        { label: 'Consulting', value: 'Consulting' },
+                        { label: 'Manufacturing', value: 'Manufacturing' },
+                        { label: 'Healthcare', value: 'Healthcare' },
+                        { label: 'Education', value: 'Education' },
+                        { label: 'E-commerce', value: 'E-commerce' },
+                        { label: 'Other', value: 'Other' },
+                      ]}
+                    />
+                  </Field>
                 </>
               )}
 
               {formData.role === 'college_admin' && (
                 <>
-                  <div className="form-group">
-                    <label className="form-label">College Name <span className="required">*</span></label>
-                    <input
-                      className={`form-input${fieldErrors.collegeFullName ? ' input-error' : ''}`}
+                  <Field data-invalid={Boolean(fieldErrors.collegeFullName)}>
+                    <FieldLabel htmlFor="register-college-name">College Name <span aria-hidden="true">*</span></FieldLabel>
+                    <Input
+                      id="register-college-name"
+                      name="collegeFullName"
                       placeholder="Indian Institute of Technology"
                       value={formData.collegeFullName}
                       onChange={(e) => {
                         clearFieldError('collegeFullName');
                         setFormData({ ...formData, collegeFullName: e.target.value });
                       }}
+                      aria-invalid={Boolean(fieldErrors.collegeFullName)}
                       required
                     />
-                    {fieldErrors.collegeFullName ? <p className="form-error">{fieldErrors.collegeFullName}</p> : null}
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                    <div className="form-group">
-                      <label className="form-label">City</label>
-                      <input className="form-input" placeholder="Mumbai" value={formData.city}
+                    <FieldError>{fieldErrors.collegeFullName}</FieldError>
+                  </Field>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field>
+                      <FieldLabel htmlFor="register-city">City</FieldLabel>
+                      <Input id="register-city" name="city" placeholder="Mumbai" value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">State</label>
-                      <input className="form-input" placeholder="Maharashtra" value={formData.state}
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="register-state">State</FieldLabel>
+                      <Input id="register-state" name="state" placeholder="Maharashtra" value={formData.state}
                         onChange={(e) => setFormData({ ...formData, state: e.target.value })} />
-                    </div>
+                    </Field>
                   </div>
                 </>
               )}
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-                <button className="btn btn-secondary" onClick={() => setStep(1)} style={{ flex: 1 }}>← Back</button>
-                <button 
-                  className="btn btn-primary" 
-                  style={{ flex: 2 }}
+              <div className="mt-2 flex gap-3">
+                <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1">← Back</Button>
+                <Button
+                  type="button"
+                  className="flex-[2]"
                   disabled={
                     !formData.firstName ||
                     !formData.email ||
@@ -661,40 +692,42 @@ export default function RegisterPage() {
                   }}
                 >
                   Continue →
-                </button>
+                </Button>
               </div>
-            </div>
+            </FieldGroup>
           )}
 
           {/* Step 3: Password */}
           {step === 3 && (
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label className="form-label">Password <span className="required">*</span></label>
-                <input type="password" className="form-input" placeholder={`Min ${PASSWORD_MIN_LENGTH} characters`} value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })} required minLength={PASSWORD_MIN_LENGTH} />
-                <span className="form-hint">{PASSWORD_REQUIREMENTS_HINT}</span>
-              </div>
+              <FieldGroup className="gap-5">
+                <Field>
+                  <FieldLabel htmlFor="register-password">Password <span aria-hidden="true">*</span></FieldLabel>
+                  <Input id="register-password" name="password" type="password" placeholder={`Min ${PASSWORD_MIN_LENGTH} characters`} value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })} required minLength={PASSWORD_MIN_LENGTH} />
+                  <FieldDescription>{PASSWORD_REQUIREMENTS_HINT}</FieldDescription>
+                </Field>
 
-              <div className="form-group">
-                <label className="form-label">Confirm Password <span className="required">*</span></label>
-                <input type="password" className="form-input" placeholder="Re-enter password" value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required />
-              </div>
+                <Field>
+                  <FieldLabel htmlFor="register-confirm-password">Confirm Password <span aria-hidden="true">*</span></FieldLabel>
+                  <Input id="register-confirm-password" name="confirmPassword" type="password" placeholder="Re-enter password" value={formData.confirmPassword}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required />
+                </Field>
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setStep(2)} style={{ flex: 1 }}>← Back</button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={loading}>
+              <div className="mt-2 flex gap-3">
+                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1">← Back</Button>
+                <Button type="submit" className="flex-[2]" disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}
-                </button>
+                </Button>
               </div>
+              </FieldGroup>
             </form>
           )}
 
           <div className="auth-footer">
             Already have an account? <Link href="/login">Sign in</Link>
           </div>
-        </div>
+        </Card>
       </div>
 
       {showStudentJobAid ? (

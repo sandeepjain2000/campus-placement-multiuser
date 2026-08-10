@@ -1,4 +1,6 @@
 import { AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 /** Hide raw Postgres / SQL plumbing from end users; keep support Ref if present. */
 export function friendlyPageErrorMessage(raw, fallback) {
@@ -37,21 +39,19 @@ export default function PageError({
   );
 
   return (
-    <div className="empty-state animate-fadeIn" style={{ minHeight: '60vh' }}>
-      <div className="empty-state-icon" style={{ background: 'var(--danger-50)', color: 'var(--danger-600)' }}>
-        <AlertTriangle size={32} />
-      </div>
-      <h3 style={{ marginTop: '1.5rem', marginBottom: '0.5rem', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-        {title}
-      </h3>
-      <p style={{ color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-        {detail}
-      </p>
-      {reset && (
-        <button className="btn btn-primary" onClick={reset}>
-          Try Again
-        </button>
-      )}
+    <div className="animate-fadeIn flex min-h-[60vh] items-center justify-center p-4">
+      <Alert variant="destructive" className="max-w-lg">
+        <AlertTriangle aria-hidden="true" />
+        <AlertTitle>{title}</AlertTitle>
+        <AlertDescription>{detail}</AlertDescription>
+        {reset ? (
+          <div className="col-start-2 mt-3">
+            <Button type="button" variant="outline" onClick={reset}>
+              Try again
+            </Button>
+          </div>
+        ) : null}
+      </Alert>
     </div>
   );
 }

@@ -3,6 +3,9 @@
 import { useMemo, useState } from 'react';
 import { Building2, Check, MapPin, Search } from 'lucide-react';
 import EntityLogo from '@/components/EntityLogo';
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 /** @param {Record<string, boolean> | null | undefined} selection */
 export function countSelectedTenantIds(selection) {
@@ -84,24 +87,24 @@ export default function EmployerCampusTargetPicker({
   const searchVisible = showSearch && campuses.length > 3;
 
   return (
-    <div className={`employer-campus-picker${compact ? ' employer-campus-picker--compact' : ''}`}>
+    <Field className={compact ? 'gap-2' : 'gap-3'}>
       {label ? (
-        <label className="form-label employer-campus-picker-label" htmlFor={searchVisible ? `${fieldId}-search` : undefined}>
+        <FieldLabel htmlFor={searchVisible ? `${fieldId}-search` : undefined}>
           {label}
-          {required ? <span className="required"> *</span> : null}
-        </label>
+          {required ? <span className="text-destructive"> *</span> : null}
+        </FieldLabel>
       ) : null}
-      {hint ? <p className="employer-campus-picker-hint">{hint}</p> : null}
+      {hint ? <FieldDescription>{hint}</FieldDescription> : null}
 
       {campuses.length > 0 ? (
         <div className="employer-campus-picker-toolbar">
           {searchVisible ? (
             <div className="employer-campus-picker-search">
               <Search size={16} className="employer-campus-picker-search-icon" aria-hidden />
-              <input
+              <Input
                 id={`${fieldId}-search`}
                 type="search"
-                className="form-input employer-campus-picker-search-input"
+                className="pl-9"
                 placeholder="Search campuses…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -114,22 +117,24 @@ export default function EmployerCampusTargetPicker({
               <strong>{selectedCount}</strong>
               <span className="text-tertiary"> / {campuses.length} selected</span>
             </span>
-            <button
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
+              variant="outline"
+              size="sm"
               disabled={allFilteredSelected || filtered.length === 0}
               onClick={selectFiltered}
             >
               {query.trim() ? 'Select matching' : 'Select all'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
+              variant="outline"
+              size="sm"
               disabled={noneFilteredSelected}
               onClick={clearFiltered}
             >
               Clear
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}
@@ -147,21 +152,22 @@ export default function EmployerCampusTargetPicker({
         ) : filtered.length === 0 ? (
           <div className="employer-campus-picker-empty">
             <p>No campuses match &ldquo;{query.trim()}&rdquo;.</p>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setQuery('')}>
+            <Button type="button" variant="ghost" size="sm" onClick={() => setQuery('')}>
               Clear search
-            </button>
+            </Button>
           </div>
         ) : (
           filtered.map((campus) => {
             const checked = Boolean(selection[campus.id]);
             const location = campusLocationLabel(campus);
             return (
-              <button
+              <Button
                 key={campus.id}
                 type="button"
                 role="checkbox"
                 aria-checked={checked}
-                className={`employer-campus-picker-card${checked ? ' is-selected' : ''}`}
+                variant="outline"
+                className={`employer-campus-picker-card h-auto min-h-0 min-w-0 items-center justify-start overflow-hidden whitespace-normal ${checked ? 'is-selected border-primary bg-primary/5 ring-primary/20 ring-2' : ''}`}
                 onClick={() => toggleCampus(campus.id)}
               >
                 <span className="employer-campus-picker-card-check" aria-hidden>
@@ -187,11 +193,11 @@ export default function EmployerCampusTargetPicker({
                     </span>
                   ) : null}
                 </span>
-              </button>
+              </Button>
             );
           })
         )}
       </div>
-    </div>
+    </Field>
   );
 }

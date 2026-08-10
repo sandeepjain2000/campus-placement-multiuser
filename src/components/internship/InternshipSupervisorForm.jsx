@@ -1,6 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const EMPTY = {
   supervisorName: '',
@@ -34,8 +38,8 @@ export default function InternshipSupervisorForm({
       return <p className="text-sm text-secondary" style={{ margin: 0 }}>No company supervisor assigned yet.</p>;
     }
     return (
-      <div className="text-sm" style={{ lineHeight: 1.55 }}>
-        <div style={{ fontWeight: 600 }}>{initialSupervisor.supervisorName}</div>
+      <div className="flex flex-col gap-1 text-sm leading-relaxed">
+        <div className="font-semibold">{initialSupervisor.supervisorName}</div>
         {initialSupervisor.supervisorTeam ? (
           <div className="text-secondary">{initialSupervisor.supervisorTeam}</div>
         ) : null}
@@ -48,7 +52,7 @@ export default function InternshipSupervisorForm({
           <div className="text-secondary">{initialSupervisor.supervisorPhone}</div>
         ) : null}
         {initialSupervisor.supervisorNotes ? (
-          <p className="text-secondary" style={{ margin: '0.5rem 0 0', whiteSpace: 'pre-wrap' }}>
+          <p className="mt-2 whitespace-pre-wrap text-muted-foreground">
             {initialSupervisor.supervisorNotes}
           </p>
         ) : null}
@@ -64,71 +68,66 @@ export default function InternshipSupervisorForm({
         e.preventDefault();
         onSubmit(form);
       }}
-      style={{ display: 'grid', gap: '0.65rem' }}
+      className="flex flex-col gap-5"
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.65rem' }}>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Supervisor name *</label>
-          <input
-            className="form-input"
+      <FieldGroup className="grid gap-5 md:grid-cols-2">
+        <Field>
+          <FieldLabel>Supervisor name *</FieldLabel>
+          <Input
             value={form.supervisorName}
             onChange={(e) => setField('supervisorName', e.target.value)}
             placeholder="Anita Mehta"
             required
             disabled={saving}
           />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Team / role</label>
-          <input
-            className="form-input"
+        </Field>
+        <Field>
+          <FieldLabel>Team / role</FieldLabel>
+          <Input
             value={form.supervisorTeam}
             onChange={(e) => setField('supervisorTeam', e.target.value)}
             placeholder="Platform engineering — Tech lead"
             disabled={saving}
           />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Email</label>
-          <input
-            className="form-input"
+        </Field>
+        <Field>
+          <FieldLabel>Email</FieldLabel>
+          <Input
             type="email"
             value={form.supervisorEmail}
             onChange={(e) => setField('supervisorEmail', e.target.value)}
             placeholder="supervisor@company.com"
             disabled={saving}
           />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Phone</label>
-          <input
-            className="form-input"
+        </Field>
+        <Field>
+          <FieldLabel>Phone</FieldLabel>
+          <Input
             value={form.supervisorPhone}
             onChange={(e) => setField('supervisorPhone', e.target.value)}
             placeholder="+91 …"
             disabled={saving}
           />
-        </div>
-      </div>
-      <div className="form-group" style={{ margin: 0 }}>
-        <label className="form-label">Notes for intern</label>
-        <textarea
-          className="form-input"
+        </Field>
+      </FieldGroup>
+      <Field>
+        <FieldLabel>Notes for intern</FieldLabel>
+        <Textarea
           rows={3}
           value={form.supervisorNotes}
           onChange={(e) => setField('supervisorNotes', e.target.value)}
           placeholder="Report to me on Day 1. Weekly sync every Friday."
           disabled={saving}
         />
-      </div>
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>
+      </Field>
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving…' : initialSupervisor ? 'Update supervisor' : 'Assign supervisor'}
-        </button>
+        </Button>
         {initialSupervisor && onClear ? (
-          <button type="button" className="btn btn-secondary btn-sm" disabled={saving} onClick={onClear}>
+          <Button type="button" variant="destructive" size="sm" disabled={saving} onClick={onClear}>
             Remove supervisor
-          </button>
+          </Button>
         ) : null}
       </div>
     </form>
