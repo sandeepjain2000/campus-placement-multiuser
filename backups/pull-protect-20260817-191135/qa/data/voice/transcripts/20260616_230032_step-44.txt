@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-44
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Select the shortlisted candidate. Status becomes Selected — employer cycle complete.

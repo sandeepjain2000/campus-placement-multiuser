@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-25
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Employer assigns company supervisor. Student Opportunities → Internship supervisors for selected or in-progress interns.

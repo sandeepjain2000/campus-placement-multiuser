@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-20
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type minimum CGPA. Min CGPA field shows 7.5.

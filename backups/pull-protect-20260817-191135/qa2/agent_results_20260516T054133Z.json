@@ -1,0 +1,59 @@
+{
+  "generatedAt": "20260516T054133Z",
+  "baseUrl": "https://campus-placement-omega.vercel.app",
+  "useCloud": false,
+  "model": "meta/llama-3.1-8b-instruct",
+  "nvidiaBaseUrl": "https://integrate.api.nvidia.com/v1",
+  "nvidiaKeysFolder": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys",
+  "nvidiaKeyFiles": [
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json"
+  ],
+  "logFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\logs\\run_agent_20260516T054133Z.log",
+  "results": [
+    {
+      "id": "C1-VISIT-001",
+      "title": "C1-VISIT-001",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 32033,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16544,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1109,
+        "total_completion_cost": 0.0,
+        "total_tokens": 33142,
+        "total_cost": 0.0,
+        "entry_count": 5,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 32033,
+            "completion_tokens": 1109,
+            "total_tokens": 33142,
+            "cost": 0.0,
+            "invocations": 5,
+            "average_tokens_per_invocation": 6628.4
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json"
+    }
+  ]
+}

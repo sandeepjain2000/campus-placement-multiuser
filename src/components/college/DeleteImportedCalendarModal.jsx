@@ -1,8 +1,21 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { X, Trash2, AlertTriangle } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
 import { toDateOnlyString } from '@/lib/dateOnly';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldLegend } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 function todayYmd() {
   return toDateOnlyString(new Date());
@@ -98,177 +111,116 @@ export default function DeleteImportedCalendarModal({ open, onClose, onDeleted }
     }
   };
 
-  if (!open) return null;
-
   const count = Number(preview?.count) || 0;
 
   return (
-    <div className="modal-overlay modal-overlay-solid" role="presentation" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="delete-imported-calendar-title"
-        className="card animate-fadeIn"
-        style={{
-          width: 'min(520px, calc(100vw - 2rem))',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          margin: 'auto',
-          padding: 0,
-        }}
-        onClick={(ev) => ev.stopPropagation()}
-      >
-        <div
-          className="card-header"
-          style={{
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            borderBottom: '1px solid var(--border-default)',
-          }}
-        >
-          <div>
-            <h2
-              id="delete-imported-calendar-title"
-              className="card-title"
-              style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-            >
-              <Trash2 size={20} />
-              Delete imported events
-            </h2>
-            <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0' }}>
-              Removes only events brought in via .ics import. Manually added programs and placement drives stay.
-            </p>
-          </div>
-          <button type="button" className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
+    <Dialog open={open} onOpenChange={(nextOpen) => { if (!nextOpen) onClose(); }}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Trash2 aria-hidden />
+            Delete imported events
+          </DialogTitle>
+          <DialogDescription>
+            Removes only events brought in via .ics import. Manually added programs and placement drives stay.
+          </DialogDescription>
+        </DialogHeader>
 
-        <div style={{ padding: '1.25rem 1.5rem 1.5rem' }}>
-          <div className="form-group">
-            <span className="form-label">What to delete</span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.35rem' }}>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="delete-imported-scope"
-                  checked={scope === 'range'}
-                  onChange={() => setScope('range')}
-                  style={{ marginTop: '0.2rem' }}
-                />
-                <span>
-                  <span className="form-label" style={{ display: 'block', margin: 0 }}>
-                    Date range
+        <FieldGroup>
+          <FieldSet>
+            <FieldLegend>What to delete</FieldLegend>
+            <RadioGroup value={scope} onValueChange={setScope}>
+              <Field orientation="horizontal">
+                <FieldLabel className="items-start gap-2">
+                  <RadioGroupItem value="range" />
+                  <span>
+                    <span className="block font-medium">Date range</span>
+                    <span className="text-muted-foreground text-sm">
+                      Delete imported events that overlap the selected dates.
+                    </span>
                   </span>
-                  <span className="text-sm text-secondary">
-                    Delete imported events that overlap the selected dates.
+                </FieldLabel>
+              </Field>
+              <Field orientation="horizontal">
+                <FieldLabel className="items-start gap-2">
+                  <RadioGroupItem value="all" />
+                  <span>
+                    <span className="block font-medium">All imported events</span>
+                    <span className="text-muted-foreground text-sm">Clear every ICS-imported event for this campus.</span>
                   </span>
-                </span>
-              </label>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="delete-imported-scope"
-                  checked={scope === 'all'}
-                  onChange={() => setScope('all')}
-                  style={{ marginTop: '0.2rem' }}
-                />
-                <span>
-                  <span className="form-label" style={{ display: 'block', margin: 0 }}>
-                    All imported events
-                  </span>
-                  <span className="text-sm text-secondary">Clear every ICS-imported event for this campus.</span>
-                </span>
-              </label>
-            </div>
-          </div>
+                </FieldLabel>
+              </Field>
+            </RadioGroup>
+          </FieldSet>
 
           {scope === 'range' ? (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label" htmlFor="delete-imported-from">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="delete-imported-from">
                   From
-                </label>
-                <input
+                </FieldLabel>
+                <Input
                   id="delete-imported-from"
                   type="date"
-                  className="form-input"
                   value={fromDate}
                   onChange={(e) => setFromDate(e.target.value)}
                 />
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label" htmlFor="delete-imported-to">
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="delete-imported-to">
                   To
-                </label>
-                <input
+                </FieldLabel>
+                <Input
                   id="delete-imported-to"
                   type="date"
-                  className="form-input"
                   value={toDate}
                   min={fromDate || undefined}
                   onChange={(e) => setToDate(e.target.value)}
                 />
-              </div>
+              </Field>
             </div>
           ) : null}
 
-          <div
-            className="card"
-            style={{
-              padding: '0.875rem 1rem',
-              margin: '1rem 0',
-              borderColor: count > 0 ? 'var(--warning-300)' : 'var(--border-default)',
-              background: count > 0 ? 'var(--warning-50)' : 'var(--bg-secondary)',
-            }}
-          >
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-              <AlertTriangle
-                size={18}
-                style={{
-                  flexShrink: 0,
-                  marginTop: 2,
-                  color: count > 0 ? 'var(--warning-700)' : 'var(--text-tertiary)',
-                }}
-              />
-              <div style={{ fontSize: '0.9rem' }}>
+          <Alert variant={count > 0 ? 'destructive' : 'default'}>
+            <AlertTriangle aria-hidden />
+            <AlertTitle>Imported event count</AlertTitle>
+            <AlertDescription>
                 {busy && !preview ? (
-                  <span className="text-secondary">Counting imported events…</span>
+                  <span>Counting imported events…</span>
                 ) : (
                   <>
                     <strong>{count}</strong> imported event{count === 1 ? '' : 's'} match
                     {scope === 'all' ? ' (all)' : ' this range'}
                     {preview?.earliest && preview?.latest ? (
-                      <div className="text-sm text-secondary" style={{ marginTop: '0.25rem' }}>
+                      <div className="mt-1">
                         Span: {preview.earliest}
                         {preview.latest !== preview.earliest ? ` → ${preview.latest}` : ''}
                       </div>
                     ) : null}
                   </>
                 )}
-              </div>
-            </div>
-          </div>
+            </AlertDescription>
+          </Alert>
 
           {error ? (
-            <p style={{ color: 'var(--danger-600)', fontSize: '0.875rem', margin: '0 0 1rem' }}>{error}</p>
+            <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>
           ) : null}
+        </FieldGroup>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={busy}>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose} disabled={busy}>
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-danger"
+              variant="destructive"
               onClick={handleDelete}
               disabled={busy || count === 0}
             >
               {busy ? 'Working…' : scope === 'all' ? 'Delete all imported' : 'Delete in range'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Button>
+          </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

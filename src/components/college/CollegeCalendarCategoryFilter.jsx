@@ -1,5 +1,8 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/status-badge';
+
 export const COLLEGE_CALENDAR_CATEGORIES = [
   { id: 'all', label: 'All' },
   { id: 'placement', label: 'Placement' },
@@ -18,38 +21,24 @@ export const COLLEGE_CALENDAR_CATEGORIES = [
  */
 export default function CollegeCalendarCategoryFilter({ value = 'all', onChange, counts = {} }) {
   return (
-    <div
-      role="group"
-      aria-label="Filter calendar by category"
-      style={{
-        display: 'inline-flex',
-        flexWrap: 'wrap',
-        gap: '0.35rem',
-        padding: '0.25rem',
-        borderRadius: 'var(--radius-md)',
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-default)',
-      }}
-    >
+    <div role="group" aria-label="Filter calendar by category" className="bg-muted inline-flex flex-wrap gap-1 rounded-lg p-1">
       {COLLEGE_CALENDAR_CATEGORIES.map((cat) => {
         const active = value === cat.id;
         const count = counts[cat.id];
         return (
-          <button
+          <Button
             key={cat.id}
             type="button"
-            className={`btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'}`}
+            size="sm"
+            variant={active ? 'default' : 'ghost'}
             aria-pressed={active}
             onClick={() => onChange?.(cat.id)}
-            style={{ fontWeight: active ? 700 : 500 }}
           >
             {cat.label}
             {count != null ? (
-              <span className="font-mono" style={{ marginLeft: '0.35rem', opacity: 0.85 }}>
-                {count}
-              </span>
+              <StatusBadge tone={active ? 'indigo' : 'gray'}>{count}</StatusBadge>
             ) : null}
-          </button>
+          </Button>
         );
       })}
     </div>

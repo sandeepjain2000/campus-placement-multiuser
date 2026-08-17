@@ -4,6 +4,11 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, Lock } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 
 function UnlockForm() {
   const searchParams = useSearchParams();
@@ -42,48 +47,55 @@ function UnlockForm() {
 
   return (
     <div className="dev-notes-unlock-page">
-      <div className="dev-notes-unlock-card">
-        <div className="dev-notes-unlock-icon" aria-hidden>
-          <Lock size={28} strokeWidth={1.5} />
-        </div>
-        <h1>Internal tools</h1>
-        <p className="dev-notes-unlock-lead">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <Lock className="text-primary size-8" strokeWidth={1.5} aria-hidden />
+          <CardTitle className="text-xl">Internal tools</CardTitle>
+          <p className="text-muted-foreground text-sm">
           Enter the team password to open Developer Notes or the legacy data-entry hub.
-        </p>
-        <form onSubmit={onSubmit} className="dev-notes-unlock-form">
-          <label htmlFor="dev-notes-password">Password</label>
-          <div className="dev-notes-unlock-password-wrap">
-            <input
+          </p>
+        </CardHeader>
+        <form onSubmit={onSubmit}>
+        <CardContent>
+          <FieldGroup>
+          <Field data-invalid={Boolean(error)}>
+            <FieldLabel htmlFor="dev-notes-password">Password</FieldLabel>
+            <InputGroup>
+            <InputGroupInput
               id="dev-notes-password"
               type={showPassword ? 'text' : 'password'}
-              className="form-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
+              aria-invalid={Boolean(error)}
               required
               autoFocus
               disabled={loading}
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              title={showPassword ? 'Hide password' : 'Show password'}
-              disabled={loading}
-              className="btn btn-ghost btn-sm dev-notes-unlock-password-toggle"
-            >
-              {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-            </button>
-          </div>
-          {error ? <p className="dev-notes-unlock-error">{error}</p> : null}
-          <button type="submit" className="btn btn-primary" disabled={loading || !password}>
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
+                disabled={loading}
+                size="icon-xs"
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+              </InputGroupButton>
+            </InputGroupAddon>
+            </InputGroup>
+          </Field>
+          {error ? <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert> : null}
+          </FieldGroup>
+        </CardContent>
+        <CardFooter className="flex-col items-stretch gap-3">
+          <Button type="submit" disabled={loading || !password}>
             {loading ? 'Checking…' : 'Unlock'}
-          </button>
+          </Button>
+          <Link href="/" className={buttonVariants({ variant: 'ghost' })}>Back to landing</Link>
+        </CardFooter>
         </form>
-        <p className="dev-notes-unlock-meta">
-          <Link href="/">← Back to landing</Link>
-        </p>
-      </div>
+      </Card>
       <style jsx global>{`
         .dev-notes-unlock-page {
           min-height: 100vh;
@@ -92,91 +104,6 @@ function UnlockForm() {
           justify-content: center;
           padding: 2rem 1.25rem;
           background: var(--bg-primary);
-        }
-        .dev-notes-unlock-card {
-          width: 100%;
-          max-width: 24rem;
-          padding: 2rem 1.75rem;
-          border: 1px solid var(--border-default);
-          border-radius: var(--radius-xl);
-          background: var(--bg-secondary);
-          box-shadow: var(--shadow-md);
-        }
-        .dev-notes-unlock-icon {
-          width: 3rem;
-          height: 3rem;
-          border-radius: var(--radius-lg);
-          background: var(--primary-50);
-          border: 1px solid var(--primary-200);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--primary-600);
-          margin-bottom: 1rem;
-        }
-        .dev-notes-unlock-card h1 {
-          margin: 0 0 0.5rem;
-          font-size: 1.5rem;
-          font-weight: 800;
-        }
-        .dev-notes-unlock-lead {
-          margin: 0 0 1.25rem;
-          font-size: 0.9rem;
-          line-height: 1.5;
-          color: var(--text-secondary);
-        }
-        .dev-notes-unlock-form label {
-          display: block;
-          font-size: 0.8125rem;
-          font-weight: 600;
-          margin-bottom: 0.35rem;
-          color: var(--text-secondary);
-        }
-        .dev-notes-unlock-password-wrap {
-          position: relative;
-          margin-bottom: 0.85rem;
-        }
-        .dev-notes-unlock-form .form-input {
-          width: 100%;
-          padding-right: 2.4rem;
-          margin-bottom: 0;
-        }
-        .dev-notes-unlock-password-toggle {
-          position: absolute;
-          right: 0.45rem;
-          top: 50%;
-          transform: translateY(-50%);
-          min-width: 28px;
-          width: 28px;
-          height: 28px;
-          padding: 0;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-secondary);
-        }
-        .dev-notes-unlock-password-toggle:hover:not(:disabled) {
-          color: var(--text-primary);
-        }
-        .dev-notes-unlock-error {
-          margin: 0 0 0.75rem;
-          font-size: 0.8125rem;
-          color: var(--danger-600);
-        }
-        .dev-notes-unlock-form .btn {
-          width: 100%;
-        }
-        .dev-notes-unlock-meta {
-          margin: 1.25rem 0 0;
-          font-size: 0.8125rem;
-        }
-        .dev-notes-unlock-meta a {
-          color: var(--text-link);
-          font-weight: 600;
-          text-decoration: none;
-        }
-        .dev-notes-unlock-meta a:hover {
-          text-decoration: underline;
         }
       `}</style>
     </div>

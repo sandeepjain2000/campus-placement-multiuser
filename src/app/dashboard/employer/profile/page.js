@@ -15,7 +15,24 @@ import {
   EMPLOYER_COMPANY_SIZE_OPTIONS,
   labelEmployerCompanyType,
 } from '@/lib/employerCompanyTypeLabels';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import { Building2, Phone, MapPin, FileText, Pencil, GraduationCap, Star, Users, ExternalLink, Mail, Camera } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -211,41 +228,12 @@ export default function EmployerProfilePage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      {error ? <div className="card text-secondary mb-4">{error.message}</div> : null}
-      
-      {/* Premium Hero Banner */}
-      <div 
-        style={{
-          position: 'relative',
-          borderRadius: 'var(--radius-xl)',
-          overflow: 'hidden',
-          background: 'var(--banner-gradient)',
-          marginBottom: '2rem',
-          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        {/* Abstract Background Elements */}
-        <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: '-20%', right: '5%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)', borderRadius: '50%' }} />
-        
-        <div style={{ 
-          padding: '2.5rem', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '1.5rem',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-              <div style={{ 
-                padding: '0.75rem', 
-                background: 'rgba(255, 255, 255, 0.95)', 
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
-                backdropFilter: 'blur(10px)',
-              }}>
+    <div className="animate-fadeIn flex flex-col gap-5 pb-8">
+      {error ? <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert> : null}
+      <Card>
+        <CardHeader className="flex-row flex-wrap items-start justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="bg-muted rounded-lg border p-2">
                 <EntityLogo
                   name={profile.companyName}
                   logoUrl={profile.logoUrl}
@@ -253,228 +241,164 @@ export default function EmployerProfilePage() {
                   size="xl"
                   shape="rounded"
                 />
-              </div>
-              <div style={{ color: 'white' }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 0.25rem', letterSpacing: '-0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                  {profile.companyName}
-                </h1>
-                <p style={{ fontSize: '1rem', opacity: 0.9, margin: 0, fontWeight: 500 }}>
+            </div>
+            <div className="min-w-0">
+                <CardTitle className="truncate text-2xl">{profile.companyName}</CardTitle>
+                <CardDescription className="mt-1">
                   {profile.industry} • {profile.companyTypeLabel}
-                </p>
-              </div>
+                </CardDescription>
             </div>
-            <button 
-              className="btn" 
-              onClick={toggleEdit} 
-              style={{ 
-                background: 'rgba(255,255,255,0.2)', 
-                color: 'white', 
-                border: '1px solid rgba(255,255,255,0.3)',
-                backdropFilter: 'blur(8px)',
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '0.4rem',
-                fontWeight: 600,
-                transition: 'all 0.2s ease'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-              onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-            >
-              <Pencil size={15} /> Edit Profile
-            </button>
           </div>
-          
-          <div style={{ 
-            display: 'flex', 
-            gap: '1rem', 
-            flexWrap: 'wrap', 
-            background: 'rgba(0,0,0,0.2)', 
-            padding: '0.75rem 1.25rem', 
-            borderRadius: 'var(--radius-md)',
-            backdropFilter: 'blur(4px)',
-            color: 'rgba(255,255,255,0.95)',
-            fontSize: '0.875rem'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <MapPin size={14} style={{ opacity: 0.7 }} /> {profile.headquarters}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Users size={14} style={{ opacity: 0.7 }} />{profile.companySize === '—' ? 'Company size —' : `${profile.companySize} employees`}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Star size={14} style={{ opacity: 0.7 }} /> {profile.reliabilityScore != null ? `${profile.reliabilityScore}/5 rating` : 'Not rated yet'}
-            </div>
-            {profile.website !== '—' && profile.website && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
+          <Button variant="outline" onClick={toggleEdit}>
+              <Pencil data-icon="inline-start" /> Edit Profile
+          </Button>
+        </CardHeader>
+        <CardContent className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-5 text-sm">
+            <span className="text-muted-foreground flex items-center gap-1.5"><MapPin aria-hidden /> {profile.headquarters}</span>
+            <span className="text-muted-foreground flex items-center gap-1.5"><Users aria-hidden />{profile.companySize === '—' ? 'Company size —' : `${profile.companySize} employees`}</span>
+            <span className="text-muted-foreground flex items-center gap-1.5"><Star aria-hidden /> {profile.reliabilityScore != null ? `${profile.reliabilityScore}/5 rating` : 'Not rated yet'}</span>
+            {profile.website && (
                 <a 
                   href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 500 }}
-                  className="hover:underline"
+                  className="text-primary ml-auto flex items-center gap-1.5 font-medium hover:underline"
                 >
-                  <ExternalLink size={14} /> Visit Website
+                  <ExternalLink aria-hidden /> Visit Website
                 </a>
-              </div>
             )}
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="grid grid-2" style={{ gap: '1.5rem', alignItems: 'start' }}>
+      <div className="grid items-start gap-5 lg:grid-cols-2">
         {/* Left column — row 1 */}
-        <div className="card card-hover">
-          <div className="card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1rem' }}>
-            <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-              <FileText size={18} className="text-primary-600" /> About the Company
-            </h3>
-          </div>
-          <p className="text-secondary" style={{ lineHeight: 1.7, fontSize: '0.95rem', whiteSpace: 'pre-line', margin: 0 }}>
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2"><FileText aria-hidden /> About the Company</CardTitle></CardHeader>
+          <CardContent><p className="text-muted-foreground whitespace-pre-line text-sm leading-6">
             {profile.description}
-          </p>
-        </div>
+          </p></CardContent>
+        </Card>
 
         {/* Right column — row 1 */}
-        <div className="card card-hover">
-          <div className="card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1rem' }}>
-            <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-              <Phone size={18} className="text-primary-600" /> Primary Contact
-            </h3>
-          </div>
-          <div className="drive-info-grid" style={{ gap: '1.25rem' }}>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contact Person</div>
-              <div className="drive-info-value" style={{ fontWeight: 500 }}>{profile.contactPerson}</div>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</div>
-              <div className="drive-info-value" style={{ fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Phone aria-hidden /> Primary Contact</CardTitle></CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Contact Person</FieldLabel>
+              <div className="mt-1 text-sm font-medium">{profile.contactPerson}</div>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Email</FieldLabel>
+              <div className="mt-1 flex items-center gap-1.5 text-sm font-medium">
                 {profile.contactEmail !== '—' && <Mail size={13} className="text-tertiary" />}
                 {profile.contactEmail}
               </div>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Login email</div>
-              <div className="drive-info-value" style={{ fontWeight: 500, fontFamily: 'ui-monospace, monospace', fontSize: '0.9rem' }}>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Login email</FieldLabel>
+              <div className="mt-1 break-all font-mono text-sm font-medium">
                 {profile.accountEmail}
               </div>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Communication email</div>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Communication email</FieldLabel>
               <div
-                className="drive-info-value"
-                style={{
-                  fontWeight: 500,
-                  fontFamily: profile.communicationEmailRaw ? 'ui-monospace, monospace' : undefined,
-                  fontSize: '0.9rem',
-                  color: profile.communicationEmailRaw ? undefined : 'var(--text-secondary)',
-                }}
+                className="text-muted-foreground mt-1 break-all text-sm font-medium"
               >
                 {profile.communicationEmailDisplay}
               </div>
-              <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0', lineHeight: 1.4 }}>
+              <p className="text-muted-foreground mt-1 text-xs leading-5">
                 Used for platform mail (e.g. sponsorship thank-you and receipts). Leave blank in edit mode to use your login email.
               </p>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone</div>
-              <div className="drive-info-value" style={{ fontWeight: 500 }}>{profile.contactPhone}</div>
-            </div>
-          </div>
-        </div>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Phone</FieldLabel>
+              <div className="mt-1 text-sm font-medium">{profile.contactPhone}</div>
+            </Field>
+          </CardContent>
+        </Card>
 
         {/* Left column — row 2 */}
-        <div className="card card-hover">
-          <div className="card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1rem' }}>
-            <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-              <FileText size={18} className="text-primary-600" /> Sponsorship receipts (legal / tax)
-            </h3>
-          </div>
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2"><FileText aria-hidden /> Sponsorship Receipts</CardTitle><CardDescription>Legal and tax details used on acknowledgments.</CardDescription></CardHeader>
+          <CardContent>
           {profile.billingLegalName || profile.billingPan || profile.billingGstNumber ? (
-            <div className="drive-info-grid" style={{ gap: '1rem' }}>
-              <div className="drive-info-item">
-                <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legal name</div>
-                <div className="drive-info-value" style={{ fontWeight: 500 }}>{profile.billingLegalName || '—'}</div>
-              </div>
-              <div className="drive-info-item">
-                <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>PAN</div>
-                <div className="drive-info-value" style={{ fontWeight: 500, fontFamily: 'ui-monospace, monospace' }}>{profile.billingPan || '—'}</div>
-              </div>
-              <div className="drive-info-item">
-                <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>GSTIN</div>
-                <div className="drive-info-value" style={{ fontWeight: 500, fontFamily: 'ui-monospace, monospace' }}>{profile.billingGstNumber || '—'}</div>
-              </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>Legal name</FieldLabel>
+                <div className="mt-1 text-sm font-medium">{profile.billingLegalName || '—'}</div>
+              </Field>
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>PAN</FieldLabel>
+                <div className="mt-1 font-mono text-sm font-medium">{profile.billingPan || '—'}</div>
+              </Field>
+              <Field className="rounded-lg border bg-muted/30 p-3">
+                <FieldLabel>GSTIN</FieldLabel>
+                <div className="mt-1 font-mono text-sm font-medium">{profile.billingGstNumber || '—'}</div>
+              </Field>
             </div>
           ) : (
-            <p className="text-secondary text-sm" style={{ margin: 0, lineHeight: 1.55 }}>
+            <p className="text-muted-foreground text-sm leading-6">
               Not set yet. These appear on college-issued sponsorship acknowledgments. Add them when you sponsor a campus tier, or edit your company profile.
             </p>
-          )}
-        </div>
+          )}</CardContent>
+        </Card>
 
         {/* Right column — row 2 */}
-        <div className="card card-hover">
-          <div className="card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1rem' }}>
-            <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-              <MapPin size={18} className="text-primary-600" /> Office Locations
-            </h3>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2"><MapPin aria-hidden /> Office Locations</CardTitle></CardHeader>
+          <CardContent className="flex flex-wrap gap-2">
             {profile.locations.length > 0 ? (
               profile.locations.map((loc, i) => (
-                <span key={i} className="badge badge-blue" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', fontWeight: 500, border: '1px solid var(--blue-200)' }}>
-                  <MapPin size={12} style={{ marginRight: '0.25rem', opacity: 0.7 }} /> {loc}
-                </span>
+                <Badge key={i} variant="secondary">
+                  <MapPin data-icon="inline-start" /> {loc}
+                </Badge>
               ))
             ) : (
               <span className="text-secondary text-sm">No locations added.</span>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Left column — row 3 */}
-        <div className="card card-hover">
-          <div className="card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1rem' }}>
-            <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-              <Building2 size={18} className="text-primary-600" /> At a Glance
-            </h3>
-          </div>
-          <div className="drive-info-grid" style={{ gap: '1.25rem' }}>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Industry</div>
-              <div className="drive-info-value" style={{ fontWeight: 500 }}>{profile.industry}</div>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Company Type</div>
-              <div className="drive-info-value" style={{ fontWeight: 500 }}>{profile.companyTypeLabel}</div>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Founded</div>
-              <div className="drive-info-value" style={{ fontWeight: 500 }}>{profile.founded}</div>
-            </div>
-            <div className="drive-info-item">
-              <div className="drive-info-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Hires</div>
-              <div className="drive-info-value" style={{ fontWeight: 500, color: 'var(--primary-600)' }}>
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Building2 aria-hidden /> At a Glance</CardTitle></CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Industry</FieldLabel>
+              <div className="mt-1 text-sm font-medium">{profile.industry}</div>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Company Type</FieldLabel>
+              <div className="mt-1 text-sm font-medium">{profile.companyTypeLabel}</div>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Founded</FieldLabel>
+              <div className="mt-1 text-sm font-medium">{profile.founded}</div>
+            </Field>
+            <Field className="rounded-lg border bg-muted/30 p-3">
+              <FieldLabel>Total Hires</FieldLabel>
+              <div className="mt-1 text-sm font-medium tabular-nums">
                 {profile.totalHires != null ? profile.totalHires : '—'}
               </div>
-            </div>
-          </div>
-        </div>
+            </Field>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Edit Profile Modal Dialog */}
-      {editing && form && (
-        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && toggleEdit()}>
-          <div className="modal modal-lg animate-in fade-in slide-in-from-bottom-4" style={{ maxWidth: '800px' }}>
-            <div className="modal-header" style={{ borderBottom: '1px solid var(--border-color)' }}>
-              <h2 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Pencil size={20} className="text-primary-600" /> Edit Company Profile
-              </h2>
-              <button type="button" className="modal-close" onClick={toggleEdit}>×</button>
-            </div>
+      {editing && form ? (
+        <Dialog open={editing} onOpenChange={(next) => { if (!next && editing) toggleEdit(); }}>
+          <DialogContent className="gap-0 p-0 sm:max-w-3xl" showCloseButton>
+            <DialogHeader className="border-b px-6 py-5 pr-12">
+              <DialogTitle className="flex items-center gap-2">
+                <Pencil className="text-muted-foreground size-5" /> Edit company profile
+              </DialogTitle>
+              <DialogDescription>Update company, contact, location, and sponsorship receipt details.</DialogDescription>
+            </DialogHeader>
             
-            <div className="modal-body" style={{ maxHeight: '70vh', overflowY: 'auto', padding: '1.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', padding: '1rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)' }}>
+            <div className="max-h-[70vh] overflow-y-auto overscroll-contain p-6">
+              <div className="bg-muted/50 mb-6 flex flex-wrap items-center gap-4 rounded-lg border p-4">
                 <EntityLogo
                   name={profile.companyName}
                   logoUrl={form.logoUrl}
@@ -482,173 +406,131 @@ export default function EmployerProfilePage() {
                   size="lg"
                   shape="rounded"
                 />
-                <div style={{ flex: 1 }}>
-                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '0.95rem', fontWeight: 600 }}>Company Logo</h4>
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <label className={`btn btn-secondary btn-sm${logoUploading ? ' disabled' : ''}`} style={{ cursor: logoUploading ? 'wait' : 'pointer', margin: 0, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <Camera size={14} />
+                <Field className="min-w-0 flex-1">
+                  <FieldLabel htmlFor="company-logo-url">Company Logo</FieldLabel>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      render={<label htmlFor="company-logo-file" />}
+                      nativeButton={false}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Camera aria-hidden />
                       {logoUploading ? 'Uploading…' : 'Upload New Logo'}
-                      <input type="file" accept="image/*" hidden disabled={logoUploading} onChange={onLogoChange} />
-                    </label>
-                    <input
-                      className="form-input form-input-sm"
-                      style={{ flex: 1, minWidth: '200px' }}
+                      <input id="company-logo-file" name="company-logo-file" type="file" accept="image/*" hidden disabled={logoUploading} onChange={onLogoChange} />
+                    </Button>
+                    <Input
+                      id="company-logo-url"
+                      name="company-logo-url"
+                      className="min-w-52 flex-1"
                       value={form.logoUrl}
                       onChange={(e) => setForm((p) => ({ ...p, logoUrl: e.target.value }))}
-                      placeholder="Or paste https://… or /logos/No-Selection-Icon.png"
+                      placeholder="Paste an image URL…"
                     />
                   </div>
-                </div>
+                </Field>
               </div>
 
-              <div className="grid grid-2" style={{ gap: '1.25rem' }}>
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <label className="form-label">Company Description</label>
-                  <textarea 
-                    className="form-textarea" 
-                    rows={4} 
-                    value={form.description} 
-                    onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} 
-                    placeholder="Provide a brief overview of your company, culture, and mission."
+              <Tabs defaultValue="company">
+                <TabsList className="mb-5">
+                  <TabsTrigger value="company">Company</TabsTrigger>
+                  <TabsTrigger value="contact">Contact & Locations</TabsTrigger>
+                  <TabsTrigger value="receipts">Receipt Details</TabsTrigger>
+                </TabsList>
+                <TabsContent value="company">
+              <FieldGroup className="grid gap-5 sm:grid-cols-2">
+                <Field className="sm:col-span-2">
+                  <FieldLabel htmlFor="company-description">Company Description</FieldLabel>
+                  <Textarea id="company-description" name="company-description" rows={4} value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} placeholder="Describe your company, culture, and mission…" />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="company-industry">Industry</FieldLabel>
+                  <Input id="company-industry" name="company-industry" value={form.industry} onChange={(e) => setForm((p) => ({ ...p, industry: e.target.value }))} placeholder="For example, Information Technology…" />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="company-type">Company Type</FieldLabel>
+                  <AdminFilterSelect
+                    id="company-type"
+                    className="w-full"
+                    value={form.companyType}
+                    onValueChange={(companyType) => setForm((p) => ({ ...p, companyType }))}
+                    items={[
+                      { label: '— Select —', value: 'all' },
+                      ...EMPLOYER_COMPANY_TYPE_OPTIONS.map((o) => ({ label: o.label, value: o.value })),
+                    ]}
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Industry</label>
-                  <input className="form-input" value={form.industry} onChange={(e) => setForm((p) => ({ ...p, industry: e.target.value }))} placeholder="e.g. Information Technology" />
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">Company Type</label>
-                  <select className="form-select" value={form.companyType} onChange={(e) => setForm((p) => ({ ...p, companyType: e.target.value }))}>
-                    <option value="">— Select —</option>
-                    {EMPLOYER_COMPANY_TYPE_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>{o.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Company Size</label>
-                  <input className="form-input" list="employer-company-size-presets" value={form.companySize} onChange={(e) => setForm((p) => ({ ...p, companySize: e.target.value }))} placeholder="e.g. 10000+" />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="company-size">Company Size</FieldLabel>
+                  <Input id="company-size" name="company-size" list="employer-company-size-presets" value={form.companySize} onChange={(e) => setForm((p) => ({ ...p, companySize: e.target.value }))} placeholder="For example, 10,000+…" />
                   <datalist id="employer-company-size-presets">
                     {EMPLOYER_COMPANY_SIZE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </datalist>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Founded Year</label>
+                </Field>
+                <Field>
+                  <FieldLabel>Founded Year</FieldLabel>
                   <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_FOUNDED_YEAR} value={form.foundedYear} onChange={(v) => setForm((p) => ({ ...p, foundedYear: v }))} placeholder="e.g. 1998" />
-                </div>
-
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <label className="form-label">Website</label>
-                  <input className="form-input" value={form.website} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} placeholder="https://example.com" />
-                </div>
-
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <hr style={{ borderTop: '1px solid var(--border-color)', margin: '0.5rem 0 1rem' }} />
-                  <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Contact & Locations</h4>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Primary Contact Person</label>
-                  <input className="form-input" value={form.contactPerson} onChange={(e) => setForm((p) => ({ ...p, contactPerson: e.target.value }))} placeholder="Full Name" />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Contact Email</label>
-                  <input className="form-input" type="email" value={form.contactEmail} onChange={(e) => setForm((p) => ({ ...p, contactEmail: e.target.value }))} placeholder="email@company.com" />
-                </div>
-
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <label className="form-label">Login email</label>
-                  <input
-                    className="form-input"
-                    type="email"
-                    value={profile.accountEmailRaw}
-                    disabled
-                    readOnly
-                    style={{ opacity: 0.85 }}
-                  />
-                  <span className="form-hint">Used to sign in. To change it, contact your administrator.</span>
-                </div>
-
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <label className="form-label">Communication email</label>
-                  <input
-                    className="form-input"
-                    type="email"
-                    value={form.communicationEmail}
-                    onChange={(e) => setForm((p) => ({ ...p, communicationEmail: e.target.value }))}
-                    placeholder={profile.accountEmailRaw ? `Leave empty to use ${profile.accountEmailRaw}` : 'you@company.com'}
-                  />
-                  <span className="form-hint">
-                    Receives system messages such as sponsorship thank-you and tax receipts. If empty, mail goes to your login email.
-                  </span>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Contact Phone</label>
-                  <input className="form-input" value={form.contactPhone} onChange={(e) => setForm((p) => ({ ...p, contactPhone: e.target.value }))} placeholder="+1 234 567 8900" />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Global Headquarters</label>
-                  <input className="form-input" value={form.headquarters} onChange={(e) => setForm((p) => ({ ...p, headquarters: e.target.value }))} placeholder="City, Country" />
-                </div>
-
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <label className="form-label">All Office Locations</label>
-                  <input className="form-input" value={form.locations} onChange={(e) => setForm((p) => ({ ...p, locations: e.target.value }))} placeholder="Comma separated list of cities" />
-                </div>
-
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <hr style={{ borderTop: '1px solid var(--border-color)', margin: '0.5rem 0 1rem' }} />
-                  <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.35rem' }}>Sponsorship receipts (legal / tax)</h4>
-                  <p className="text-xs text-secondary" style={{ margin: '0 0 1rem', lineHeight: 1.45 }}>
-                    Used when colleges email donation or sponsorship acknowledgments. PAN: AAAAA9999A. GSTIN: 15 characters.
-                  </p>
-                </div>
-                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                  <label className="form-label">Legal name</label>
-                  <input
-                    className="form-input"
-                    value={form.billingLegalName}
-                    onChange={(e) => setForm((p) => ({ ...p, billingLegalName: e.target.value }))}
-                    placeholder="Registered name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">PAN</label>
-                  <input
-                    className="form-input"
-                    value={form.billingPan}
-                    onChange={(e) => setForm((p) => ({ ...p, billingPan: e.target.value.toUpperCase() }))}
-                    placeholder="ABCDE1234F"
-                    maxLength={10}
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">GSTIN</label>
-                  <input
-                    className="form-input"
-                    value={form.billingGstNumber}
-                    onChange={(e) => setForm((p) => ({ ...p, billingGstNumber: e.target.value.toUpperCase() }))}
-                    placeholder="15-character GSTIN"
-                    maxLength={15}
-                  />
-                </div>
-              </div>
+                </Field>
+                <Field className="sm:col-span-2">
+                  <FieldLabel htmlFor="company-website">Website</FieldLabel>
+                  <Input id="company-website" name="company-website" type="url" value={form.website} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} placeholder="https://example.com…" />
+                </Field>
+              </FieldGroup>
+                </TabsContent>
+                <TabsContent value="contact">
+              <FieldGroup className="grid gap-5 sm:grid-cols-2">
+                {[
+                  ['contact-person', 'Primary Contact Person', 'text', form.contactPerson, 'contactPerson', 'Full name…'],
+                  ['contact-email', 'Contact Email', 'email', form.contactEmail, 'contactEmail', 'email@company.com…'],
+                  ['contact-phone', 'Contact Phone', 'tel', form.contactPhone, 'contactPhone', '+91 98765 43210…'],
+                  ['headquarters', 'Global Headquarters', 'text', form.headquarters, 'headquarters', 'City, country…'],
+                  ['office-locations', 'All Office Locations', 'text', form.locations, 'locations', 'Comma-separated cities…'],
+                ].map(([id, label, type, value, key, placeholder]) => (
+                  <Field key={id} className={id === 'company-website' || id === 'office-locations' ? 'sm:col-span-2' : undefined}>
+                    <FieldLabel htmlFor={id}>{label}</FieldLabel>
+                    <Input id={id} name={id} type={type} value={value} onChange={(e) => setForm((p) => ({ ...p, [key]: e.target.value }))} placeholder={placeholder} />
+                  </Field>
+                ))}
+                <Field className="sm:col-span-2" data-disabled>
+                  <FieldLabel htmlFor="login-email">Login email</FieldLabel>
+                  <Input id="login-email" name="login-email" type="email" value={profile.accountEmailRaw} disabled readOnly />
+                  <FieldDescription>Used to sign in. Contact your administrator to change it.</FieldDescription>
+                </Field>
+                <Field className="sm:col-span-2">
+                  <FieldLabel htmlFor="communication-email">Communication email</FieldLabel>
+                  <Input id="communication-email" name="communication-email" type="email" value={form.communicationEmail} onChange={(e) => setForm((p) => ({ ...p, communicationEmail: e.target.value }))} placeholder={profile.accountEmailRaw ? `Leave empty to use ${profile.accountEmailRaw}` : 'you@company.com…'} />
+                  <FieldDescription>Receives platform messages and tax receipts. Leave blank to use your login email.</FieldDescription>
+                </Field>
+              </FieldGroup>
+                </TabsContent>
+                <TabsContent value="receipts">
+              <FieldGroup className="grid gap-5 sm:grid-cols-2">
+                <p className="text-muted-foreground sm:col-span-2 text-sm">Legal and tax details used on college acknowledgments.</p>
+                <Field className="sm:col-span-2">
+                  <FieldLabel htmlFor="billing-legal-name">Legal name</FieldLabel>
+                  <Input id="billing-legal-name" name="billing-legal-name" value={form.billingLegalName} onChange={(e) => setForm((p) => ({ ...p, billingLegalName: e.target.value }))} placeholder="Registered name…" />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="billing-pan">PAN</FieldLabel>
+                  <Input id="billing-pan" name="billing-pan" value={form.billingPan} onChange={(e) => setForm((p) => ({ ...p, billingPan: e.target.value.toUpperCase() }))} placeholder="ABCDE1234F" maxLength={10} />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="billing-gstin">GSTIN</FieldLabel>
+                  <Input id="billing-gstin" name="billing-gstin" value={form.billingGstNumber} onChange={(e) => setForm((p) => ({ ...p, billingGstNumber: e.target.value.toUpperCase() }))} placeholder="15-character GSTIN…" maxLength={15} />
+                </Field>
+              </FieldGroup>
+                </TabsContent>
+              </Tabs>
             </div>
             
-            <div className="modal-footer" style={{ borderTop: '1px solid var(--border-color)', padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', background: 'var(--bg-surface)' }}>
-              <button className="btn btn-secondary" onClick={toggleEdit}>Cancel</button>
-              <button className="btn btn-primary" onClick={saveProfile}>Save Changes</button>
-            </div>
-          </div>
-        </div>
-      )}
+            <DialogFooter className="border-t px-6 py-4">
+              <Button variant="secondary" onClick={toggleEdit}>Cancel</Button>
+              <Button onClick={saveProfile}>Save Changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : null}
     </div>
   );
 }

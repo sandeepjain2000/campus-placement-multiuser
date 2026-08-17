@@ -7,6 +7,11 @@ import { UserX, Building2, Briefcase, GraduationCap, Target } from 'lucide-react
 import PageLoading from '@/components/PageLoading';
 import { formatDate } from '@/lib/utils';
 import { resolveEmployerActiveCampus } from '@/lib/employerActiveCampus';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const TABS = [
   { id: 'internship', label: 'Internships', icon: GraduationCap },
@@ -52,115 +57,115 @@ export default function EmployerFcfsUnavailablePage() {
   }, [tab]);
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '1.75rem' }}>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <UserX size={28} /> Unavailable candidates (FCFS)
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div>
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <UserX className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+          Unavailable candidates (FCFS)
         </h1>
-        <p className="text-secondary" style={{ margin: 0, maxWidth: 720, lineHeight: 1.55 }}>
+        <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm leading-relaxed">
           {tabDesc} They are hidden from your applicant list and online assessment grid. CSV rows with{' '}
           <strong>Select</strong> for these students are rejected.
         </p>
         {campusName ? (
-          <p className="text-sm text-tertiary" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <Building2 size={14} /> Campus: <strong>{campusName}</strong>
+          <p className="text-muted-foreground mt-2 mb-0 flex items-center gap-1.5 text-sm">
+            <Building2 className="size-4" /> Campus: <strong className="text-foreground">{campusName}</strong>
             {' · '}
-            <Link href="/dashboard/employer/select-campus">Change campus</Link>
+            <Link className="text-primary underline underline-offset-2" href="/dashboard/employer/select-campus">Change campus</Link>
           </p>
         ) : (
-          <p className="text-sm" style={{ marginTop: '0.5rem', color: 'var(--warning-700)' }}>
-            Select an active campus from <Link href="/dashboard/employer/select-campus">Campus partnerships</Link> first.
+          <p className="text-muted-foreground mt-2 mb-0 text-sm">
+            Select an active campus from <Link className="text-primary underline underline-offset-2" href="/dashboard/employer/select-campus">Campus partnerships</Link> first.
           </p>
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+      <div className="bg-muted flex w-fit flex-wrap items-center gap-0.5 rounded-lg p-[3px]" role="tablist" aria-label="Candidate type">
         {TABS.map((t) => {
           const Icon = t.icon;
           const active = tab === t.id;
           const n = counts[t.id] ?? (active ? items.length : 0);
           return (
-            <button
+            <Button
               key={t.id}
               type="button"
-              className={active ? 'btn btn-primary' : 'btn btn-ghost'}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+              size="sm"
+              variant={active ? 'secondary' : 'ghost'}
+              role="tab"
+              aria-selected={active}
               onClick={() => setTab(t.id)}
             >
-              <Icon size={16} />
+              <Icon data-icon="inline-start" />
               {t.label}
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.85 }}>({n})</span>
-            </button>
+              <span className="text-muted-foreground text-xs font-semibold">({n})</span>
+            </Button>
           );
         })}
       </div>
 
       {data?.fcfsEnabled === false && (
-        <div className="card" style={{ padding: '1rem', marginBottom: '1rem', borderColor: 'var(--warning-200)', background: 'var(--warning-50)' }}>
-          <p style={{ margin: 0, color: 'var(--warning-800)' }}>
-            FCFS is disabled for this campus in college rules. All students remain visible to every employer.
-          </p>
-        </div>
+        <Alert>
+          <AlertTitle>FCFS is disabled for this campus</AlertTitle>
+          <AlertDescription>All students remain visible to every employer under the current college rules.</AlertDescription>
+        </Alert>
       )}
 
       {!tenantId ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p className="text-secondary" style={{ margin: 0 }}>Choose a campus to load unavailable candidates.</p>
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="text-muted-foreground py-12 text-center text-sm">Choose a campus to load unavailable candidates.</CardContent>
+        </Card>
       ) : isLoading ? (
-        <PageLoading />
+        <PageLoading message="Loading unavailable candidates…" variant="skeleton-list" inline />
       ) : error ? (
-        <div className="card" style={{ padding: '1.5rem', borderColor: 'var(--danger-200)' }}>
-          <p style={{ color: 'var(--danger-700)', margin: 0 }}>{error.message}</p>
-        </div>
+        <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : items.length === 0 ? (
-        <div className="card" style={{ padding: '2.5rem', textAlign: 'center' }}>
-          <UserX size={40} style={{ opacity: 0.25, margin: '0 auto 1rem' }} />
-          <p style={{ margin: 0, fontWeight: 600 }}>No unavailable candidates on this tab</p>
-          <p className="text-sm text-secondary" style={{ marginTop: '0.5rem' }}>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center py-14 text-center">
+          <UserX className="text-muted-foreground mb-4 size-10 opacity-40" />
+          <CardTitle className="text-lg">No unavailable candidates on this tab</CardTitle>
+          <CardDescription className="mt-2">
             When another employer confirms a student first, they appear here.
-          </p>
-        </div>
+          </CardDescription>
+          </CardContent>
+        </Card>
       ) : (
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)' }}>
-                  <th>Student</th>
-                  <th>Roll</th>
-                  <th>Confirmed by</th>
-                  <th>Opening</th>
-                  <th>Via</th>
-                  <th>When</th>
-                </tr>
-              </thead>
-              <tbody>
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Roll</TableHead>
+                  <TableHead>Confirmed by</TableHead>
+                  <TableHead>Opening</TableHead>
+                  <TableHead>Via</TableHead>
+                  <TableHead>When</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {items.map((row) => (
-                  <tr key={row.studentProfileId}>
-                    <td style={{ fontWeight: 600 }}>{row.studentName}</td>
-                    <td className="font-mono text-sm">{row.rollNumber || '—'}</td>
-                    <td>{row.claimingEmployerName}</td>
-                    <td className="text-sm text-secondary">{row.openingTitle || '—'}</td>
-                    <td>
-                      <span className="badge badge-gray">{row.source === 'assessment' ? 'Assessment' : 'Applications'}</span>
-                    </td>
-                    <td className="text-sm text-secondary">
+                  <TableRow key={row.studentProfileId}>
+                    <TableCell className="font-medium">{row.studentName}</TableCell>
+                    <TableCell className="font-mono text-sm">{row.rollNumber || '—'}</TableCell>
+                    <TableCell>{row.claimingEmployerName}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{row.openingTitle || '—'}</TableCell>
+                    <TableCell><Badge variant="secondary">{row.source === 'assessment' ? 'Assessment' : 'Applications'}</Badge></TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
                       {row.claimedAt ? formatDate(row.claimedAt) : '—'}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
 
-      <p className="text-sm text-tertiary" style={{ marginTop: '1.25rem' }}>
+      <p className="text-muted-foreground m-0 text-sm">
         Manage active pipelines under{' '}
-        <Link href="/dashboard/employer/applications">Applications</Link>,{' '}
-        <Link href="/dashboard/employer/assessment-update-online">Assessment update online</Link>, and{' '}
-        <Link href="/dashboard/employer/assessment-uploads">CSV uploads</Link>.
+        <Link className="text-primary underline underline-offset-2" href="/dashboard/employer/applications">Applications</Link>,{' '}
+        <Link className="text-primary underline underline-offset-2" href="/dashboard/employer/assessment-update-online">Assessment update online</Link>, and{' '}
+        <Link className="text-primary underline underline-offset-2" href="/dashboard/employer/assessment-uploads">CSV uploads</Link>.
       </p>
     </div>
   );

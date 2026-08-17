@@ -1,7 +1,12 @@
 'use client';
+
 import { useState } from 'react';
 import Link from 'next/link';
-
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -27,7 +32,7 @@ export default function ForgotPasswordPage() {
       } else {
         setMessage('If an account exists with that email, a password reset link has been sent.');
       }
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -35,61 +40,62 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
-      <div style={{ width: '100%', maxWidth: '420px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex', height: '2.5rem', width: '2.5rem', alignItems: 'center', justifyContent: 'center', borderRadius: '0.75rem', backgroundColor: 'var(--primary-600)', color: '#ffffff', fontWeight: 'bold', fontSize: '1.125rem', boxShadow: '0 4px 6px rgba(79, 70, 229, 0.2)' }}>
-              P
-            </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.025em' }}>PlacementHub</span>
-          </Link>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>Reset your password</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Enter your email and we&apos;ll send you a link to reset your password.</p>
-        </div>
-
-        <div style={{ backgroundColor: 'var(--bg-primary)', borderRadius: 'var(--radius-xl)', padding: '2rem', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-default)' }}>
-          {message && (
-            <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--success-50)', border: '1px solid var(--success-100)', borderRadius: 'var(--radius-md)', color: 'var(--success-700)', fontSize: '0.875rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              {message}
-            </div>
-          )}
-          {error && (
-            <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--danger-50)', border: '1px solid var(--danger-100)', borderRadius: 'var(--radius-md)', color: 'var(--danger-700)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-              {error}
-            </div>
-          )}
-
-          {!message && (
-            <form onSubmit={handleSubmit}>
-              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                <label className="form-label" htmlFor="reset-email">Email address</label>
-                <input
-                  id="reset-email"
-                  type="email"
-                  className="form-input"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+    <div className="bg-muted/30 flex min-h-screen items-center justify-center p-4">
+      <div className="flex w-full max-w-md flex-col gap-6">
+        <Card className="w-full gap-6 py-6">
+          <CardHeader className="gap-6 px-6">
+            <Link href="/" className="inline-flex items-center gap-3 no-underline">
+              <div className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-lg text-lg font-bold shadow-xs">
+                P
               </div>
-
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading || !email}
-                style={{ width: '100%', padding: '0.625rem', fontSize: '1rem', justifyContent: 'center' }}
-              >
-                {loading ? 'Sending link...' : 'Send Reset Link'}
-              </button>
-            </form>
-          )}
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
-          Remember your password? <Link href="/login" style={{ color: 'var(--primary-600)', fontWeight: 600, textDecoration: 'none' }}>Sign in</Link>
-        </div>
+              <span className="text-foreground text-lg font-semibold tracking-tight">PlacementHub</span>
+            </Link>
+            <div>
+              <CardTitle className="mb-2 text-2xl font-semibold">Reset your password</CardTitle>
+              <CardDescription className="text-base">
+                Enter your email and we&apos;ll send you a link to reset your password.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 px-6">
+            {message ? (
+              <Alert>
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
+            ) : null}
+            {error ? (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) : null}
+            {!message ? (
+              <form onSubmit={handleSubmit}>
+                <FieldGroup className="gap-4">
+                  <Field className="gap-2">
+                    <FieldLabel htmlFor="reset-email">Email address</FieldLabel>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Button type="submit" className="w-full" disabled={loading || !email}>
+                    {loading ? 'Sending link…' : 'Send Reset Link'}
+                  </Button>
+                </FieldGroup>
+              </form>
+            ) : null}
+          </CardContent>
+        </Card>
+        <p className="text-muted-foreground m-0 text-center text-sm">
+          Remember your password?{' '}
+          <Link href="/login" className="text-primary font-semibold no-underline hover:underline">
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   );

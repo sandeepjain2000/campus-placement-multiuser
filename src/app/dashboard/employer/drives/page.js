@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import useSWR from 'swr';
-import { formatDate, formatStatus, getStatusColor, formatSalaryRangeParts } from '@/lib/utils';
+import { formatDate, formatStatus, formatSalaryRangeParts } from '@/lib/utils';
 import { formatEmployerMinCgpa } from '@/lib/employerJobDisplay';
 import {
   formatEligibleBranchesLabel,
@@ -13,7 +13,23 @@ import { DriveDetailsSection } from '@/components/employer/DriveFormSection';
 import EntityLogo from '@/components/EntityLogo';
 import { useToast } from '@/components/ToastProvider';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
-import { Target, Plus, Video, Building2, Calendar, Users, ChevronDown, Check, ClipboardList, LayoutGrid, List, Search, X, Ban, Pencil } from 'lucide-react';
+import {
+  Target,
+  Plus,
+  Video,
+  Building2,
+  Calendar,
+  Users,
+  ChevronDown,
+  Check,
+  ClipboardList,
+  LayoutGrid,
+  List,
+  Search,
+  X,
+  Ban,
+  Pencil,
+} from 'lucide-react';
 import PageLoading from '@/components/PageLoading';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 import PageError from '@/components/PageError';
@@ -21,8 +37,28 @@ import { reportClientApiFailure } from '@/lib/clientPlatformErrorReport';
 import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
 import { useEmployerPostingCampuses } from '@/hooks/useEmployerPostingCampuses';
 import { formatFilterBadgeLabelParen } from '@/lib/filterBadgeLabel';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const EMPLOYER_DRIVES_API = '/api/employer/drives';
+
+const SELECT_CLASS =
+  'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border px-2.5 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50';
 
 const drivesFetcher = async (url) => {
   let json = {};
@@ -112,17 +148,28 @@ function matchesSearch(drive, query) {
   return haystack.includes(q);
 }
 
+function driveTypeTone(type) {
+  if (type === 'virtual') return 'blue';
+  if (type === 'off_campus' || type === 'hybrid') return 'amber';
+  return 'indigo';
+}
+
+function driveTypeLabel(type) {
+  if (type === 'virtual') return 'Virtual';
+  if (type === 'hybrid') return 'Hybrid';
+  if (type === 'off_campus') return 'Off campus';
+  return 'On campus';
+}
+
 function DriveTypeBadge({ type }) {
+  const Icon = type === 'virtual' ? Video : Building2;
   return (
-    <span className={`badge badge-${type === 'virtual' ? 'blue' : 'indigo'}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
-      {type === 'virtual'
-        ? <><Video size={11} /> Virtual</>
-        : type === 'hybrid'
-          ? <><Building2 size={11} /> Hybrid</>
-          : type === 'off_campus'
-            ? <><Building2 size={11} /> Off campus</>
-            : <><Building2 size={11} /> On-Campus</>}
-    </span>
+    <StatusBadge tone={driveTypeTone(type)} showDot className="min-w-fit">
+      <span className="inline-flex items-center gap-1">
+        <Icon className="size-3 shrink-0" aria-hidden />
+        {driveTypeLabel(type)}
+      </span>
+    </StatusBadge>
   );
 }
 
@@ -218,7 +265,6 @@ const DEFAULT_DRIVE_SORT = 'drive_date_asc';
 
 export default function EmployerDrivesPage() {
   const { addToast } = useToast();
-  // selectedCampusIds: Set of campus IDs checked; empty = all
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [viewMode, setViewMode] = useState('list');
@@ -232,7 +278,6 @@ export default function EmployerDrivesPage() {
   const [viewDrive, setViewDrive] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Campus list
   const { data: campusData } = useSWR('/api/employer/campuses', campusesFetcher, { revalidateOnFocus: false });
   const approvedCampuses = useEmployerPostingCampuses(campusData, 'drives');
 
@@ -315,7 +360,6 @@ export default function EmployerDrivesPage() {
     }
   }, [addToast, mutate]);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
@@ -323,14 +367,6 @@ export default function EmployerDrivesPage() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
-
-  useEffect(() => {
-    if (!viewDrive) return;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [viewDrive]);
 
   const toggleCampus = (id) => {
     setSelectedIds((prev) => {
@@ -351,584 +387,497 @@ export default function EmployerDrivesPage() {
   }
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-
-      {/* ── Hero Banner ── */}
-      <div style={{
-        position: 'relative',
-        background: 'var(--banner-gradient)',
-        borderRadius: 'var(--radius-xl)', padding: '2.5rem',
-        color: 'white', overflow: 'hidden', marginBottom: '2rem',
-        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.15)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: '1.5rem',
-      }}>
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: '-40px', left: '5%', width: '140px', height: '140px', background: 'radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 60%)', borderRadius: '50%' }} />
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 style={{ color: '#fff', fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.4rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Target size={28} />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex flex-wrap items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Target className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
             Placement Drives
-            {allDrives.length > 0 && (
-              <span style={{ fontSize: '0.875rem', fontWeight: 700, background: 'rgba(255,255,255,0.2)', padding: '0.2rem 0.65rem', borderRadius: '999px', backdropFilter: 'blur(4px)' }}>
+            {allDrives.length > 0 ? (
+              <Badge variant="secondary" className="text-sm font-semibold">
                 {filteredDrives.length !== allDrives.length
                   ? `${filteredDrives.length} of ${allDrives.length}`
                   : `${allDrives.length} total`}
-              </span>
-            )}
+              </Badge>
+            ) : null}
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.82)', margin: 0, fontSize: '1rem', lineHeight: 1.5 }}>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             All placement drives across your campus partnerships — past, active, and upcoming.
           </p>
         </div>
-
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <ExportCsvSplitButton
-            mode="dual"
-            filenameBase="employer_placement_drives"
-            currentCount={filteredDrives.length}
-            fullCount={allDrives.length}
-            getRows={(scope) => {
-              const rows = scope === 'full' ? allDrives : filteredDrives;
-              return {
-                headers: ['id', 'college', 'title', 'date', 'drive_type', 'status', 'venue', 'registered_count', 'ctc_breakup'],
-                rows: rows.map((d) => [
-                  d.id, d.college ?? '', d.role ?? '',
-                  d.date ?? '', d.type ?? '', d.status ?? '',
-                  d.venue ?? '', String(d.registered ?? ''),
-                  d.ctc_breakup ?? d.ctcBreakup ?? '',
-                ]),
-              };
-            }}
-          />
-          <Link
-            href="/dashboard/employer/drives/request"
-            className="btn banner-cta-solid"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.75rem 1.5rem' }}
+        <div className="flex flex-wrap items-center gap-2">
+          {allDrives.length > 0 ? (
+            <ExportCsvSplitButton
+              mode="dual"
+              filenameBase="employer_placement_drives"
+              currentCount={filteredDrives.length}
+              fullCount={allDrives.length}
+              getRows={(scope) => {
+                const rows = scope === 'full' ? allDrives : filteredDrives;
+                return {
+                  headers: ['id', 'college', 'title', 'date', 'drive_type', 'status', 'venue', 'registered_count', 'ctc_breakup'],
+                  rows: rows.map((d) => [
+                    d.id, d.college ?? '', d.role ?? '',
+                    d.date ?? '', d.type ?? '', d.status ?? '',
+                    d.venue ?? '', String(d.registered ?? ''),
+                    d.ctc_breakup ?? d.ctcBreakup ?? '',
+                  ]),
+                };
+              }}
+            />
+          ) : null}
+          <Button
+            nativeButton={false}
+            render={<Link href="/dashboard/employer/drives/request" />}
           >
-            <Plus size={16} /> Request Drive
-          </Link>
+            <Plus data-icon="inline-start" />
+            Request Drive
+          </Button>
         </div>
       </div>
 
-      {/* ── Filters + view toggle ── */}
-      <div className="card" style={{ padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'flex-end' }}>
-          <div className="form-group" style={{ marginBottom: 0, flex: '1 1 220px', minWidth: 200 }}>
-            <label className="form-label" htmlFor="drive-search">Search</label>
-            <div style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
-              <input
-                id="drive-search"
-                className="form-input"
-                placeholder="Campus, title, or venue…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ paddingLeft: '2.25rem' }}
-              />
-            </div>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0, flex: '0 1 160px', minWidth: 140 }}>
-            <label className="form-label" htmlFor="drive-type-filter">Drive type</label>
-            <select id="drive-type-filter" className="form-select" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-              {TYPE_OPTIONS.map((o) => (
-                <option key={o.id || 'all'} value={o.id}>{o.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0, flex: '0 1 150px', minWidth: 130 }}>
-            <label className="form-label" htmlFor="drive-date-filter">Date</label>
-            <select id="drive-date-filter" className="form-select" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}>
-              {DATE_OPTIONS.map((o) => (
-                <option key={o.id || 'all'} value={o.id}>{o.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0, flex: '0 1 180px', minWidth: 160 }}>
-            <label className="form-label" htmlFor="drive-registration-filter">Registrations</label>
-            <select id="drive-registration-filter" className="form-select" value={registrationFilter} onChange={(e) => setRegistrationFilter(e.target.value)}>
-              {REGISTRATION_OPTIONS.map((o) => (
-                <option key={o.id || 'all'} value={o.id}>{o.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0, flex: '0 1 220px', minWidth: 200 }}>
-            <label className="form-label" htmlFor="drive-sort">Sort</label>
-            <select id="drive-sort" className="form-select" value={sortKey} onChange={(e) => setSortKey(e.target.value)}>
-              {DRIVE_SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-          </div>
-          {approvedCampuses.length > 0 && (
-            <div className="form-group" style={{ marginBottom: 0, flex: '0 1 220px', minWidth: 180 }}>
-              <label className="form-label">Campus</label>
-              <div ref={dropdownRef} style={{ position: 'relative' }}>
-                <button
-                  type="button"
-                  onClick={() => setDropdownOpen((p) => !p)}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: '100%',
-                    padding: '0.55rem 0.85rem', borderRadius: '8px',
-                    border: '1px solid var(--border-default)',
-                    background: campusFilterActive ? 'var(--primary-50)' : 'var(--bg-primary)',
-                    color: campusFilterActive ? 'var(--primary-700)' : 'var(--text-primary)',
-                    fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer',
-                    transition: 'all 0.15s ease', justifyContent: 'space-between',
-                  }}
-                >
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{filterLabel}</span>
-                  <ChevronDown size={15} style={{ flexShrink: 0, transition: 'transform 0.15s', transform: dropdownOpen ? 'rotate(180deg)' : 'none' }} />
-                </button>
+      {isLoading ? <PageLoading message="Loading placement drives…" variant="skeleton-list" inline /> : null}
 
-                {dropdownOpen && (
-                  <div style={{
-                    position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0,
-                    background: 'var(--bg-primary)', border: '1px solid var(--border-default)',
-                    borderRadius: '10px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                    padding: '0.5rem', zIndex: 50, minWidth: '240px',
-                  }}>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedIds(new Set())}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '0.5rem',
-                        width: '100%', padding: '0.5rem 0.75rem', border: 'none',
-                        background: 'transparent', cursor: 'pointer', borderRadius: '6px',
-                        fontSize: '0.875rem', fontWeight: 600,
-                        color: selectedIds.size === 0 ? 'var(--primary-600)' : 'var(--text-secondary)',
-                      }}
-                    >
-                      <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {selectedIds.size === 0 && <Check size={14} />}
-                      </span>
-                      All campuses
-                    </button>
-                    <div style={{ height: '1px', background: 'var(--border-default)', margin: '0.25rem 0' }} />
-                    {approvedCampuses.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => toggleCampus(c.id)}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: '0.5rem',
-                          width: '100%', padding: '0.5rem 0.75rem', border: 'none',
-                          background: selectedIds.has(c.id) ? 'var(--primary-50)' : 'transparent',
-                          cursor: 'pointer', borderRadius: '6px',
-                          fontSize: '0.875rem', fontWeight: 500, textAlign: 'left',
-                          color: selectedIds.has(c.id) ? 'var(--primary-700)' : 'var(--text-primary)',
-                        }}
-                      >
-                        <span style={{
-                          width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
-                          border: `2px solid ${selectedIds.has(c.id) ? 'var(--primary-500)' : 'var(--border-default)'}`,
-                          background: selectedIds.has(c.id) ? 'var(--primary-500)' : 'transparent',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          transition: 'all 0.12s ease',
-                        }}>
-                          {selectedIds.has(c.id) && <Check size={10} color="white" strokeWidth={3} />}
-                        </span>
-                        {c.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
+      {!isLoading && allDrives.length === 0 ? (
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+              <Target className="size-7" />
+            </div>
+            <CardTitle className="mb-1 text-lg">No placement drives found</CardTitle>
+            <CardDescription className="mb-4 max-w-md">
+              {campusFilterActive
+                ? `No drives found for the selected campus${selectedIds.size > 1 ? 'es' : ''}. Try a different filter or request a new drive.`
+                : 'No drives scheduled yet. Request a placement drive with one of your approved partner campuses.'}
+            </CardDescription>
+            <Button nativeButton={false} render={<Link href="/dashboard/employer/drives/request" />}>
+              Request New Drive
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {!isLoading && allDrives.length > 0 ? (
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-3 border-b px-4 py-3">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <CardTitle className="text-base">Your placement drives</CardTitle>
+                <CardDescription>
+                  Showing {filteredDrives.length} of {allDrives.length}
+                </CardDescription>
               </div>
-            </div>
-          )}
-          {hasActiveFilters && (
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              onClick={clearFilters}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', alignSelf: 'flex-end' }}
-            >
-              <X size={14} />
-              Clear filters
-            </button>
-          )}
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            {STATUS_TABS.map((tab) => (
-              <button
-                key={tab.id || 'all'}
-                type="button"
-                onClick={() => setStatusFilter(tab.id)}
-                style={{
-                  padding: '0.45rem 1rem',
-                  borderRadius: '999px',
-                  fontWeight: 600,
-                  fontSize: '0.85rem',
-                  transition: 'all 0.15s ease-out',
-                  border: 'none',
-                  cursor: 'pointer',
-                  background: statusFilter === tab.id ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                  color: statusFilter === tab.id ? 'white' : 'var(--text-secondary)',
-                  boxShadow: statusFilter === tab.id ? '0 4px 10px rgba(79, 70, 229, 0.18)' : 'none',
-                }}
+              <div
+                className="bg-muted flex w-fit items-center gap-0.5 rounded-lg p-[3px]"
+                role="group"
+                aria-label="View mode"
               >
-                {formatFilterBadgeLabelParen(tab.label, statusCounts[tab.id])}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>
-              {filteredDrives.length} shown
-            </span>
-            <div style={{ display: 'flex', background: 'var(--bg-secondary)', borderRadius: '10px', padding: '3px', gap: '2px', border: '1px solid var(--border-default)' }}>
-              {[{ mode: 'list', icon: List, label: 'List view' }, { mode: 'card', icon: LayoutGrid, label: 'Card view' }].map(({ mode, icon: Icon, label }) => (
-                <button
-                  key={mode}
-                  type="button"
-                  title={label}
-                  aria-label={label}
-                  aria-pressed={viewMode === mode}
-                  onClick={() => setViewMode(mode)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.35rem',
-                    padding: '0.4rem 0.85rem', borderRadius: '7px', border: 'none',
-                    cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
-                    transition: 'all 0.15s ease',
-                    background: viewMode === mode ? 'var(--bg-primary)' : 'transparent',
-                    color: viewMode === mode ? 'var(--primary-600)' : 'var(--text-tertiary)',
-                    boxShadow: viewMode === mode ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                  }}
-                >
-                  <Icon size={15} />
-                  {mode === 'list' ? 'List' : 'Cards'}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      {/* ── Loading skeletons ── */}
-      {isLoading && (
-        <PageLoading message="Loading placement drives…" inline>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} aria-hidden="true">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="card" style={{ padding: '1.5rem' }}>
-                <div className="skeleton" style={{ height: '1.2rem', width: '45%', borderRadius: '6px', marginBottom: '0.6rem' }} />
-                <div className="skeleton" style={{ height: '0.9rem', width: '65%', borderRadius: '6px', marginBottom: '1.25rem' }} />
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
-                  {[1, 2, 3, 4].map((j) => (
-                    <div key={j} className="skeleton" style={{ height: '3rem', borderRadius: '8px' }} />
-                  ))}
-                </div>
+                {[
+                  { mode: 'list', icon: List, label: 'List view', short: 'List' },
+                  { mode: 'card', icon: LayoutGrid, label: 'Card view', short: 'Cards' },
+                ].map(({ mode, icon: Icon, label, short }) => (
+                  <Button
+                    key={mode}
+                    type="button"
+                    size="sm"
+                    variant={viewMode === mode ? 'secondary' : 'ghost'}
+                    title={label}
+                    aria-label={label}
+                    aria-pressed={viewMode === mode}
+                    onClick={() => setViewMode(mode)}
+                    className="h-8 gap-1.5 px-2.5"
+                  >
+                    <Icon data-icon="inline-start" />
+                    {short}
+                  </Button>
+                ))}
               </div>
-            ))}
-          </div>
-        </PageLoading>
-      )}
+            </div>
 
-      {/* ── Drive list ── */}
-      {!isLoading && viewMode === 'list' && filteredDrives.length > 0 && (
-        <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border-default)' }}>
-          <div className="table-container" style={{ border: 'none', overflowX: 'auto' }}>
-            <table className="data-table" style={{ minWidth: 960 }}>
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)' }}>
-                  <th style={{ paddingLeft: '1.25rem' }}>Campus</th>
-                  <th>Drive title</th>
-                  <th>Date</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Venue</th>
-                  <th>Registered</th>
-                  <th style={{ textAlign: 'right', paddingRight: '1.25rem', width: 1 }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredDrives.map((drive) => (
-                  <tr key={drive.id}>
-                    <td style={{ paddingLeft: '1.25rem', maxWidth: 220 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 0 }}>
-                        <EntityLogo name={drive.college} size="sm" shape="rounded" />
-                        <span
-                          style={{
-                            fontWeight: 600,
-                            fontSize: '0.875rem',
-                            color: 'var(--text-primary)',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {drive.college}
-                        </span>
-                      </div>
-                    </td>
-                    <td style={{ maxWidth: 200 }}>
-                      <span
-                        style={{
-                          fontWeight: 700,
-                          fontSize: '0.9rem',
-                          color: 'var(--text-primary)',
-                          display: 'block',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {drive.role}
-                      </span>
-                    </td>
-                    <td className="text-sm text-secondary" style={{ whiteSpace: 'nowrap' }}>
-                      {drive.date ? formatDate(drive.date) : '—'}
-                    </td>
-                    <td>
-                      <DriveTypeBadge type={drive.type} />
-                    </td>
-                    <td>
-                      <span
-                        className={`badge badge-${getStatusColor(drive.status)} badge-dot`}
-                        style={{ fontSize: '0.72rem', whiteSpace: 'nowrap' }}
-                      >
-                        {formatStatus(drive.status)}
-                      </span>
-                    </td>
-                    <td
-                      className="text-sm"
-                      style={{
-                        maxWidth: 160,
-                        color: drive.venue?.trim() ? 'var(--text-secondary)' : 'var(--text-tertiary)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {drive.venue?.trim() || '—'}
-                    </td>
-                    <td className="text-sm text-secondary" style={{ whiteSpace: 'nowrap' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <Users size={13} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} aria-hidden />
-                        {drive.registered ?? 0}
-                      </span>
-                    </td>
-                    <td style={{ textAlign: 'right', paddingRight: '1.25rem', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'inline-flex', justifyContent: 'flex-end', gap: '0.35rem', flexWrap: 'wrap' }}>
-                        <StandardTableIconAction
-                          action="view"
-                          variant="ghost"
-                          showLabel={false}
-                          tooltip={VIEW_DRIVE_TIP}
-                          onClick={() => setViewDrive(drive)}
-                        />
-                        {canReviewApplicants(drive) && (
-                          <Link
-                            href={`/dashboard/employer/applications?tab=drives&driveId=${encodeURIComponent(drive.id)}`}
-                            className="btn btn-primary btn-icon btn-sm"
-                            title={REVIEW_APPLICANTS_TIP}
-                            aria-label={REVIEW_APPLICANTS_TIP}
-                          >
-                            <ClipboardList size={16} aria-hidden />
-                          </Link>
+            <div className="bg-card text-card-foreground ring-foreground/10 flex flex-col gap-3 rounded-xl p-4 text-sm shadow-xs ring-1">
+              <div className="flex flex-wrap items-end gap-3">
+                <Field className="min-w-[200px] flex-1 basis-[220px] gap-1.5">
+                  <FieldLabel htmlFor="drive-search">Search</FieldLabel>
+                  <div className="relative">
+                    <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                    <Input
+                      id="drive-search"
+                      placeholder="Campus, title, or venue…"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                </Field>
+                <Field className="min-w-[140px] flex-[0_1_160px] gap-1.5">
+                  <FieldLabel htmlFor="drive-type-filter">Drive type</FieldLabel>
+                  <AdminFilterSelect
+                    id="drive-type-filter"
+                    className={SELECT_CLASS}
+                    value={typeFilter}
+                    onValueChange={setTypeFilter}
+                    items={TYPE_OPTIONS.map((o) => ({ label: o.label, value: o.id === '' ? 'all' : o.id }))}
+                  />
+                </Field>
+                <Field className="min-w-[130px] flex-[0_1_150px] gap-1.5">
+                  <FieldLabel htmlFor="drive-date-filter">Date</FieldLabel>
+                  <AdminFilterSelect
+                    id="drive-date-filter"
+                    className={SELECT_CLASS}
+                    value={dateFilter}
+                    onValueChange={setDateFilter}
+                    items={DATE_OPTIONS.map((o) => ({ label: o.label, value: o.id === '' ? 'all' : o.id }))}
+                  />
+                </Field>
+                <Field className="min-w-[160px] flex-[0_1_180px] gap-1.5">
+                  <FieldLabel htmlFor="drive-registration-filter">Registrations</FieldLabel>
+                  <AdminFilterSelect
+                    id="drive-registration-filter"
+                    className={SELECT_CLASS}
+                    value={registrationFilter}
+                    onValueChange={setRegistrationFilter}
+                    items={REGISTRATION_OPTIONS.map((o) => ({ label: o.label, value: o.id === '' ? 'all' : o.id }))}
+                  />
+                </Field>
+                <Field className="min-w-[200px] flex-[0_1_220px] gap-1.5">
+                  <FieldLabel htmlFor="drive-sort">Sort</FieldLabel>
+                  <AdminFilterSelect
+                    id="drive-sort"
+                    className={SELECT_CLASS}
+                    value={sortKey}
+                    emptyMapsToAll={false}
+                    onValueChange={setSortKey}
+                    items={DRIVE_SORT_OPTIONS.map((o) => ({ label: o.label, value: o.value }))}
+                  />
+                </Field>
+                {approvedCampuses.length > 0 ? (
+                  <Field className="min-w-[180px] flex-[0_1_220px] gap-1.5">
+                    <FieldLabel>Campus</FieldLabel>
+                    <div ref={dropdownRef} className="relative">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className={cn(
+                          'h-9 w-full justify-between font-normal',
+                          campusFilterActive && 'border-primary/40 bg-primary/5 text-primary',
                         )}
-                        {canEditDrive(drive) && (
-                          <Link
-                            href={`/dashboard/employer/drives/edit/${drive.id}`}
-                            className="btn btn-secondary btn-icon btn-sm"
-                            title={EDIT_DRIVE_TIP}
-                            aria-label={EDIT_DRIVE_TIP}
-                          >
-                            <Pencil size={16} aria-hidden />
-                          </Link>
-                        )}
-                        {canCancelDrive(drive) && (
+                        onClick={() => setDropdownOpen((p) => !p)}
+                      >
+                        <span className="truncate">{filterLabel}</span>
+                        <ChevronDown className={cn('size-4 shrink-0 transition-transform', dropdownOpen && 'rotate-180')} />
+                      </Button>
+                      {dropdownOpen ? (
+                        <div className="border-border bg-popover absolute top-[calc(100%+6px)] right-0 z-50 max-h-[min(280px,50vh)] min-w-[240px] overflow-y-auto overscroll-contain rounded-lg border p-2 shadow-md">
                           <button
                             type="button"
-                            className="btn btn-ghost btn-icon btn-sm"
-                            disabled={cancellingId === drive.id}
-                            onClick={() => cancelDrive(drive)}
-                            title={
-                              cancellingId === drive.id
-                                ? 'Cancelling drive…'
-                                : cancelDriveTooltip(drive)
-                            }
-                            aria-label={
-                              cancellingId === drive.id
-                                ? 'Cancelling drive'
-                                : cancelDriveTooltip(drive)
-                            }
-                            style={{ color: 'var(--danger-600)' }}
+                            onClick={() => setSelectedIds(new Set())}
+                            className={cn(
+                              'hover:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium',
+                              selectedIds.size === 0 ? 'text-primary' : 'text-muted-foreground',
+                            )}
                           >
-                            <Ban size={16} aria-hidden />
+                            <span className="flex size-4 items-center justify-center">
+                              {selectedIds.size === 0 ? <Check className="size-3.5" /> : null}
+                            </span>
+                            All campuses
                           </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {!isLoading && viewMode === 'card' && filteredDrives.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {filteredDrives.map((drive) => (
-            <div key={drive.id} className="card card-hover" style={{ border: '1px solid var(--border-default)', padding: '1.5rem' }}>
-              {/* Card header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <EntityLogo name={drive.college} size="sm" shape="rounded" />
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
-                      <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>{drive.college}</h3>
-                      <span className={`badge badge-${getStatusColor(drive.status)} badge-dot`}>{formatStatus(drive.status)}</span>
+                          <div className="bg-border my-1 h-px" />
+                          {approvedCampuses.map((c) => (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onClick={() => toggleCampus(c.id)}
+                              className={cn(
+                                'hover:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm',
+                                selectedIds.has(c.id) ? 'bg-primary/5 text-primary font-medium' : 'text-foreground',
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  'flex size-4 shrink-0 items-center justify-center rounded border-2 transition-colors',
+                                  selectedIds.has(c.id)
+                                    ? 'border-primary bg-primary text-primary-foreground'
+                                    : 'border-input bg-background',
+                                )}
+                              >
+                                {selectedIds.has(c.id) ? <Check className="size-2.5" strokeWidth={3} /> : null}
+                              </span>
+                              <span className="min-w-0 flex-1 break-words">{c.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{drive.role}</p>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                  <StandardTableIconAction
-                    action="view"
-                    variant="ghost"
-                    showLabel={false}
-                    tooltip={VIEW_DRIVE_TIP}
-                    onClick={() => setViewDrive(drive)}
-                  />
-                  {canReviewApplicants(drive) && (
-                    <Link
-                      href={`/dashboard/employer/applications?tab=drives&driveId=${encodeURIComponent(drive.id)}`}
-                      className="btn btn-primary btn-icon btn-sm"
-                      style={{ flexShrink: 0 }}
-                      title={REVIEW_APPLICANTS_TIP}
-                      aria-label={REVIEW_APPLICANTS_TIP}
-                    >
-                      <ClipboardList size={16} aria-hidden />
-                    </Link>
-                  )}
-                  {canEditDrive(drive) && (
-                    <Link
-                      href={`/dashboard/employer/drives/edit/${drive.id}`}
-                      className="btn btn-secondary btn-icon btn-sm"
-                      style={{ flexShrink: 0 }}
-                      title={EDIT_DRIVE_TIP}
-                      aria-label={EDIT_DRIVE_TIP}
-                    >
-                      <Pencil size={16} aria-hidden />
-                    </Link>
-                  )}
-                  {canCancelDrive(drive) && (
-                    <button
+                  </Field>
+                ) : null}
+                {hasActiveFilters ? (
+                  <Button type="button" variant="ghost" size="sm" onClick={clearFilters} className="self-end">
+                    <X data-icon="inline-start" />
+                    Clear filters
+                  </Button>
+                ) : null}
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div
+                  className="bg-muted flex w-fit max-w-full flex-wrap gap-0.5 rounded-lg p-[3px]"
+                  role="tablist"
+                  aria-label="Drive status"
+                >
+                  {STATUS_TABS.map((tab) => (
+                    <Button
+                      key={tab.id || 'all'}
                       type="button"
-                      className="btn btn-ghost btn-icon btn-sm"
-                      disabled={cancellingId === drive.id}
-                      onClick={() => cancelDrive(drive)}
-                      style={{ flexShrink: 0, color: 'var(--danger-600)' }}
-                      title={
-                        cancellingId === drive.id
-                          ? 'Cancelling drive…'
-                          : cancelDriveTooltip(drive)
-                      }
-                      aria-label={
-                        cancellingId === drive.id
-                          ? 'Cancelling drive'
-                          : cancelDriveTooltip(drive)
-                      }
+                      role="tab"
+                      aria-selected={statusFilter === tab.id}
+                      size="sm"
+                      variant={statusFilter === tab.id ? 'secondary' : 'ghost'}
+                      onClick={() => setStatusFilter(tab.id)}
+                      className="h-8 rounded-md px-3 text-xs font-semibold"
                     >
-                      <Ban size={16} aria-hidden />
-                    </button>
-                  )}
+                      {formatFilterBadgeLabelParen(tab.label, statusCounts[tab.id])}
+                    </Button>
+                  ))}
                 </div>
+                <span className="text-muted-foreground text-sm font-medium">
+                  {filteredDrives.length} shown
+                </span>
               </div>
-
-              {/* Info grid */}
-              <div style={{
-                display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                gap: '0.75rem', marginTop: '1.1rem', paddingTop: '1.1rem',
-                borderTop: '1px solid var(--border-default)',
-              }}>
-                <div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    <Calendar size={11} /> Date
-                  </div>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                    {drive.date ? formatDate(drive.date) : '—'}
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)', marginBottom: '0.3rem' }}>Type</div>
-                  <DriveTypeBadge type={drive.type} />
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)', marginBottom: '0.3rem' }}>Venue</div>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: drive.venue?.trim() ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
-                    {drive.venue?.trim() || '—'}
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    <Users size={11} /> Registered
-                  </div>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                    {drive.registered ?? 0} students
-                  </div>
-                </div>
-              </div>
-
-              {/* CTC breakup (internal) */}
-              {(drive.ctc_breakup || drive.ctcBreakup) && (
-                <div style={{ marginTop: '0.85rem', paddingTop: '0.85rem', borderTop: '1px dashed var(--border-default)' }}>
-                  <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)', marginBottom: '0.35rem' }}>
-                    CTC breakup (internal)
-                  </div>
-                  <p style={{ margin: 0, fontSize: '0.875rem', whiteSpace: 'pre-wrap', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
-                    {drive.ctc_breakup || drive.ctcBreakup}
-                  </p>
-                  <p style={{ margin: '0.35rem 0 0', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                    Not shown to the college in the dashboard.
-                  </p>
-                </div>
-              )}
             </div>
-          ))}
-        </div>
-      )}
+          </CardHeader>
 
-      {!isLoading && filteredDrives.length === 0 && (
-        <div style={{
-          textAlign: 'center', padding: '4rem 2rem',
-          background: 'var(--bg-secondary)', borderRadius: 'var(--radius-xl)',
-          border: '1px dashed var(--border-default)',
-        }}>
-          <div style={{ background: 'var(--primary-50)', width: '68px', height: '68px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
-            <Target size={30} style={{ color: 'var(--primary-500)' }} />
-          </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-            {allDrives.length === 0 ? 'No placement drives found' : 'No drives match your filters'}
-          </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '420px', margin: '0 auto 1.5rem', lineHeight: 1.6 }}>
-            {allDrives.length === 0
-              ? (campusFilterActive
-                ? `No drives found for the selected campus${selectedIds.size > 1 ? 'es' : ''}. Try a different filter or request a new drive.`
-                : 'No drives scheduled yet. Request a placement drive with one of your approved partner campuses.')
-              : 'Try adjusting search, status, date, or campus filters to see more results.'}
-          </p>
-          {allDrives.length === 0 ? (
-            <Link href="/dashboard/employer/drives/request" className="btn btn-primary">
-              Request New Drive
-            </Link>
-          ) : (
-            <button type="button" className="btn btn-secondary" onClick={clearFilters}>
-              Clear filters
-            </button>
-          )}
-        </div>
-      )}
+          <CardContent className="p-0">
+            {viewMode === 'list' ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Campus</TableHead>
+                    <TableHead>Drive title</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                    <TableHead>Venue</TableHead>
+                    <TableHead>Registered</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredDrives.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
+                        No drives match your filters.
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                  {filteredDrives.map((drive) => (
+                    <TableRow key={drive.id}>
+                      <TableCell className="max-w-[220px]">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <EntityLogo name={drive.college} size="sm" shape="rounded" />
+                          <span className="truncate font-medium">{drive.college}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="max-w-[200px]">
+                        <span className="block truncate font-semibold">{drive.role}</span>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground whitespace-nowrap">
+                        {drive.date ? formatDate(drive.date) : '—'}
+                      </TableCell>
+                      <TableCell>
+                        <DriveTypeBadge type={drive.type} />
+                      </TableCell>
+                      <TableCell className="min-w-[6.5rem]" data-label="Status">
+                        <StatusBadge status={drive.status} showDot className="min-w-fit">
+                          {formatStatus(drive.status) || 'Pending'}
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell
+                        className={cn(
+                          'max-w-[160px] truncate',
+                          drive.venue?.trim() ? 'text-muted-foreground' : 'text-muted-foreground/70',
+                        )}
+                      >
+                        {drive.venue?.trim() || '—'}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1">
+                          <Users className="size-3.5 shrink-0" aria-hidden />
+                          {drive.registered ?? 0}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <DriveRowActions
+                          drive={drive}
+                          cancellingId={cancellingId}
+                          onView={() => setViewDrive(drive)}
+                          onCancel={() => cancelDrive(drive)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
+                {filteredDrives.length === 0 ? (
+                  <div className="col-span-full py-12 text-center">
+                    <Target className="text-muted-foreground mx-auto mb-3 size-12 opacity-50" />
+                    <CardTitle className="mb-1 text-lg">No drives match your filters</CardTitle>
+                    <CardDescription className="mb-4">Try adjusting search, status, date, or campus filters.</CardDescription>
+                    <Button type="button" variant="secondary" onClick={clearFilters}>
+                      Clear filters
+                    </Button>
+                  </div>
+                ) : (
+                  filteredDrives.map((drive) => (
+                    <DriveCard
+                      key={drive.id}
+                      drive={drive}
+                      cancellingId={cancellingId}
+                      onView={() => setViewDrive(drive)}
+                      onCancel={() => cancelDrive(drive)}
+                    />
+                  ))
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      <p className="text-muted-foreground m-0 text-sm">
+        {allDrives.length} placement drive{allDrives.length === 1 ? '' : 's'} across your campus partnerships
+      </p>
 
       {viewDrive ? (
         <DriveDetailsDialog drive={viewDrive} onClose={() => setViewDrive(null)} />
       ) : null}
+    </div>
+  );
+}
 
+function DriveRowActions({ drive, cancellingId, onView, onCancel }) {
+  return (
+    <div className="inline-flex shrink-0 items-center justify-end gap-1.5 pe-0.5">
+      <StandardTableIconAction
+        action="view"
+        variant="ghost"
+        showLabel={false}
+        tooltip={VIEW_DRIVE_TIP}
+        onClick={onView}
+      />
+      {canReviewApplicants(drive) ? (
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="default"
+          title={REVIEW_APPLICANTS_TIP}
+          aria-label={REVIEW_APPLICANTS_TIP}
+          nativeButton={false}
+          render={
+            <Link href={`/dashboard/employer/applications?tab=drives&driveId=${encodeURIComponent(drive.id)}`} />
+          }
+        >
+          <ClipboardList aria-hidden />
+        </Button>
+      ) : null}
+      {canEditDrive(drive) ? (
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="secondary"
+          title={EDIT_DRIVE_TIP}
+          aria-label={EDIT_DRIVE_TIP}
+          nativeButton={false}
+          render={<Link href={`/dashboard/employer/drives/edit/${drive.id}`} />}
+        >
+          <Pencil aria-hidden />
+        </Button>
+      ) : null}
+      {canCancelDrive(drive) ? (
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="ghost"
+          className="text-destructive hover:text-destructive"
+          disabled={cancellingId === drive.id}
+          onClick={onCancel}
+          title={cancellingId === drive.id ? 'Cancelling drive…' : cancelDriveTooltip(drive)}
+          aria-label={cancellingId === drive.id ? 'Cancelling drive' : cancelDriveTooltip(drive)}
+        >
+          <Ban aria-hidden />
+        </Button>
+      ) : null}
+    </div>
+  );
+}
+
+function DriveCard({ drive, cancellingId, onView, onCancel }) {
+  const ctcBreakup = drive.ctc_breakup || drive.ctcBreakup;
+
+  return (
+    <Card size="sm" className="h-full gap-3 overflow-visible">
+      <CardHeader className="gap-2 px-4 pe-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <EntityLogo name={drive.college} size="sm" shape="rounded" />
+            <div className="min-w-0">
+              <CardTitle className="truncate text-base">{drive.college}</CardTitle>
+              <CardDescription className="mt-0.5 truncate font-medium">{drive.role}</CardDescription>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <StatusBadge status={drive.status} showDot className="min-w-fit">
+                  {formatStatus(drive.status) || 'Pending'}
+                </StatusBadge>
+                <DriveTypeBadge type={drive.type} />
+              </div>
+            </div>
+          </div>
+          <DriveRowActions
+            drive={drive}
+            cancellingId={cancellingId}
+            onView={onView}
+            onCancel={onCancel}
+          />
+        </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3 px-4">
+        <div className="text-muted-foreground grid grid-cols-2 gap-2 text-sm">
+          <span className="inline-flex items-center gap-1.5">
+            <Calendar className="size-3.5 shrink-0" />
+            {drive.date ? formatDate(drive.date) : '—'}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="size-3.5 shrink-0" />
+            {drive.registered ?? 0} registered
+          </span>
+          <span className="col-span-2 inline-flex items-start gap-1.5">
+            <Building2 className="mt-0.5 size-3.5 shrink-0" />
+            <span className={drive.venue?.trim() ? '' : 'text-muted-foreground/70'}>
+              {drive.venue?.trim() || '—'}
+            </span>
+          </span>
+        </div>
+        {ctcBreakup ? (
+          <div className="border-border border-t border-dashed pt-3">
+            <div className="text-muted-foreground mb-1 text-xs font-semibold tracking-wide uppercase">
+              CTC breakup (internal)
+            </div>
+            <p className="text-muted-foreground m-0 text-sm leading-relaxed whitespace-pre-wrap">{ctcBreakup}</p>
+            <p className="text-muted-foreground/80 mt-1 mb-0 text-xs">
+              Not shown to the college in the dashboard.
+            </p>
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
+
+function DetailField({ label, children }) {
+  return (
+    <div className="bg-muted/50 rounded-lg border px-3.5 py-3">
+      <div className="text-muted-foreground mb-1.5 text-xs font-medium tracking-wide uppercase">{label}</div>
+      <div className="text-foreground text-sm leading-relaxed">{children}</div>
     </div>
   );
 }
@@ -942,182 +891,130 @@ function DriveDetailsDialog({ drive, onClose }) {
     drive.salary_min ?? drive.salaryMin,
     drive.salary_max ?? drive.salaryMax,
   );
-  const modalBackdrop = {
-    position: 'fixed',
-    inset: 0,
-    zIndex: 200,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '1rem',
-    background: 'rgba(15, 23, 42, 0.55)',
-  };
 
   return (
-    <div style={modalBackdrop} role="presentation" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="drive-details-title"
-        className="card"
-        style={{
-          maxWidth: 520,
-          width: '100%',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          padding: '1.25rem',
-          position: 'relative',
-          border: '1px solid var(--border-default)',
-          boxShadow: 'var(--shadow-lg)',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          aria-label="Close"
-          style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
-          onClick={onClose}
-        >
-          <X size={18} />
-        </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', paddingRight: '2rem' }}>
-          <EntityLogo name={drive.college} size="sm" shape="rounded" />
-          <div>
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
-              {drive.college}
-            </p>
-            <h2 id="drive-details-title" style={{ fontSize: '1.1rem', margin: '0.25rem 0 0' }}>
-              {drive.role}
-            </h2>
+    <Dialog
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
+      <DialogContent className="gap-4 sm:max-w-xl" showCloseButton>
+        <DialogHeader className="gap-2 pr-8">
+          <div className="flex items-center gap-3">
+            <EntityLogo name={drive.college} size="sm" shape="rounded" />
+            <div className="min-w-0">
+              <DialogDescription className="m-0">{drive.college}</DialogDescription>
+              <DialogTitle id="drive-details-title" className="text-xl font-semibold">
+                {drive.role}
+              </DialogTitle>
+            </div>
           </div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.85rem' }}>
-          <div>
-            <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Status</div>
-            <span className={`badge badge-${getStatusColor(drive.status)} badge-dot`}>{formatStatus(drive.status)}</span>
-          </div>
-          <div>
-            <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Drive date</div>
-            <div className="text-sm font-semibold">{drive.date ? formatDate(drive.date) : '—'}</div>
-          </div>
-          <div>
-            <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Type</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <StatusBadge status={drive.status} showDot className="min-w-fit">
+              {formatStatus(drive.status) || 'Pending'}
+            </StatusBadge>
             <DriveTypeBadge type={drive.type} />
           </div>
-          <div>
-            <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Registered</div>
-            <div className="text-sm font-semibold">{drive.registered ?? 0} students</div>
+        </DialogHeader>
+
+        <div className="grid max-h-[min(60vh,28rem)] gap-3 overflow-y-auto pr-1">
+          <div className="grid grid-cols-2 gap-3">
+            <DetailField label="Drive date">{drive.date ? formatDate(drive.date) : '—'}</DetailField>
+            <DetailField label="Registered">{drive.registered ?? 0} students</DetailField>
+            <DetailField label="Venue">{drive.venue?.trim() || '—'}</DetailField>
           </div>
-          <div style={{ gridColumn: '1 / -1' }}>
-            <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Venue</div>
-            <div className="text-sm">{drive.venue?.trim() || '—'}</div>
+
+          {(drive.description || '').trim() ? (
+            <DetailField label="Job description">
+              <p className="m-0 whitespace-pre-wrap">{drive.description.trim()}</p>
+            </DetailField>
+          ) : null}
+
+          <div className="border-border border-t pt-3">
+            <DriveDetailsSection title="Role & compensation">
+              <div className="grid grid-cols-2 gap-3">
+                <DetailField label="Role type">
+                  {PLACEMENT_DRIVE_JOB_TYPE_LABELS[jobType] || jobType || '—'}
+                </DetailField>
+                <DetailField label="Openings">{drive.max_students ?? drive.vacancies ?? '—'}</DetailField>
+                <DetailField label="CTC band (public)">
+                  <div>{salaryLabel}</div>
+                  {salaryWords ? (
+                    <div className="text-muted-foreground mt-1 text-xs leading-snug">{salaryWords}</div>
+                  ) : null}
+                </DetailField>
+                <DetailField label="Skills">
+                  {Array.isArray(skills) && skills.length ? skills.join(', ') : '—'}
+                </DetailField>
+                {Array.isArray(locations) && locations.length ? (
+                  <div className="col-span-2">
+                    <DetailField label="Work locations">{locations.join(', ')}</DetailField>
+                  </div>
+                ) : null}
+              </div>
+            </DriveDetailsSection>
           </div>
+
+          <div className="border-border border-t pt-3">
+            <DriveDetailsSection title="Eligibility">
+              <div className="grid grid-cols-2 gap-3">
+                <DetailField label="Minimum CGPA">
+                  {formatEmployerMinCgpa(drive.min_cgpa ?? drive.minCgpa)}
+                </DetailField>
+                <DetailField label="Eligible branches">
+                  {formatEligibleBranchesLabel(drive.eligible_branches ?? drive.eligibleBranches)}
+                </DetailField>
+                <DetailField label="Max backlogs">{drive.max_backlogs ?? drive.maxBacklogs ?? '—'}</DetailField>
+                <DetailField label="Batch year">{drive.batch_year ?? drive.batchYear ?? '—'}</DetailField>
+              </div>
+              {formatEmployerMinCgpa(drive.min_cgpa ?? drive.minCgpa) === '—' ? (
+                <p className="text-muted-foreground mt-2 mb-0 text-xs">
+                  No drive-specific eligibility criteria set — campus placement rules still apply.
+                </p>
+              ) : null}
+            </DriveDetailsSection>
+          </div>
+
+          {ctcBreakup ? (
+            <div className="border-border border-t pt-3">
+              <DriveDetailsSection title="Compensation (internal)">
+                <p className="text-muted-foreground m-0 text-sm leading-relaxed whitespace-pre-wrap">{ctcBreakup}</p>
+                <p className="text-muted-foreground/80 mt-1 mb-0 text-xs">
+                  Not shown to the college in the dashboard.
+                </p>
+              </DriveDetailsSection>
+            </div>
+          ) : null}
         </div>
 
-        {(drive.description || '').trim() ? (
-          <DriveDetailsSection title="Job description">
-            <p style={{ margin: 0, fontSize: '0.875rem', whiteSpace: 'pre-wrap', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
-              {drive.description.trim()}
-            </p>
-          </DriveDetailsSection>
-        ) : null}
-
-        <DriveDetailsSection title="Role & compensation">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.75rem' }}>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Role type</div>
-              <div className="text-sm font-semibold">
-                {PLACEMENT_DRIVE_JOB_TYPE_LABELS[jobType] || jobType || '—'}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Openings</div>
-              <div className="text-sm font-semibold">{drive.max_students ?? drive.vacancies ?? '—'}</div>
-            </div>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>CTC band (public)</div>
-              <div className="text-sm font-semibold">{salaryLabel}</div>
-              {salaryWords ? (
-                <div className="text-xs text-secondary" style={{ marginTop: '0.25rem', lineHeight: 1.4 }}>
-                  {salaryWords}
-                </div>
-              ) : null}
-            </div>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Skills</div>
-              <div className="text-sm">{Array.isArray(skills) && skills.length ? skills.join(', ') : '—'}</div>
-            </div>
-            {Array.isArray(locations) && locations.length ? (
-              <div style={{ gridColumn: '1 / -1' }}>
-                <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Work locations</div>
-                <div className="text-sm">{locations.join(', ')}</div>
-              </div>
-            ) : null}
-          </div>
-        </DriveDetailsSection>
-
-        <DriveDetailsSection title="Eligibility">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.75rem' }}>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Minimum CGPA</div>
-              <div className="text-sm font-semibold">
-                {formatEmployerMinCgpa(drive.min_cgpa ?? drive.minCgpa)}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Eligible branches</div>
-              <div className="text-sm font-semibold">
-                {formatEligibleBranchesLabel(drive.eligible_branches ?? drive.eligibleBranches)}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Max backlogs</div>
-              <div className="text-sm font-semibold">
-                {drive.max_backlogs ?? drive.maxBacklogs ?? '—'}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem' }}>Batch year</div>
-              <div className="text-sm font-semibold">{drive.batch_year ?? drive.batchYear ?? '—'}</div>
-            </div>
-          </div>
-          {formatEmployerMinCgpa(drive.min_cgpa ?? drive.minCgpa) === '—' ? (
-            <p className="text-xs text-secondary" style={{ margin: '0.65rem 0 0' }}>
-              No drive-specific eligibility criteria set — campus placement rules still apply.
-            </p>
-          ) : null}
-        </DriveDetailsSection>
-
-        {ctcBreakup ? (
-          <DriveDetailsSection title="Compensation (internal)">
-            <p style={{ margin: 0, fontSize: '0.875rem', whiteSpace: 'pre-wrap', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
-              {ctcBreakup}
-            </p>
-            <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0' }}>
-              Not shown to the college in the dashboard.
-            </p>
-          </DriveDetailsSection>
-        ) : null}
-        <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+        <DialogFooter className="gap-2 sm:justify-end">
           {canReviewApplicants(drive) ? (
-            <Link
-              href={`/dashboard/employer/applications?tab=drives&driveId=${encodeURIComponent(drive.id)}`}
-              className="btn btn-primary btn-sm"
+            <Button
+              size="sm"
+              nativeButton={false}
+              render={
+                <Link href={`/dashboard/employer/applications?tab=drives&driveId=${encodeURIComponent(drive.id)}`} />
+              }
             >
               Review applications
-            </Link>
+            </Button>
           ) : null}
           {canEditDrive(drive) ? (
-            <Link href={`/dashboard/employer/drives/edit/${drive.id}`} className="btn btn-secondary btn-sm">
+            <Button
+              size="sm"
+              variant="secondary"
+              nativeButton={false}
+              render={<Link href={`/dashboard/employer/drives/edit/${drive.id}`} />}
+            >
               Edit drive
-            </Link>
+            </Button>
           ) : null}
-          <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
+          <Button type="button" size="sm" variant="outline" onClick={onClose}>
             Close
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-11
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Select IIT Madras campus. Campus dropdown shows Indian Institute of Technology, Madras.

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-07
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Approve TechCorp partnership request. TechCorp row approved or already absent from pending list.

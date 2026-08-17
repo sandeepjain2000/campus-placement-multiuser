@@ -1,6 +1,11 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { ConvBubble, ConvThread } from '@/components/messaging/ConvBubble';
+import { MessageSquare, Send } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export default function CollegeDiscussionsPage() {
   const [threads, setThreads] = useState([]);
@@ -57,55 +62,45 @@ export default function CollegeDiscussionsPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      {/* Glassmorphic Hero */}
-      <div style={{
-        position: 'relative', background: 'var(--banner-gradient)',
-        borderRadius: 'var(--radius-xl)', padding: '2.5rem', color: 'white', overflow: 'hidden',
-        marginBottom: '2rem', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)',
-      }}>
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', borderRadius: '50%' }} />
-        <h1 style={{ color: '#ffffff', fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em', position: 'relative', zIndex: 1 }}>💬 Discussions</h1>
-        <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.85)', margin: 0, position: 'relative', zIndex: 1 }}>
+    <div className="animate-fadeIn flex flex-col gap-5 pb-8">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <MessageSquare className="text-muted-foreground size-7" strokeWidth={1.5} /> Discussions
+        </h1>
+        <p className="text-muted-foreground m-0 text-sm">
           Company messages on the <strong>left</strong>; your placement office replies on the <strong>right</strong>.
         </p>
       </div>
 
-      <div className="card" style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 320px) 1fr', gap: '1rem' }}>
-        <div style={{ borderRight: '1px solid var(--border-default)', paddingRight: '1rem' }}>
-          <input className="form-input" placeholder="Search company or topic…" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <div style={{ marginTop: '0.75rem', display: 'grid', gap: '0.5rem' }}>
+      <Card className="grid min-h-[34rem] grid-cols-[minmax(260px,320px)_1fr] gap-0 overflow-hidden py-0">
+        <div className="border-border flex flex-col gap-3 border-r p-4">
+          <Input aria-label="Search discussions" placeholder="Search company or topic…" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <div className="flex flex-col gap-2">
             {visibleThreads.map((t) => (
-              <button
+              <Button
                 key={t.id}
                 type="button"
-                className="btn btn-ghost"
-                style={{
-                  justifyContent: 'space-between',
-                  border: activeId === t.id ? '1px solid var(--primary-500)' : '1px solid var(--border-default)',
-                  textAlign: 'left',
-                }}
+                variant={activeId === t.id ? 'secondary' : 'ghost'}
+                className="h-auto justify-between whitespace-normal px-3 py-2 text-left"
                 onClick={() => setActiveId(t.id)}
               >
-                <span>
-                  <span className="badge badge-indigo">{t.company}</span>
-                  <div className="text-sm" style={{ marginTop: '0.25rem' }}>
-                    {t.topic}
-                  </div>
-                  <div className="text-xs text-tertiary">{t.lastActivity}</div>
+                <span className="min-w-0">
+                  <Badge>{t.company}</Badge>
+                  <span className="mt-1 block text-sm font-medium">{t.topic}</span>
+                  <span className="text-muted-foreground block text-xs">{t.lastActivity}</span>
                 </span>
-                <span className="badge badge-gray">{(t.replies || []).length}</span>
-              </button>
+                <Badge variant="secondary">{(t.replies || []).length}</Badge>
+              </Button>
             ))}
           </div>
         </div>
 
-        <div>
+        <div className="p-5">
           {activeThread ? (
             <>
-              <span className="badge badge-blue">{activeThread.company}</span>
-              <h3 style={{ marginTop: '0.5rem' }}>{activeThread.topic}</h3>
-              <div className="text-sm text-secondary">Last activity: {activeThread.lastActivity}</div>
+              <Badge variant="secondary">{activeThread.company}</Badge>
+              <CardTitle className="mt-2">{activeThread.topic}</CardTitle>
+              <CardDescription>Last activity: {activeThread.lastActivity}</CardDescription>
               <ConvThread>
                 {(activeThread.replies || []).map((r, idx) => (
                   <ConvBubble
@@ -118,25 +113,19 @@ export default function CollegeDiscussionsPage() {
                   </ConvBubble>
                 ))}
               </ConvThread>
-              <div style={{ marginTop: '1rem' }} className="conv-row conv-row--end">
-                <div className="conv-bubble conv-bubble--self" style={{ minWidth: 'min(100%, 22rem)' }}>
-                  <div className="conv-bubble-label" style={{ color: 'rgba(255,255,255,0.9)' }}>
-                    Your reply
-                  </div>
-                  <div className="conv-bubble-input">
-                    <input className="form-input" placeholder="Reply to company…" value={reply} onChange={(e) => setReply(e.target.value)} />
-                    <button className="btn btn-secondary btn-sm" type="button" onClick={addReply}>
+              <div className="border-border mt-4 flex gap-2 border-t pt-4">
+                    <Input aria-label="Reply to company" placeholder="Reply to company…" value={reply} onChange={(e) => setReply(e.target.value)} />
+                    <Button size="sm" type="button" onClick={addReply}>
+                      <Send data-icon="inline-start" />
                       Send
-                    </button>
-                  </div>
-                </div>
+                    </Button>
               </div>
             </>
           ) : (
-            <div className="text-sm text-tertiary">No thread selected.</div>
+            <CardContent className="text-muted-foreground flex h-full items-center justify-center text-sm">No thread selected.</CardContent>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

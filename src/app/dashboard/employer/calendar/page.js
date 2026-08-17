@@ -9,6 +9,15 @@ import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { reportClientApiFailure } from '@/lib/clientPlatformErrorReport';
 import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const CALENDAR_API = '/api/employer/calendar';
 
@@ -135,165 +144,132 @@ export default function EmployerCalendarPage() {
   }, []);
 
   return (
-    <div className="animate-fadeIn">
-      {/* Premium Hero Banner */}
-      <div 
-        style={{
-          position: 'relative',
-          borderRadius: 'var(--radius-xl)',
-          overflow: 'hidden',
-          background: 'var(--banner-gradient)',
-          marginBottom: '2rem',
-          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        {/* Abstract Background Elements */}
-        <div style={{ position: 'absolute', top: '-50%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: '-20%', left: '5%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)', borderRadius: '50%' }} />
-        
-        <div style={{ 
-          padding: '2.5rem', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '1.5rem',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ color: 'white' }}>
-              <h1 style={{ fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <CalendarDays size={32} style={{ opacity: 0.9 }} /> Employer Events
-              </h1>
-              <p style={{ fontSize: '1.05rem', opacity: 0.9, margin: 0, fontWeight: 500, maxWidth: '600px' }}>
-                Manage company events, interviews, campus drives, and milestones.
-              </p>
-            </div>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 'var(--radius-md)', backdropFilter: 'blur(10px)' }}>
-                <ExportCsvSplitButton
-                  filenameBase="employer_events"
-                  currentCount={events.length}
-                  fullCount={events.length}
-                  getRows={getCalendarCsv}
-                />
-              </div>
-              <button 
-                className="btn" 
-                disabled
-                style={{ 
-                  background: 'white', 
-                  color: 'var(--primary-700)', 
-                  fontWeight: 600,
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                  opacity: 0.5,
-                  cursor: 'not-allowed'
-                }}
-              >
-                + Add Event
-              </button>
-            </div>
-          </div>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <CalendarDays className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+            Employer events
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
+            Manage company events, interviews, campus drives, and milestones.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ExportCsvSplitButton
+            filenameBase="employer_events"
+            currentCount={filteredEvents.length}
+            fullCount={events.length}
+            getRows={getCalendarCsv}
+          />
+          <Button disabled>+ Add event</Button>
         </div>
       </div>
 
       {/* Unified Toolbar & Filters */}
-      <div className="card" style={{ marginBottom: '2rem', padding: '1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%' }}>
-          {/* View Toggles */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div className="view-toggle" role="group" aria-label="View mode" style={{ background: 'var(--bg-secondary)', padding: '0.25rem', borderRadius: 'var(--radius-md)' }}>
-              <button type="button" className={view === 'list' ? 'active' : ''} onClick={() => setView('list')} title="List View" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)' }}>
-                <ListIcon size={15} /> List
-              </button>
-              <button type="button" className={view === 'month' ? 'active' : ''} onClick={() => setView('month')} title="Monthly View" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)' }}>
-                <CalendarIcon size={15} /> Month
-              </button>
-              <button type="button" className={view === 'week' ? 'active' : ''} onClick={() => setView('week')} title="Weekly View" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)' }}>
-                <CalendarDays size={15} /> Week
-              </button>
-              <button type="button" className={view === 'year' ? 'active' : ''} onClick={() => setView('year')} title="Annual View" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)' }}>
-                <CalendarRange size={15} /> Year
-              </button>
-            </div>
-            <span className="badge badge-gray" style={{ fontSize: '0.85rem' }}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Calendar Controls</CardTitle>
+          <CardDescription>Choose a view and narrow events by campus, mode, or date.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Tabs value={view} onValueChange={setView}>
+              <TabsList aria-label="Calendar view">
+                <TabsTrigger value="list"><ListIcon aria-hidden /> List</TabsTrigger>
+                <TabsTrigger value="month"><CalendarIcon aria-hidden /> Month</TabsTrigger>
+                <TabsTrigger value="week"><CalendarDays aria-hidden /> Week</TabsTrigger>
+                <TabsTrigger value="year"><CalendarRange aria-hidden /> Year</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Badge variant="secondary">
               {filteredEvents.length} events
-            </span>
+            </Badge>
           </div>
 
-          {/* Filters */}
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
-            <div className="search-box" style={{ position: 'relative', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-              <input
+          <div className="flex flex-wrap items-end gap-3">
+            <Field className="min-w-[14rem] flex-[2] basis-[14rem]">
+              <FieldLabel htmlFor="calendar-search">Search events</FieldLabel>
+              <Input
+                id="calendar-search"
+                name="calendar-search"
                 type="text"
-                className="form-input form-input-sm"
-                placeholder="Search events or colleges..."
+                placeholder="Search events or colleges…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{ paddingLeft: '2.5rem', width: '100%', borderRadius: 'var(--radius-md)' }}
               />
-            </div>
-            
-            <div style={{ position: 'relative' }}>
-              <Filter size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-              <select
-                className="form-select form-input-sm"
+            </Field>
+            <Field className="min-w-[10rem] flex-1 basis-[10rem]">
+              <FieldLabel htmlFor="calendar-status">Status</FieldLabel>
+              <AdminFilterSelect
+                id="calendar-status"
+                className="h-9 w-full"
                 value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                style={{ paddingLeft: '2.25rem', width: '140px', borderRadius: 'var(--radius-md)' }}
-              >
-                <option value="">All Statuses</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="approved">Approved</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-
-            <select
-              className="form-select form-input-sm"
-              value={modeFilter}
-              onChange={(e) => setModeFilter(e.target.value)}
-              style={{ width: '130px', borderRadius: 'var(--radius-md)' }}
-            >
-              <option value="">All Modes</option>
-              <option value="on_campus">On Campus</option>
-              <option value="virtual">Virtual</option>
-            </select>
-
-            <select
-              className="form-select form-input-sm"
-              value={collegeFilter}
-              onChange={(e) => setCollegeFilter(e.target.value)}
-              style={{ width: '180px', borderRadius: 'var(--radius-md)' }}
-            >
-              <option value="">All Colleges</option>
-              {collegeOptions.map((college) => (
-                <option key={college} value={college}>{college}</option>
-              ))}
-            </select>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.25rem', borderRadius: 'var(--radius-md)' }}>
-              <ValidatedDateInput
-                fieldId={FIELD_IDS.DATE_RANGE_FROM}
-                context={{ dateTo, maxSpanYears: 2 }}
-                className="form-input form-input-sm"
-                value={dateFrom}
-                onChange={setDateFrom}
+                onValueChange={setTypeFilter}
+                items={[
+                  { label: 'All Statuses', value: 'all' },
+                  { label: 'Scheduled', value: 'scheduled' },
+                  { label: 'Approved', value: 'approved' },
+                  { label: 'Completed', value: 'completed' },
+                ]}
               />
-              <span className="text-secondary text-sm">to</span>
-              <ValidatedDateInput
-                fieldId={FIELD_IDS.DATE_RANGE_TO}
-                context={{ dateFrom, maxSpanYears: 2 }}
-                className="form-input form-input-sm"
-                value={dateTo}
-                onChange={setDateTo}
+            </Field>
+            <Field className="min-w-[10rem] flex-1 basis-[10rem]">
+              <FieldLabel htmlFor="calendar-mode">Mode</FieldLabel>
+              <AdminFilterSelect
+                id="calendar-mode"
+                className="h-9 w-full"
+                value={modeFilter}
+                onValueChange={setModeFilter}
+                items={[
+                  { label: 'All Modes', value: 'all' },
+                  { label: 'On Campus', value: 'on_campus' },
+                  { label: 'Virtual', value: 'virtual' },
+                ]}
               />
-            </div>
-
-            {(search || typeFilter || collegeFilter || modeFilter || dateFrom || dateTo) && (
-              <button
+            </Field>
+            <Field className="min-w-[10rem] flex-1 basis-[10rem]">
+              <FieldLabel htmlFor="calendar-college">College</FieldLabel>
+              <AdminFilterSelect
+                id="calendar-college"
+                className="h-9 w-full"
+                value={collegeFilter}
+                onValueChange={setCollegeFilter}
+                items={[
+                  { label: 'All Colleges', value: 'all' },
+                  ...collegeOptions.map((college) => ({ label: college, value: college })),
+                ]}
+              />
+            </Field>
+            <Field className="min-w-[18rem] flex-[2] basis-[18rem]">
+              <FieldLabel>Date range</FieldLabel>
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <div className="min-w-[9.5rem] flex-1">
+                  <ValidatedDateInput
+                    fieldId={FIELD_IDS.DATE_RANGE_FROM}
+                    context={{ dateTo, maxSpanYears: 2 }}
+                    value={dateFrom}
+                    onChange={setDateFrom}
+                    className="w-full min-w-0"
+                  />
+                </div>
+                <span className="text-muted-foreground text-sm">to</span>
+                <div className="min-w-[9.5rem] flex-1">
+                  <ValidatedDateInput
+                    fieldId={FIELD_IDS.DATE_RANGE_TO}
+                    context={{ dateFrom, maxSpanYears: 2 }}
+                    value={dateTo}
+                    onChange={setDateTo}
+                    className="w-full min-w-0"
+                  />
+                </div>
+              </div>
+            </Field>
+            <div className="flex shrink-0 items-end">
+              <Button
                 type="button"
-                className="btn btn-ghost btn-sm"
+                variant="ghost"
+                disabled={!(search || typeFilter || collegeFilter || modeFilter || dateFrom || dateTo)}
                 onClick={() => {
                   setSearch('');
                   setTypeFilter('');
@@ -302,21 +278,20 @@ export default function EmployerCalendarPage() {
                   setDateFrom('');
                   setDateTo('');
                 }}
-                style={{ color: 'var(--danger-600)' }}
               >
-                Clear
-              </button>
-            )}
+                Clear Filters
+              </Button>
+            </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {isLoading ? <div className="card" style={{ padding: '3rem', textAlign: 'center' }}><p className="text-secondary">Loading your calendar...</p></div> : null}
-      {error ? <div className="card" style={{ padding: '3rem', textAlign: 'center' }}><p style={{ color: 'var(--danger-600)' }}>{error.message || 'Could not load events.'}</p></div> : null}
+      {isLoading ? <Card><CardContent className="text-muted-foreground py-12 text-center">Loading your calendar…</CardContent></Card> : null}
+      {error ? <Alert variant="destructive"><AlertDescription>{error.message || 'Could not load events.'}</AlertDescription></Alert> : null}
       
       {/* Calendar Grid Views */}
       {!isLoading && !error && view !== 'list' ? (
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <Card className="gap-0 overflow-hidden py-0">
           <EmployerCalendarGrid 
             items={calItems} 
             initialYear={currentYear} 
@@ -325,85 +300,85 @@ export default function EmployerCalendarPage() {
             onCursorChange={handleCursorChange} 
             onChangeView={setView}
           />
-        </div>
+        </Card>
       ) : null}
 
       {/* Modern List View */}
       {!isLoading && !error && view === 'list' ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           {eventsByMonth.length === 0 ? (
-            <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center py-16 text-center">
               <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'var(--primary-50)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-600)' }}>
                 <CalendarIcon size={32} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: '0 0 0.5rem' }}>No events found</h3>
-                <p className="text-secondary" style={{ margin: 0 }}>Try adjusting your filters or search query.</p>
+                <CardTitle className="text-lg">No events found</CardTitle>
+                <CardDescription className="mt-2">Try adjusting your filters or search query.</CardDescription>
               </div>
-            </div>
+              </CardContent>
+            </Card>
           ) : (
             eventsByMonth.map((group) => {
               const monthLabel = new Date(group.year, group.month).toLocaleString('default', { month: 'long', year: 'numeric' });
               return (
-                <div key={`${group.year}-${group.month}`} className="animate-fadeIn">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{ width: '4px', height: '24px', background: 'var(--primary-500)', borderRadius: '4px' }} />
+                <section key={`${group.year}-${group.month}`} className="animate-fadeIn">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h2 className="text-xl font-semibold tracking-tight">
                       {monthLabel}
                     </h2>
-                    <button 
-                      className="btn btn-ghost btn-sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => {
                         setCurrentYear(group.year);
                         setCurrentMonth(group.month);
                         setView('month');
                       }}
-                      style={{ color: 'var(--primary-600)', fontWeight: 600 }}
                     >
-                      <CalendarIcon size={16} style={{ marginRight: '0.4rem' }} />
+                      <CalendarIcon data-icon="inline-start" />
                       View in Calendar
-                    </button>
+                    </Button>
                   </div>
                   
                   {/* Event Cards Grid */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.25rem' }}>
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {group.events.map((e) => (
-                      <div key={e.id} className="card card-hover" style={{ padding: '1.5rem', borderLeft: `4px solid ${e.type === 'completed' ? 'var(--green-500)' : e.type === 'approved' ? 'var(--blue-500)' : 'var(--gray-400)'}` }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', gap: '1rem' }}>
-                          <h4 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0, lineHeight: 1.3 }}>{e.title}</h4>
-                          <span className={`badge badge-${e.type === 'completed' ? 'green' : e.type === 'approved' ? 'blue' : 'gray'}`} style={{ whiteSpace: 'nowrap' }}>
-                            {formatStatus(e.type)}
-                          </span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                      <Card key={e.id}>
+                        <CardHeader className="flex-row items-start justify-between gap-3">
+                          <CardTitle className="text-base">{e.title}</CardTitle>
+                          <StatusBadge status={e.type} showDot>
+                            {formatStatus(e.type) || '—'}
+                          </StatusBadge>
+                        </CardHeader>
+                        <CardContent className="text-muted-foreground flex flex-col gap-3 text-sm">
                           {e.college && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              <MapPin size={16} style={{ color: 'var(--primary-500)' }} />
-                              <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{e.college}</span>
+                            <div className="text-foreground flex items-center gap-2 font-medium">
+                              <MapPin aria-hidden />
+                              <span>{e.college}</span>
                             </div>
                           )}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <CalendarIcon size={16} style={{ opacity: 0.7 }} />
+                          <div className="flex items-center gap-2">
+                            <CalendarIcon aria-hidden />
                             <span>{formatDate(e.date)}</span>
                           </div>
                           {e.time && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              <Clock size={16} style={{ opacity: 0.7 }} />
+                            <div className="flex items-center gap-2">
+                              <Clock aria-hidden />
                               <span>{e.time}</span>
                             </div>
                           )}
                           {e.mode && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              {e.mode === 'virtual' ? <Video size={16} style={{ opacity: 0.7 }} /> : <MapPin size={16} style={{ opacity: 0.7 }} />}
+                            <div className="flex items-center gap-2">
+                              {e.mode === 'virtual' ? <Video aria-hidden /> : <MapPin aria-hidden />}
                               <span>{formatModeLabel(e.mode)}</span>
                             </div>
                           )}
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
-                </div>
+                </section>
               );
             })
           )}

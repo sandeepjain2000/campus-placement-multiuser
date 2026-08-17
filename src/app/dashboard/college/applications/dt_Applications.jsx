@@ -1,12 +1,27 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import useSWR from 'swr';
-import { ClipboardList, Search, Building2, GraduationCap } from 'lucide-react';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { Building2, ClipboardList, GraduationCap } from 'lucide-react';
+import { formatDate, formatStatus, cn } from '@/lib/utils';
 import CompanyNameLink from '@/components/CompanyNameLink';
+import DataTableToolbar from '@/components/DataTableToolbar';
+import PageLoading from '@/components/PageLoading';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import ApplicationDetailModal from './ApplicationDetailModal';
-import { useState, useMemo } from 'react';
+import {
+  applicationKindLabel,
+  computeApplicationStats,
+  getApplicationKindMeta,
+  getApplicationStatusMeta,
+  openingLabel,
+  studentInitials,
+} from './applicationRowUtils';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -14,6 +29,12 @@ const fetcher = async (url) => {
   if (!res.ok) throw new Error(json?.error || 'Failed to load applications');
   return json;
 };
+
+const KIND_FILTER_OPTIONS = [
+  { value: '', label: 'All types' },
+  { value: 'drive', label: 'Placement drives' },
+  { value: 'program', label: 'Jobs & programs' },
+];
 
 const TABLE_COLUMNS = [
   'Student',
@@ -27,19 +48,6 @@ const TABLE_COLUMNS = [
   'Actions',
 ];
 
-function openingLabel(a) {
-  return a.opening_title || a.drive_title || '—';
-}
-
-function applicationKindLabel(a) {
-  if (a.source_kind === 'drive') return 'Placement drive';
-  const jt = String(a.job_type || '').toLowerCase();
-  if (jt === 'internship') return 'Internship';
-  if (jt === 'short_project' || jt === 'hackathon') return 'Project';
-  if (jt === 'full_time' || jt === 'part_time' || jt === 'contract') return 'Job';
-  return 'Program';
-}
-
 export default function DtCollegeApplications() {
   const { data, isLoading, error } = useSWR('/api/college/applications', fetcher);
   const applications = Array.isArray(data?.applications) ? data.applications : [];
@@ -48,6 +56,8 @@ export default function DtCollegeApplications() {
   const [statusFilter, setStatusFilter] = useState('');
   const [kindFilter, setKindFilter] = useState('');
   const [viewRow, setViewRow] = useState(null);
+
+  const stats = useMemo(() => computeApplicationStats(applications, counts), [applications, counts]);
 
   const filtered = useMemo(
     () =>
@@ -80,280 +90,195 @@ export default function DtCollegeApplications() {
     [applications],
   );
 
-  const summaryLine = isLoading
-    ? 'Loading applications…'
-    : error
-      ? 'Could not load counts'
-      : `${counts.total || applications.length} applications · ${counts.drives || 0} placement drives · ${counts.programs || 0} jobs & programs`;
+  const hasActiveFilters = Boolean(search || statusFilter || kindFilter);
+
+  const clearFilters = () => {
+    setSearch('');
+    setStatusFilter('');
+    setKindFilter('');
+  };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem', minWidth: 0, maxWidth: '100%' }}>
-      <div
-        style={{
-          marginBottom: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
-              margin: '0 0 0.35rem',
-              letterSpacing: '-0.02em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <ClipboardList size={24} aria-hidden />
-            Applications
-          </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>{summaryLine}</p>
-        </div>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <ClipboardList className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+          Applications
+        </h1>
+        <p className="text-muted-foreground m-0 text-sm">
+          Track student applications across placement drives, jobs, internships, and projects.
+        </p>
       </div>
 
-      <div
-        className="card"
-        style={{
-          padding: '1.25rem',
-          marginBottom: '1.5rem',
-          display: 'flex',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          border: '1px solid var(--border-default)',
-        }}
-      >
-        <div style={{ position: 'relative', flex: '1 1 240px' }}>
-          <Search
-            size={16}
-            style={{
-              position: 'absolute',
-              left: '1rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-tertiary)',
-              pointerEvents: 'none',
-            }}
-          />
-          <input
-            className="form-input"
-            placeholder="Search student, roll, company, opening…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.5rem' }}
-            disabled={isLoading && !applications.length}
-          />
-        </div>
-        <select
-          className="form-select"
-          style={{ width: 'auto', padding: '0.65rem 2rem 0.65rem 1rem' }}
-          value={kindFilter}
-          onChange={(e) => setKindFilter(e.target.value)}
-          disabled={isLoading && !applications.length}
-        >
-          <option value="">All types</option>
-          <option value="drive">Placement drives</option>
-          <option value="program">Jobs & programs</option>
-        </select>
-        <select
-          className="form-select"
-          style={{ width: 'auto', padding: '0.65rem 2rem 0.65rem 1rem' }}
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          disabled={isLoading && !applications.length}
-        >
-          <option value="">All statuses</option>
-          {statuses.map((s) => (
-            <option key={s} value={s}>
-              {formatStatus(s)}
-            </option>
-          ))}
-        </select>
-        <span style={{ marginLeft: 'auto', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-          {isLoading && !applications.length ? '—' : `${filtered.length} of ${applications.length}`}
-        </span>
-      </div>
-
-      {error ? (
-        <div
-          className="card"
-          role="alert"
-          style={{
-            padding: '1rem 1.25rem',
-            marginBottom: '1rem',
-            background: 'var(--danger-50)',
-            border: '1px solid var(--danger-200)',
-          }}
-        >
-          <p style={{ margin: 0, color: 'var(--danger-700)', fontWeight: 600 }}>
-            {error.message || 'Could not load applications.'}
-          </p>
-        </div>
+      {!isLoading && !error ? (
+        <Alert>
+          <AlertTitle>
+            {stats.total} application{stats.total === 1 ? '' : 's'}
+          </AlertTitle>
+          <AlertDescription>
+            <strong>{stats.drives}</strong> placement drive{stats.drives === 1 ? '' : 's'} ·{' '}
+            <strong>{stats.programs}</strong> job{stats.programs === 1 ? '' : 's'} &amp; program
+            {stats.programs === 1 ? '' : 's'}
+          </AlertDescription>
+        </Alert>
       ) : null}
 
-      <div className="card card-table-shell" style={{ border: '1px solid var(--border-default)', minWidth: 0, maxWidth: '100%' }}>
-        <div
-          className="table-container"
-          style={{ border: 'none', borderRadius: 'inherit', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
-        >
-          <table className="data-table college-applications-table">
-            <colgroup>
-              <col className="college-applications-col-student" />
-              <col className="college-applications-col-roll" />
-              <col className="college-applications-col-dept" />
-              <col className="college-applications-col-company" />
-              <col className="college-applications-col-type" />
-              <col className="college-applications-col-opening" />
-              <col className="college-applications-col-status" />
-              <col className="college-applications-col-applied" />
-              <col className="college-applications-col-actions" />
-            </colgroup>
-            <thead>
-              <tr style={{ background: 'var(--bg-secondary)' }}>
-                {TABLE_COLUMNS.map((col, i) => (
-                  <th
-                    key={col}
-                    style={
-                      i === 0
-                        ? { paddingLeft: '1.5rem' }
-                        : i === TABLE_COLUMNS.length - 1
-                          ? { textAlign: 'right', paddingRight: '1.5rem', width: 1 }
-                          : undefined
-                    }
-                  >
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading && !applications.length ? (
-                <tr>
-                  <td colSpan={TABLE_COLUMNS.length} style={{ padding: '2rem 1.5rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="skeleton" style={{ height: 40, borderRadius: 'var(--radius-md)' }} />
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              ) : null}
+      {error ? (
+        <Alert variant="destructive">
+          <AlertTitle>Could not load applications</AlertTitle>
+          <AlertDescription>{error.message || 'Could not load applications.'}</AlertDescription>
+        </Alert>
+      ) : null}
 
-              {!isLoading &&
-                !error &&
-                filtered.map((a) => {
-                  const initials = (a.student_name || 'S')
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .slice(0, 2)
-                    .toUpperCase();
+      {isLoading && !applications.length ? <PageLoading message="Loading applications…" inline /> : null}
+
+      {!isLoading && !error && applications.length > 0 ? (
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-3 border-b px-4 py-3">
+            <div>
+              <CardTitle className="text-base">Campus applications</CardTitle>
+              <CardDescription>
+                Showing {filtered.length} of {applications.length}
+              </CardDescription>
+            </div>
+            <DataTableToolbar
+              search={search}
+              onSearchChange={setSearch}
+              searchPlaceholder="Search student, roll, company, opening…"
+              filteredCount={filtered.length}
+              totalCount={applications.length}
+              hasActiveFilters={hasActiveFilters}
+              onClear={clearFilters}
+            />
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="text-muted-foreground text-sm" htmlFor="college-applications-kind-filter">
+                Type
+              </label>
+              <AdminFilterSelect
+                id="college-applications-kind-filter"
+                className="min-w-40"
+                value={kindFilter}
+                onValueChange={setKindFilter}
+                items={KIND_FILTER_OPTIONS.map((opt) => ({
+                  label: opt.label,
+                  value: opt.value === '' ? 'all' : opt.value,
+                }))}
+              />
+              <label className="text-muted-foreground text-sm" htmlFor="college-applications-status-filter">
+                Status
+              </label>
+              <AdminFilterSelect
+                id="college-applications-status-filter"
+                className="min-w-40"
+                value={statusFilter}
+                onValueChange={setStatusFilter}
+                items={[
+                  { label: 'All statuses', value: 'all' },
+                  ...statuses.map((s) => ({ label: formatStatus(s) || s, value: s })),
+                ]}
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table className="college-applications-table">
+              <TableHeader>
+                <TableRow>
+                  {TABLE_COLUMNS.map((col) => (
+                    <TableHead
+                      key={col}
+                      className={cn(
+                        col === 'Actions' && 'text-right',
+                        col === 'Status' && 'min-w-[6.5rem]',
+                        col === 'Type' && 'min-w-[7rem]',
+                      )}
+                    >
+                      {col}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={TABLE_COLUMNS.length} className="text-muted-foreground h-24 text-center">
+                      No applications match your search or filters.
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+                {filtered.map((a) => {
+                  const kindMeta = getApplicationKindMeta(a);
+                  const statusMeta = getApplicationStatusMeta(a.status);
+                  const initials = studentInitials(a.student_name);
                   return (
-                    <tr key={`${a.source_kind}-${a.id}`}>
-                      <td style={{ paddingLeft: '1.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <div
-                            style={{
-                              width: 32,
-                              height: 32,
-                              borderRadius: '50%',
-                              background: 'var(--primary-100)',
-                              color: 'var(--primary-700)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '0.7rem',
-                              fontWeight: 700,
-                              flexShrink: 0,
-                              border: '1px solid var(--primary-200)',
-                            }}
-                          >
+                    <TableRow key={`${a.source_kind}-${a.id}`}>
+                      <TableCell data-label="Student">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <div className="bg-primary/10 text-primary border-primary/20 flex size-8 shrink-0 items-center justify-center rounded-full border text-[0.7rem] font-bold">
                             {initials}
                           </div>
-                          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{a.student_name || '—'}</span>
+                          <span className="truncate font-medium">{a.student_name || '—'}</span>
                         </div>
-                      </td>
-                      <td style={{ fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                      </TableCell>
+                      <TableCell data-label="Roll No." className="text-muted-foreground font-mono text-sm">
                         {a.roll_number || '—'}
-                      </td>
-                      <td>
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.35rem',
-                            fontSize: '0.9rem',
-                            color: 'var(--text-secondary)',
-                          }}
-                        >
-                          <GraduationCap size={13} style={{ flexShrink: 0 }} aria-hidden />
-                          {a.department || '—'}
+                      </TableCell>
+                      <TableCell data-label="Department">
+                        <div className="text-muted-foreground flex items-center gap-1.5 text-sm">
+                          <GraduationCap className="size-3.5 shrink-0" aria-hidden />
+                          <span className="truncate">{a.department || '—'}</span>
                         </div>
-                      </td>
-                      <td className="cell-truncate" title={a.company_name || undefined}>
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.35rem',
-                            fontSize: '0.9rem',
-                            fontWeight: 500,
-                            minWidth: 0,
-                          }}
-                        >
-                          <Building2 size={13} style={{ flexShrink: 0, color: 'var(--text-tertiary)' }} aria-hidden />
-                          <span className="cell-truncate" style={{ display: 'block' }}>
+                      </TableCell>
+                      <TableCell data-label="Company" className="max-w-[12rem]">
+                        <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium">
+                          <Building2 className="text-muted-foreground size-3.5 shrink-0" aria-hidden />
+                          <span className="truncate">
                             <CompanyNameLink name={a.company_name} website={a.company_website} />
                           </span>
                         </div>
-                      </td>
-                      <td className="text-sm text-secondary cell-truncate" title={applicationKindLabel(a)}>
-                        {applicationKindLabel(a)}
-                      </td>
-                      <td className="text-sm text-secondary cell-truncate" title={openingLabel(a)}>
-                        {openingLabel(a)}
-                      </td>
-                      <td>
-                        <span className={`badge badge-${getStatusColor(a.status)} badge-dot`} style={{ fontSize: '0.75rem' }}>
-                          {formatStatus(a.status)}
+                      </TableCell>
+                      <TableCell data-label="Type" className="min-w-[7rem]">
+                        <StatusBadge tone={kindMeta.tone} showDot>
+                          {kindMeta.label}
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell data-label="Opening" className="text-muted-foreground max-w-[14rem]">
+                        <span className="block truncate" title={openingLabel(a)}>
+                          {openingLabel(a)}
                         </span>
-                      </td>
-                      <td className="text-sm text-secondary cell-truncate" title={a.applied_at ? formatDate(a.applied_at) : undefined}>
+                      </TableCell>
+                      <TableCell data-label="Status" className="min-w-[6.5rem]">
+                        <StatusBadge status={a.status} tone={statusMeta.tone} showDot>
+                          {statusMeta.label}
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell data-label="Applied" className="text-muted-foreground">
                         {a.applied_at ? formatDate(a.applied_at) : '—'}
-                      </td>
-                      <td style={{ textAlign: 'right', paddingRight: '1.5rem', whiteSpace: 'nowrap' }}>
+                      </TableCell>
+                      <TableCell data-label="Actions" className="text-right">
                         <StandardTableIconAction action="view" showLabel={false} onClick={() => setViewRow(a)} />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : null}
 
-              {!isLoading && !error && filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={TABLE_COLUMNS.length} style={{ textAlign: 'center', padding: '3rem 2rem' }}>
-                    <ClipboardList size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.25 }} aria-hidden />
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
-                      {applications.length === 0 ? 'No applications yet' : 'No applications match your filters'}
-                    </div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                      {applications.length === 0
-                        ? 'Students apply from placement drives, jobs, internships, and projects on their dashboard.'
-                        : 'Try clearing search or filters.'}
-                    </div>
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {!isLoading && !error && applications.length === 0 ? (
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+              <ClipboardList className="size-7" />
+            </div>
+            <CardTitle className="mb-1 text-lg">No applications yet</CardTitle>
+            <CardDescription className="max-w-md text-sm">
+              Students apply from placement drives, jobs, internships, and projects on their dashboard.
+            </CardDescription>
+          </CardContent>
+        </Card>
+      ) : null}
 
       <ApplicationDetailModal row={viewRow} onClose={() => setViewRow(null)} />
     </div>

@@ -8,6 +8,16 @@ import { COMMON_SORT_OPTIONS } from '@/lib/tableQueryPresets';
 import { useToast } from '@/components/ToastProvider';
 import { Calendar, Info, LayoutGrid, List, Presentation, Send, X } from 'lucide-react';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const KIND_LABEL = {
   guest_faculty: 'Guest faculty',
@@ -36,16 +46,16 @@ function ConfirmationBadge({ item }) {
   const sent = Boolean(item.confirmationSentAt);
   if (sent) {
     return (
-      <span className="badge badge-green">
+      <StatusBadge tone="green" showDot>
         Sent {new Date(item.confirmationSentAt).toLocaleDateString()}
-      </span>
+      </StatusBadge>
     );
   }
   if (!item.canConfirm) {
     return (
-      <span className="badge badge-gray" title="College has no contact email on file">
+      <StatusBadge tone="gray" showDot title="College has no contact email on file">
         Unavailable
-      </span>
+      </StatusBadge>
     );
   }
   return <span className="text-secondary text-sm">Ready to confirm</span>;
@@ -89,17 +99,6 @@ export default function EmployerCampusGuestNeedsPage() {
   useEffect(() => {
     void load();
   }, [load]);
-
-  useEffect(() => {
-    if (viewItem || confirmItem) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [viewItem, confirmItem]);
 
   /** @param {typeof rows[0]} item */
   const confirmationStatus = (item) => {
@@ -183,104 +182,70 @@ export default function EmployerCampusGuestNeedsPage() {
     }
   };
 
-  const modalBackdrop = {
-    position: 'fixed',
-    inset: 0,
-    background: 'rgba(15, 23, 42, 0.45)',
-    zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '1rem',
-  };
-
-  const modalPanel = {
-    background: 'var(--bg-elevated)',
-    borderRadius: '12px',
-    maxWidth: 560,
-    width: '100%',
-    maxHeight: '90vh',
-    overflow: 'auto',
-    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
-    border: '1px solid var(--border-default)',
-  };
-
-  const confirmPanel = {
-    ...modalPanel,
-    maxWidth: 640,
-  };
-
   return (
     <div className="animate-fadeIn" style={{ paddingBottom: '2rem' }}>
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Campus guest needs</h1>
           <p>Browse guest faculty and lecture requests published by colleges. Confirm interest to email the placement office directly.</p>
         </div>
-        <Link href="/dashboard/employer/overview" className="btn btn-secondary btn-sm">
+        <Button variant="outline" size="sm" render={<Link href="/dashboard/employer/overview" />}>
           Overview
-        </Link>
+        </Button>
       </div>
 
-      <div
-        className="text-sm"
-        role="note"
-        style={{
-          marginBottom: '1rem',
-          padding: '0.75rem 1rem',
-          borderRadius: 'var(--radius-md)',
-          border: '1px solid var(--primary-200)',
-          background: 'color-mix(in srgb, var(--primary-50) 85%, transparent)',
-          color: 'var(--text-secondary)',
-          lineHeight: 1.5,
-        }}
-      >
-        <strong style={{ color: 'var(--text-primary)' }}>Employers cannot create guest needs here.</strong>{' '}
+      <Alert className="mb-4">
+        <AlertTitle>Employers cannot create guest needs here.</AlertTitle>
+        <AlertDescription>
         Listings are initiated and published by the college placement office under{' '}
         <strong>Guest Faculty &amp; Lectures</strong>. When a campus posts a need, it appears below — use{' '}
         <strong>Confirm</strong> to express interest by email.
-      </div>
+        </AlertDescription>
+      </Alert>
 
       {error ? (
-        <p className="text-secondary">{error}</p>
+        <Alert variant="destructive"><AlertTitle>Could not load guest needs</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>
       ) : loading ? (
         <div className="skeleton" style={{ height: 200 }} />
       ) : (
         <>
-        <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-            <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>Confirmation</span>
-              <select
-                className="form-select"
-                style={{ minWidth: 200 }}
+        <Card className="mb-4">
+          <CardContent className="py-4">
+          <FieldGroup className="grid gap-4 md:grid-cols-2 lg:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1fr)_auto] lg:items-end">
+            <Field>
+              <FieldLabel htmlFor="guest-needs-confirmation-filter">Confirmation</FieldLabel>
+              <AdminFilterSelect
+                id="guest-needs-confirmation-filter"
+                className="h-9 w-full"
                 value={confirmationFilter}
-                onChange={(e) => setConfirmationFilter(e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="pending">Ready to confirm</option>
-                <option value="sent">Sent</option>
-                <option value="unavailable">Unavailable</option>
-              </select>
-            </label>
-            <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>Type</span>
-              <select
-                className="form-select"
-                style={{ minWidth: 200 }}
+                onValueChange={setConfirmationFilter}
+                items={[
+                  { label: 'All', value: 'all' },
+                  { label: 'Ready to confirm', value: 'pending' },
+                  { label: 'Sent', value: 'sent' },
+                  { label: 'Unavailable', value: 'unavailable' },
+                ]}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="guest-needs-type-filter">Type</FieldLabel>
+              <AdminFilterSelect
+                id="guest-needs-type-filter"
+                className="h-9 w-full"
                 value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-              >
-                <option value="">All types</option>
-                <option value="guest_lecture">{KIND_LABEL.guest_lecture}</option>
-                <option value="guest_faculty">{KIND_LABEL.guest_faculty}</option>
-              </select>
-            </label>
-            <span className="text-xs text-secondary" style={{ marginLeft: 'auto' }}>
+                onValueChange={setTypeFilter}
+                items={[
+                  { label: 'All types', value: 'all' },
+                  { label: KIND_LABEL.guest_lecture, value: 'guest_lecture' },
+                  { label: KIND_LABEL.guest_faculty, value: 'guest_faculty' },
+                ]}
+              />
+            </Field>
+            <span className="text-muted-foreground pb-2 text-xs lg:text-right">
               Showing {filteredCount} of {rows.length}
             </span>
-          </div>
-        </div>
+          </FieldGroup>
+        </CardContent></Card>
         {rows.length > 0 ? (
           <div
             style={{
@@ -320,32 +285,19 @@ export default function EmployerCampusGuestNeedsPage() {
                 { mode: 'card', icon: LayoutGrid, label: 'Card view' },
                 { mode: 'list', icon: List, label: 'List view' },
               ].map(({ mode, icon: Icon, label }) => (
-                <button
+                <Button
                   key={mode}
                   type="button"
                   title={label}
                   aria-label={label}
                   aria-pressed={viewMode === mode}
                   onClick={() => setViewMode(mode)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    padding: '0.4rem 0.85rem',
-                    borderRadius: '7px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    transition: 'all 0.15s ease',
-                    background: viewMode === mode ? 'var(--bg-primary)' : 'transparent',
-                    color: viewMode === mode ? 'var(--primary-600)' : 'var(--text-tertiary)',
-                    boxShadow: viewMode === mode ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-                  }}
+                  variant={viewMode === mode ? 'secondary' : 'ghost'}
+                  size="sm"
                 >
                   <Icon size={15} aria-hidden />
                   {mode === 'card' ? 'Cards' : 'List'}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -354,15 +306,12 @@ export default function EmployerCampusGuestNeedsPage() {
         {viewMode === 'card' ? (
           <>
             {rows.length === 0 ? (
-              <div
-                className="card"
-                style={{ padding: '2.5rem 1.5rem', textAlign: 'center' }}
-              >
+              <Card><CardContent className="py-10 text-center">
                 <Presentation size={40} className="text-tertiary" style={{ margin: '0 auto 1rem', opacity: 0.45 }} />
                 <p className="text-secondary" style={{ margin: 0 }}>
                   No published campus needs right now. Guest needs are created by the college — not by employers.
                 </p>
-              </div>
+              </CardContent></Card>
             ) : (
               <div
                 className="responsive-card-grid"
@@ -376,18 +325,25 @@ export default function EmployerCampusGuestNeedsPage() {
                   const sent = Boolean(item.confirmationSentAt);
                   const canSend = item.canConfirm && !sent;
                   return (
-                    <div
+                    <Card
                       key={item.id}
-                      className="card"
                       style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        padding: '1.25rem',
                         border: '1px solid var(--border-default)',
                         height: '100%',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                      <CardContent className="flex h-full flex-col">
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-start',
+                          gap: '0.75rem',
+                          marginBottom: '0.75rem',
+                        }}
+                      >
                         <div style={{ minWidth: 0 }}>
                           <div className="font-semibold">{item.college?.name || '—'}</div>
                           <div className="text-xs text-secondary">
@@ -395,14 +351,10 @@ export default function EmployerCampusGuestNeedsPage() {
                           </div>
                         </div>
                         <div
-                          style={{
-                            background: 'var(--primary-50)',
-                            padding: '0.45rem',
-                            borderRadius: 'var(--radius-md)',
-                            flexShrink: 0,
-                          }}
+                          className="bg-primary/10 text-primary inline-flex size-9 shrink-0 items-center justify-center rounded-md"
+                          aria-hidden
                         >
-                          <Presentation size={18} className="text-primary-600" />
+                          <Presentation size={18} />
                         </div>
                       </div>
                       <div
@@ -414,7 +366,7 @@ export default function EmployerCampusGuestNeedsPage() {
                           marginBottom: '0.65rem',
                         }}
                       >
-                        <span className="badge badge-indigo">{KIND_LABEL[item.kind] || item.kind}</span>
+                      <StatusBadge tone="indigo" showDot>{KIND_LABEL[item.kind] || item.kind}</StatusBadge>
                         <span
                           className="text-xs text-secondary"
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
@@ -447,16 +399,16 @@ export default function EmployerCampusGuestNeedsPage() {
                           {item.summary ? truncate(item.summary, SUMMARY_PREVIEW_CHARS) : '—'}
                         </span>
                         {hasExtraDetails(item) ? (
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm"
-                            style={{ padding: '2px 4px', flexShrink: 0, lineHeight: 1 }}
+                            variant="ghost"
+                            size="icon-sm"
                             aria-label="View summary, requirements, and timing"
                             title="View details"
                             onClick={() => setViewItem(item)}
                           >
                             <Info size={14} />
-                          </button>
+                          </Button>
                         ) : null}
                       </div>
                       <div
@@ -485,7 +437,8 @@ export default function EmployerCampusGuestNeedsPage() {
                           }
                         />
                       </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   );
                 })}
                 {filteredRows.length === 0 ? (
@@ -510,77 +463,72 @@ export default function EmployerCampusGuestNeedsPage() {
         ) : null}
 
         {viewMode === 'list' ? (
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>College</th>
-                  <th style={{ whiteSpace: 'nowrap' }}>Posted</th>
-                  <th>Type</th>
-                  <th>Title</th>
-                  <th style={{ width: 140, maxWidth: 140 }}>Summary</th>
-                  <th>Confirmation</th>
-                  <th style={{ width: 1 }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          <Card className="gap-0 overflow-hidden py-0">
+            <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>College</TableHead>
+                  <TableHead>Posted</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead className="w-40">Summary</TableHead>
+                  <TableHead>Confirmation</TableHead>
+                  <TableHead className="w-px">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filteredRows.length === 0 && tabTotalCount > 0 ? (
-                  <tr>
-                    <td colSpan={7} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                       No listings match your search.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
                 {filteredRows.map((item) => {
                   const sent = Boolean(item.confirmationSentAt);
                   const canSend = item.canConfirm && !sent;
                   return (
-                    <tr key={item.id}>
-                      <td>
+                    <TableRow key={item.id}>
+                      <TableCell>
                         <div className="font-semibold">{item.college?.name || '—'}</div>
-                        <div className="text-xs text-secondary">
+                        <div className="text-muted-foreground text-xs">
                           {[item.college?.city, item.college?.state].filter(Boolean).join(', ') || ''}
                         </div>
-                      </td>
-                      <td className="text-sm text-secondary" style={{ whiteSpace: 'nowrap' }}>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
                         {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '—'}
-                      </td>
-                      <td>
-                        <span className="badge badge-indigo">{KIND_LABEL[item.kind] || item.kind}</span>
-                      </td>
-                      <td className="font-medium">{item.title}</td>
-                      <td className="text-sm text-secondary" style={{ width: 140, maxWidth: 140 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 }}>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge tone="indigo" showDot>{KIND_LABEL[item.kind] || item.kind}</StatusBadge>
+                      </TableCell>
+                      <TableCell className="font-medium">{item.title}</TableCell>
+                      <TableCell className="text-muted-foreground w-40 max-w-40">
+                        <div className="flex min-w-0 items-center gap-1">
                           <span
                             title={item.summary || undefined}
-                            style={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                              flex: 1,
-                              minWidth: 0,
-                            }}
+                            className="min-w-0 flex-1 truncate"
                           >
                             {item.summary ? truncate(item.summary, SUMMARY_PREVIEW_CHARS) : '—'}
                           </span>
                           {hasExtraDetails(item) ? (
-                            <button
+                            <Button
                               type="button"
-                              className="btn btn-ghost btn-sm"
-                              style={{ padding: '2px 4px', flexShrink: 0, lineHeight: 1 }}
+                              variant="ghost"
+                              size="icon-sm"
                               aria-label="View summary, requirements, and timing"
                               title="View details"
                               onClick={() => setViewItem(item)}
                             >
                               <Info size={14} />
-                            </button>
+                            </Button>
                           ) : null}
                         </div>
-                      </td>
-                      <td>
+                      </TableCell>
+                      <TableCell>
                         <ConfirmationBadge item={item} />
-                      </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
+                      </TableCell>
+                      <TableCell>
                         <StandardTableIconAction
                           action="confirm"
                           variant="primary"
@@ -594,55 +542,45 @@ export default function EmployerCampusGuestNeedsPage() {
                                 : 'Send confirmation email'
                           }
                         />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
                 {rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                       No published campus needs right now.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
                 {rows.length > 0 && filteredRows.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                       No listings match your filters. Try &quot;All&quot; or a different status.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+            </CardContent>
+          </Card>
         ) : null}
         </>
       )}
 
-      {viewItem ? (
-        <div style={modalBackdrop} role="presentation" onClick={() => setViewItem(null)}>
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="guest-view-title"
-            style={{ ...modalPanel, padding: '1.25rem' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
-              <div>
-                <p className="text-sm text-secondary" style={{ margin: 0 }}>
+      <Dialog open={Boolean(viewItem)} onOpenChange={(open) => !open && setViewItem(null)}>
+        <DialogContent className="sm:max-w-xl">
+          {viewItem ? <>
+            <DialogHeader>
+                <DialogDescription>
                   {viewItem.college?.name}
                   {viewItem.college?.city ? ` · ${viewItem.college.city}` : ''}
-                </p>
-                <h2 id="guest-view-title" style={{ fontSize: '1.15rem', margin: '0.35rem 0' }}>
+                </DialogDescription>
+                <DialogTitle>
                   {viewItem.title}
-                </h2>
-                <span className="badge badge-indigo">{KIND_LABEL[viewItem.kind] || viewItem.kind}</span>
-              </div>
-              <button type="button" className="btn btn-ghost btn-sm" aria-label="Close" onClick={() => setViewItem(null)}>
-                <X size={18} />
-              </button>
-            </div>
+                </DialogTitle>
+                <StatusBadge tone="indigo" showDot>{KIND_LABEL[viewItem.kind] || viewItem.kind}</StatusBadge>
+            </DialogHeader>
             {viewItem.summary ? (
               <p style={{ marginTop: '1rem' }}>{viewItem.summary}</p>
             ) : null}
@@ -662,38 +600,21 @@ export default function EmployerCampusGuestNeedsPage() {
             <p className="text-xs text-secondary" style={{ marginTop: '1rem' }}>
               Posted {viewItem.createdAt ? new Date(viewItem.createdAt).toLocaleString() : '—'}
             </p>
-          </div>
-        </div>
-      ) : null}
+          </> : null}
+        </DialogContent>
+      </Dialog>
 
-      {confirmItem ? (
-        <div style={modalBackdrop} role="presentation" onClick={() => !sending && setConfirmItem(null)}>
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="guest-confirm-title"
-            style={{ ...confirmPanel, padding: '1.25rem' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
-              <div>
-                <h2 id="guest-confirm-title" style={{ fontSize: '1.1rem', margin: 0 }}>
+      <Dialog open={Boolean(confirmItem)} onOpenChange={(open) => !open && !sending && setConfirmItem(null)}>
+        <DialogContent className="sm:max-w-2xl">
+          {confirmItem ? <>
+            <DialogHeader>
+                <DialogTitle>
                   Send confirmation email
-                </h2>
-                <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0' }}>
+                </DialogTitle>
+                <DialogDescription>
                   {confirmItem.college?.name} — {confirmItem.title}
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn btn-ghost btn-sm"
-                aria-label="Close"
-                disabled={sending}
-                onClick={() => setConfirmItem(null)}
-              >
-                <X size={18} />
-              </button>
-            </div>
+                </DialogDescription>
+            </DialogHeader>
 
             {draftLoading ? (
               <p className="text-secondary" style={{ marginTop: '1rem' }}>
@@ -705,43 +626,41 @@ export default function EmployerCampusGuestNeedsPage() {
                   <strong>To:</strong>{' '}
                   <code style={{ fontSize: '0.85rem' }}>{mailTo}</code>
                 </p>
-                <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                  <label className="form-label">Subject</label>
-                  <input
-                    className="form-input"
+                <Field>
+                  <FieldLabel>Subject</FieldLabel>
+                  <Input
                     value={mailSubject}
                     onChange={(e) => setMailSubject(e.target.value)}
                     disabled={sending}
                   />
-                </div>
-                <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                  <label className="form-label">Message</label>
-                  <textarea
-                    className="form-input"
+                </Field>
+                <Field>
+                  <FieldLabel>Message</FieldLabel>
+                  <Textarea
                     rows={14}
                     value={mailBody}
                     onChange={(e) => setMailBody(e.target.value)}
                     disabled={sending}
                     style={{ fontSize: '0.9rem' }}
                   />
-                </div>
+                </Field>
                 <p className="text-xs text-secondary" style={{ marginBottom: '0.75rem' }}>
                   Subject and body use your employer template (Communication templates) or the platform default. Edit
                   before sending.
                 </p>
-                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-                  <button type="button" className="btn btn-primary" disabled={sending} onClick={() => void sendConfirmation()}>
+                <DialogFooter>
+                  <Button type="button" disabled={sending} onClick={() => void sendConfirmation()}>
                     {sending ? 'Sending…' : 'Send email'}
-                  </button>
-                  <button type="button" className="btn btn-ghost" disabled={sending} onClick={() => setConfirmItem(null)}>
+                  </Button>
+                  <Button type="button" variant="outline" disabled={sending} onClick={() => setConfirmItem(null)}>
                     Cancel
-                  </button>
-                </div>
+                  </Button>
+                </DialogFooter>
               </>
             )}
-          </div>
-        </div>
-      ) : null}
+          </> : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

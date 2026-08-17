@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-04
+# Stage: step-09
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as student (Arjun Verma). Student dashboard loads. Student must have a primary CV on profile to apply.

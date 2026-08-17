@@ -21,6 +21,16 @@ import {
   pickDefaultAssessmentTargetId,
 } from '@/lib/employerAssessmentTargets';
 import { shouldShowFilterCount } from '@/lib/filterBadgeLabel';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function EmployerAssessmentUpdateOnlinePage() {
   const { addToast } = useToast();
@@ -270,8 +280,8 @@ export default function EmployerAssessmentUpdateOnlinePage() {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Assessment Update Online</h1>
           <p>
             Set <code>hiring_result</code> for campus students. Same data as{' '}
@@ -281,22 +291,21 @@ export default function EmployerAssessmentUpdateOnlinePage() {
             .
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-secondary" disabled={saving || dirtyCount === 0 || isSubmitted} onClick={() => void saveChanges()}>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" disabled={saving || dirtyCount === 0 || isSubmitted} onClick={() => void saveChanges()}>
             {saving ? 'Saving…' : dirtyCount > 0 ? `Save changes (${dirtyCount})` : 'Save changes'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="btn btn-primary"
             disabled={submittingResults || isSubmitted || !selectedTargetId}
             onClick={requestSubmitResults}
           >
             {isSubmitted ? 'Submitted' : submittingResults ? 'Submitting…' : 'Submit results'}
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
+      <Card className="mb-4"><CardContent>
         <p className="text-sm text-secondary" style={{ margin: '0 0 1rem' }}>
           {selectedTargetId ? (
             <>
@@ -312,96 +321,75 @@ export default function EmployerAssessmentUpdateOnlinePage() {
             </>
           )}
         </p>
-        <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(14rem, 1fr))' }}>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" htmlFor="online-update-campus">
+        <FieldGroup className="grid gap-4 md:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="online-update-campus">
               Campus
-            </label>
-            <select
+            </FieldLabel>
+            <AdminFilterSelect
               id="online-update-campus"
-              className="form-select"
+              className="w-full"
               value={selectedTenantId}
               disabled={campusesLoading}
-              onChange={(e) => {
-                const id = e.target.value;
+              onValueChange={(id) => {
                 setSelectedTenantId(id);
                 const campus = approvedCampuses.find((c) => String(c.id) === String(id));
                 if (campus) persistActiveCampus(campusPayloadFromRow(campus));
               }}
-            >
-              {approvedCampuses.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" htmlFor="online-update-target">
+              emptyMapsToAll={false}
+              items={approvedCampuses.map((c) => ({ label: c.name, value: String(c.id) }))}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="online-update-target">
               {kindTab === 'drive' ? 'Drive' : 'Job / posting'}
-            </label>
-            <select
+            </FieldLabel>
+            <AdminFilterSelect
               id="online-update-target"
-              className="form-select"
+              className="w-full"
               value={selectedTargetId}
               disabled={targetsLoading || !selectedTenantId}
-              onChange={(e) =>
-                setTargetByKind((prev) => ({ ...prev, [kindTab]: e.target.value }))
+              onValueChange={(targetId) =>
+                setTargetByKind((prev) => ({ ...prev, [kindTab]: targetId }))
               }
-            >
-              <option value="">{targetsLoading ? 'Loading…' : 'Select target…'}</option>
-              {targets.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+              items={[
+                { label: targetsLoading ? 'Loading…' : 'Select target…', value: 'all' },
+                ...targets.map((t) => ({ label: t.label, value: t.id })),
+              ]}
+            />
+          </Field>
+        </FieldGroup>
+      </CardContent></Card>
 
-      <div role="tablist" aria-label="Opportunity type" style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <Tabs value={kindTab} onValueChange={setKindTab} className="mb-6"><TabsList aria-label="Opportunity type">
         {kindTabs.map((t) => {
           const Icon = t.icon;
           const active = kindTab === t.id;
           const n = targetCounts[t.id] ?? 0;
           return (
-            <button
+            <TabsTrigger
               key={t.id}
               type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => setKindTab(t.id)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.6rem 1.25rem',
-                borderRadius: '999px',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                border: 'none',
-                cursor: 'pointer',
-                background: active ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                color: active ? 'white' : 'var(--text-secondary)',
-              }}
+              value={t.id}
             >
               <Icon size={16} aria-hidden />
               {t.label}
               {shouldShowFilterCount(n) ? (
                 <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: active ? 0.9 : 0.65 }}>{n}</span>
               ) : null}
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList></Tabs>
 
-      <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
+      <Alert className="mb-4"><AlertDescription>
         Rows greyed out were confirmed by another employer (FCFS). See{' '}
         <Link href="/dashboard/employer/fcfs-unavailable">Unavailable candidates</Link>.
-      </p>
+      </AlertDescription></Alert>
 
-      <div className="card">
+      <Card>
+        <CardHeader><CardTitle>Candidate results</CardTitle><CardDescription>Edit results inline, then save before submitting.</CardDescription></CardHeader>
+        <CardContent>
         {loading ? (
           <div className="skeleton skeleton-card" style={{ height: 280 }} />
         ) : !selectedTargetId ? (
@@ -424,82 +412,71 @@ export default function EmployerAssessmentUpdateOnlinePage() {
               />
             ) : null}
 
-            <div className="table-container" style={{ overflowX: 'auto', border: 'none' }}>
-              <table className="data-table" style={{ minWidth: 800 }}>
-                <thead>
-                  <tr>
-                    <th>System ID</th>
-                    <th>Roll</th>
-                    <th>Candidate name</th>
-                    <th>Hiring result</th>
-                    <th>Remarks</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="min-w-[800px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>System ID</TableHead>
+                    <TableHead>Roll</TableHead>
+                    <TableHead>Candidate name</TableHead>
+                    <TableHead>Hiring result</TableHead>
+                    <TableHead>Remarks</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {displayRows.map((r) => {
                     const dirty = dirtyIds.has(r.student_profile_id);
                     const rowLocked = isSubmitted || r.fcfs_blocked;
                     return (
-                      <tr
+                      <TableRow
                         key={r.student_profile_id}
-                        style={{
-                          ...(dirty ? { background: 'var(--surface-subtle, #f8fafc)' } : undefined),
-                          ...(r.fcfs_blocked ? { opacity: 0.55 } : undefined),
-                        }}
+                        className={`${dirty ? 'bg-muted/50' : ''} ${r.fcfs_blocked ? 'opacity-55' : ''}`}
                         title={r.fcfs_blocked ? `Already confirmed by ${r.fcfs_blocked_by || 'another employer'} (FCFS)` : undefined}
                       >
-                        <td className="font-mono text-xs">{r.system_id || '—'}</td>
-                        <td className="font-mono text-sm">{r.college_roll_no || '—'}</td>
-                        <td>
-                          <input
-                            className="form-input"
+                        <TableCell className="font-mono text-xs">{r.system_id || '—'}</TableCell>
+                        <TableCell className="font-mono text-sm">{r.college_roll_no || '—'}</TableCell>
+                        <TableCell>
+                          <Input
                             style={{ minWidth: 120, fontSize: '0.8rem' }}
                             value={r.candidate_name || ''}
                             disabled={rowLocked}
                             onChange={(e) => patchRow(r.student_profile_id, 'candidate_name', e.target.value)}
                           />
-                        </td>
-                        <td>
-                          <select
-                            className="form-select"
-                            style={{ minWidth: 130, fontSize: '0.8rem' }}
+                        </TableCell>
+                        <TableCell>
+                          <AdminFilterSelect
+                            className="min-w-32 text-xs"
                             value={r.hiring_result || ''}
                             disabled={rowLocked}
-                            onChange={(e) => patchRow(r.student_profile_id, 'hiring_result', e.target.value)}
-                          >
-                            {HIRING_RESULT_OPTIONS.map((o) => (
-                              <option key={o.value || 'empty'} value={o.value}>
-                                {o.label}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td>
-                          <textarea
-                            className="form-input"
+                            emptyMapsToAll={false}
+                            onValueChange={(v) => patchRow(r.student_profile_id, 'hiring_result', v)}
+                            items={HIRING_RESULT_OPTIONS.map((o) => ({ label: o.label, value: o.value }))}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Textarea
                             style={{ minWidth: 140, fontSize: '0.8rem', minHeight: 40 }}
                             value={r.remarks || ''}
                             disabled={rowLocked}
                             onChange={(e) => patchRow(r.student_profile_id, 'remarks', e.target.value)}
                             rows={2}
                           />
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
                   {displayRows.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">
                         {totalCount === 0 ? 'No students for this campus and academic year.' : 'No rows match your search.'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
           </>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       <ConfirmDialog
         open={submitConfirmOpen}

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EI-16
+# Stage: step-19
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Filter list to Selected and confirm. Applicant row shows Selected badge. Pipeline step complete.

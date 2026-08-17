@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-32
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm campus status is Approved. Filter Campus status → Approved; GT-2026-06-161622 row shows Approved badge. Students can now browse it.

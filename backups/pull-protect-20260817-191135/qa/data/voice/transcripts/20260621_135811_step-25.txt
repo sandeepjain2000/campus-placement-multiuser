@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-25
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Review form before submit. All required fields populated.

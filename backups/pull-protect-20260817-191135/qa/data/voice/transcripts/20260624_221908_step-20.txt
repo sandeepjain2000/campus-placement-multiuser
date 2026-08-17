@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-09
+# Stage: step-20
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as student — view application status. Student sees updated status (Selected) on My Applications → Internships.

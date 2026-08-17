@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-30
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Approve guided drive for campus. Row with GT-2026-06-210819 — click Approve (skipped if already Approved).

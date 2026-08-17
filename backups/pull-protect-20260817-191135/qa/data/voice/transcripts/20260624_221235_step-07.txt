@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-07
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Hiring Results Dashboard. Read-only summary of submitted assessment outcomes.

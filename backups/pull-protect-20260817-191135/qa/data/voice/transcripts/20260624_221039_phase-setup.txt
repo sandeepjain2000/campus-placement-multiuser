@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SETUP
+# Stage: phase-setup
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Setup phase. The browser opens the landing page or sign-in screen.

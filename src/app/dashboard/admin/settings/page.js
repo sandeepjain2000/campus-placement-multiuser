@@ -7,6 +7,14 @@ import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { validateAdminSettingsPayload } from '@/lib/apiInputValidation';
 import { getPasswordValidationError, PASSWORD_MIN_LENGTH, PASSWORD_REQUIREMENTS_HINT } from '@/lib/validators';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const FALLBACK_TIMEZONES = [
   'UTC',
@@ -232,237 +240,94 @@ export default function AdminSettingsPage() {
 
   if (loading) {
     return (
-      <div className="animate-fadeIn">
-        <div className="skeleton skeleton-heading" />
-        <div className="skeleton skeleton-card" style={{ height: 220, marginTop: '1rem' }} />
-      </div>
+      <Card><CardHeader><CardTitle>Platform settings</CardTitle><CardDescription>Loading configuration…</CardDescription></CardHeader></Card>
     );
   }
 
+  const selectClass = 'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border px-2.5 text-sm shadow-xs outline-none focus-visible:ring-3';
+  const numberClass = 'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border px-2.5 text-sm shadow-xs outline-none focus-visible:ring-3';
+  const ToggleField = ({ id, label, description, checked, onCheckedChange }) => (
+    <Field orientation="horizontal">
+      <div className="flex flex-1 flex-col gap-1">
+        <FieldLabel htmlFor={id}>{label}</FieldLabel>
+        {description ? <FieldDescription>{description}</FieldDescription> : null}
+      </div>
+      <Checkbox id={id} checked={Boolean(checked)} onCheckedChange={onCheckedChange} />
+    </Field>
+  );
+
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>⚙️ Platform Settings</h1>
-          <p>Global platform configuration</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Platform Settings</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">Global platform, security, email, and storage configuration</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button type="button" className="btn btn-secondary" onClick={exportSettings} disabled={loading || saving}>Export JSON</button>
-          <button type="button" className="btn btn-primary" onClick={saveSettings} disabled={loading || saving}>{saving ? 'Saving...' : '💾 Save'}</button>
-        </div>
-      </div>
-      <div className="grid grid-2">
-        <div className="card">
-          <div className="card-header"><h3 className="card-title">🌐 General</h3></div>
-          <div className="form-group"><label className="form-label">Platform Name</label><input className="form-input" placeholder="Set platform name" value={platformName} onChange={(e) => setPlatformName(e.target.value)} /></div>
-          <div className="form-group">
-            <label className="form-label">Public marketing website</label>
-            <input
-              className="form-input"
-              type="url"
-              placeholder="https://example.com/placementhub"
-              value={marketingWebsiteUrl}
-              onChange={(e) => setMarketingWebsiteUrl(e.target.value)}
-            />
-            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
-              Reserved for a future external brochure site. Landing nav links <strong>Features</strong>, <strong>About</strong>, and <strong>Contact</strong> always open the built-in pages <code>/features</code>, <code>/about</code>, and <code>/contact</code>. Support email and phone on <code>/contact</code> come from the fields below.
-            </p>
-          </div>
-          <div className="form-group"><label className="form-label">Support Email</label><input className="form-input" placeholder="Set support email" value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} /></div>
-          <div className="form-group">
-            <label className="form-label">Support phone (login page)</label>
-            <input
-              className="form-input"
-              type="tel"
-              placeholder="+91 80000 12345"
-              value={supportPhone}
-              onChange={(e) => setSupportPhone(e.target.value)}
-            />
-            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
-              Shown on the public login page with a click-to-call link.
-            </p>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Default Timezone</label>
-            <select className="form-select" value={timezone} onChange={(e) => setTimezone(e.target.value)}>
-              {timezones.map((tz) => (
-                <option key={tz} value={tz}>{tz}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <input
-                type="checkbox"
-                checked={sessionAdsEnabled}
-                onChange={(e) => setSessionAdsEnabled(e.target.checked)}
-              />
-              Show sponsored banner in dashboard
-            </label>
-            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
-              Rotating sponsored message at the top of signed-in dashboards. Off by default.
-            </p>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-header"><h3 className="card-title">🔐 Security</h3></div>
-          <div className="form-group"><label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><input type="checkbox" checked={requireEmailVerification} onChange={(e) => setRequireEmailVerification(e.target.checked)} /> Require email verification</label></div>
-          <div className="form-group"><label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><input type="checkbox" checked={enableTwoFactorAuth} onChange={(e) => setEnableTwoFactorAuth(e.target.checked)} /> Enable Two-Factor Auth</label></div>
-          <div className="form-group">
-            <label className="form-label">Session timeout</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <ValidatedNumberInput
-                fieldId={FIELD_IDS.ADMIN_SESSION_TIMEOUT}
-                value={sessionTimeoutValue}
-                onChange={(v) => setSessionTimeoutValue(v === '' ? 1 : Number(v))}
-              />
-              <select
-                className="form-select"
-                value={sessionTimeoutUnit}
-                onChange={(e) => setSessionTimeoutUnit(e.target.value)}
-                style={{ maxWidth: 160 }}
-              >
-                <option value="hours">Hours</option>
-                <option value="days">Days</option>
-                <option value="weeks">Weeks</option>
-              </select>
-            </div>
-            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
-              Max signed-in time while the browser stays open (default 24 hours). Closing the browser always ends the session; this does not enable “remember me” across restarts.
-            </p>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Trusted device window (for future 2FA)</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input
-                className="form-input"
-                type="number"
-                min={1}
-                value={rememberDeviceValue}
-                onChange={(e) => setRememberDeviceValue(Number(e.target.value || 1))}
-              />
-              <select
-                className="form-select"
-                value={rememberDeviceUnit}
-                onChange={(e) => setRememberDeviceUnit(e.target.value)}
-                style={{ maxWidth: 160 }}
-              >
-                <option value="days">Days</option>
-                <option value="weeks">Weeks</option>
-              </select>
-            </div>
-            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
-              This will control when a known device should require 2FA again (future behavior).
-            </p>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-header"><h3 className="card-title">📧 Email Configuration</h3></div>
-          <p className="text-xs text-tertiary" style={{ marginBottom: '0.75rem' }}>
-            Outbound mail uses ZeptoMail (primary) / SMTP. When Test environment is Yes, every message is sent only to
-            the safe test inboxes — registration and account emails are ignored for delivery.
-          </p>
-          <div className="form-group">
-            <label className="form-label">Test environment</label>
-            <select
-              className="form-select"
-              value={testEnvironment ? 'Yes' : 'No'}
-              onChange={(e) => setTestEnvironment(e.target.value === 'Yes')}
-            >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-            <p className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
-              Yes → send only to <code>placementhub@yopmail.com</code> and{' '}
-              <code>sandeepjain200019@gmail.com</code> (avoids Zepto hard bounces from dummy addresses). No → deliver to
-              the real recipient (subject to system notification inbox override below).
-            </p>
-          </div>
-          <div className="form-group">
-            <label className="form-label">System notification inbox</label>
-            <input
-              className="form-input"
-              type="email"
-              placeholder="placementhub@yopmail.com"
-              value={systemNotificationInboxEmail}
-              onChange={(e) => setSystemNotificationInboxEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Webmail / inbox URL (for staff)</label>
-            <input
-              className="form-input"
-              type="url"
-              placeholder="https://yopmail.com/wm"
-              value={systemNotificationWebmailUrl}
-              onChange={(e) => setSystemNotificationWebmailUrl(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Sender display name</label>
-            <input
-              className="form-input"
-              placeholder="placementhub"
-              value={systemNotificationSenderName}
-              onChange={(e) => setSystemNotificationSenderName(e.target.value)}
-            />
-          </div>
-          <div className="form-group"><label className="form-label">SMTP Host</label><input className="form-input" placeholder="smtp.gmail.com" value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} /></div>
-          <div className="form-group"><label className="form-label">SMTP Port</label><ValidatedNumberInput fieldId={FIELD_IDS.ADMIN_SMTP_PORT} value={smtpPort} onChange={(v) => setSmtpPort(v === '' ? 587 : Number(v))} /></div>
-          <div className="form-group"><label className="form-label">From Email</label><input className="form-input" placeholder="noreply@placementhub.com" value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} /></div>
-        </div>
-        <div className="card">
-          <div className="card-header"><h3 className="card-title">📦 Storage</h3></div>
-          <div className="form-group"><label className="form-label">Storage Provider</label><select className="form-select" value={storageProvider} onChange={(e) => setStorageProvider(e.target.value)}><option value="">Select storage provider</option><option>Local Filesystem</option><option>AWS S3</option><option>Supabase Storage</option></select></div>
-          <div className="form-group"><label className="form-label">Max Upload Size (MB)</label><ValidatedNumberInput fieldId={FIELD_IDS.ADMIN_MAX_UPLOAD_MB} value={maxUploadSizeMb} onChange={(v) => setMaxUploadSizeMb(v === '' ? 5 : Number(v))} /></div>
-        </div>
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div className="card-header"><h3 className="card-title">🔐 Change Password</h3></div>
-          <form onSubmit={updatePassword}>
-            <div className="grid grid-3">
-              <div className="form-group">
-                <label className="form-label">Current password</label>
-                <input
-                  className="form-input"
-                  type="password"
-                  autoComplete="current-password"
-                  value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm((p) => ({ ...p, currentPassword: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">New password</label>
-                <input
-                  className="form-input"
-                  type="password"
-                  autoComplete="new-password"
-                  minLength={PASSWORD_MIN_LENGTH}
-                  value={passwordForm.newPassword}
-                  onChange={(e) => setPasswordForm((p) => ({ ...p, newPassword: e.target.value }))}
-                />
-                <span className="form-hint">{PASSWORD_REQUIREMENTS_HINT}</span>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Confirm new password</label>
-                <input
-                  className="form-input"
-                  type="password"
-                  autoComplete="new-password"
-                  minLength={PASSWORD_MIN_LENGTH}
-                  value={passwordForm.confirmPassword}
-                  onChange={(e) => setPasswordForm((p) => ({ ...p, confirmPassword: e.target.value }))}
-                />
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <button type="submit" className="btn btn-secondary" disabled={passwordSaving}>
-                {passwordSaving ? 'Updating...' : 'Update password'}
-              </button>
-              {passwordMessage ? <span className="text-sm text-secondary">{passwordMessage}</span> : null}
-            </div>
-          </form>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" onClick={exportSettings} disabled={saving}>Export JSON</Button>
+          <Button type="button" onClick={saveSettings} disabled={saving}>{saving ? 'Saving…' : 'Save settings'}</Button>
         </div>
       </div>
+      <Tabs defaultValue="general">
+        <TabsList className="flex h-auto w-full flex-wrap justify-start">
+          <TabsTrigger value="general">General</TabsTrigger><TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="email">Email</TabsTrigger><TabsTrigger value="storage">Storage</TabsTrigger>
+          <TabsTrigger value="password">Password</TabsTrigger>
+        </TabsList>
+        <TabsContent value="general">
+          <Card><CardHeader><CardTitle>General</CardTitle><CardDescription>Public identity, support channels, and dashboard options.</CardDescription></CardHeader>
+            <CardContent><FieldGroup>
+              <Field><FieldLabel htmlFor="platform-name">Platform name</FieldLabel><Input id="platform-name" placeholder="Set platform name" value={platformName} onChange={(e) => setPlatformName(e.target.value)} /></Field>
+              <Field><FieldLabel htmlFor="marketing-url">Public marketing website</FieldLabel><Input id="marketing-url" type="url" placeholder="https://example.com/placementhub" value={marketingWebsiteUrl} onChange={(e) => setMarketingWebsiteUrl(e.target.value)} /><FieldDescription>Reserved for a future external brochure site. Built-in Features, About, and Contact routes remain unchanged.</FieldDescription></Field>
+              <div className="grid gap-5 md:grid-cols-2">
+                <Field><FieldLabel htmlFor="support-email">Support email</FieldLabel><Input id="support-email" type="email" value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} /></Field>
+                <Field><FieldLabel htmlFor="support-phone">Support phone</FieldLabel><Input id="support-phone" type="tel" placeholder="+91 80000 12345" value={supportPhone} onChange={(e) => setSupportPhone(e.target.value)} /><FieldDescription>Shown on the public login page.</FieldDescription></Field>
+              </div>
+              <Field><FieldLabel htmlFor="timezone">Default timezone</FieldLabel><AdminFilterSelect id="timezone" className={selectClass} value={timezone} emptyMapsToAll={false} onValueChange={setTimezone} items={timezones.map((tz) => ({ label: tz, value: tz }))} /></Field>
+              <ToggleField id="session-ads" label="Show sponsored banner in dashboard" description="Rotating sponsored message at the top of signed-in dashboards." checked={sessionAdsEnabled} onCheckedChange={(v) => setSessionAdsEnabled(!!v)} />
+            </FieldGroup></CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="security">
+          <Card><CardHeader><CardTitle>Security</CardTitle><CardDescription>Authentication requirements and session lifetimes.</CardDescription></CardHeader>
+            <CardContent><FieldGroup>
+              <ToggleField id="require-verification" label="Require email verification" checked={requireEmailVerification} onCheckedChange={(v) => setRequireEmailVerification(!!v)} />
+              <ToggleField id="enable-2fa" label="Enable two-factor authentication" checked={enableTwoFactorAuth} onCheckedChange={(v) => setEnableTwoFactorAuth(!!v)} />
+              <Field><FieldLabel>Session timeout</FieldLabel><div className="grid gap-2 sm:grid-cols-[1fr_10rem]"><ValidatedNumberInput className={numberClass} fieldId={FIELD_IDS.ADMIN_SESSION_TIMEOUT} value={sessionTimeoutValue} onChange={(v) => setSessionTimeoutValue(v === '' ? 1 : Number(v))} /><AdminFilterSelect className={selectClass} value={sessionTimeoutUnit} emptyMapsToAll={false} onValueChange={setSessionTimeoutUnit} items={[{ label: 'Hours', value: 'hours' }, { label: 'Days', value: 'days' }, { label: 'Weeks', value: 'weeks' }]} /></div><FieldDescription>Maximum signed-in time while the browser remains open.</FieldDescription></Field>
+              <Field><FieldLabel htmlFor="remember-device">Trusted device window</FieldLabel><div className="grid gap-2 sm:grid-cols-[1fr_10rem]"><Input id="remember-device" type="number" min={1} value={rememberDeviceValue} onChange={(e) => setRememberDeviceValue(Number(e.target.value || 1))} /><AdminFilterSelect className={selectClass} value={rememberDeviceUnit} emptyMapsToAll={false} onValueChange={setRememberDeviceUnit} items={[{ label: 'Days', value: 'days' }, { label: 'Weeks', value: 'weeks' }]} /></div><FieldDescription>Future 2FA trusted-device duration.</FieldDescription></Field>
+            </FieldGroup></CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="email">
+          <Card><CardHeader><CardTitle>Email configuration</CardTitle><CardDescription>ZeptoMail/SMTP delivery and safe test routing.</CardDescription></CardHeader>
+            <CardContent><FieldGroup>
+              <Alert><AlertDescription>Test mode sends every message only to the configured safe inboxes.</AlertDescription></Alert>
+              <Field><FieldLabel htmlFor="test-environment">Test environment</FieldLabel><AdminFilterSelect id="test-environment" className={selectClass} value={testEnvironment ? 'Yes' : 'No'} emptyMapsToAll={false} onValueChange={(v) => setTestEnvironment(v === 'Yes')} items={[{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }]} /><FieldDescription>Yes routes mail to placementhub@yopmail.com and sandeepjain200019@gmail.com; No uses the real recipient.</FieldDescription></Field>
+              <Field><FieldLabel htmlFor="notification-inbox">System notification inbox</FieldLabel><Input id="notification-inbox" type="email" placeholder="placementhub@yopmail.com" value={systemNotificationInboxEmail} onChange={(e) => setSystemNotificationInboxEmail(e.target.value)} /></Field>
+              <Field><FieldLabel htmlFor="webmail-url">Webmail / inbox URL</FieldLabel><Input id="webmail-url" type="url" placeholder="https://yopmail.com/wm" value={systemNotificationWebmailUrl} onChange={(e) => setSystemNotificationWebmailUrl(e.target.value)} /></Field>
+              <Field><FieldLabel htmlFor="sender-name">Sender display name</FieldLabel><Input id="sender-name" placeholder="placementhub" value={systemNotificationSenderName} onChange={(e) => setSystemNotificationSenderName(e.target.value)} /></Field>
+              <div className="grid gap-5 md:grid-cols-2"><Field><FieldLabel htmlFor="smtp-host">SMTP host</FieldLabel><Input id="smtp-host" placeholder="smtp.gmail.com" value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} /></Field><Field><FieldLabel>SMTP port</FieldLabel><ValidatedNumberInput className={numberClass} fieldId={FIELD_IDS.ADMIN_SMTP_PORT} value={smtpPort} onChange={(v) => setSmtpPort(v === '' ? 587 : Number(v))} /></Field></div>
+              <Field><FieldLabel htmlFor="from-email">From email</FieldLabel><Input id="from-email" type="email" placeholder="noreply@placementhub.com" value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} /></Field>
+            </FieldGroup></CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="storage">
+          <Card><CardHeader><CardTitle>Storage</CardTitle><CardDescription>Upload provider and file-size policy.</CardDescription></CardHeader>
+            <CardContent><FieldGroup><Field><FieldLabel htmlFor="storage-provider">Storage provider</FieldLabel><AdminFilterSelect id="storage-provider" className={selectClass} value={storageProvider} emptyMapsToAll={false} onValueChange={setStorageProvider} items={[{ label: 'Select storage provider', value: '' }, { label: 'Local Filesystem', value: 'Local Filesystem' }, { label: 'AWS S3', value: 'AWS S3' }, { label: 'Supabase Storage', value: 'Supabase Storage' }]} /></Field><Field><FieldLabel>Max upload size (MB)</FieldLabel><ValidatedNumberInput className={numberClass} fieldId={FIELD_IDS.ADMIN_MAX_UPLOAD_MB} value={maxUploadSizeMb} onChange={(v) => setMaxUploadSizeMb(v === '' ? 5 : Number(v))} /></Field></FieldGroup></CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="password">
+          <form onSubmit={updatePassword}><Card><CardHeader><CardTitle>Change password</CardTitle><CardDescription>Update the password for your administrator account.</CardDescription></CardHeader>
+            <CardContent><FieldGroup>
+              <Field><FieldLabel htmlFor="current-password">Current password</FieldLabel><Input id="current-password" type="password" autoComplete="current-password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm((p) => ({ ...p, currentPassword: e.target.value }))} /></Field>
+              <Field><FieldLabel htmlFor="new-password">New password</FieldLabel><Input id="new-password" type="password" autoComplete="new-password" minLength={PASSWORD_MIN_LENGTH} value={passwordForm.newPassword} onChange={(e) => setPasswordForm((p) => ({ ...p, newPassword: e.target.value }))} /><FieldDescription>{PASSWORD_REQUIREMENTS_HINT}</FieldDescription></Field>
+              <Field><FieldLabel htmlFor="confirm-password">Confirm new password</FieldLabel><Input id="confirm-password" type="password" autoComplete="new-password" minLength={PASSWORD_MIN_LENGTH} value={passwordForm.confirmPassword} onChange={(e) => setPasswordForm((p) => ({ ...p, confirmPassword: e.target.value }))} /></Field>
+              {passwordMessage ? <Alert><AlertDescription>{passwordMessage}</AlertDescription></Alert> : null}
+            </FieldGroup></CardContent>
+            <CardFooter className="border-t"><Button type="submit" variant="outline" disabled={passwordSaving}>{passwordSaving ? 'Updating…' : 'Update password'}</Button></CardFooter>
+          </Card></form>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

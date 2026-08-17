@@ -1,0 +1,39 @@
+{
+  "generatedAt": "20260516T001610Z",
+  "baseUrl": "http://127.0.0.1:3000",
+  "useCloud": false,
+  "model": "meta/llama-3.1-8b-instruct",
+  "nvidiaBaseUrl": "https://integrate.api.nvidia.com/v1",
+  "nvidiaKeySource": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+  "results": [
+    {
+      "id": "C1-VISIT-001",
+      "title": "C1-VISIT-001",
+      "suite": "A",
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5826,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 263,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6089,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5826,
+            "completion_tokens": 263,
+            "total_tokens": 6089,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6089.0
+          }
+        }
+      },
+      "status": "completed"
+    }
+  ]
+}

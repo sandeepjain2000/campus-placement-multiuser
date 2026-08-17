@@ -18,7 +18,6 @@ import {
   Phone,
   UserRound,
   Users,
-  ExternalLink,
   ArrowLeft,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -31,6 +30,17 @@ import {
   getProfileSectionTotal,
   PROFILE_SECTION_TOTAL,
 } from '@/lib/studentProfileSections';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export { getCompletedSectionCount } from '@/lib/studentProfileSections';
 
@@ -47,26 +57,23 @@ const PROFILE_SECTION_TABS = [
 
 function StudentProfileSectionNav({ activeId, onSelect }) {
   return (
-    <nav className="student-profile-section-nav" aria-label="Profile sections">
-      <div className="student-profile-section-nav-inner" role="tablist">
+    <nav className="overflow-x-auto border-y px-4 py-2" aria-label="Profile sections">
+      <Tabs value={activeId} onValueChange={onSelect}>
+      <TabsList variant="line" className="min-w-max">
         {PROFILE_SECTION_TABS.map((tab) => {
-          const isActive = activeId === tab.id;
           return (
-            <button
+            <TabsTrigger
               key={tab.id}
-              type="button"
-              role="tab"
+              value={tab.id}
               id={`tab-${tab.id}`}
-              aria-selected={isActive}
               aria-controls={tab.id}
-              className={`student-profile-section-tab${isActive ? ' is-active' : ''}`}
-              onClick={() => onSelect(tab.id)}
             >
               {tab.label}
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList>
+      </Tabs>
     </nav>
   );
 }
@@ -103,9 +110,9 @@ function formatPeriod(start, end) {
 
 function InfoItem({ label, value, mono = false }) {
   return (
-    <div className="student-detail-info">
-      <div className="student-detail-label">{label}</div>
-      <div className="student-detail-value" style={mono ? { fontFamily: 'var(--font-mono, monospace)' } : undefined}>
+    <div className="rounded-lg border bg-muted/20 p-3">
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className={mono ? 'mt-1 break-words font-mono font-medium' : 'mt-1 break-words font-medium'}>
         {valueOrDash(value)}
       </div>
     </div>
@@ -114,23 +121,23 @@ function InfoItem({ label, value, mono = false }) {
 
 function Section({ id, icon: Icon, title, description, children }) {
   return (
-    <section id={id} className="student-section student-profile-section-anchor">
-      <div className="student-section-header">
-        <div className="student-section-icon" aria-hidden="true">
-          <Icon size={17} />
-        </div>
+    <Card id={id} className="student-profile-section-anchor scroll-mt-24">
+      <CardHeader>
+        <div className="flex items-start gap-3">
+        <div className="rounded-lg bg-muted p-2 text-muted-foreground" aria-hidden="true"><Icon /></div>
         <div>
-          <h3>{title}</h3>
-          {description && <p>{description}</p>}
+          <CardTitle>{title}</CardTitle>
+          {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
         </div>
-      </div>
-      <div>{children}</div>
-    </section>
+        </div>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }
 
 function EmptyState({ children = 'No records added yet.' }) {
-  return <div className="student-empty-state">{children}</div>;
+  return <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">{children}</div>;
 }
 
 function TagList({ items, tone = 'indigo' }) {
@@ -142,10 +149,10 @@ function TagList({ items, tone = 'indigo' }) {
         const label = typeof item === 'string' ? item : item.name || item.title;
         const meta = typeof item === 'string' ? '' : item.proficiency;
         return (
-          <span key={`${label}-${meta || ''}`} className={`badge badge-${tone}`} style={{ fontSize: '0.75rem' }}>
+          <Badge key={`${label}-${meta || ''}`} variant="secondary">
             {label}
-            {meta ? <span style={{ opacity: 0.75, marginLeft: '0.25rem' }}>· {meta}</span> : null}
-          </span>
+            {meta ? <span className="ml-1 opacity-70">· {meta}</span> : null}
+          </Badge>
         );
       })}
     </div>
@@ -154,13 +161,9 @@ function TagList({ items, tone = 'indigo' }) {
 
 function VerificationPill({ verified }) {
   return verified ? (
-    <span className="badge badge-green" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem' }}>
-      <CheckCircle2 size={13} /> Verified
-    </span>
+    <StatusBadge tone="green"><CheckCircle2 aria-hidden /> Verified</StatusBadge>
   ) : (
-    <span className="badge badge-amber" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem' }}>
-      <CircleAlert size={13} /> Pending verification
-    </span>
+    <StatusBadge tone="amber"><CircleAlert aria-hidden /> Pending verification</StatusBadge>
   );
 }
 
@@ -170,7 +173,8 @@ function ActivityList({ items, empty }) {
   return (
     <div className="student-list-stack">
       {rows.map((item, index) => (
-        <article key={`${item.title || item.organization || 'activity'}-${index}`} className="student-list-row">
+        <Card key={`${item.title || item.organization || 'activity'}-${index}`} size="sm">
+          <CardContent>
           <div>
             <div className="student-list-title">{item.title || item.name || 'Activity'}</div>
             <div className="student-list-meta">
@@ -178,7 +182,8 @@ function ActivityList({ items, empty }) {
             </div>
           </div>
           {item.description && <p>{item.description}</p>}
-        </article>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
@@ -240,32 +245,23 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
   ].filter((link, index, arr) => link.value && arr.findIndex((other) => other.value === link.value) === index);
 
   return (
-    <div className="student-profile-page animate-fadeIn">
+    <div className="animate-fadeIn flex flex-col gap-4">
       <div
-        className="student-profile-toolbar"
-        style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', justifyContent: 'space-between' }}
+        className="flex flex-wrap items-center justify-between gap-2"
       >
-        <Link
-          href="/dashboard/college/students"
-          className="btn btn-ghost btn-sm"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-        >
-          <ArrowLeft size={16} aria-hidden />
+        <Button variant="ghost" size="sm" render={<Link href="/dashboard/college/students" />}>
+          <ArrowLeft data-icon="inline-start" aria-hidden />
           Back to students
-        </Link>
+        </Button>
         {!readOnly ? (
-          <Link
-            href={`/dashboard/college/students/${student.id}/edit`}
-            className="btn btn-secondary btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-          >
+          <Button variant="outline" size="sm" render={<Link href={`/dashboard/college/students/${student.id}/edit`} />}>
             Edit student
-          </Link>
+          </Button>
         ) : null}
       </div>
 
-      <article className="student-profile-shell" aria-labelledby="student-detail-title">
-        <header className="student-detail-header surface-dark">
+      <Card className="gap-0 py-0" aria-labelledby="student-detail-title">
+        <header className="flex flex-wrap items-center justify-between gap-4 bg-muted/40 p-6">
           <div className="student-detail-identity">
             <StudentListAvatar
               photo={student.photo}
@@ -278,9 +274,7 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
               <div className="student-detail-subtitle">{student.roll || student.systemId}</div>
               <div className="student-detail-badges">
                 <VerificationPill verified={student.verified} />
-                <span className="badge badge-indigo" style={{ fontSize: '0.78rem' }}>
-                  Sections {completed}/{total}
-                </span>
+                <StatusBadge tone="indigo">Sections {completed}/{total}</StatusBadge>
               </div>
             </div>
           </div>
@@ -292,17 +286,12 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
                 viewLabel="View resume"
               />
             ) : (
-              <span
-                className="badge badge-gray"
-                style={{ fontSize: '0.78rem', opacity: 0.85 }}
-              >
-                No resume uploaded
-              </span>
+              <StatusBadge tone="gray">No resume uploaded</StatusBadge>
             )}
           </div>
         </header>
 
-        <div className="student-detail-summary" aria-label="Student summary">
+        <div className="grid gap-3 border-t p-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Student summary">
           <InfoItem label="Department" value={student.dept} />
           <InfoItem label="Degree pursued" value={student.degreePursued} />
           <InfoItem label="CGPA" value={present(student.cgpa) ? Number(student.cgpa).toFixed(2) : '—'} />
@@ -313,7 +302,7 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
 
         <StudentProfileSectionNav activeId={activeSection} onSelect={scrollToSection} />
 
-        <div className="student-detail-body">
+        <div className="flex flex-col gap-4 p-4 sm:p-6">
           <Section
             id="student-section-basic"
             icon={UserRound}
@@ -511,19 +500,19 @@ export default function StudentProfileView({ student, onVerify, readOnly = false
           </Section>
         </div>
 
-        <div className="modal-footer student-detail-footer">
+        <CardFooter className="justify-end gap-2 border-t py-4">
           {onVerify ? (
             student.verified ? (
-              <button type="button" className="btn btn-ghost" onClick={() => onVerify(student.id, false)}>Clear Verification</button>
+              <Button type="button" variant="ghost" onClick={() => onVerify(student.id, false)}>Clear Verification</Button>
             ) : (
-              <button type="button" className="btn btn-primary" onClick={() => onVerify(student.id, true)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <CheckCircle2 size={16} /> Mark Verified
-              </button>
+              <Button type="button" onClick={() => onVerify(student.id, true)}>
+                <CheckCircle2 data-icon="inline-start" /> Mark Verified
+              </Button>
             )
           ) : null}
-          <Link href="/dashboard/college/students" className="btn btn-secondary">Back to list</Link>
-        </div>
-      </article>
+          <Button variant="outline" render={<Link href="/dashboard/college/students" />}>Back to list</Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

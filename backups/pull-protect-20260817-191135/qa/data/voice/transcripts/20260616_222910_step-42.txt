@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-42
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Shortlist the applicant. Status Applied → Shortlisted.

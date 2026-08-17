@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CLOSURE
+# Stage: step-45
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as student — verify Selected status. My Applications → Internships shows Selected for GT-2026-06-161702 posting.

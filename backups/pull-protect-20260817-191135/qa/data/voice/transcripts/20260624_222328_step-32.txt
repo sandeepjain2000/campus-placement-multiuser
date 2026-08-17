@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-32
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Submit student internship progress review — manual. Star rating optional; feedback text at least ten characters.

@@ -1,0 +1,862 @@
+{
+  "category": "C-6",
+  "categoryTitle": "PDF report option availability and correctness",
+  "description": "Validate every transactional screen for PDF report option presence and correctness of generated PDF content.",
+  "testCases": [
+    {
+      "testCaseId": "C6-PDF-PRESENCE-001",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Student Applications has PDF report option",
+      "role": "student",
+      "route": "/dashboard/student/applications",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student",
+        "Open /dashboard/student/applications",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-002",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Student Interviews has PDF report option",
+      "role": "student",
+      "route": "/dashboard/student/interviews",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student",
+        "Open /dashboard/student/interviews",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-003",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Student Offers has PDF report option",
+      "role": "student",
+      "route": "/dashboard/student/offers",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student",
+        "Open /dashboard/student/offers",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-004",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Employer Jobs has PDF report option",
+      "role": "employer",
+      "route": "/dashboard/employer/jobs",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer",
+        "Open /dashboard/employer/jobs",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-005",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Employer Drives has PDF report option",
+      "role": "employer",
+      "route": "/dashboard/employer/drives",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer",
+        "Open /dashboard/employer/drives",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-006",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Employer Applications has PDF report option",
+      "role": "employer",
+      "route": "/dashboard/employer/applications",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer",
+        "Open /dashboard/employer/applications",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-007",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Employer Interviews has PDF report option",
+      "role": "employer",
+      "route": "/dashboard/employer/interviews",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer",
+        "Open /dashboard/employer/interviews",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-008",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Employer Offers has PDF report option",
+      "role": "employer",
+      "route": "/dashboard/employer/offers",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer",
+        "Open /dashboard/employer/offers",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-009",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Employer Assessment Summary has PDF report option",
+      "role": "employer",
+      "route": "/dashboard/employer/assessment-summary",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer",
+        "Open /dashboard/employer/assessment-summary",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-010",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "College Drives has PDF report option",
+      "role": "college_admin",
+      "route": "/dashboard/college/drives",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin",
+        "Open /dashboard/college/drives",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-011",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "College Applications has PDF report option",
+      "role": "college_admin",
+      "route": "/dashboard/college/applications",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin",
+        "Open /dashboard/college/applications",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-012",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "College Interviews has PDF report option",
+      "role": "college_admin",
+      "route": "/dashboard/college/interviews",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin",
+        "Open /dashboard/college/interviews",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-013",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "College Offers has PDF report option",
+      "role": "college_admin",
+      "route": "/dashboard/college/offers",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin",
+        "Open /dashboard/college/offers",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-014",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "College Reports has PDF report option",
+      "role": "college_admin",
+      "route": "/dashboard/college/reports",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin",
+        "Open /dashboard/college/reports",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-015",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "College Audit Reports has PDF report option",
+      "role": "college_admin",
+      "route": "/dashboard/college/audit-reports",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin",
+        "Open /dashboard/college/audit-reports",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-016",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Admin Overview has PDF report option",
+      "role": "super_admin",
+      "route": "/dashboard/admin/overview",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as super_admin",
+        "Open /dashboard/admin/overview",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-PRESENCE-017",
+      "category": "C-6",
+      "type": "pdf_presence",
+      "title": "Admin Audit Reports has PDF report option",
+      "role": "super_admin",
+      "route": "/dashboard/admin/audit-reports",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as super_admin",
+        "Open /dashboard/admin/audit-reports",
+        "Identify report/export actions",
+        "Verify a PDF-specific action exists (label or format selector includes PDF)"
+      ],
+      "expectedResult": [
+        "PDF report/download option is visible and enabled",
+        "Option is accessible for relevant records/filters"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-001",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Student Applications PDF generates and is correct",
+      "role": "student",
+      "route": "/dashboard/student/applications",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student and open /dashboard/student/applications",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-002",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Student Interviews PDF generates and is correct",
+      "role": "student",
+      "route": "/dashboard/student/interviews",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student and open /dashboard/student/interviews",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-003",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Student Offers PDF generates and is correct",
+      "role": "student",
+      "route": "/dashboard/student/offers",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as student and open /dashboard/student/offers",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-004",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Employer Jobs PDF generates and is correct",
+      "role": "employer",
+      "route": "/dashboard/employer/jobs",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/employer/jobs",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-005",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Employer Drives PDF generates and is correct",
+      "role": "employer",
+      "route": "/dashboard/employer/drives",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/employer/drives",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-006",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Employer Applications PDF generates and is correct",
+      "role": "employer",
+      "route": "/dashboard/employer/applications",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/employer/applications",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-007",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Employer Interviews PDF generates and is correct",
+      "role": "employer",
+      "route": "/dashboard/employer/interviews",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/employer/interviews",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-008",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Employer Offers PDF generates and is correct",
+      "role": "employer",
+      "route": "/dashboard/employer/offers",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/employer/offers",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-009",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Employer Assessment Summary PDF generates and is correct",
+      "role": "employer",
+      "route": "/dashboard/employer/assessment-summary",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as employer and open /dashboard/employer/assessment-summary",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-010",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "College Drives PDF generates and is correct",
+      "role": "college_admin",
+      "route": "/dashboard/college/drives",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/college/drives",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-011",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "College Applications PDF generates and is correct",
+      "role": "college_admin",
+      "route": "/dashboard/college/applications",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/college/applications",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-012",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "College Interviews PDF generates and is correct",
+      "role": "college_admin",
+      "route": "/dashboard/college/interviews",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/college/interviews",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-013",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "College Offers PDF generates and is correct",
+      "role": "college_admin",
+      "route": "/dashboard/college/offers",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/college/offers",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-014",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "College Reports PDF generates and is correct",
+      "role": "college_admin",
+      "route": "/dashboard/college/reports",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/college/reports",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-015",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "College Audit Reports PDF generates and is correct",
+      "role": "college_admin",
+      "route": "/dashboard/college/audit-reports",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as college_admin and open /dashboard/college/audit-reports",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-016",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Admin Overview PDF generates and is correct",
+      "role": "super_admin",
+      "route": "/dashboard/admin/overview",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as super_admin and open /dashboard/admin/overview",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-PDF-FUNC-017",
+      "category": "C-6",
+      "type": "pdf_generation_and_sanity",
+      "title": "Admin Audit Reports PDF generates and is correct",
+      "role": "super_admin",
+      "route": "/dashboard/admin/audit-reports",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Login as super_admin and open /dashboard/admin/audit-reports",
+        "Apply filter/record selection for deterministic output",
+        "Trigger PDF report generation/download",
+        "Open downloaded file and confirm valid PDF opens",
+        "Verify report includes correct title/date and 3-5 sampled values matching UI"
+      ],
+      "expectedResult": [
+        "PDF file downloads without server/client errors",
+        "File opens successfully and is not corrupted/blank",
+        "Sampled values in PDF match UI data",
+        "Report metadata (module/date/context) is correct"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C6-GAP-001",
+      "category": "C-6",
+      "type": "gap_register",
+      "title": "PDF coverage gap register for transactional screens",
+      "role": "all_roles",
+      "route": "all transactional routes",
+      "demoAccount": {
+        "email": "use role-wise demo account",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Compile transactional screen list role-wise",
+        "Mark each screen as PDF Available / Missing",
+        "For Missing, capture reason and suggested implementation point"
+      ],
+      "expectedResult": [
+        "Complete PDF availability matrix exists",
+        "All missing PDF options are explicitly tracked as actionable gaps"
+      ],
+      "priority": "critical"
+    }
+  ]
+}

@@ -1,0 +1,1415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld name="Slide 2">
+    <p:bg>
+      <p:bgPr>
+        <a:solidFill>
+          <a:srgbClr val="F5F3EF"/>
+        </a:solidFill>
+        <a:effectLst/>
+      </p:bgPr>
+    </p:bg>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name=""/>
+        <p:cNvGrpSpPr/>
+        <p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="2" name="Shape 0"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="762000"/>
+            <a:ext cx="15240000" cy="711200"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="3" name="Text 1"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="894080" y="701040"/>
+            <a:ext cx="15483840" cy="833120"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="t"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="130000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="4000" kern="0" spc="267" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Liter" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Liter" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Liter" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>FOUNDER BACKGROUND</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="4000" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="4" name="Shape 2"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="1557909"/>
+            <a:ext cx="846709" cy="50800"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="C4956A"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="5" name="Shape 3"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="1803400"/>
+            <a:ext cx="18626709" cy="635000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="6" name="Text 4"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="894080" y="1742440"/>
+            <a:ext cx="18870549" cy="751840"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="t"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="130000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2400" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="6B7B8D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>30+ years of leadership across staffing, campus engagement, and talent development.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2400" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="7" name="Shape 5"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="2667000"/>
+            <a:ext cx="19642709" cy="1143000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="1E2D3D"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="8" name="Shape 6"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1524000" y="2794000"/>
+            <a:ext cx="18626709" cy="889000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="9" name="Text 7"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1402080" y="2733040"/>
+            <a:ext cx="18870549" cy="1010920"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="140000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2200" i="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="F5F3EF"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>"After 30 years staffing 500+ campus drives, I watched the same Excel crash every season. It is time for an OS."</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2200" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="10" name="Shape 8"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="4191000"/>
+            <a:ext cx="9398000" cy="6858000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="FFFFFF"/>
+          </a:solidFill>
+          <a:ln/>
+          <a:effectLst>
+            <a:outerShdw blurRad="127000" dist="50800" dir="60000" algn="bl" rotWithShape="0">
+              <a:srgbClr val="000000">
+                <a:alpha val="4706"/>
+              </a:srgbClr>
+            </a:outerShdw>
+          </a:effectLst>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="11" name="Shape 9"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="4191000"/>
+            <a:ext cx="9398000" cy="67691"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="C4956A"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="12" name="Shape 10"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1422400" y="4521200"/>
+            <a:ext cx="474091" cy="474091"/>
+          </a:xfrm>
+          <a:custGeom>
+            <a:avLst/>
+            <a:gdLst/>
+            <a:ahLst/>
+            <a:cxnLst/>
+            <a:rect l="l" t="t" r="r" b="b"/>
+            <a:pathLst>
+              <a:path w="474091" h="474091">
+                <a:moveTo>
+                  <a:pt x="237046" y="474091"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="367874" y="474091"/>
+                  <a:pt x="474091" y="367874"/>
+                  <a:pt x="474091" y="237046"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="474091" y="106217"/>
+                  <a:pt x="367874" y="0"/>
+                  <a:pt x="237046" y="0"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="106217" y="0"/>
+                  <a:pt x="0" y="106217"/>
+                  <a:pt x="0" y="237046"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="0" y="367874"/>
+                  <a:pt x="106217" y="474091"/>
+                  <a:pt x="237046" y="474091"/>
+                </a:cubicBezTo>
+                <a:close/>
+                <a:moveTo>
+                  <a:pt x="237046" y="71060"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="327975" y="71060"/>
+                  <a:pt x="402231" y="145316"/>
+                  <a:pt x="402231" y="236246"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="402231" y="327175"/>
+                  <a:pt x="327975" y="401431"/>
+                  <a:pt x="237046" y="401431"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="146116" y="401431"/>
+                  <a:pt x="71860" y="327175"/>
+                  <a:pt x="71860" y="236246"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="71860" y="145316"/>
+                  <a:pt x="146116" y="71060"/>
+                  <a:pt x="237046" y="71060"/>
+                </a:cubicBezTo>
+                <a:close/>
+                <a:moveTo>
+                  <a:pt x="237046" y="315794"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="280182" y="315794"/>
+                  <a:pt x="315794" y="280182"/>
+                  <a:pt x="315794" y="237046"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="315794" y="193909"/>
+                  <a:pt x="280182" y="158297"/>
+                  <a:pt x="237046" y="158297"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="193909" y="158297"/>
+                  <a:pt x="158297" y="193909"/>
+                  <a:pt x="158297" y="237046"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="158297" y="280182"/>
+                  <a:pt x="193909" y="315794"/>
+                  <a:pt x="237046" y="315794"/>
+                </a:cubicBezTo>
+                <a:close/>
+                <a:moveTo>
+                  <a:pt x="237046" y="270909"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="217555" y="270909"/>
+                  <a:pt x="201849" y="255203"/>
+                  <a:pt x="201849" y="237046"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="201849" y="218888"/>
+                  <a:pt x="217555" y="203182"/>
+                  <a:pt x="237046" y="203182"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="255203" y="203182"/>
+                  <a:pt x="270909" y="218888"/>
+                  <a:pt x="270909" y="237046"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="270909" y="255203"/>
+                  <a:pt x="255203" y="270909"/>
+                  <a:pt x="237046" y="270909"/>
+                </a:cubicBezTo>
+                <a:close/>
+              </a:path>
+            </a:pathLst>
+          </a:custGeom>
+          <a:solidFill>
+            <a:srgbClr val="C4956A"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="13" name="Shape 11"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="2032000" y="4521200"/>
+            <a:ext cx="8001000" cy="508000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="14" name="Text 12"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1910080" y="4460240"/>
+            <a:ext cx="8249920" cy="629920"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="t"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="130000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2400" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Liter" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Liter" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Liter" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Leadership &amp; Experience</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2400" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="15" name="Shape 13"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1422400" y="5207000"/>
+            <a:ext cx="8585200" cy="5588000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="16" name="Text 14"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1300480" y="5146040"/>
+            <a:ext cx="8832469" cy="5709920"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="t"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>30+ years</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t> of leadership experience across enterprise and startup environments.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Led </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>recruitment, workforce planning, and talent acquisition</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t> initiatives across multiple organizations.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Built and mentored </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>high-performing delivery, project, and operations teams</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t> in India and international markets.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Successfully scaled teams while maintaining delivery excellence, governance, and operational efficiency.</a:t>
+            </a:r>
+          </a:p>
+          <a:p>
+            <a:pPr>
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>LinkedIn Profile: </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+                <a:hlinkClick r:id="rId3"/>
+              </a:rPr>
+              <a:t>https://www.linkedin.com/in/jain35/</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0">
+              <a:solidFill>
+                <a:srgbClr val="1E2D3D"/>
+              </a:solidFill>
+              <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+              <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+              <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+            </a:endParaRPr>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Detailed Profile: </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:hlinkClick r:id="rId4"/>
+              </a:rPr>
+              <a:t>Sandeep Jain</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="17" name="Shape 15"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="10922000" y="4191000"/>
+            <a:ext cx="9736709" cy="6858000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="FFFFFF"/>
+          </a:solidFill>
+          <a:ln/>
+          <a:effectLst>
+            <a:outerShdw blurRad="127000" dist="50800" dir="60000" algn="bl" rotWithShape="0">
+              <a:srgbClr val="000000">
+                <a:alpha val="4706"/>
+              </a:srgbClr>
+            </a:outerShdw>
+          </a:effectLst>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="18" name="Shape 16"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="10922000" y="4191000"/>
+            <a:ext cx="9736709" cy="67691"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="1E2D3D"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="19" name="Shape 17"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="11328400" y="4521200"/>
+            <a:ext cx="474091" cy="474091"/>
+          </a:xfrm>
+          <a:custGeom>
+            <a:avLst/>
+            <a:gdLst/>
+            <a:ahLst/>
+            <a:cxnLst/>
+            <a:rect l="l" t="t" r="r" b="b"/>
+            <a:pathLst>
+              <a:path w="474091" h="474091">
+                <a:moveTo>
+                  <a:pt x="255354" y="-12038"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="243289" y="-14167"/>
+                  <a:pt x="230908" y="-14167"/>
+                  <a:pt x="218844" y="-12038"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="20424" y="22686"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="8572" y="24723"/>
+                  <a:pt x="0" y="33890"/>
+                  <a:pt x="0" y="44446"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="0" y="53984"/>
+                  <a:pt x="6878" y="62317"/>
+                  <a:pt x="16931" y="65373"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="16931" y="133338"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="317" y="206119"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="106" y="206952"/>
+                  <a:pt x="0" y="207878"/>
+                  <a:pt x="0" y="208804"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="0" y="216212"/>
+                  <a:pt x="6878" y="222322"/>
+                  <a:pt x="15450" y="222322"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="52383" y="222322"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="60849" y="222322"/>
+                  <a:pt x="67833" y="216304"/>
+                  <a:pt x="67833" y="208804"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="67833" y="207878"/>
+                  <a:pt x="67727" y="207045"/>
+                  <a:pt x="67516" y="206119"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="50796" y="133338"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="50796" y="71577"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="101591" y="80466"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="101591" y="133338"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="101591" y="198803"/>
+                  <a:pt x="162228" y="251861"/>
+                  <a:pt x="237046" y="251861"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="311863" y="251861"/>
+                  <a:pt x="372500" y="198803"/>
+                  <a:pt x="372500" y="133338"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="372500" y="80466"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="453667" y="66299"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="465519" y="64169"/>
+                  <a:pt x="474091" y="55002"/>
+                  <a:pt x="474091" y="44446"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="474091" y="33890"/>
+                  <a:pt x="465519" y="24723"/>
+                  <a:pt x="453667" y="22686"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="255354" y="-12038"/>
+                </a:lnTo>
+                <a:close/>
+                <a:moveTo>
+                  <a:pt x="237046" y="207415"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="190271" y="207415"/>
+                  <a:pt x="152387" y="174266"/>
+                  <a:pt x="152387" y="133338"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="321704" y="133338"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="321704" y="174266"/>
+                  <a:pt x="283820" y="207415"/>
+                  <a:pt x="237046" y="207415"/>
+                </a:cubicBezTo>
+                <a:close/>
+                <a:moveTo>
+                  <a:pt x="127095" y="296399"/>
+                </a:moveTo>
+                <a:cubicBezTo>
+                  <a:pt x="62118" y="322511"/>
+                  <a:pt x="16931" y="379921"/>
+                  <a:pt x="16931" y="446590"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="16931" y="461776"/>
+                  <a:pt x="31006" y="474091"/>
+                  <a:pt x="48361" y="474091"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="211648" y="474091"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="211648" y="338902"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="150905" y="299084"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="144026" y="294548"/>
+                  <a:pt x="134820" y="293344"/>
+                  <a:pt x="126988" y="296492"/>
+                </a:cubicBezTo>
+                <a:close/>
+                <a:moveTo>
+                  <a:pt x="262443" y="474091"/>
+                </a:moveTo>
+                <a:lnTo>
+                  <a:pt x="425730" y="474091"/>
+                </a:lnTo>
+                <a:cubicBezTo>
+                  <a:pt x="443085" y="474091"/>
+                  <a:pt x="457160" y="461776"/>
+                  <a:pt x="457160" y="446590"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="457160" y="379921"/>
+                  <a:pt x="411973" y="322511"/>
+                  <a:pt x="346996" y="296492"/>
+                </a:cubicBezTo>
+                <a:cubicBezTo>
+                  <a:pt x="339165" y="293344"/>
+                  <a:pt x="329959" y="294548"/>
+                  <a:pt x="323081" y="299084"/>
+                </a:cubicBezTo>
+                <a:lnTo>
+                  <a:pt x="262338" y="338902"/>
+                </a:lnTo>
+                <a:lnTo>
+                  <a:pt x="262338" y="474091"/>
+                </a:lnTo>
+                <a:close/>
+              </a:path>
+            </a:pathLst>
+          </a:custGeom>
+          <a:solidFill>
+            <a:srgbClr val="1E2D3D"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="20" name="Shape 18"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="11938000" y="4521200"/>
+            <a:ext cx="8001000" cy="508000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="21" name="Text 19"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="11816080" y="4460240"/>
+            <a:ext cx="8249920" cy="629920"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="t"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="130000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2400" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Liter" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Liter" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Liter" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Campus &amp; Talent Focus</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2400" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="22" name="Shape 20"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="11328400" y="5207000"/>
+            <a:ext cx="8890000" cy="5588000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="23" name="Text 21"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="11206480" y="5146040"/>
+            <a:ext cx="9137269" cy="5709920"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="t"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Designed and executed </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>campus hiring and internship engagement programs</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>, collaborating with colleges to identify, recruit, and develop early-career talent.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Extensive experience in </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>internship programs, campus hiring, and industry-academia engagement</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Strong focus on </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>employee development, performance management, and leadership coaching</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+          <a:p>
+            <a:pPr algn="l">
+              <a:lnSpc>
+                <a:spcPct val="170000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>Combines </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>people leadership, project delivery, and product management</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" sz="2000" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="1E2D3D"/>
+                </a:solidFill>
+                <a:latin typeface="Quattrocento Sans" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Quattrocento Sans" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Quattrocento Sans" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t> expertise to drive organizational growth.</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="2000" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="24" name="Shape 22"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1016000" y="11514709"/>
+            <a:ext cx="19642709" cy="33909"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:solidFill>
+            <a:srgbClr val="C4956A"/>
+          </a:solidFill>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="25" name="Shape 23"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="17949291" y="11650091"/>
+            <a:ext cx="2709291" cy="338709"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:endParaRPr lang="en-US"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="26" name="Text 24"/>
+          <p:cNvSpPr/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="17827371" y="11589131"/>
+            <a:ext cx="2953131" cy="460629"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln/>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr algn="r">
+              <a:lnSpc>
+                <a:spcPct val="130000"/>
+              </a:lnSpc>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" sz="1730" kern="0" spc="267" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="6B7B8D"/>
+                </a:solidFill>
+                <a:latin typeface="Liter" pitchFamily="34" charset="0"/>
+                <a:ea typeface="Liter" pitchFamily="34" charset="-122"/>
+                <a:cs typeface="Liter" pitchFamily="34" charset="-120"/>
+              </a:rPr>
+              <a:t>PLACEMENTHUB</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" sz="1730" dirty="0"/>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+    </p:spTree>
+  </p:cSld>
+  <p:clrMapOvr>
+    <a:masterClrMapping/>
+  </p:clrMapOvr>
+  <p:transition>
+    <p:fade/>
+  </p:transition>
+</p:sld>

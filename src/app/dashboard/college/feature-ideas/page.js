@@ -2,12 +2,11 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
-import { ChevronUp, Lightbulb, Search, X } from 'lucide-react';
+import { ChevronUp, Lightbulb, Search } from 'lucide-react';
 import PageError from '@/components/PageError';
 import PageLoading from '@/components/PageLoading';
 import { useToast } from '@/components/ToastProvider';
 import {
-  FEATURE_IDEA_STATUS_TONE,
   FEATURE_IDEA_STATUSES,
   FEATURE_IDEA_TOPICS,
   MAX_FEATURE_IDEA_DESCRIPTION,
@@ -15,6 +14,15 @@ import {
   MAX_FEATURE_IDEA_TOPICS,
 } from '@/lib/featureIdeas';
 import { timeAgo } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -73,63 +81,68 @@ export default function CollegeFeatureIdeasPage() {
   if (error) return <PageError error={error} />;
 
   return (
-    <div className="animate-fadeIn feature-ideas-page">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>Feature Ideas</h1>
-          <p>Suggest product improvements for PlacementHub. Vote on ideas from other colleges.</p>
+    <div className="animate-fadeIn feature-ideas-page flex flex-col gap-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex max-w-3xl flex-col gap-1">
+          <h1 className="text-foreground m-0 text-2xl font-semibold tracking-tight">Feature Ideas</h1>
+          <p className="text-muted-foreground m-0 text-sm">Suggest product improvements for PlacementHub. Vote on ideas from other colleges.</p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={() => setModalOpen(true)}>
+        <Button type="button" onClick={() => setModalOpen(true)}>
           + Submit Idea
-        </button>
+        </Button>
       </div>
 
       <div className="feature-ideas-layout">
-        <aside className="feature-ideas-sidebar card">
+        <Card className="feature-ideas-sidebar">
+          <CardContent>
           <div className="feature-ideas-sidebar-block">
             <h3>Status</h3>
-            <button
+            <Button
               type="button"
               className={`feature-ideas-filter${!status ? ' is-active' : ''}`}
+              variant="ghost"
               onClick={() => setStatus('')}
             >
               All
-            </button>
+            </Button>
             {FEATURE_IDEA_STATUSES.map((s) => (
-              <button
+              <Button
                 key={s}
                 type="button"
                 className={`feature-ideas-filter${status === s ? ' is-active' : ''}`}
+                variant="ghost"
                 onClick={() => setStatus(status === s ? '' : s)}
               >
                 <span className={`feature-ideas-status-dot status-${s.replace(/\s+/g, '-').toLowerCase()}`} />
                 <span className="feature-ideas-filter-label">{s}</span>
                 <span className="feature-ideas-filter-count">{statusCounts[s] || 0}</span>
-              </button>
+              </Button>
             ))}
           </div>
           <div className="feature-ideas-sidebar-block">
             <h3>Topics</h3>
             {FEATURE_IDEA_TOPICS.map((t) => (
-              <button
+              <Button
                 key={t}
                 type="button"
                 className={`feature-ideas-filter${topic === t ? ' is-active' : ''}`}
+                variant="ghost"
                 onClick={() => setTopic(topic === t ? '' : t)}
               >
                 <span className="feature-ideas-filter-label">#{t}</span>
                 <span className="feature-ideas-filter-count">{topicCounts[t] || 0}</span>
-              </button>
+              </Button>
             ))}
           </div>
-        </aside>
+          </CardContent>
+        </Card>
 
         <section className="feature-ideas-main">
           <div className="feature-ideas-toolbar">
             <div className="feature-ideas-search">
               <Search size={16} aria-hidden />
-              <input
-                className="form-input"
+              <Input
+                className="border-0 bg-transparent shadow-none focus-visible:ring-0"
                 placeholder="Search ideas…"
                 value={searchDraft}
                 onChange={(e) => setSearchDraft(e.target.value)}
@@ -137,57 +150,63 @@ export default function CollegeFeatureIdeasPage() {
                   if (e.key === 'Enter') setQ(searchDraft.trim());
                 }}
               />
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setQ(searchDraft.trim())}>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setQ(searchDraft.trim())}>
                 Search
-              </button>
+              </Button>
             </div>
-            <select
-              className="form-select"
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
+            <AdminFilterSelect
               aria-label="Sort ideas"
-              style={{ width: 'auto', minWidth: 140 }}
-            >
-              <option value="trending">Trending</option>
-              <option value="newest">Newest</option>
-            </select>
+              className="h-9 min-w-[140px] w-auto"
+              value={sort}
+              onValueChange={setSort}
+              emptyMapsToAll={false}
+              items={[
+                { label: 'Trending', value: 'trending' },
+                { label: 'Newest', value: 'newest' },
+              ]}
+            />
           </div>
 
           {isLoading ? (
             <PageLoading message="Loading ideas…" inline />
           ) : items.length === 0 ? (
-            <div className="card feature-ideas-empty">
-              <Lightbulb size={28} strokeWidth={1.5} />
-              <h2>No ideas yet</h2>
-              <p>Be the first college to submit a product idea.</p>
-              <button type="button" className="btn btn-primary" onClick={() => setModalOpen(true)}>
+            <Alert>
+              <Lightbulb aria-hidden />
+              <AlertTitle>No Ideas Yet</AlertTitle>
+              <AlertDescription className="flex flex-col items-start gap-3">
+                <p>Be the first college to submit a product idea.</p>
+              <Button type="button" onClick={() => setModalOpen(true)}>
                 Submit Idea
-              </button>
-            </div>
+              </Button>
+              </AlertDescription>
+            </Alert>
           ) : (
             <div className="feature-ideas-list">
               {items.map((idea) => (
-                <article key={idea.id} className="card feature-ideas-row">
-                  <button
+                <Card key={idea.id}>
+                  <CardContent className="feature-ideas-row">
+                  <Button
                     type="button"
                     className={`feature-ideas-vote${idea.voted_by_me ? ' is-voted' : ''}`}
+                    variant="outline"
                     onClick={() => onVote(idea.id)}
                     aria-label={idea.voted_by_me ? 'Remove vote' : 'Upvote idea'}
                     title={idea.voted_by_me ? 'Remove vote' : 'Upvote'}
                   >
                     <ChevronUp size={18} />
                     <span>{idea.vote_count}</span>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     className="feature-ideas-body"
+                    variant="ghost"
                     onClick={() => setDetailIdea(idea)}
                   >
                     <div className="feature-ideas-title-row">
                       <h2>{idea.title}</h2>
-                      <span className={`badge ${FEATURE_IDEA_STATUS_TONE[idea.status] || 'badge-gray'}`}>
+                      <Badge variant="secondary">
                         {idea.status}
-                      </span>
+                      </Badge>
                     </div>
                     <p className="feature-ideas-snippet">
                       {String(idea.description || '').length > 160
@@ -204,8 +223,9 @@ export default function CollegeFeatureIdeasPage() {
                         </span>
                       ))}
                     </div>
-                  </button>
-                </article>
+                  </Button>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
@@ -331,11 +351,6 @@ export default function CollegeFeatureIdeasPage() {
           padding: 0 0.5rem;
           background: var(--bg-secondary);
         }
-        .feature-ideas-search .form-input {
-          border: none;
-          box-shadow: none;
-          background: transparent;
-        }
         .feature-ideas-list {
           display: flex;
           flex-direction: column;
@@ -426,37 +441,6 @@ export default function CollegeFeatureIdeasPage() {
         .feature-ideas-empty p {
           margin: 0 0 0.75rem;
         }
-        .feature-ideas-modal-backdrop {
-          position: fixed;
-          inset: 0;
-          background: rgba(15, 23, 42, 0.45);
-          z-index: 80;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 1.25rem;
-        }
-        .feature-ideas-modal {
-          width: min(560px, 100%);
-          max-height: min(90vh, 760px);
-          overflow: auto;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-default);
-          border-radius: var(--radius-xl);
-          box-shadow: var(--shadow-lg);
-          padding: 1.25rem 1.35rem 1.35rem;
-        }
-        .feature-ideas-modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1rem;
-        }
-        .feature-ideas-modal-header h2 {
-          margin: 0;
-          font-size: 1.25rem;
-          font-weight: 800;
-        }
         .feature-ideas-topic-grid {
           display: flex;
           flex-wrap: wrap;
@@ -476,25 +460,6 @@ export default function CollegeFeatureIdeasPage() {
           border-color: var(--primary-600);
           color: white;
           font-weight: 600;
-        }
-        .feature-ideas-success {
-          text-align: center;
-          padding: 1.5rem 0.5rem 0.5rem;
-        }
-        .feature-ideas-success h2 {
-          margin: 0 0 0.35rem;
-          font-size: 1.5rem;
-          font-weight: 800;
-        }
-        .feature-ideas-success p {
-          margin: 0 0 1.25rem;
-          color: var(--text-secondary);
-        }
-        .feature-ideas-success-actions {
-          display: flex;
-          gap: 0.6rem;
-          justify-content: center;
-          flex-wrap: wrap;
         }
         @media (max-width: 900px) {
           .feature-ideas-layout {
@@ -552,22 +517,18 @@ function SubmitIdeaModal({ onClose, onSubmitted }) {
   };
 
   return (
-    <div className="feature-ideas-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="submit-idea-title">
-      <div className="feature-ideas-modal">
-        <div className="feature-ideas-modal-header">
-          <h2 id="submit-idea-title">Tell us your Idea</h2>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close" disabled={submitting}>
-            <X size={18} />
-          </button>
-        </div>
-        <form onSubmit={submit} style={{ display: 'grid', gap: '0.85rem' }}>
-          <div>
-            <label className="form-label" htmlFor="idea-title">
-              Idea title
-            </label>
-            <input
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle id="submit-idea-title">Tell us your idea</DialogTitle>
+          <DialogDescription>Describe the problem and choose the topics it affects.</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={submit} className="flex flex-col gap-5">
+          <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="idea-title">Idea title</FieldLabel>
+            <Input
               id="idea-title"
-              className="form-input"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={MAX_FEATURE_IDEA_TITLE}
@@ -576,14 +537,11 @@ function SubmitIdeaModal({ onClose, onSubmitted }) {
               disabled={submitting}
               autoFocus
             />
-          </div>
-          <div>
-            <label className="form-label" htmlFor="idea-desc">
-              Description
-            </label>
-            <textarea
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="idea-desc">Description</FieldLabel>
+            <Textarea
               id="idea-desc"
-              className="form-input"
               rows={6}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -592,90 +550,85 @@ function SubmitIdeaModal({ onClose, onSubmitted }) {
               required
               disabled={submitting}
             />
-          </div>
-          <div>
-            <div className="form-label">Choose up to {MAX_FEATURE_IDEA_TOPICS} topics</div>
+          </Field>
+          <Field>
+            <FieldLabel>Choose up to {MAX_FEATURE_IDEA_TOPICS} topics</FieldLabel>
             <div className="feature-ideas-topic-grid">
               {FEATURE_IDEA_TOPICS.map((t) => (
-                <button
+                <Button
                   key={t}
                   type="button"
                   className={`feature-ideas-topic-chip${topics.includes(t) ? ' is-selected' : ''}`}
+                  variant={topics.includes(t) ? 'default' : 'outline'}
+                  size="sm"
                   onClick={() => toggleTopic(t)}
                   disabled={submitting}
                 >
                   {t}
-                </button>
+                </Button>
               ))}
             </div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-            <button type="button" className="btn btn-ghost" onClick={onClose} disabled={submitting}>
+          </Field>
+          </FieldGroup>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={onClose} disabled={submitting}>
               Cancel
-            </button>
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
+            </Button>
+            <Button type="submit" disabled={submitting}>
               {submitting ? 'Submitting…' : 'Submit Idea'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
 function SuccessModal({ idea, onClose, onView, onAddAnother }) {
   return (
-    <div className="feature-ideas-modal-backdrop" role="dialog" aria-modal="true">
-      <div className="feature-ideas-modal">
-        <div className="feature-ideas-modal-header">
-          <span />
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
-        <div className="feature-ideas-success">
-          <h2>Idea submitted</h2>
-          <p>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Idea submitted</DialogTitle>
+          <DialogDescription>
             Thanks — <strong>{idea?.title || 'your idea'}</strong> is on the board with status Pending approval.
             Other colleges can view and vote on it.
-          </p>
-          <div className="feature-ideas-success-actions">
-            <button type="button" className="btn btn-outline" onClick={onView}>
+          </DialogDescription>
+        </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onView}>
               View Idea
-            </button>
-            <button type="button" className="btn btn-primary" onClick={onAddAnother}>
+            </Button>
+            <Button type="button" onClick={onAddAnother}>
               Add new Idea
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Button>
+          </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
 function DetailModal({ idea, onClose, onVote }) {
   if (!idea) return null;
   return (
-    <div className="feature-ideas-modal-backdrop" role="dialog" aria-modal="true">
-      <div className="feature-ideas-modal">
-        <div className="feature-ideas-modal-header">
-          <h2 style={{ fontSize: '1.1rem' }}>{idea.title}</h2>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '0.85rem' }}>
-          <button
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>{idea.title}</DialogTitle>
+        </DialogHeader>
+        <div className="flex items-start gap-3">
+          <Button
             type="button"
             className={`feature-ideas-vote${idea.voted_by_me ? ' is-voted' : ''}`}
+            variant="outline"
             onClick={onVote}
           >
             <ChevronUp size={18} />
             <span>{idea.vote_count}</span>
-          </button>
-          <span className={`badge ${FEATURE_IDEA_STATUS_TONE[idea.status] || 'badge-gray'}`}>{idea.status}</span>
+          </Button>
+          <Badge variant="secondary">{idea.status}</Badge>
         </div>
-        <p style={{ whiteSpace: 'pre-wrap', margin: '0 0 1rem', lineHeight: 1.55, color: 'var(--text-secondary)' }}>
+        <p className="text-muted-foreground m-0 whitespace-pre-wrap leading-relaxed">
           {idea.description}
         </p>
         <div className="feature-ideas-meta">
@@ -685,7 +638,7 @@ function DetailModal({ idea, onClose, onVote }) {
             </span>
           ))}
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

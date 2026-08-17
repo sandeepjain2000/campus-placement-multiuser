@@ -16,6 +16,15 @@ import AdminRecordModal from '@/components/admin/AdminRecordModal';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import { useToast } from '@/components/ToastProvider';
 import { validateAdminEmployerForm } from '@/lib/adminEmployerForm';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 
 function employerToForm(e) {
   return {
@@ -254,16 +263,14 @@ export default function AdminEmployersPage() {
   const selectedName = detail?.name || employers.find((e) => e.id === selectedId)?.name || 'Employer';
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>🏢 Manage Employers</h1>
-          <p>All registered employers on the platform</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Manage Employers</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">All registered employers on the platform</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-          <Link className="btn btn-secondary" href="/dashboard/admin/pending-registrations">
-            Onboard colleges & employers
-          </Link>
+        <div className="flex flex-wrap items-start gap-2">
+          <Button variant="outline" render={<Link href="/dashboard/admin/pending-registrations" />}>Onboard colleges & employers</Button>
           <ExportCsvSplitButton
             filenameBase="admin_employers"
             currentCount={displayEmployers.length}
@@ -292,28 +299,19 @@ export default function AdminEmployersPage() {
         />
       ) : null}
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Industry</th>
-              <th>Total Hires</th>
-              <th>Verified</th>
-              <th>Account</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4"><CardTitle>Employer directory</CardTitle><CardDescription>{displayEmployers.length} of {employers.length} employers</CardDescription></CardHeader>
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>{['Company','Industry','Total Hires','Verified','Account','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableBody>
             {displayEmployers.length === 0 && totalCount > 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center text-secondary">
+              <TableRow><TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                   No employers match your search or filters.
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
             {displayEmployers.map((e) => (
-              <tr
+              <TableRow
                 key={e.id}
                 className="admin-row-clickable"
                 tabIndex={0}
@@ -327,11 +325,11 @@ export default function AdminEmployersPage() {
                   }
                 }}
               >
-                <td className="font-semibold" onClick={(ev) => ev.stopPropagation()}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.35rem' }}>
+                <TableCell className="font-semibold" onClick={(ev) => ev.stopPropagation()}>
+                  <div className="flex flex-wrap items-center gap-1">
                     <button
                       type="button"
-                      className="admin-entity-name-btn"
+                      className="text-primary font-semibold hover:underline"
                       onClick={() => openPanel(e.id, 'view')}
                     >
                       {e.name}
@@ -345,43 +343,36 @@ export default function AdminEmployersPage() {
                       />
                     ) : null}
                   </div>
-                </td>
-                <td>{e.industry}</td>
-                <td>{e.hires}</td>
-                <td>
+                </TableCell>
+                <TableCell>{e.industry}</TableCell>
+                <TableCell>{e.hires}</TableCell>
+                <TableCell>
                   {e.blacklisted ? (
-                    <span className="badge badge-red">Blocked</span>
+                    <StatusBadge tone="red" showDot>Blocked</StatusBadge>
                   ) : e.verified ? (
-                    <span className="badge badge-green">✅ Verified</span>
+                    <StatusBadge tone="green" showDot>Verified</StatusBadge>
                   ) : (
-                    <span className="badge badge-amber">Pending</span>
+                    <StatusBadge tone="amber" showDot>Pending</StatusBadge>
                   )}
-                </td>
-                <td>
-                  {e.active === false ? (
-                    <span className="badge badge-gray">Inactive</span>
-                  ) : (
-                    <span className="badge badge-green">Active</span>
-                  )}
-                </td>
-                <td onClick={(ev) => ev.stopPropagation()}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                </TableCell>
+                <TableCell><StatusBadge tone={e.active === false ? 'gray' : 'green'} showDot>{e.active === false ? 'Inactive' : 'Active'}</StatusBadge></TableCell>
+                <TableCell onClick={(ev) => ev.stopPropagation()}>
+                  <div className="flex flex-wrap gap-1">
                     <StandardTableIconAction action="view" onClick={() => openPanel(e.id, 'view')} />
                     <StandardTableIconAction action="edit" onClick={() => openPanel(e.id, 'edit')} />
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {!isLoading && totalCount === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center text-secondary">
+              <TableRow><TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                   {listError || 'No employers found.'}
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
 
       <AdminRecordModal
         title={selectedName}
@@ -395,27 +386,26 @@ export default function AdminEmployersPage() {
           panelMode === 'view' && detail && !panelLoading && !panelError ? (
             <>
               {detail.accountActive ? (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-secondary"
+                  variant="outline"
                   disabled={togglingActive || saving}
                   onClick={() => toggleEmployerActive(false)}
                 >
                   {togglingActive ? 'Updating…' : 'Deactivate account'}
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-secondary"
+                  variant="outline"
                   disabled={togglingActive || saving}
                   onClick={() => toggleEmployerActive(true)}
                 >
                   {togglingActive ? 'Updating…' : 'Reactivate account'}
-                </button>
+                </Button>
               )}
-              <button
+              <Button
                 type="button"
-                className="btn btn-primary"
                 onClick={() => {
                   setForm(employerToForm(detail));
                   setSaveError('');
@@ -423,7 +413,7 @@ export default function AdminEmployersPage() {
                 }}
               >
                 Edit employer
-              </button>
+              </Button>
             </>
           ) : null
         }
@@ -448,77 +438,71 @@ export default function AdminEmployersPage() {
         ) : null}
 
         {panelMode === 'edit' && detail ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <FieldGroup>
             {saveError ? (
-              <div
-                className="card"
-                role="alert"
-                style={{ borderColor: 'var(--danger-500)', padding: '0.85rem 1rem', marginBottom: 0 }}
-              >
-                <p style={{ margin: 0, color: 'var(--danger-600)', fontSize: '0.875rem' }}>{saveError}</p>
-              </div>
+              <Alert variant="destructive"><AlertDescription>{saveError}</AlertDescription></Alert>
             ) : null}
-            <div className="form-group">
-              <label className="form-label">Company name</label>
-              <input className="form-input" value={form.name} onChange={(e) => updateForm({ name: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Industry</label>
-              <input className="form-input" value={form.industry} onChange={(e) => updateForm({ industry: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Website</label>
-              <input className="form-input" value={form.website} onChange={(e) => updateForm({ website: e.target.value })} placeholder="https://…" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Headquarters</label>
-              <input className="form-input" value={form.headquarters} onChange={(e) => updateForm({ headquarters: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Contact person</label>
-              <input className="form-input" value={form.contactPerson} onChange={(e) => updateForm({ contactPerson: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Contact email</label>
-              <input className="form-input" type="email" value={form.contactEmail} onChange={(e) => updateForm({ contactEmail: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Contact phone</label>
-              <input
-                className="form-input"
+            <Field>
+              <FieldLabel htmlFor="admin-employer-name">Company name</FieldLabel>
+              <Input id="admin-employer-name" value={form.name} onChange={(e) => updateForm({ name: e.target.value })} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-employer-industry">Industry</FieldLabel>
+              <Input id="admin-employer-industry" value={form.industry} onChange={(e) => updateForm({ industry: e.target.value })} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-employer-website">Website</FieldLabel>
+              <Input id="admin-employer-website" value={form.website} onChange={(e) => updateForm({ website: e.target.value })} placeholder="https://…" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-employer-headquarters">Headquarters</FieldLabel>
+              <Input id="admin-employer-headquarters" value={form.headquarters} onChange={(e) => updateForm({ headquarters: e.target.value })} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-employer-contact">Contact person</FieldLabel>
+              <Input id="admin-employer-contact" value={form.contactPerson} onChange={(e) => updateForm({ contactPerson: e.target.value })} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-employer-email">Contact email</FieldLabel>
+              <Input id="admin-employer-email" type="email" value={form.contactEmail} onChange={(e) => updateForm({ contactEmail: e.target.value })} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="admin-employer-phone">Contact phone</FieldLabel>
+              <Input
+                id="admin-employer-phone"
                 value={form.contactPhone}
                 onChange={(e) => updateForm({ contactPhone: e.target.value })}
                 placeholder="+91 9876543210"
               />
-            </div>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
+            </Field>
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="admin-employer-active">Employer account is active (can sign in)</FieldLabel>
+              <Checkbox
+                id="admin-employer-active"
                 checked={form.accountActive}
-                onChange={(e) => updateForm({ accountActive: e.target.checked })}
+                onCheckedChange={(v) => updateForm({ accountActive: !!v })}
               />
-              <span className="text-sm">Employer account is active (can sign in)</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-              <input type="checkbox" checked={form.verified} onChange={(e) => updateForm({ verified: e.target.checked })} />
-              <span className="text-sm">Mark as verified employer</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-              <input type="checkbox" checked={form.blacklisted} onChange={(e) => updateForm({ blacklisted: e.target.checked })} />
-              <span className="text-sm">Block employer from campus access</span>
-            </label>
+            </Field>
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="admin-employer-verified">Mark as verified employer</FieldLabel>
+              <Checkbox id="admin-employer-verified" checked={form.verified} onCheckedChange={(v) => updateForm({ verified: !!v })} />
+            </Field>
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="admin-employer-blocked">Block employer from campus access</FieldLabel>
+              <Checkbox id="admin-employer-blocked" checked={form.blacklisted} onCheckedChange={(v) => updateForm({ blacklisted: !!v })} />
+            </Field>
             {form.blacklisted ? (
-              <div className="form-group">
-                <label className="form-label">Block reason</label>
-                <textarea
-                  className="form-input"
+              <Field>
+                <FieldLabel htmlFor="admin-employer-block-reason">Block reason</FieldLabel>
+                <Textarea
+                  id="admin-employer-block-reason"
                   rows={3}
                   value={form.blacklistReason}
                   onChange={(e) => updateForm({ blacklistReason: e.target.value })}
                 />
-              </div>
+              </Field>
             ) : null}
-          </div>
+          </FieldGroup>
         ) : null}
       </AdminRecordModal>
     </div>

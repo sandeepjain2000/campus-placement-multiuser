@@ -8,6 +8,9 @@ import useSWR from 'swr';
 import PageError from '@/components/PageError';
 import PageLoading from '@/components/PageLoading';
 import { formatFeedbackRole } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const fetcher = (url) => fetch(url).then((res) => {
   if (!res.ok) throw new Error('Failed to load feedback');
@@ -47,50 +50,32 @@ export default function FeedbackPage() {
   if (error) return <PageError error={error} />;
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>🧭 Product feedback</h1>
-          <p>Your threads with the Super Admin team. Start a new item on a separate screen when you are ready.</p>
-        </div>
-        <Link href="/dashboard/feedback/new" className="btn btn-primary">
-          New feedback
-        </Link>
-      </div>
-
-      <div className="grid grid-3" style={{ marginBottom: '1rem' }}>
-        <div className="stats-card"><div className="stats-card-value">{counts.submitted}</div><div className="stats-card-label">Submitted</div></div>
-        <div className="stats-card amber"><div className="stats-card-value">{counts.review}</div><div className="stats-card-label">Under review</div></div>
-        <div className="stats-card green"><div className="stats-card-value">{counts.planned}</div><div className="stats-card-label">Planned</div></div>
-      </div>
-
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Your feedback threads</h3>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0.75rem 1rem 1rem' }}>
+    <div className="animate-fadeIn mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-medium text-muted-foreground">Support</p><h1 className="text-3xl font-bold tracking-tight">Product feedback</h1><p className="mt-1 text-sm text-muted-foreground">Your threads with the Super Admin team.</p></div><Button render={<Link href="/dashboard/feedback/new" />}>New feedback</Button></header>
+      <div className="flex flex-wrap gap-x-6 gap-y-2 rounded-lg border bg-muted/30 px-4 py-3 text-sm"><span><strong>{counts.submitted}</strong> submitted</span><span><strong>{counts.review}</strong> under review</span><span><strong>{counts.planned}</strong> planned</span></div>
+      <Card>
+        <CardHeader><CardTitle>Your feedback threads</CardTitle></CardHeader>
+        <CardContent className="flex flex-col gap-3">
           {isLoading && <PageLoading message="Loading feedback…" inline />}
           {!isLoading && items.map((item) => (
-            <div key={item.id} style={{ border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: '0.75rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
-                <div className="font-semibold">{item.title}</div>
-                <span className={`badge ${item.latest_reply ? 'badge-green' : item.status === 'Planned' ? 'badge-green' : item.status === 'Under Review' ? 'badge-amber' : item.status === 'Closed' ? 'badge-gray' : 'badge-gray'}`}>
-                  {item.latest_reply ? 'Responded' : item.status}
-                </span>
+            <article key={item.id} className="rounded-lg border p-4">
+              <div className="flex justify-between gap-3">
+                <h2 className="font-semibold">{item.title}</h2>
+                <StatusBadge status={item.latest_reply ? 'completed' : item.status} showDot>{item.latest_reply ? 'Responded' : (item.status || '—')}</StatusBadge>
               </div>
-              <div className="text-sm text-secondary" style={{ marginTop: '0.25rem' }}>{item.description}</div>
+              <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
               {item.latest_reply && (
-                <div style={{ marginTop: '0.65rem', padding: '0.6rem 0.65rem', border: '1px solid var(--success-200)', borderRadius: 'var(--radius-md)', background: 'var(--success-50)' }}>
-                  <div className="text-xs text-secondary" style={{ marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                <div className="mt-3 rounded-md border bg-muted/30 p-3">
+                  <div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Super Admin reply
                   </div>
-                  <div className="text-sm" style={{ whiteSpace: 'pre-wrap' }}>{item.latest_reply}</div>
-                  <div className="text-xs text-tertiary" style={{ marginTop: '0.35rem' }}>
+                  <div className="whitespace-pre-wrap text-sm">{item.latest_reply}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">
                     {item.latest_reply_at ? `Updated ${new Date(item.latest_reply_at).toLocaleString()}` : ''}
                   </div>
                 </div>
               )}
-              <div className="text-xs text-tertiary" style={{ marginTop: '0.5rem' }}>
+              <div className="mt-2 text-xs text-muted-foreground">
                 {item.category}
                 {(item.user_name || item.user_email) && (
                   <>
@@ -106,15 +91,15 @@ export default function FeedbackPage() {
                   </>
                 ) : null}
               </div>
-            </div>
+            </article>
           ))}
           {!isLoading && items.length === 0 && (
             <p className="text-sm text-secondary">
               No entries yet. Use <strong>New feedback</strong> to send the first one.
             </p>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

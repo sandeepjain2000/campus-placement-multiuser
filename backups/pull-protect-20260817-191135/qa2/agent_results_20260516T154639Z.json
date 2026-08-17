@@ -1,0 +1,3613 @@
+{
+  "generatedAt": "20260516T154639Z",
+  "baseUrl": "https://campus-placement-omega.vercel.app",
+  "useCloud": false,
+  "model": "meta/llama-3.1-8b-instruct",
+  "nvidiaBaseUrl": "https://integrate.api.nvidia.com/v1",
+  "nvidiaKeysFolder": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys",
+  "nvidiaKeyFiles": [
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+    "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json"
+  ],
+  "logFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\logs\\run_agent_20260516T154639Z.log",
+  "results": [
+    {
+      "id": "C1-VISIT-001",
+      "title": "C1-VISIT-001",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 98747,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 71216,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3101,
+        "total_completion_cost": 0.0,
+        "total_tokens": 101848,
+        "total_cost": 0.0,
+        "entry_count": 14,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 98747,
+            "completion_tokens": 3101,
+            "total_tokens": 101848,
+            "cost": 0.0,
+            "invocations": 14,
+            "average_tokens_per_invocation": 7274.857142857143
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json"
+    },
+    {
+      "id": "C1-VISIT-001-COMP",
+      "title": "C1-VISIT-001 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5866,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 256,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6122,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5866,
+            "completion_tokens": 256,
+            "total_tokens": 6122,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6122.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json"
+    },
+    {
+      "id": "C1-VISIT-002",
+      "title": "C1-VISIT-002",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 25080,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 21472,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 746,
+        "total_completion_cost": 0.0,
+        "total_tokens": 25826,
+        "total_cost": 0.0,
+        "entry_count": 4,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 25080,
+            "completion_tokens": 746,
+            "total_tokens": 25826,
+            "cost": 0.0,
+            "invocations": 4,
+            "average_tokens_per_invocation": 6456.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json"
+    },
+    {
+      "id": "C1-VISIT-002-COMP",
+      "title": "C1-VISIT-002 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5873,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 219,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6092,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5873,
+            "completion_tokens": 219,
+            "total_tokens": 6092,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6092.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json"
+    },
+    {
+      "id": "C1-VISIT-003",
+      "title": "C1-VISIT-003",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11952,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10624,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 406,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12358,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11952,
+            "completion_tokens": 406,
+            "total_tokens": 12358,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6179.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json"
+    },
+    {
+      "id": "C1-VISIT-003-COMP",
+      "title": "C1-VISIT-003 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 31884,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 21296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1015,
+        "total_completion_cost": 0.0,
+        "total_tokens": 32899,
+        "total_cost": 0.0,
+        "entry_count": 5,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 31884,
+            "completion_tokens": 1015,
+            "total_tokens": 32899,
+            "cost": 0.0,
+            "invocations": 5,
+            "average_tokens_per_invocation": 6579.8
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json"
+    },
+    {
+      "id": "C1-VISIT-004",
+      "title": "C1-VISIT-004",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "The agent failed to login with the demo account in previous steps. The current page is still the login page with the email field already filled with arjun.verma@iitm.edu. The password field needs to be filled and the 'Sign In' button clicked. The agent has tried clicking on different elements, but it has not led to a successful login. The page content remains unchanged.",
+      "usage": {
+        "total_prompt_tokens": 140520,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 109632,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 4198,
+        "total_completion_cost": 0.0,
+        "total_tokens": 144718,
+        "total_cost": 0.0,
+        "entry_count": 19,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 140520,
+            "completion_tokens": 4198,
+            "total_tokens": 144718,
+            "cost": 0.0,
+            "invocations": 19,
+            "average_tokens_per_invocation": 7616.736842105263
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json"
+    },
+    {
+      "id": "C1-VISIT-004-COMP",
+      "title": "C1-VISIT-004 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 12062,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10672,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 432,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12494,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 12062,
+            "completion_tokens": 432,
+            "total_tokens": 12494,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6247.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json"
+    },
+    {
+      "id": "C1-VISIT-005",
+      "title": "C1-VISIT-005",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 38606,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 27120,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1140,
+        "total_completion_cost": 0.0,
+        "total_tokens": 39746,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 38606,
+            "completion_tokens": 1140,
+            "total_tokens": 39746,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6624.333333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json"
+    },
+    {
+      "id": "C1-VISIT-005-COMP",
+      "title": "C1-VISIT-005 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 54258,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 45392,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1860,
+        "total_completion_cost": 0.0,
+        "total_tokens": 56118,
+        "total_cost": 0.0,
+        "entry_count": 8,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 54258,
+            "completion_tokens": 1860,
+            "total_tokens": 56118,
+            "cost": 0.0,
+            "invocations": 8,
+            "average_tokens_per_invocation": 7014.75
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json"
+    },
+    {
+      "id": "C1-VISIT-006",
+      "title": "C1-VISIT-006",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 18047,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 552,
+        "total_completion_cost": 0.0,
+        "total_tokens": 18599,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 18047,
+            "completion_tokens": 552,
+            "total_tokens": 18599,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6199.666666666667
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json"
+    },
+    {
+      "id": "C1-VISIT-006-COMP",
+      "title": "C1-VISIT-006 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 12066,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10592,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 460,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12526,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 12066,
+            "completion_tokens": 460,
+            "total_tokens": 12526,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6263.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json"
+    },
+    {
+      "id": "C1-VISIT-007",
+      "title": "C1-VISIT-007",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5801,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 184,
+        "total_completion_cost": 0.0,
+        "total_tokens": 5985,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5801,
+            "completion_tokens": 184,
+            "total_tokens": 5985,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 5985.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json"
+    },
+    {
+      "id": "C1-VISIT-007-COMP",
+      "title": "C1-VISIT-007 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5871,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 229,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6100,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5871,
+            "completion_tokens": 229,
+            "total_tokens": 6100,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6100.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json"
+    },
+    {
+      "id": "C1-VISIT-008",
+      "title": "C1-VISIT-008",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11946,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10592,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 459,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12405,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11946,
+            "completion_tokens": 459,
+            "total_tokens": 12405,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6202.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json"
+    },
+    {
+      "id": "C1-VISIT-008-COMP",
+      "title": "C1-VISIT-008 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "I was unable to submit the login form and verify if the URL contains /dashboard. The page content has not changed across 25 consecutive actions, suggesting that my actions may not be having the intended effect. I will try a different approach in future tasks.",
+      "usage": {
+        "total_prompt_tokens": 124187,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 101584,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3758,
+        "total_completion_cost": 0.0,
+        "total_tokens": 127945,
+        "total_cost": 0.0,
+        "entry_count": 17,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 124187,
+            "completion_tokens": 3758,
+            "total_tokens": 127945,
+            "cost": 0.0,
+            "invocations": 17,
+            "average_tokens_per_invocation": 7526.176470588235
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json"
+    },
+    {
+      "id": "C1-VISIT-009",
+      "title": "C1-VISIT-009",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 45270,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 38192,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1462,
+        "total_completion_cost": 0.0,
+        "total_tokens": 46732,
+        "total_cost": 0.0,
+        "entry_count": 7,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 45270,
+            "completion_tokens": 1462,
+            "total_tokens": 46732,
+            "cost": 0.0,
+            "invocations": 7,
+            "average_tokens_per_invocation": 6676.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json"
+    },
+    {
+      "id": "C1-VISIT-009-COMP",
+      "title": "C1-VISIT-009 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5869,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 289,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6158,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5869,
+            "completion_tokens": 289,
+            "total_tokens": 6158,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6158.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json"
+    },
+    {
+      "id": "C1-VISIT-010",
+      "title": "C1-VISIT-010",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5802,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 200,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6002,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5802,
+            "completion_tokens": 200,
+            "total_tokens": 6002,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6002.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json"
+    },
+    {
+      "id": "C1-VISIT-010-COMP",
+      "title": "C1-VISIT-010 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5864,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 230,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6094,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5864,
+            "completion_tokens": 230,
+            "total_tokens": 6094,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6094.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json"
+    },
+    {
+      "id": "C1-VISIT-011",
+      "title": "C1-VISIT-011",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 82221,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 67600,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 2328,
+        "total_completion_cost": 0.0,
+        "total_tokens": 84549,
+        "total_cost": 0.0,
+        "entry_count": 12,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 82221,
+            "completion_tokens": 2328,
+            "total_tokens": 84549,
+            "cost": 0.0,
+            "invocations": 12,
+            "average_tokens_per_invocation": 7045.75
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json"
+    },
+    {
+      "id": "C1-VISIT-011-COMP",
+      "title": "C1-VISIT-011 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 38887,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 32496,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1236,
+        "total_completion_cost": 0.0,
+        "total_tokens": 40123,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 38887,
+            "completion_tokens": 1236,
+            "total_tokens": 40123,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6687.166666666667
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json"
+    },
+    {
+      "id": "C1-VISIT-012",
+      "title": "C1-VISIT-012",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "The login process was attempted but not completed successfully. The user's credentials were entered correctly, but the page did not load completely. The current URL is https://campus-placement-omega.vercel.app/login. The expected URL should be https://campus-placement-omega.vercel.app/dashboard/student/offers.",
+      "usage": {
+        "total_prompt_tokens": 159237,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 133072,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 4485,
+        "total_completion_cost": 0.0,
+        "total_tokens": 163722,
+        "total_cost": 0.0,
+        "entry_count": 22,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 159237,
+            "completion_tokens": 4485,
+            "total_tokens": 163722,
+            "cost": 0.0,
+            "invocations": 22,
+            "average_tokens_per_invocation": 7441.909090909091
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json"
+    },
+    {
+      "id": "C1-VISIT-012-COMP",
+      "title": "C1-VISIT-012 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5867,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 256,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6123,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5867,
+            "completion_tokens": 256,
+            "total_tokens": 6123,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6123.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json"
+    },
+    {
+      "id": "C1-VISIT-013",
+      "title": "C1-VISIT-013",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 64778,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 55088,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 2157,
+        "total_completion_cost": 0.0,
+        "total_tokens": 66935,
+        "total_cost": 0.0,
+        "entry_count": 10,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 64778,
+            "completion_tokens": 2157,
+            "total_tokens": 66935,
+            "cost": 0.0,
+            "invocations": 10,
+            "average_tokens_per_invocation": 6693.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json"
+    },
+    {
+      "id": "C1-VISIT-013-COMP",
+      "title": "C1-VISIT-013 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 83030,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 67776,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3185,
+        "total_completion_cost": 0.0,
+        "total_tokens": 86215,
+        "total_cost": 0.0,
+        "entry_count": 12,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 83030,
+            "completion_tokens": 3185,
+            "total_tokens": 86215,
+            "cost": 0.0,
+            "invocations": 12,
+            "average_tokens_per_invocation": 7184.583333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json"
+    },
+    {
+      "id": "C1-VISIT-014",
+      "title": "C1-VISIT-014",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 17916,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16096,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 609,
+        "total_completion_cost": 0.0,
+        "total_tokens": 18525,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 17916,
+            "completion_tokens": 609,
+            "total_tokens": 18525,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6175.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json"
+    },
+    {
+      "id": "C1-VISIT-014-COMP",
+      "title": "C1-VISIT-014 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5861,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 241,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6102,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5861,
+            "completion_tokens": 241,
+            "total_tokens": 6102,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6102.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json"
+    },
+    {
+      "id": "C1-VISIT-015",
+      "title": "C1-VISIT-015",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 135727,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 113840,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 4241,
+        "total_completion_cost": 0.0,
+        "total_tokens": 139968,
+        "total_cost": 0.0,
+        "entry_count": 19,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 135727,
+            "completion_tokens": 4241,
+            "total_tokens": 139968,
+            "cost": 0.0,
+            "invocations": 19,
+            "average_tokens_per_invocation": 7366.736842105263
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json"
+    },
+    {
+      "id": "C1-VISIT-015-COMP",
+      "title": "C1-VISIT-015 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 0,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 0,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 0,
+        "total_completion_cost": 0.0,
+        "total_tokens": 0,
+        "total_cost": 0.0,
+        "entry_count": 0,
+        "by_model": {}
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json"
+    },
+    {
+      "id": "C1-BLOCK-016",
+      "title": "C1-BLOCK-016",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5814,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 231,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6045,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5814,
+            "completion_tokens": 231,
+            "total_tokens": 6045,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6045.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json"
+    },
+    {
+      "id": "C1-BLOCK-016-COMP",
+      "title": "C1-BLOCK-016 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5869,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 241,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6110,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5869,
+            "completion_tokens": 241,
+            "total_tokens": 6110,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6110.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json"
+    },
+    {
+      "id": "C1-BLOCK-017",
+      "title": "C1-BLOCK-017",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 18207,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 15968,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 702,
+        "total_completion_cost": 0.0,
+        "total_tokens": 18909,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 18207,
+            "completion_tokens": 702,
+            "total_tokens": 18909,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6303.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json"
+    },
+    {
+      "id": "C1-BLOCK-017-COMP",
+      "title": "C1-BLOCK-017 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5869,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 223,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6092,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5869,
+            "completion_tokens": 223,
+            "total_tokens": 6092,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6092.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json"
+    },
+    {
+      "id": "C1-BLOCK-018",
+      "title": "C1-BLOCK-018",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "I was unable to submit the form correctly in previous steps. The email field matches, but I need to find a different way to submit the form. I have analyzed the interactive elements on the page and found no alternative element to submit the form. The current page content is: PlacementHub \u2014 Dashboard. The interactive elements on the page are: [Start of page] [432]<a /> PlacementHub Connecting your placement community Arjun \u2014 Dashboard [497]<span title=Dev reference: S-56 \u2014 /dashboard/student aria-label=Development screen id S-56 /> S-56 [500]<svg /> <!-- SVG content collapsed --> |SHADOW(open)|[433]<input id=hub-search placeholder=Search screens (e.g. drives, S-11)\u2026 aria-label=Search dashboard destinations title=Filter links by name, path, or screen tag (e.g. S-11) type=search /> [422]<div /> II Arjun Verma Student [434]<a title=v0.1.1 \u00b7 dpl_3oxWceTaPgkJXZVuLW54pQPS69Qn \u2014 Notifications aria-label=v0.1.1 \u00b7 dpl_3oxWceTaPgkJXZVuLW54pQPS69Qn \u2014 Notifications /> [513]<span /> [435]<button title=Toggle theme aria-label=Switch to dark mode /> [436]<button /> Sign out Open any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here. [437]<a /> Browse drives [438]<a /> Jobs [439]<a /> Internships [424]<a /> Projects [440]<a /> Calendar [441]<a /> Alerts [442]<a /> My profile Overview [443]<a /> Dashboard [444]<a /> Getting Started My data export Placements Browse Drives Browse Jobs Browse Internships Browse Projects Placement calendar My Interviews My Offers My Applications My Drives My Jobs My Internships My Projects My Hackathons Communication Clarifications Alerts Feedback Documents & Profile My Profile Documents End of page].",
+      "usage": {
+        "total_prompt_tokens": 144393,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 118688,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 4289,
+        "total_completion_cost": 0.0,
+        "total_tokens": 148682,
+        "total_cost": 0.0,
+        "entry_count": 20,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 144393,
+            "completion_tokens": 4289,
+            "total_tokens": 148682,
+            "cost": 0.0,
+            "invocations": 20,
+            "average_tokens_per_invocation": 7434.1
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json"
+    },
+    {
+      "id": "C1-BLOCK-018-COMP",
+      "title": "C1-BLOCK-018 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 18602,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16192,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 815,
+        "total_completion_cost": 0.0,
+        "total_tokens": 19417,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 18602,
+            "completion_tokens": 815,
+            "total_tokens": 19417,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6472.333333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json"
+    },
+    {
+      "id": "C1-BLOCK-019",
+      "title": "C1-BLOCK-019",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5800,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 276,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6076,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5800,
+            "completion_tokens": 276,
+            "total_tokens": 6076,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6076.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json"
+    },
+    {
+      "id": "C1-BLOCK-019-COMP",
+      "title": "C1-BLOCK-019 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 12076,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10624,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 461,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12537,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 12076,
+            "completion_tokens": 461,
+            "total_tokens": 12537,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6268.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json"
+    },
+    {
+      "id": "C1-BLOCK-020",
+      "title": "C1-BLOCK-020",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5799,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 183,
+        "total_completion_cost": 0.0,
+        "total_tokens": 5982,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5799,
+            "completion_tokens": 183,
+            "total_tokens": 5982,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 5982.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json"
+    },
+    {
+      "id": "C1-BLOCK-020-COMP",
+      "title": "C1-BLOCK-020 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5865,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 212,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6077,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5865,
+            "completion_tokens": 212,
+            "total_tokens": 6077,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6077.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json"
+    },
+    {
+      "id": "C1-BLOCK-021",
+      "title": "C1-BLOCK-021",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11907,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10592,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 396,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12303,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11907,
+            "completion_tokens": 396,
+            "total_tokens": 12303,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6151.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json"
+    },
+    {
+      "id": "C1-BLOCK-021-COMP",
+      "title": "C1-BLOCK-021 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5870,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 236,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6106,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5870,
+            "completion_tokens": 236,
+            "total_tokens": 6106,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6106.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json"
+    },
+    {
+      "id": "C1-BLOCK-022",
+      "title": "C1-BLOCK-022",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 45303,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 37936,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1703,
+        "total_completion_cost": 0.0,
+        "total_tokens": 47006,
+        "total_cost": 0.0,
+        "entry_count": 7,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 45303,
+            "completion_tokens": 1703,
+            "total_tokens": 47006,
+            "cost": 0.0,
+            "invocations": 7,
+            "average_tokens_per_invocation": 6715.142857142857
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json"
+    },
+    {
+      "id": "C1-BLOCK-022-COMP",
+      "title": "C1-BLOCK-022 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 38729,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 32352,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1318,
+        "total_completion_cost": 0.0,
+        "total_tokens": 40047,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 38729,
+            "completion_tokens": 1318,
+            "total_tokens": 40047,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6674.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json"
+    },
+    {
+      "id": "C1-BLOCK-023",
+      "title": "C1-BLOCK-023",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11973,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10656,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 405,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12378,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11973,
+            "completion_tokens": 405,
+            "total_tokens": 12378,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6189.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json"
+    },
+    {
+      "id": "C1-BLOCK-023-COMP",
+      "title": "C1-BLOCK-023 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 46545,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 38192,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1766,
+        "total_completion_cost": 0.0,
+        "total_tokens": 48311,
+        "total_cost": 0.0,
+        "entry_count": 7,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 46545,
+            "completion_tokens": 1766,
+            "total_tokens": 48311,
+            "cost": 0.0,
+            "invocations": 7,
+            "average_tokens_per_invocation": 6901.571428571428
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json"
+    },
+    {
+      "id": "C1-BLOCK-024",
+      "title": "C1-BLOCK-024",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5799,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 241,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6040,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5799,
+            "completion_tokens": 241,
+            "total_tokens": 6040,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6040.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json"
+    },
+    {
+      "id": "C1-BLOCK-024-COMP",
+      "title": "C1-BLOCK-024 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 52732,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 44176,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1654,
+        "total_completion_cost": 0.0,
+        "total_tokens": 54386,
+        "total_cost": 0.0,
+        "entry_count": 8,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 52732,
+            "completion_tokens": 1654,
+            "total_tokens": 54386,
+            "cost": 0.0,
+            "invocations": 8,
+            "average_tokens_per_invocation": 6798.25
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json"
+    },
+    {
+      "id": "C1-BLOCK-025",
+      "title": "C1-BLOCK-025",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11885,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10592,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 400,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12285,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11885,
+            "completion_tokens": 400,
+            "total_tokens": 12285,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6142.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json"
+    },
+    {
+      "id": "C1-BLOCK-025-COMP",
+      "title": "C1-BLOCK-025 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 12089,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10688,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 445,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12534,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 12089,
+            "completion_tokens": 445,
+            "total_tokens": 12534,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6267.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json"
+    },
+    {
+      "id": "C1-BLOCK-026",
+      "title": "C1-BLOCK-026",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11937,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10592,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 446,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12383,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11937,
+            "completion_tokens": 446,
+            "total_tokens": 12383,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6191.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json"
+    },
+    {
+      "id": "C1-BLOCK-026-COMP",
+      "title": "C1-BLOCK-026 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 75946,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 62032,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 2304,
+        "total_completion_cost": 0.0,
+        "total_tokens": 78250,
+        "total_cost": 0.0,
+        "entry_count": 11,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 75946,
+            "completion_tokens": 2304,
+            "total_tokens": 78250,
+            "cost": 0.0,
+            "invocations": 11,
+            "average_tokens_per_invocation": 7113.636363636364
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json"
+    },
+    {
+      "id": "C1-BLOCK-027",
+      "title": "C1-BLOCK-027",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 105796,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 87504,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3410,
+        "total_completion_cost": 0.0,
+        "total_tokens": 109206,
+        "total_cost": 0.0,
+        "entry_count": 15,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 105796,
+            "completion_tokens": 3410,
+            "total_tokens": 109206,
+            "cost": 0.0,
+            "invocations": 15,
+            "average_tokens_per_invocation": 7280.4
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json"
+    },
+    {
+      "id": "C1-BLOCK-027-COMP",
+      "title": "C1-BLOCK-027 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5872,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 214,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6086,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5872,
+            "completion_tokens": 214,
+            "total_tokens": 6086,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6086.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json"
+    },
+    {
+      "id": "C1-BLOCK-028",
+      "title": "C1-BLOCK-028",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 24825,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 21520,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 851,
+        "total_completion_cost": 0.0,
+        "total_tokens": 25676,
+        "total_cost": 0.0,
+        "entry_count": 4,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 24825,
+            "completion_tokens": 851,
+            "total_tokens": 25676,
+            "cost": 0.0,
+            "invocations": 4,
+            "average_tokens_per_invocation": 6419.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json"
+    },
+    {
+      "id": "C1-BLOCK-028-COMP",
+      "title": "C1-BLOCK-028 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 31952,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 27040,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1153,
+        "total_completion_cost": 0.0,
+        "total_tokens": 33105,
+        "total_cost": 0.0,
+        "entry_count": 5,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 31952,
+            "completion_tokens": 1153,
+            "total_tokens": 33105,
+            "cost": 0.0,
+            "invocations": 5,
+            "average_tokens_per_invocation": 6621.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json"
+    },
+    {
+      "id": "C1-BLOCK-029",
+      "title": "C1-BLOCK-029",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 68800,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 55312,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 2259,
+        "total_completion_cost": 0.0,
+        "total_tokens": 71059,
+        "total_cost": 0.0,
+        "entry_count": 10,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 68800,
+            "completion_tokens": 2259,
+            "total_tokens": 71059,
+            "cost": 0.0,
+            "invocations": 10,
+            "average_tokens_per_invocation": 7105.9
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json"
+    },
+    {
+      "id": "C1-BLOCK-029-COMP",
+      "title": "C1-BLOCK-029 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 25204,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 21632,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 949,
+        "total_completion_cost": 0.0,
+        "total_tokens": 26153,
+        "total_cost": 0.0,
+        "entry_count": 4,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 25204,
+            "completion_tokens": 949,
+            "total_tokens": 26153,
+            "cost": 0.0,
+            "invocations": 4,
+            "average_tokens_per_invocation": 6538.25
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json"
+    },
+    {
+      "id": "C1-BLOCK-030",
+      "title": "C1-BLOCK-030",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5802,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 217,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6019,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5802,
+            "completion_tokens": 217,
+            "total_tokens": 6019,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6019.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json"
+    },
+    {
+      "id": "C1-BLOCK-030-COMP",
+      "title": "C1-BLOCK-030 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 0,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 0,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 0,
+        "total_completion_cost": 0.0,
+        "total_tokens": 0,
+        "total_cost": 0.0,
+        "entry_count": 0,
+        "by_model": {}
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json"
+    },
+    {
+      "id": "C1-BLOCK-031",
+      "title": "C1-BLOCK-031",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 12025,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10704,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 518,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12543,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 12025,
+            "completion_tokens": 518,
+            "total_tokens": 12543,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6271.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json"
+    },
+    {
+      "id": "C1-BLOCK-031-COMP",
+      "title": "C1-BLOCK-031 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5873,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 214,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6087,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5873,
+            "completion_tokens": 214,
+            "total_tokens": 6087,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6087.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json"
+    },
+    {
+      "id": "C1-BLOCK-032",
+      "title": "C1-BLOCK-032",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 79988,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 68960,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 2903,
+        "total_completion_cost": 0.0,
+        "total_tokens": 82891,
+        "total_cost": 0.0,
+        "entry_count": 12,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 79988,
+            "completion_tokens": 2903,
+            "total_tokens": 82891,
+            "cost": 0.0,
+            "invocations": 12,
+            "average_tokens_per_invocation": 6907.583333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json"
+    },
+    {
+      "id": "C1-BLOCK-032-COMP",
+      "title": "C1-BLOCK-032 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "Failed to login with the demo account due to repeated attempts without page changes. The current page state is: https://campus-placement-omega.vercel.app/dashboard/student - PlacementHub \u2014 Campus Placemen. The interactive elements on the page are: [472]<a /> PlacementHub, [492]<span title=Dev reference: S-56 \u2014 /dashboard/student aria-label=Development screen id S-56 />, [481]<svg /> <!-- SVG content collapsed --> |SHADOW(open)|, [482]<input id=hub-search placeholder=Search screens (e.g. drives, S-11)\u2026 aria-label=Search dashboard destinations title=Filter links by name, path, or screen tag (e.g. S-11) type=search />, [494]<div /> II Indian Institute of Technology, Madras Student Arjun Verma, [496]<a title=v0.1.1 \u00b7 dpl_3oxWceTaPgkJXZVuLW54pQPS69Qn \u2014 Notifications aria-label=v0.1.1 \u00b7 dpl_3oxWceTaPgkJXZVuLW54pQPS69Qn \u2014 Notifications />, [497]<button title=Toggle theme aria-label=Switch to dark mode />, [498]<button /> Sign out Open any destination below The sidebar on inner pages shows only that category use Home in the top bar to return here., [503]<a /> Browse drives, [504]<a /> Jobs, [505]<a /> Internships, [506]<a /> Projects, [507]<a /> Calendar, [508]<a /> Alerts, [509]<a /> My profile Overview, [516]<a /> Dashboard, [523]<a /> Getting Started, [529]<a /> My data export Placements Browse Drives Browse Jobs Browse Internships Browse Projects Placement calendar My Interviews My Offers My Applications My Drives My Jobs My Internships My Projects My Hackathons Communication Clarifications Alerts Feedback Documents & Profile My Profile Documents",
+      "usage": {
+        "total_prompt_tokens": 202666,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 164144,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 5973,
+        "total_completion_cost": 0.0,
+        "total_tokens": 208639,
+        "total_cost": 0.0,
+        "entry_count": 26,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 202666,
+            "completion_tokens": 5973,
+            "total_tokens": 208639,
+            "cost": 0.0,
+            "invocations": 26,
+            "average_tokens_per_invocation": 8024.576923076923
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json"
+    },
+    {
+      "id": "C1-BLOCK-033",
+      "title": "C1-BLOCK-033",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 38504,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 32240,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1195,
+        "total_completion_cost": 0.0,
+        "total_tokens": 39699,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 38504,
+            "completion_tokens": 1195,
+            "total_tokens": 39699,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6616.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json"
+    },
+    {
+      "id": "C1-BLOCK-033-COMP",
+      "title": "C1-BLOCK-033 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5866,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 267,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6133,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5866,
+            "completion_tokens": 267,
+            "total_tokens": 6133,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6133.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json"
+    },
+    {
+      "id": "C1-BLOCK-034",
+      "title": "C1-BLOCK-034",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5805,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 235,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6040,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5805,
+            "completion_tokens": 235,
+            "total_tokens": 6040,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6040.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json"
+    },
+    {
+      "id": "C1-BLOCK-034-COMP",
+      "title": "C1-BLOCK-034 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 18145,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16048,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 691,
+        "total_completion_cost": 0.0,
+        "total_tokens": 18836,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 18145,
+            "completion_tokens": 691,
+            "total_tokens": 18836,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6278.666666666667
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json"
+    },
+    {
+      "id": "C1-BLOCK-035",
+      "title": "C1-BLOCK-035",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "The task is not fully completed as requested by the user. I was unable to login with the demo account and simulate a logout and then attempt to login with the demo account. The current page content remains unchanged after multiple attempts. The target route /dashboard/college/hiring-assessment is not accessible without proper authentication.",
+      "usage": {
+        "total_prompt_tokens": 115226,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 94928,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3612,
+        "total_completion_cost": 0.0,
+        "total_tokens": 118838,
+        "total_cost": 0.0,
+        "entry_count": 16,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 115226,
+            "completion_tokens": 3612,
+            "total_tokens": 118838,
+            "cost": 0.0,
+            "invocations": 16,
+            "average_tokens_per_invocation": 7427.375
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json"
+    },
+    {
+      "id": "C1-BLOCK-035-COMP",
+      "title": "C1-BLOCK-035 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 149322,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 120112,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 4574,
+        "total_completion_cost": 0.0,
+        "total_tokens": 153896,
+        "total_cost": 0.0,
+        "entry_count": 20,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 149322,
+            "completion_tokens": 4574,
+            "total_tokens": 153896,
+            "cost": 0.0,
+            "invocations": 20,
+            "average_tokens_per_invocation": 7694.8
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json"
+    },
+    {
+      "id": "C1-BLOCK-036",
+      "title": "C1-BLOCK-036",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 11961,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10592,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 446,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12407,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 11961,
+            "completion_tokens": 446,
+            "total_tokens": 12407,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6203.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json"
+    },
+    {
+      "id": "C1-BLOCK-036-COMP",
+      "title": "C1-BLOCK-036 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5868,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 263,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6131,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5868,
+            "completion_tokens": 263,
+            "total_tokens": 6131,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6131.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json"
+    },
+    {
+      "id": "C1-BLOCK-037",
+      "title": "C1-BLOCK-037",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 18310,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16000,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 747,
+        "total_completion_cost": 0.0,
+        "total_tokens": 19057,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 18310,
+            "completion_tokens": 747,
+            "total_tokens": 19057,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6352.333333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json"
+    },
+    {
+      "id": "C1-BLOCK-037-COMP",
+      "title": "C1-BLOCK-037 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "I have failed to complete the task as requested by the user. After 19 attempts, I have repeated a similar action 16 times in the last 19 actions without making progress. The current plan includes five steps: (1) Open URL https://campus-placement-omega.vercel.app/login?email=arjun.verma%40iitm.edu, (2) Ensure email field matches, (3) Enter password Admin@123 from sensitive data, (4) Submit form, and (5) Wait until URL contains /dashboard. The current state of the browser is: Current tab: 5429 Available tabs: Tab 5429: https://campus-placement-omega.vercel.app/login?email=arjun.verma%40iitm.edu - PlacementHub \u2014 Campus Placemen Interactive elements: [Start of page] [1873]<a /> PlacementHub Welcome back Sign in to your account to continue [1882]<button id=view-credentials-btn /> Demo accounts Email address |SHADOW(open)|[1886]<input id=login-email placeholder=you@example.com type=email value=arjun.verma@iitm.edu required=true /> Password [1888]<a /> Forgot password? |SHADOW(open)|[1894]<input id=login-password autocomplete=current-password placeholder=Enter your password type=password required=true /> [1895]<button aria-label=Show password title=Show password /> [1900]<button id=login-submit type=submit /> Sign In [1910]<a /> View all system accounts Don't have an account? [1914]<a /> Sign up [End of page]",
+      "usage": {
+        "total_prompt_tokens": 126642,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 105792,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 5394,
+        "total_completion_cost": 0.0,
+        "total_tokens": 132036,
+        "total_cost": 0.0,
+        "entry_count": 17,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 126642,
+            "completion_tokens": 5394,
+            "total_tokens": 132036,
+            "cost": 0.0,
+            "invocations": 17,
+            "average_tokens_per_invocation": 7766.823529411765
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json"
+    },
+    {
+      "id": "C1-BLOCK-038",
+      "title": "C1-BLOCK-038",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5814,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 221,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6035,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5814,
+            "completion_tokens": 221,
+            "total_tokens": 6035,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6035.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json"
+    },
+    {
+      "id": "C1-BLOCK-038-COMP",
+      "title": "C1-BLOCK-038 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 37854,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 32000,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1398,
+        "total_completion_cost": 0.0,
+        "total_tokens": 39252,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 37854,
+            "completion_tokens": 1398,
+            "total_tokens": 39252,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6542.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json"
+    },
+    {
+      "id": "C1-BLOCK-039",
+      "title": "C1-BLOCK-039",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "The task was not fully completed due to repeated failures. The user request was to test the authentication of the demo account on the campus placement omega application. The preconditions were to open the login page with the demo account credentials and submit the form. The expected results were access denied or user is redirected to role-appropriate screen, wrong screen is not accessible, and no server/client error is shown. However, due to repeated failures, I was unable to complete this task within the allotted steps.",
+      "usage": {
+        "total_prompt_tokens": 83777,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 69776,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3215,
+        "total_completion_cost": 0.0,
+        "total_tokens": 86992,
+        "total_cost": 0.0,
+        "entry_count": 12,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 83777,
+            "completion_tokens": 3215,
+            "total_tokens": 86992,
+            "cost": 0.0,
+            "invocations": 12,
+            "average_tokens_per_invocation": 7249.333333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json"
+    },
+    {
+      "id": "C1-BLOCK-039-COMP",
+      "title": "C1-BLOCK-039 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5870,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 237,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6107,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5870,
+            "completion_tokens": 237,
+            "total_tokens": 6107,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6107.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json"
+    },
+    {
+      "id": "C1-BLOCK-040",
+      "title": "C1-BLOCK-040",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 112425,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 92032,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3468,
+        "total_completion_cost": 0.0,
+        "total_tokens": 115893,
+        "total_cost": 0.0,
+        "entry_count": 16,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 112425,
+            "completion_tokens": 3468,
+            "total_tokens": 115893,
+            "cost": 0.0,
+            "invocations": 16,
+            "average_tokens_per_invocation": 7243.3125
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json"
+    },
+    {
+      "id": "C1-BLOCK-040-COMP",
+      "title": "C1-BLOCK-040 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 81370,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 62320,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 2441,
+        "total_completion_cost": 0.0,
+        "total_tokens": 83811,
+        "total_cost": 0.0,
+        "entry_count": 12,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 81370,
+            "completion_tokens": 2441,
+            "total_tokens": 83811,
+            "cost": 0.0,
+            "invocations": 12,
+            "average_tokens_per_invocation": 6984.25
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json"
+    },
+    {
+      "id": "C1-BLOCK-041",
+      "title": "C1-BLOCK-041",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 18313,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 16096,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 836,
+        "total_completion_cost": 0.0,
+        "total_tokens": 19149,
+        "total_cost": 0.0,
+        "entry_count": 3,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 18313,
+            "completion_tokens": 836,
+            "total_tokens": 19149,
+            "cost": 0.0,
+            "invocations": 3,
+            "average_tokens_per_invocation": 6383.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json"
+    },
+    {
+      "id": "C1-BLOCK-041-COMP",
+      "title": "C1-BLOCK-041 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5870,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 225,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6095,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5870,
+            "completion_tokens": 225,
+            "total_tokens": 6095,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6095.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json"
+    },
+    {
+      "id": "C1-BLOCK-042",
+      "title": "C1-BLOCK-042",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 38750,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 32192,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1196,
+        "total_completion_cost": 0.0,
+        "total_tokens": 39946,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 38750,
+            "completion_tokens": 1196,
+            "total_tokens": 39946,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6657.666666666667
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json"
+    },
+    {
+      "id": "C1-BLOCK-042-COMP",
+      "title": "C1-BLOCK-042 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5862,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 189,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6051,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5862,
+            "completion_tokens": 189,
+            "total_tokens": 6051,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6051.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json"
+    },
+    {
+      "id": "C1-BLOCK-043",
+      "title": "C1-BLOCK-043",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 31702,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 26864,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1074,
+        "total_completion_cost": 0.0,
+        "total_tokens": 32776,
+        "total_cost": 0.0,
+        "entry_count": 5,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 31702,
+            "completion_tokens": 1074,
+            "total_tokens": 32776,
+            "cost": 0.0,
+            "invocations": 5,
+            "average_tokens_per_invocation": 6555.2
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json"
+    },
+    {
+      "id": "C1-BLOCK-043-COMP",
+      "title": "C1-BLOCK-043 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 38960,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 32160,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1383,
+        "total_completion_cost": 0.0,
+        "total_tokens": 40343,
+        "total_cost": 0.0,
+        "entry_count": 6,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 38960,
+            "completion_tokens": 1383,
+            "total_tokens": 40343,
+            "cost": 0.0,
+            "invocations": 6,
+            "average_tokens_per_invocation": 6723.833333333333
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json"
+    },
+    {
+      "id": "C1-BLOCK-044",
+      "title": "C1-BLOCK-044",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": "Task C1-BLOCK-044: Authentication with demo account on application base URL. I was unable to make progress due to repeated navigation to the login page. The current URL is still https://campus-placement-omega.vercel.app/login?email=arjun.verma%40iitm.edu. I did not reach the expected outcome of accessing the /dashboard page.",
+      "usage": {
+        "total_prompt_tokens": 91898,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 76432,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 3179,
+        "total_completion_cost": 0.0,
+        "total_tokens": 95077,
+        "total_cost": 0.0,
+        "entry_count": 13,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 91898,
+            "completion_tokens": 3179,
+            "total_tokens": 95077,
+            "cost": 0.0,
+            "invocations": 13,
+            "average_tokens_per_invocation": 7313.615384615385
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json"
+    },
+    {
+      "id": "C1-BLOCK-044-COMP",
+      "title": "C1-BLOCK-044 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5864,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 295,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6159,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5864,
+            "completion_tokens": 295,
+            "total_tokens": 6159,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6159.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json"
+    },
+    {
+      "id": "C1-BLOCK-045",
+      "title": "C1-BLOCK-045",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 24787,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 21312,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 783,
+        "total_completion_cost": 0.0,
+        "total_tokens": 25570,
+        "total_cost": 0.0,
+        "entry_count": 4,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 24787,
+            "completion_tokens": 783,
+            "total_tokens": 25570,
+            "cost": 0.0,
+            "invocations": 4,
+            "average_tokens_per_invocation": 6392.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json"
+    },
+    {
+      "id": "C1-BLOCK-045-COMP",
+      "title": "C1-BLOCK-045 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 0,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 0,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 0,
+        "total_completion_cost": 0.0,
+        "total_tokens": 0,
+        "total_cost": 0.0,
+        "entry_count": 0,
+        "by_model": {}
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json"
+    },
+    {
+      "id": "C1-BLOCK-046",
+      "title": "C1-BLOCK-046",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5801,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 196,
+        "total_completion_cost": 0.0,
+        "total_tokens": 5997,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5801,
+            "completion_tokens": 196,
+            "total_tokens": 5997,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 5997.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json"
+    },
+    {
+      "id": "C1-BLOCK-046-COMP",
+      "title": "C1-BLOCK-046 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 12042,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 10640,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 449,
+        "total_completion_cost": 0.0,
+        "total_tokens": 12491,
+        "total_cost": 0.0,
+        "entry_count": 2,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 12042,
+            "completion_tokens": 449,
+            "total_tokens": 12491,
+            "cost": 0.0,
+            "invocations": 2,
+            "average_tokens_per_invocation": 6245.5
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json"
+    },
+    {
+      "id": "C1-BLOCK-047",
+      "title": "C1-BLOCK-047",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5800,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 212,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6012,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5800,
+            "completion_tokens": 212,
+            "total_tokens": 6012,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6012.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json"
+    },
+    {
+      "id": "C1-BLOCK-047-COMP",
+      "title": "C1-BLOCK-047 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 24882,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 21520,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1010,
+        "total_completion_cost": 0.0,
+        "total_tokens": 25892,
+        "total_cost": 0.0,
+        "entry_count": 4,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 24882,
+            "completion_tokens": 1010,
+            "total_tokens": 25892,
+            "cost": 0.0,
+            "invocations": 4,
+            "average_tokens_per_invocation": 6473.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json"
+    },
+    {
+      "id": "C1-BLOCK-048",
+      "title": "C1-BLOCK-048",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5801,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 260,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6061,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5801,
+            "completion_tokens": 260,
+            "total_tokens": 6061,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6061.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json"
+    },
+    {
+      "id": "C1-BLOCK-048-COMP",
+      "title": "C1-BLOCK-048 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5867,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 217,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6084,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5867,
+            "completion_tokens": 217,
+            "total_tokens": 6084,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6084.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json"
+    },
+    {
+      "id": "C1-BLOCK-049",
+      "title": "C1-BLOCK-049",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 31617,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 26864,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 1089,
+        "total_completion_cost": 0.0,
+        "total_tokens": 32706,
+        "total_cost": 0.0,
+        "entry_count": 5,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 31617,
+            "completion_tokens": 1089,
+            "total_tokens": 32706,
+            "cost": 0.0,
+            "invocations": 5,
+            "average_tokens_per_invocation": 6541.2
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json"
+    },
+    {
+      "id": "C1-BLOCK-049-COMP",
+      "title": "C1-BLOCK-049 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5884,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 229,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6113,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5884,
+            "completion_tokens": 229,
+            "total_tokens": 6113,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6113.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json"
+    },
+    {
+      "id": "C1-BLOCK-050",
+      "title": "C1-BLOCK-050",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5805,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5328,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 241,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6046,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5805,
+            "completion_tokens": 241,
+            "total_tokens": 6046,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6046.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json"
+    },
+    {
+      "id": "C1-BLOCK-050-COMP",
+      "title": "C1-BLOCK-050 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "final_text": null,
+      "usage": {
+        "total_prompt_tokens": 5866,
+        "total_prompt_cost": 0.0,
+        "total_prompt_cached_tokens": 5296,
+        "total_prompt_cached_cost": 0.0,
+        "total_completion_tokens": 229,
+        "total_completion_cost": 0.0,
+        "total_tokens": 6095,
+        "total_cost": 0.0,
+        "entry_count": 1,
+        "by_model": {
+          "meta/llama-3.1-8b-instruct": {
+            "model": "meta/llama-3.1-8b-instruct",
+            "prompt_tokens": 5866,
+            "completion_tokens": 229,
+            "total_tokens": 6095,
+            "cost": 0.0,
+            "invocations": 1,
+            "average_tokens_per_invocation": 6095.0
+          }
+        }
+      },
+      "status": "completed",
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json"
+    }
+  ]
+}

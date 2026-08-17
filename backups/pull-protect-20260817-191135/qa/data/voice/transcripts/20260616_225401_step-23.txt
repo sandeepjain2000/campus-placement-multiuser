@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-23
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type additional notes. Notes include guided test marker.

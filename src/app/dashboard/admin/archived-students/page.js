@@ -6,6 +6,10 @@ import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS } from '@/lib/tableQueryPresets';
 import { Archive, RotateCcw } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 function formatWhen(value) {
   if (!value) return '—';
@@ -89,41 +93,20 @@ export default function AdminArchivedStudentsPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 800,
-              margin: '0 0 0.35rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <Archive size={24} aria-hidden style={{ color: 'var(--primary-600)' }} />
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div>
+          <h1 className="m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Archive className="text-muted-foreground size-7" aria-hidden />
             Archived students
           </h1>
-          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.875rem', maxWidth: 560 }}>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-2xl text-sm">
             Students removed by college admins (mistaken or test entries). Restore one at a time to bring them back
             into drives, jobs, and the active student list.
           </p>
-        </div>
       </div>
 
       {error ? (
-        <div
-          className="card"
-          style={{
-            marginBottom: '1rem',
-            padding: '1rem',
-            borderColor: 'var(--danger-300)',
-            background: 'var(--danger-50)',
-          }}
-        >
-          <p style={{ margin: 0, color: 'var(--danger-700)', fontWeight: 600 }}>{error}</p>
-        </div>
+        <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>
       ) : null}
 
       {!isLoading && totalCount > 0 ? (
@@ -141,72 +124,60 @@ export default function AdminArchivedStudentsPage() {
         />
       ) : null}
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>College</th>
-              <th>System ID</th>
-              <th>Department</th>
-              <th>Archived</th>
-              <th>Archived by</th>
-              <th style={{ width: 88, textAlign: 'right' }}>Restore</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4"><CardTitle>Archive</CardTitle><CardDescription>{displayStudents.length} archived students</CardDescription></CardHeader>
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>{['Student','College','System ID','Department','Archived','Archived by','Restore'].map((label) => <TableHead key={label} className={label === 'Restore' ? 'text-right' : undefined}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={7} className="text-center text-secondary" style={{ padding: '2rem' }}>
+              <TableRow><TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                   Loading…
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
             {!isLoading && displayStudents.length === 0 && totalCount > 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center text-secondary">
+              <TableRow><TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                   No archived students match your search.
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
             {!isLoading &&
               displayStudents.map((s) => (
-                <tr key={s.id}>
-                  <td>
+                <TableRow key={s.id}>
+                  <TableCell>
                     <div style={{ fontWeight: 600 }}>{s.name}</div>
                     <div className="text-sm text-secondary">{s.email}</div>
-                  </td>
-                  <td>{s.collegeName || '—'}</td>
-                  <td style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '0.85rem' }}>
+                  </TableCell>
+                  <TableCell>{s.collegeName || '—'}</TableCell>
+                  <TableCell className="font-mono text-sm">
                     {s.systemId || s.roll || '—'}
-                  </td>
-                  <td>{s.dept || '—'}</td>
-                  <td style={{ fontSize: '0.85rem', whiteSpace: 'nowrap' }}>{formatWhen(s.archivedAt)}</td>
-                  <td style={{ fontSize: '0.85rem' }}>{s.archivedBy || '—'}</td>
-                  <td style={{ textAlign: 'right' }}>
-                    <button
+                  </TableCell>
+                  <TableCell>{s.dept || '—'}</TableCell>
+                  <TableCell className="whitespace-nowrap text-sm">{formatWhen(s.archivedAt)}</TableCell>
+                  <TableCell className="text-sm">{s.archivedBy || '—'}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
                       type="button"
-                      className="btn btn-secondary btn-sm btn-icon"
+                      variant="outline"
+                      size="icon-sm"
                       title="Restore student"
                       aria-label={`Restore ${s.name}`}
                       disabled={restoringId === s.id}
                       onClick={() => restoreOne(s)}
                     >
-                      <RotateCcw size={16} aria-hidden />
-                    </button>
-                  </td>
-                </tr>
+                      <RotateCcw aria-hidden />
+                    </Button>
+                  </TableCell>
+                </TableRow>
               ))}
             {!isLoading && students.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center text-secondary" style={{ padding: '2.5rem' }}>
+              <TableRow><TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                   No archived students. When a college admin archives a student, they will appear here.
-                </td>
-              </tr>
+              </TableCell></TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

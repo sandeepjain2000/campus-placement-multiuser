@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-09
+# Stage: step-21
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open My Applications — Internships. Application for the GT- internship shows Selected (or latest employer status).

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { Mail, Phone, MessageSquare, Building2, School, GraduationCap, Clock, ExternalLink } from 'lucide-react';
 import MarketingPageShell from '@/components/marketing/MarketingPageShell';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { buttonVariants } from '@/components/ui/button';
 import { getPlatformSettings } from '@/lib/platformSettings';
 import { buildPublicSupportConfig } from '@/lib/supportContact';
 
@@ -208,20 +210,11 @@ export default async function ContactPage() {
         </ul>
       </section>
 
-      <section
-        style={{
-          marginBottom: '2rem',
-          padding: '1.35rem 1.5rem',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--primary-200)',
-          background: 'var(--primary-50)',
-        }}
-        aria-labelledby="demo-heading"
-      >
-        <h2 id="demo-heading" style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 0.5rem' }}>
-          Demo environment
-        </h2>
-        <p style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+      <Alert className="mb-8">
+        <MessageSquare aria-hidden />
+        <AlertTitle>Demo environment</AlertTitle>
+        <AlertDescription>
+          <p>
           This deployment uses a disposable demo inbox for system and support mail:{' '}
           <strong style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{support.notificationInboxEmail}</strong>.
           Open{' '}
@@ -236,17 +229,16 @@ export default async function ContactPage() {
           </a>{' '}
           and enter that mailbox name to read messages sent from the login support form or automated
           notifications.
-        </p>
-        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-          Super admins can change support email and phone under Administration → Settings.
-        </p>
-      </section>
+          </p>
+          <p>Super admins can change support email and phone under Administration → Settings.</p>
+        </AlertDescription>
+      </Alert>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-        <Link href="/register" className="btn btn-primary">
+        <Link href="/register" className={buttonVariants()}>
           Register your institution
         </Link>
-        <Link href="/about" className="btn btn-secondary">
+        <Link href="/about" className={buttonVariants({ variant: 'outline' })}>
           About PlacementHub
         </Link>
       </div>

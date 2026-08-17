@@ -2,9 +2,9 @@
 """
 Delta test cases for features added AFTER the last full PlacementHub-Test-Cases generation.
 
-Does NOT duplicate the main suite in docs/PlacementHub-Test-Cases.xlsx.
-Output: docs/PlacementHub-Test-Cases-Delta-Post-Gen.xlsx
-         docs/PlacementHub-Test-Cases-Delta-Post-Gen.csv
+Does NOT duplicate the main suite in docs/test-cases/PlacementHub-Test-Cases.xlsx.
+Output: docs/test-cases/PlacementHub-Test-Cases-Delta-Post-Gen.xlsx
+         docs/test-cases/PlacementHub-Test-Cases-Delta-Post-Gen.csv
 """
 
 from __future__ import annotations
@@ -17,8 +17,8 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_XLSX = ROOT / "docs" / "PlacementHub-Test-Cases-Delta-Post-Gen.xlsx"
-OUT_CSV = ROOT / "docs" / "PlacementHub-Test-Cases-Delta-Post-Gen.csv"
+OUT_XLSX = ROOT / "docs" / "test-cases" / "PlacementHub-Test-Cases-Delta-Post-Gen.xlsx"
+OUT_CSV = ROOT / "docs" / "test-cases" / "PlacementHub-Test-Cases-Delta-Post-Gen.csv"
 
 HEADERS = [
     "TC ID",
@@ -611,7 +611,7 @@ def write_index(wb, sheet_names: dict[str, str], all_flat: list[list]) -> None:
         cell.border = thin
         cell.alignment = Alignment(horizontal="center")
 
-    ws[f"A{r + 2}"] = "Companion to docs/PlacementHub-Test-Cases.xlsx — do not merge blindly; keep as delta pack."
+    ws[f"A{r + 2}"] = "Companion to docs/test-cases/PlacementHub-Test-Cases.xlsx — do not merge blindly; keep as delta pack."
     ws[f"A{r + 2}"].font = sub
     ws[f"A{r + 3}"] = f"CSV export: {OUT_CSV.name} ({len(all_flat)} rows)"
     ws[f"A{r + 3}"].font = sub

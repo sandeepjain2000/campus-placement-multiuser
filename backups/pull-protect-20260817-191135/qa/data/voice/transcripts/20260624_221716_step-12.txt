@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-04
+# Stage: step-12
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Click Apply on the guided internship row. Success toast; status badge changes from Open to Applied (or similar). If blocked, check CV on student profile.

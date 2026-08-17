@@ -2,6 +2,8 @@
 
 import { useCallback, useState } from 'react';
 import { validateEmail } from '@/lib/validators';
+import { Field, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 /**
  * Email input with inline format validation on change and blur.
@@ -9,7 +11,7 @@ import { validateEmail } from '@/lib/validators';
 export default function ValidatedEmailInput({
   value,
   onChange,
-  className = 'form-input',
+  className,
   placeholder = 'email@example.com',
   style,
   wrapperStyle,
@@ -41,10 +43,11 @@ export default function ValidatedEmailInput({
   );
 
   return (
-    <div style={wrapperStyle}>
-      <input
+    <Field data-invalid={Boolean(error)} style={wrapperStyle}>
+      <Input
         type="email"
-        className={`${className}${error ? ' input-error' : ''}`}
+        className={className}
+        aria-invalid={Boolean(error)}
         style={style}
         value={value ?? ''}
         placeholder={placeholder}
@@ -55,11 +58,7 @@ export default function ValidatedEmailInput({
         }}
         onBlur={() => runValidation(value)}
       />
-      {error ? (
-        <p className="text-xs" style={{ color: 'var(--danger-600)', marginTop: '0.35rem' }}>
-          {error}
-        </p>
-      ) : null}
-    </div>
+      {error ? <FieldError>{error}</FieldError> : null}
+    </Field>
   );
 }

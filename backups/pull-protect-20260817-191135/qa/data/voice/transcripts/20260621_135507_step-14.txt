@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-14
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Set drive date (future). Drive Date field shows 15 Dec 2026.

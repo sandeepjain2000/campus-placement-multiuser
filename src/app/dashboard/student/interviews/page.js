@@ -9,6 +9,12 @@ import { getInitialCalendarCursorFromIsoDates } from '@/lib/calendarInitialCurso
 import { formatDate } from '@/lib/utils';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import { swrFetcher } from '@/lib/fetchJson';
+import { CalendarDays, List } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function StudentInterviewsPage() {
   const [view, setView] = useState('list');
@@ -49,28 +55,41 @@ export default function StudentInterviewsPage() {
   });
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>👨‍🎓 My Interviews</h1>
-          <p>Track date, time, company, and interview status.</p>
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <CalendarDays className="text-muted-foreground size-7" strokeWidth={1.5} />
+            My Interviews
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">Track date, time, company, and interview status.</p>
         </div>
-        <div className="page-header-actions">
-          <div className="view-toggle" role="group" aria-label="Interview view">
-            <button type="button" className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>
+        <div className="bg-muted flex w-fit rounded-lg p-1" role="group" aria-label="Interview view">
+            <Button type="button" size="sm" variant={view === 'list' ? 'secondary' : 'ghost'} aria-pressed={view === 'list'} onClick={() => setView('list')}>
+              <List data-icon="inline-start" />
               List
-            </button>
-            <button type="button" className={view === 'calendar' ? 'active' : ''} onClick={() => setView('calendar')}>
+            </Button>
+            <Button type="button" size="sm" variant={view === 'calendar' ? 'secondary' : 'ghost'} aria-pressed={view === 'calendar'} onClick={() => setView('calendar')}>
+              <CalendarDays data-icon="inline-start" />
               Calendar
-            </button>
-          </div>
+            </Button>
         </div>
       </div>
+
+      {error ? (
+        <Alert variant="destructive">
+          <AlertTitle>Could not load interviews</AlertTitle>
+          <AlertDescription>{error.message || 'Try again later.'}</AlertDescription>
+        </Alert>
+      ) : null}
 
       {view === 'calendar' ? (
         <EmployerCalendarGrid items={calItems} initialYear={initialYear} initialMonth={initialMonth} />
       ) : (
-        <>
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-b px-4 py-3">
+            <CardTitle className="text-base">Interview schedule</CardTitle>
+            <CardDescription>{isLoading ? 'Loading…' : `${filteredCount} of ${totalCount} interviews`}</CardDescription>
           {!isLoading && totalCount > 0 ? (
             <DataTableToolbar
               search={search}
@@ -85,55 +104,52 @@ export default function StudentInterviewsPage() {
               onClear={clearFilters}
             />
           ) : null}
-          <div className="table-container">
-          <table className="data-table data-table-mobile-cards">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Round</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Mode</th>
-                <th>Location / venue</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
+          </CardHeader>
+          <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Company</TableHead>
+                <TableHead>Round</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Time</TableHead>
+                <TableHead>Mode</TableHead>
+                <TableHead>Location / venue</TableHead>
+                <TableHead className="min-w-[6.5rem]">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {displayInterviews.length === 0 && totalCount > 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center text-secondary">
+                <TableRow>
+                  <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                     No interviews match your search.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : null}
               {displayInterviews.map((i) => (
-                <tr key={i.id}>
-                  <td className="font-semibold" data-label="Company">
+                <TableRow key={i.id}>
+                  <TableCell className="font-semibold" data-label="Company">
                     <CompanyNameLink name={i.company} website={i.website} />
-                  </td>
-                  <td data-label="Round">{i.round}</td>
-                  <td data-label="Date">{formatDate(i.date)}</td>
-                  <td data-label="Time">{i.time}</td>
-                  <td data-label="Mode">{i.mode}</td>
-                  <td className="text-sm" data-label="Location" style={{ maxWidth: '280px' }}>
-                    {i.location}
-                  </td>
-                  <td data-label="Status">
-                    <span className={`badge ${i.status === 'Completed' ? 'badge-green' : 'badge-blue'}`}>{i.status}</span>
-                  </td>
-                </tr>
+                  </TableCell>
+                  <TableCell data-label="Round">{i.round}</TableCell>
+                  <TableCell data-label="Date">{formatDate(i.date)}</TableCell>
+                  <TableCell data-label="Time">{i.time}</TableCell>
+                  <TableCell data-label="Mode">{i.mode}</TableCell>
+                  <TableCell className="max-w-[17.5rem] truncate text-sm" data-label="Location">{i.location || '—'}</TableCell>
+                  <TableCell className="min-w-[6.5rem]" data-label="Status">
+                    <StatusBadge status={i.status || 'scheduled'} showDot>{i.status || 'Scheduled'}</StatusBadge>
+                  </TableCell>
+                </TableRow>
               ))}
               {!isLoading && totalCount === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center text-secondary">
-                    {error?.message || 'No interview schedule found. Try again later.'}
-                  </td>
-                </tr>
+                <TableRow>
+                  <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">No interview schedule found.</TableCell>
+                </TableRow>
               ) : null}
-            </tbody>
-          </table>
-        </div>
-        </>
+            </TableBody>
+          </Table>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

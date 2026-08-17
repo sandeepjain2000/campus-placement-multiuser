@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: phase-employer
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Employer role. Tech Corporation HR publishes the internship posting.

@@ -5,6 +5,12 @@ import useSWR from 'swr';
 import { Briefcase, FolderDot, GraduationCap, Target } from 'lucide-react';
 import { ASSESSMENT_ROUND_KINDS } from '@/lib/assessmentRoundMap';
 import { useToast } from '@/components/ToastProvider';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const TAB_ICONS = {
   internship: GraduationCap,
@@ -78,128 +84,100 @@ export default function EmployerAssessmentMapPage() {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header" style={{ marginBottom: '1.25rem' }}>
-        <div className="page-header-left">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Assessment map</h1>
           <p className="text-secondary text-sm" style={{ margin: 0, maxWidth: '42rem', lineHeight: 1.55 }}>
             Default display names for <code>round_1</code>…<code>round_5</code> on CSV uploads and hiring results. Set a row to{' '}
             <strong>NA</strong> when your process does not use that round.
           </p>
         </div>
-        <div className="page-header-actions">
-          <button type="button" className="btn btn-primary" disabled={saving || isLoading} onClick={saveMap}>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" disabled={saving || isLoading} onClick={saveMap}>
             {saving ? 'Saving…' : `Save ${tabLabel}`}
-          </button>
+          </Button>
         </div>
       </div>
 
       {error ? (
-        <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
-          <p className="text-sm" style={{ margin: 0, color: 'var(--danger-700, #b91c1c)' }}>
-            {error.message}
-          </p>
-        </div>
+        <Alert variant="destructive" className="mb-4"><AlertTitle>Could not load round map</AlertTitle><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : null}
 
-      <div className="card" style={{ padding: '0.85rem 1rem', marginBottom: '1rem', borderLeft: '4px solid var(--warning-500, #f59e0b)' }}>
-        <p className="text-sm" style={{ margin: 0, color: 'var(--warning-800, #92400e)', fontWeight: 600 }}>
-          Rounds feature is not implemented yet in Employer View Settings.
-        </p>
-      </div>
+      <Alert className="mb-4"><AlertTitle>Employer View Settings</AlertTitle><AlertDescription>Rounds are configured on this page for now.</AlertDescription></Alert>
 
-      <div
-        role="tablist"
-        aria-label="Opportunity type"
-        style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}
-      >
+      <Tabs value={kindTab} onValueChange={setKindTab} className="mb-5">
+      <TabsList aria-label="Opportunity type">
         {ASSESSMENT_ROUND_KINDS.map((t) => {
           const Icon = TAB_ICONS[t.id] || Briefcase;
           const active = kindTab === t.id;
           return (
-            <button
+            <TabsTrigger
               key={t.id}
               type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => setKindTab(t.id)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.6rem 1.25rem',
-                borderRadius: '999px',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                border: 'none',
-                cursor: 'pointer',
-                background: active ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                color: active ? 'white' : 'var(--text-secondary)',
-                boxShadow: active ? '0 4px 10px rgba(79, 70, 229, 0.25)' : 'none',
-              }}
+              value={t.id}
             >
               <Icon size={16} strokeWidth={active ? 2.5 : 1.75} aria-hidden />
               {t.label}
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList>
+      </Tabs>
 
-      <div className="card">
+      <Card>
         {isLoading && !data ? (
           <div className="skeleton skeleton-card" style={{ height: 220 }} />
         ) : (
           <>
-            <h2 className="card-title" style={{ marginBottom: '0.75rem' }}>
-              {tabLabel} — round mapping
-            </h2>
-            <div className="table-container" style={{ border: 'none', overflowX: 'auto' }}>
-              <table className="data-table" style={{ minWidth: 520 }}>
-                <thead>
-                  <tr>
-                    <th style={{ width: '22%' }}>Round</th>
-                    <th style={{ width: '28%' }}>CSV column</th>
-                    <th>Display name</th>
-                    <th style={{ width: '5rem' }} />
-                  </tr>
-                </thead>
-                <tbody>
+            <CardHeader><CardTitle>{tabLabel} — round mapping</CardTitle><CardDescription>Name each CSV assessment round or mark it unused.</CardDescription></CardHeader>
+            <CardContent>
+              <Table className="min-w-[520px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[22%]">Round</TableHead>
+                    <TableHead className="w-[28%]">CSV column</TableHead>
+                    <TableHead>Display name</TableHead>
+                    <TableHead className="w-20" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {[0, 1, 2, 3, 4].map((i) => (
-                    <tr key={i}>
-                      <td className="text-sm font-semibold">{`Round ${i + 1}`}</td>
-                      <td>
+                    <TableRow key={i}>
+                      <TableCell className="font-semibold">{`Round ${i + 1}`}</TableCell>
+                      <TableCell>
                         <code className="font-mono text-sm">{`round_${i + 1}`}</code>
-                      </td>
-                      <td>
-                        <input
-                          className="form-input"
+                      </TableCell>
+                      <TableCell>
+                        <Input
                           value={draftLabels[i] ?? ''}
                           onChange={(e) => setLabelAt(i, e.target.value)}
                           placeholder={activeRounds[i]?.label || `Round ${i + 1}`}
                           aria-label={`Round ${i + 1} display name`}
                         />
-                      </td>
-                      <td>
-                        <button
+                      </TableCell>
+                      <TableCell>
+                        <Button
                           type="button"
-                          className="btn btn-ghost btn-sm"
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setRoundNa(i)}
                           title="Mark round as not used"
                         >
                           NA
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
             <p className="text-xs text-tertiary" style={{ marginTop: '0.85rem', marginBottom: 0, lineHeight: 1.5 }}>
               Up to five rounds apply across jobs, drives, internships, and projects. Most employers use fewer — mark unused rounds as{' '}
               <strong>NA</strong>. Per-upload overrides remain available under Assessment uploads until that flow is retired.
             </p>
+            </CardContent>
           </>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

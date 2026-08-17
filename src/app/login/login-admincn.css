@@ -1,0 +1,331 @@
+/* AdminCN-inspired auth shell for /login — presentation only; keeps app CSS tokens. */
+
+.ph-auth-page {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  background: var(--bg-secondary);
+  padding: 2.5rem 1rem;
+}
+
+.ph-auth-bg {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--primary-200) 55%, transparent), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 100% 100%, color-mix(in srgb, var(--primary-100) 40%, transparent), transparent 60%);
+}
+
+.ph-auth-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 28rem;
+  transition: max-width 0.2s ease;
+}
+
+.ph-auth-shell--wide {
+  max-width: min(960px, 100%);
+}
+
+.ph-auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.ph-auth-back:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
+}
+
+.ph-auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 0;
+}
+
+.ph-auth-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+}
+
+.ph-auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  width: fit-content;
+}
+
+.ph-auth-brand-mark {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: var(--primary-600);
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 700;
+  box-shadow: 0 4px 6px color-mix(in srgb, var(--primary-600) 25%, transparent);
+}
+
+.ph-auth-brand-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.ph-auth-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.ph-auth-desc {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.ph-auth-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1.5rem;
+}
+
+.ph-auth-alert {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.ph-auth-alert--success {
+  background: var(--success-50);
+  border: 1px solid var(--success-100);
+  color: var(--success-700);
+}
+
+.ph-auth-alert--error {
+  background: var(--danger-50);
+  border: 1px solid var(--danger-100);
+  color: var(--danger-700);
+}
+
+.ph-auth-alert--info {
+  background: var(--primary-50);
+  border: 1px solid var(--primary-200);
+  color: var(--primary-900);
+}
+
+.ph-auth-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ph-auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ph-auth-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: var(--text-primary);
+}
+
+.ph-auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ph-auth-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.ph-auth-link:hover {
+  text-decoration: underline;
+}
+
+.ph-auth-input {
+  width: 100%;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  padding: 0.5rem 0.875rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ph-auth-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-500) 25%, transparent);
+}
+
+.ph-auth-input-group {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.ph-auth-input-group .ph-auth-input {
+  padding-right: 2.75rem;
+}
+
+.ph-auth-input-addon {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.ph-auth-input-addon:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.ph-auth-submit {
+  display: inline-flex;
+  width: 100%;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--primary-600);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ph-auth-submit:hover:not(:disabled) {
+  background: var(--primary-700);
+}
+
+.ph-auth-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ph-auth-sep {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+.ph-auth-sep::before,
+.ph-auth-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-default);
+}
+
+.ph-auth-outline-btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-default);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ph-auth-outline-btn:hover {
+  background: var(--bg-secondary);
+}
+
+.ph-auth-outline-btn--active {
+  background: var(--primary-50);
+  border-color: var(--primary-300);
+  color: var(--primary-700);
+}
+
+.ph-auth-footer {
+  text-align: center;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.ph-auth-footer a {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ph-auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.ph-auth-muted {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 768px) {
+  .ph-auth-page .hidden-on-mobile {
+    display: none !important;
+  }
+}

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-39
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Applications — Jobs tab. Placement drive applicants table (Jobs tab).

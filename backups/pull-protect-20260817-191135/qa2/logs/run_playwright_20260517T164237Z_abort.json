@@ -1,0 +1,15 @@
+{
+  "runId": "20260517T164237Z",
+  "runStatus": "completed",
+  "abortReason": "completed successfully",
+  "abortTraceback": null,
+  "completedCases": 268,
+  "plannedCases": 268,
+  "lastCaseId": "C9-AUDIT-001-COMP",
+  "lastCaseIndex": 267,
+  "finishedAt": "2026-05-17T17:10:50.941174+00:00",
+  "logFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\logs\\run_playwright_20260517T164237Z.log",
+  "partialResultsFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\playwright_results_20260517T164237Z.partial.json",
+  "finalResultsFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\playwright_results_20260517T164237Z.json",
+  "hint": "Import partial results: python qa2/export_results_table.py playwright_results_20260517T164237Z.partial.json"
+}

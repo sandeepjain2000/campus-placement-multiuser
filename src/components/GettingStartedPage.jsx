@@ -21,6 +21,8 @@ import {
 import { useSession } from 'next-auth/react';
 import PageError from '@/components/PageError';
 import PageLoading from '@/components/PageLoading';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 async function onboardingFetcher(url) {
   const res = await fetch(url);
@@ -77,44 +79,35 @@ export default function GettingStartedPage() {
 
   if (!userId) {
     return (
-      <div className="card animate-fadeIn" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p className="text-secondary" style={{ margin: 0 }}>Sign in to view your setup checklist.</p>
-      </div>
+      <Card className="animate-fadeIn"><CardContent className="text-muted-foreground py-10 text-center">Sign in to view your setup checklist.</CardContent></Card>
     );
   }
 
   if (role === 'placement_committee') {
     return (
-      <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem', letterSpacing: '-0.02em' }}>
+      <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+        <div className="flex flex-col gap-1">
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">
             Getting Started
           </h1>
-          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Placement Committee onboarding
           </p>
         </div>
-        <div
-          className="card"
-          style={{
-            maxWidth: 560,
-            margin: '0 auto',
-            padding: '2.5rem 2rem',
-            textAlign: 'center',
-            border: '1px solid var(--border-default)',
-          }}
-        >
-          <Rocket size={28} style={{ color: 'var(--text-tertiary)', marginBottom: '0.75rem' }} aria-hidden />
-          <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            Coming soon…
-          </p>
-          <p style={{ margin: '0.65rem 0 0', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+        <Card className="mx-auto w-full max-w-xl">
+          <CardHeader className="items-center text-center">
+          <Rocket className="text-muted-foreground size-7" aria-hidden />
+          <CardTitle>Coming soon…</CardTitle>
+          <CardDescription>
             A Placement Committee setup checklist is not available yet. Use Dashboard to browse campus placement activity.
-          </p>
-          <Link href="/dashboard/college/overview" className="btn btn-secondary btn-sm" style={{ marginTop: '1.25rem' }}>
+          </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+          <Button render={<Link href="/dashboard/college/overview" />} variant="outline" size="sm">
             Go to Dashboard
-          </Link>
-        </div>
+          </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -143,164 +136,63 @@ export default function GettingStartedPage() {
     'Complete these steps to set up your account and get the most out of the platform.';
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      {/* High-Fidelity Glassmorphic Hero Banner */}
-      <div
-        className="gradient-banner"
-        style={{
-          position: 'relative',
-          borderRadius: 'var(--radius-xl)',
-          padding: '2.5rem',
-          overflow: 'hidden',
-          marginBottom: '2.5rem',
-          boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1.5rem',
-        }}
-      >
-        {/* Decorative Elements */}
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', borderRadius: '50%' }} />
-        <div style={{ position: 'absolute', bottom: '-50px', left: '10%', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%)', borderRadius: '50%' }} />
-
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '600px' }}>
-          <h1 className="gradient-banner-title" style={{ fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Rocket size={28} /> Getting Started
-          </h1>
-          <p style={{ fontSize: '1.05rem', color: 'var(--banner-fg-muted)', margin: 0, lineHeight: 1.5 }}>
-            {intro}
-          </p>
-        </div>
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex max-w-3xl flex-col gap-1">
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <Rocket className="text-muted-foreground size-7" strokeWidth={1.5} /> Getting Started
+        </h1>
+        <p className="text-muted-foreground m-0 text-sm">{intro}</p>
       </div>
 
-      <div className="card" style={{ maxWidth: 800, margin: '0 auto', overflow: 'hidden', border: '1px solid var(--border-default)' }}>
-        {/* Header / Progress Section */}
-        <div style={{ padding: '2rem', borderBottom: '1px solid var(--border-default)', background: 'var(--bg-secondary)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-            <div style={{
-              width: 56, height: 56, borderRadius: '16px', background: 'var(--primary-100)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--primary-200)',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-            }}>
-              <Trophy size={28} style={{ color: 'var(--primary-700)' }} />
+      <Card className="mx-auto w-full max-w-3xl">
+        <CardHeader className="border-b">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-lg">
+              <Trophy className="size-5" />
             </div>
             <div>
-              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-                {isComplete ? 'You’re All Set!' : 'Account Setup Progress'}
-              </h2>
-              <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-secondary)', marginTop: '0.2rem', fontWeight: 500 }}>
-                {isComplete ? 'You have completed all the recommended setup steps.' : `You've completed ${completedCount} out of ${totalCount} steps.`}
-              </p>
+              <CardTitle>{isComplete ? 'You’re all set!' : 'Account setup progress'}</CardTitle>
+              <CardDescription>
+                {isComplete ? 'You have completed all recommended setup steps.' : `${completedCount} of ${totalCount} steps completed.`}
+              </CardDescription>
             </div>
           </div>
-          
-          {/* Progress Bar */}
-          <div style={{ height: 10, background: 'var(--gray-200)', borderRadius: 999, overflow: 'hidden', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)' }}>
-            <div style={{
-              height: '100%', width: `${progressPercent}%`,
-              background: isComplete ? 'var(--success-500)' : 'linear-gradient(90deg, var(--primary-500), var(--primary-600))',
-              borderRadius: 999, transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-            }} />
+          <div className="bg-muted mt-3 h-2 overflow-hidden rounded-full" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100}>
+            <div className="bg-primary h-full rounded-full transition-[width]" style={{ width: `${progressPercent}%` }} />
           </div>
-        </div>
-
-        {/* Steps List */}
-        <div style={{ padding: '1.5rem 2rem' }}>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
           {steps.length === 0 ? (
-            <div
-              style={{
-                padding: '2rem 1rem',
-                textAlign: 'center',
-                color: 'var(--text-secondary)',
-                border: '1px dashed var(--border-default)',
-                borderRadius: 'var(--radius-lg)',
-              }}
-            >
-              <p style={{ margin: '0 0 0.75rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                No setup steps are available
-              </p>
-              <p style={{ margin: 0, fontSize: '0.9rem' }}>
-                Try refreshing the page. If this persists, open{' '}
-                <Link href={homeHref} style={{ fontWeight: 600 }}>
-                  Dashboard
-                </Link>{' '}
-                or contact support.
-              </p>
-              <button type="button" className="btn btn-secondary btn-sm" style={{ marginTop: '1rem' }} onClick={() => void mutate()}>
-                Refresh checklist
-              </button>
+            <div className="border-border text-muted-foreground rounded-lg border border-dashed p-8 text-center">
+              <p className="text-foreground m-0 font-medium">No setup steps are available</p>
+              <p className="mt-2 mb-4 text-sm">Refresh the checklist or open <Link href={homeHref} className="text-primary underline">Dashboard</Link>.</p>
+              <Button type="button" variant="outline" size="sm" onClick={() => void mutate()}>Refresh checklist</Button>
             </div>
           ) : null}
           {steps.map((step) => {
             const Icon = STEP_ICONS[step.id] || Circle;
             const isCompleted = step.completed;
             const isNext = step === nextStep;
-
             return (
-               <Link
+              <Button
                 key={step.id}
-                href={step.href}
-                className="card-hover"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1.25rem',
-                  padding: '1.25rem 1.5rem',
-                  borderRadius: 'var(--radius-lg)',
-                  textDecoration: 'none',
-                  background: isNext ? 'var(--primary-50)' : 'var(--bg-primary)',
-                  border: `1px solid ${isNext ? 'var(--primary-200)' : 'var(--border-default)'}`,
-                  marginBottom: '0.75rem',
-                  transition: 'all 0.2s ease',
-                  boxShadow: isNext ? '0 4px 6px -1px rgba(79, 70, 229, 0.1)' : 'none',
-                }}
+                render={<Link href={step.href} />}
+                variant={isNext ? 'secondary' : 'outline'}
+                className="h-auto w-full justify-start gap-4 px-4 py-3 text-left"
               >
-                {/* Step Icon */}
-                <div style={{
-                  width: 44, height: 44, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isCompleted ? 'var(--success-100)' : isNext ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                  color: isCompleted ? 'var(--success-600)' : isNext ? 'white' : 'var(--text-tertiary)',
-                }}>
-                  {isCompleted ? (
-                    <CheckCircle2 size={22} strokeWidth={2.5} />
-                  ) : (
-                    <Icon size={20} />
-                  )}
-                </div>
-
-                {/* Step Content */}
-                <div style={{ flex: 1 }}>
-                  <div style={{
-                    fontSize: '1.1rem', fontWeight: isNext ? 800 : 600,
-                    color: isCompleted ? 'var(--text-tertiary)' : 'var(--text-primary)',
-                    textDecoration: isCompleted ? 'line-through' : 'none',
-                    textDecorationColor: 'var(--text-tertiary)',
-                  }}>
-                    {step.title}
-                  </div>
-                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.2rem', fontWeight: 500 }}>
-                    {isCompleted ? 'Completed' : isNext ? 'Click here to continue' : 'Pending'}
-                  </div>
-                </div>
-
-                {/* Action Arrow */}
-                <div style={{
-                  width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isNext ? 'var(--primary-600)' : 'transparent',
-                  color: isNext ? '#fff' : 'var(--text-tertiary)',
-                  border: isNext ? 'none' : '1px solid var(--border-default)',
-                  transition: 'transform 0.2s ease',
-                  transform: isNext ? 'translateX(0)' : 'none',
-                }}>
-                  {isCompleted ? <CheckCircle2 size={18} /> : <ArrowRight size={18} />}
-                </div>
-              </Link>
+                <span className="bg-muted flex size-9 shrink-0 items-center justify-center rounded-full">
+                  {isCompleted ? <CheckCircle2 /> : <Icon />}
+                </span>
+                <span className="flex flex-1 flex-col items-start">
+                  <span className={isCompleted ? 'text-muted-foreground line-through' : ''}>{step.title}</span>
+                  <span className="text-muted-foreground text-xs font-normal">{isCompleted ? 'Completed' : isNext ? 'Continue setup' : 'Pending'}</span>
+                </span>
+                {isCompleted ? <CheckCircle2 /> : <ArrowRight />}
+              </Button>
             );
           })}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

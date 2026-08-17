@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-41
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Applications — Internships tab. Program applications table; Internships tab active.

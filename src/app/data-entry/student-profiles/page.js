@@ -9,6 +9,17 @@ import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { validateDataEntryStudentPayload } from '@/lib/apiInputValidation';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { cn } from '@/lib/utils';
 
 export default function DataEntryStudentProfilesPage() {
   const [studentUsers, setStudentUsers] = useState([]);
@@ -174,80 +185,25 @@ export default function DataEntryStudentProfilesPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ minHeight: '100vh', background: 'var(--bg-secondary)', padding: '2rem' }}>
-      <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-        <div className="page-header">
-          <div className="page-header-left">
-            <h1>Data Entry • Student Profiles</h1>
-            <p>Create profile rows linked to student users.</p>
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <StandardTableIconAction action="add" variant="primary" onClick={openAdd} />
-            <button type="button" className="btn btn-secondary" onClick={loadData}>Refresh</button>
-            <Link href="/data-entry" className="btn btn-secondary">Back to list</Link>
-          </div>
-        </div>
-
-        {showForm && (
-          <form className="card" onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-            <div className="card-header">
-              <h3 className="card-title">{mode === 'add' ? 'Add Student Profile' : 'Edit Student Profile'}</h3>
-            </div>
-            <div className="grid grid-2" style={{ gap: '1rem' }}>
-              <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="form-label">Student user</label>
-                <select className="form-select" value={form.userId} onChange={onChange('userId')} required disabled={isLoading || mode === 'edit'}>
-                  <option value="">Select a student user</option>
-                  {studentUsers.map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.first_name} {u.last_name || ''} ({u.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Department</label>
-                <input className="form-input" value={form.department} onChange={onChange('department')} required />
-              </div>
-              <div className="form-group">
-                <label className="form-label">CGPA</label>
-                <ValidatedNumberInput fieldId={FIELD_IDS.STUDENT_CGPA} step="0.01" value={form.cgpa} onChange={(v) => setForm((p) => ({ ...p, cgpa: v }))} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Placement status</label>
-                <select className="form-select" value={form.placementStatus} onChange={onChange('placementStatus')}>
-                  <option value="unplaced">unplaced</option>
-                  <option value="placed">placed</option>
-                  <option value="opted_out">opted_out</option>
-                  <option value="higher_studies">higher_studies</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Batch year</label>
-                <ValidatedNumberInput fieldId={FIELD_IDS.STUDENT_BATCH_YEAR} value={form.batchYear} onChange={(v) => setForm((p) => ({ ...p, batchYear: v }))} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Graduation year</label>
-                <ValidatedNumberInput fieldId={FIELD_IDS.STUDENT_GRAD_YEAR} context={{ batchYear: form.batchYear }} value={form.graduationYear} onChange={(v) => setForm((p) => ({ ...p, graduationYear: v }))} />
-              </div>
-              <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.8rem' }}>
-                <input id="profile-verified" type="checkbox" checked={form.isVerified} onChange={onChange('isVerified')} />
-                <label htmlFor="profile-verified" className="form-label" style={{ margin: 0 }}>Mark verified</label>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn btn-primary" type="submit" disabled={isSubmitting || isLoading}>
-                {isSubmitting ? 'Saving...' : mode === 'add' ? 'Create Student Profile' : 'Update Student Profile'}
-              </button>
-              <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
-            </div>
-          </form>
-        )}
-
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">Existing Student Profiles</h3>
-          </div>
+    <div className="animate-fadeIn mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="text-sm font-medium text-muted-foreground">Data entry</p><h1 className="text-3xl font-bold tracking-tight">Student profiles</h1><p className="mt-1 text-sm text-muted-foreground">Create profile rows linked to student users.</p></div>
+        <div className="flex flex-wrap gap-2"><StandardTableIconAction action="add" variant="primary" onClick={openAdd} /><Button variant="outline" onClick={loadData}>Refresh</Button><Link href="/data-entry" className={cn(buttonVariants({ variant: 'outline' }))}>Back to list</Link></div>
+      </header>
+      {error ? <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert> : null}
+      {success ? <Alert><AlertDescription>{success}</AlertDescription></Alert> : null}
+      {showForm ? <Card><CardHeader><CardTitle>{mode === 'add' ? 'Add student profile' : 'Edit student profile'}</CardTitle></CardHeader><CardContent>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6"><FieldGroup className="grid gap-5 md:grid-cols-2">
+          <Field className="md:col-span-2"><FieldLabel>Student user</FieldLabel><AdminFilterSelect className="w-full" value={form.userId} onValueChange={(v) => setForm((prev) => ({ ...prev, userId: v }))} disabled={isLoading || mode === 'edit'} items={[{ label: 'Select a student user', value: 'all' }, ...studentUsers.map((u) => ({ label: `${u.first_name} ${u.last_name || ''} (${u.email})`.trim(), value: String(u.id) }))]} /></Field>
+          <Field><FieldLabel>Department</FieldLabel><Input value={form.department} onChange={onChange('department')} required /></Field>
+          <Field><FieldLabel>CGPA</FieldLabel><ValidatedNumberInput className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm" fieldId={FIELD_IDS.STUDENT_CGPA} step="0.01" value={form.cgpa} onChange={(v) => setForm((p) => ({ ...p, cgpa: v }))} /></Field>
+          <Field><FieldLabel>Placement status</FieldLabel><AdminFilterSelect className="w-full" value={form.placementStatus} onValueChange={(v) => setForm((prev) => ({ ...prev, placementStatus: v }))} emptyMapsToAll={false} items={[{ label: 'Unplaced', value: 'unplaced' }, { label: 'Placed', value: 'placed' }, { label: 'Opted out', value: 'opted_out' }, { label: 'Higher studies', value: 'higher_studies' }]} /></Field>
+          <Field><FieldLabel>Batch year</FieldLabel><ValidatedNumberInput className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm" fieldId={FIELD_IDS.STUDENT_BATCH_YEAR} value={form.batchYear} onChange={(v) => setForm((p) => ({ ...p, batchYear: v }))} /></Field>
+          <Field><FieldLabel>Graduation year</FieldLabel><ValidatedNumberInput className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm" fieldId={FIELD_IDS.STUDENT_GRAD_YEAR} context={{ batchYear: form.batchYear }} value={form.graduationYear} onChange={(v) => setForm((p) => ({ ...p, graduationYear: v }))} /></Field>
+          <Field orientation="horizontal" className="items-center"><Checkbox id="profile-verified" checked={form.isVerified} onCheckedChange={(v) => setForm((prev) => ({ ...prev, isVerified: !!v }))} /><FieldLabel htmlFor="profile-verified">Mark verified</FieldLabel></Field>
+        </FieldGroup><div className="flex gap-2"><Button type="submit" disabled={isSubmitting || isLoading}>{isSubmitting ? 'Saving...' : mode === 'add' ? 'Create student profile' : 'Update student profile'}</Button><Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button></div></form>
+      </CardContent></Card> : null}
+      <Card><CardHeader><CardTitle>Existing student profiles</CardTitle></CardHeader><CardContent>
           {!isLoading && totalCount > 0 ? (
             <DataTableToolbar
               search={search}
@@ -260,74 +216,26 @@ export default function DataEntryStudentProfilesPage() {
               totalCount={totalCount}
               hasActiveFilters={hasActiveFilters}
               onClear={clearFilters}
-              style={{ marginBottom: '1rem' }}
             />
           ) : null}
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Department</th>
-                  <th>CGPA</th>
-                  <th>Status</th>
-                  <th>Verified</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="mt-4 overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Student</TableHead><TableHead>Department</TableHead><TableHead>CGPA</TableHead><TableHead>Status</TableHead><TableHead>Verified</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader><TableBody>
                 {displayRows.length === 0 && totalCount > 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-center text-secondary">No profiles match your search.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">No profiles match your search.</TableCell></TableRow>
                 ) : null}
                 {displayRows.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.first_name} {row.last_name || ''} ({row.email || '-'})</td>
-                    <td>{row.department || '-'}</td>
-                    <td>{row.cgpa ?? '-'}</td>
-                    <td>{row.placement_status || '-'}</td>
-                    <td>{row.is_verified ? 'Yes' : 'No'}</td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '0.4rem' }}>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
+                  <TableRow key={row.id}><TableCell>{row.first_name} {row.last_name || ''} ({row.email || '-'})</TableCell><TableCell>{row.department || '-'}</TableCell><TableCell>{row.cgpa ?? '-'}</TableCell><TableCell><Badge variant="secondary">{row.placement_status || '-'}</Badge></TableCell><TableCell><Badge variant={row.is_verified ? 'default' : 'outline'}>{row.is_verified ? 'Yes' : 'No'}</Badge></TableCell><TableCell><div className="flex flex-wrap gap-1">
                           <StandardTableIconAction action="view" onClick={() => setViewRow(row)} />
                           <StandardTableIconAction action="edit" onClick={() => openEdit(row)} />
                           <StandardTableIconAction action="delete" variant="danger" onClick={() => handleDelete(row.id)} />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                  </div></TableCell></TableRow>
                 ))}
                 {!isLoading && totalCount === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-secondary">No student profiles found.</td>
-                  </tr>
+                  <TableRow><TableCell colSpan={6} className="text-muted-foreground">No student profiles found.</TableCell></TableRow>
                 ) : null}
-              </tbody>
-            </table>
+              </TableBody></Table>
           </div>
-        </div>
-
-        {viewRow ? (
-          <div className="card" style={{ marginTop: '1rem' }}>
-            <div className="card-header">
-              <h3 className="card-title">Student Profile Details</h3>
-              <button className="btn btn-secondary btn-sm" onClick={() => setViewRow(null)}>Close</button>
-            </div>
-            <div className="text-sm">
-              <div><strong>Student:</strong> {viewRow.first_name} {viewRow.last_name || ''}</div>
-              <div><strong>Email:</strong> {viewRow.email || '-'}</div>
-              <div><strong>Department:</strong> {viewRow.department || '-'}</div>
-              <div><strong>CGPA:</strong> {viewRow.cgpa ?? '-'}</div>
-              <div><strong>Status:</strong> {viewRow.placement_status || '-'}</div>
-            </div>
-          </div>
-        ) : null}
-
-        {error ? <div className="card" style={{ marginTop: '1rem', borderColor: 'var(--danger-300)' }}>{error}</div> : null}
-        {success ? <div className="card" style={{ marginTop: '1rem', borderColor: 'var(--success-300)' }}>{success}</div> : null}
-      </div>
+      </CardContent></Card>
+      <Dialog open={Boolean(viewRow)} onOpenChange={(open) => !open && setViewRow(null)}><DialogContent><DialogHeader><DialogTitle>Student profile details</DialogTitle><DialogDescription>Academic and placement information.</DialogDescription></DialogHeader>{viewRow ? <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm"><dt className="font-medium">Student</dt><dd>{viewRow.first_name} {viewRow.last_name || ''}</dd><dt className="font-medium">Email</dt><dd>{viewRow.email || '-'}</dd><dt className="font-medium">Department</dt><dd>{viewRow.department || '-'}</dd><dt className="font-medium">CGPA</dt><dd>{viewRow.cgpa ?? '-'}</dd><dt className="font-medium">Status</dt><dd>{viewRow.placement_status || '-'}</dd></dl> : null}</DialogContent></Dialog>
     </div>
   );
 }

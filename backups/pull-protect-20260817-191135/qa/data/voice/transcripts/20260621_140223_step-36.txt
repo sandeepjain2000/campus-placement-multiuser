@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-36
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm application in modal. Success toast; card shows Applied.

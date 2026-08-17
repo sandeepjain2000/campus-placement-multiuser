@@ -1,0 +1,523 @@
+{
+  "category": "C-9",
+  "categoryTitle": "Transactional lifecycle and delete/cancel governance",
+  "description": "Validate Add/Edit/Delete/View capabilities, delete permission boundaries, cancel vs delete semantics, Super Admin deleted-data visibility, and impacted-user alerts.",
+  "testCases": [
+    {
+      "testCaseId": "C9-CRUDV-001",
+      "category": "C-9",
+      "type": "add_edit_delete_view_lifecycle",
+      "title": "Placement Drive supports Add/Edit/View and governed Delete",
+      "entity": "Placement Drive",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/drives",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "deletePermissibleRule": "conditional",
+      "steps": [
+        "Login as employer and open /dashboard/employer/drives",
+        "Add new Placement Drive record",
+        "View created record in listing/details",
+        "Edit at least one business field and save",
+        "Verify updated value is visible",
+        "Attempt Delete and verify behavior follows integrity rule"
+      ],
+      "expectedResult": [
+        "Add works and record is persisted",
+        "View shows latest saved record",
+        "Edit updates are reflected correctly",
+        "Delete is allowed only where business integrity permits"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CRUDV-002",
+      "category": "C-9",
+      "type": "add_edit_delete_view_lifecycle",
+      "title": "Job Posting supports Add/Edit/View and governed Delete",
+      "entity": "Job Posting",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/jobs",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "deletePermissibleRule": "conditional",
+      "steps": [
+        "Login as employer and open /dashboard/employer/jobs",
+        "Add new Job Posting record",
+        "View created record in listing/details",
+        "Edit at least one business field and save",
+        "Verify updated value is visible",
+        "Attempt Delete and verify behavior follows integrity rule"
+      ],
+      "expectedResult": [
+        "Add works and record is persisted",
+        "View shows latest saved record",
+        "Edit updates are reflected correctly",
+        "Delete is allowed only where business integrity permits"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CRUDV-003",
+      "category": "C-9",
+      "type": "add_edit_delete_view_lifecycle",
+      "title": "Application supports Add/Edit/View and governed Delete",
+      "entity": "Application",
+      "ownerRole": "student",
+      "ownerRoute": "/dashboard/student/applications",
+      "ownerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "deletePermissibleRule": "no_hard_delete_expected",
+      "steps": [
+        "Login as student and open /dashboard/student/applications",
+        "Add new Application record",
+        "View created record in listing/details",
+        "Edit at least one business field and save",
+        "Verify updated value is visible",
+        "Attempt Delete and verify behavior follows integrity rule"
+      ],
+      "expectedResult": [
+        "Add works and record is persisted",
+        "View shows latest saved record",
+        "Edit updates are reflected correctly",
+        "Delete is allowed only where business integrity permits"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CRUDV-004",
+      "category": "C-9",
+      "type": "add_edit_delete_view_lifecycle",
+      "title": "Interview Schedule supports Add/Edit/View and governed Delete",
+      "entity": "Interview Schedule",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/interviews",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "deletePermissibleRule": "conditional",
+      "steps": [
+        "Login as employer and open /dashboard/employer/interviews",
+        "Add new Interview Schedule record",
+        "View created record in listing/details",
+        "Edit at least one business field and save",
+        "Verify updated value is visible",
+        "Attempt Delete and verify behavior follows integrity rule"
+      ],
+      "expectedResult": [
+        "Add works and record is persisted",
+        "View shows latest saved record",
+        "Edit updates are reflected correctly",
+        "Delete is allowed only where business integrity permits"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CRUDV-005",
+      "category": "C-9",
+      "type": "add_edit_delete_view_lifecycle",
+      "title": "Offer supports Add/Edit/View and governed Delete",
+      "entity": "Offer",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/offers",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "deletePermissibleRule": "restricted_after_acceptance",
+      "steps": [
+        "Login as employer and open /dashboard/employer/offers",
+        "Add new Offer record",
+        "View created record in listing/details",
+        "Edit at least one business field and save",
+        "Verify updated value is visible",
+        "Attempt Delete and verify behavior follows integrity rule"
+      ],
+      "expectedResult": [
+        "Add works and record is persisted",
+        "View shows latest saved record",
+        "Edit updates are reflected correctly",
+        "Delete is allowed only where business integrity permits"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CANCEL-DELETE-001",
+      "category": "C-9",
+      "type": "cancel_vs_delete_behavior",
+      "title": "Placement Drive: Cancel keeps visibility, Delete hides from non-admin",
+      "entity": "Placement Drive",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/drives",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "college_admin",
+        "student"
+      ],
+      "impactedRoutes": [
+        "/dashboard/college/drives",
+        "/dashboard/student/drives"
+      ],
+      "steps": [
+        "Create or pick an active Placement Drive record",
+        "Run Cancel action (or equivalent status change)",
+        "Verify record remains visible to intended users with cancelled status",
+        "Run Delete action (if permissible)",
+        "Verify record is removed from non-admin user views",
+        "Login as Super Admin and verify deleted record is still visible in admin/audit view"
+      ],
+      "expectedResult": [
+        "Cancel does not remove record from normal role visibility",
+        "Delete removes record from non-admin UI",
+        "Super Admin retains deleted-data visibility"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CANCEL-DELETE-002",
+      "category": "C-9",
+      "type": "cancel_vs_delete_behavior",
+      "title": "Job Posting: Cancel keeps visibility, Delete hides from non-admin",
+      "entity": "Job Posting",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/jobs",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "college_admin",
+        "student"
+      ],
+      "impactedRoutes": [
+        "/dashboard/college/drives",
+        "/dashboard/student/drives"
+      ],
+      "steps": [
+        "Create or pick an active Job Posting record",
+        "Run Cancel action (or equivalent status change)",
+        "Verify record remains visible to intended users with cancelled status",
+        "Run Delete action (if permissible)",
+        "Verify record is removed from non-admin user views",
+        "Login as Super Admin and verify deleted record is still visible in admin/audit view"
+      ],
+      "expectedResult": [
+        "Cancel does not remove record from normal role visibility",
+        "Delete removes record from non-admin UI",
+        "Super Admin retains deleted-data visibility"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CANCEL-DELETE-003",
+      "category": "C-9",
+      "type": "cancel_vs_delete_behavior",
+      "title": "Application: Cancel keeps visibility, Delete hides from non-admin",
+      "entity": "Application",
+      "ownerRole": "student",
+      "ownerRoute": "/dashboard/student/applications",
+      "ownerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "employer",
+        "college_admin"
+      ],
+      "impactedRoutes": [
+        "/dashboard/employer/applications",
+        "/dashboard/college/applications"
+      ],
+      "steps": [
+        "Create or pick an active Application record",
+        "Run Cancel action (or equivalent status change)",
+        "Verify record remains visible to intended users with cancelled status",
+        "Run Delete action (if permissible)",
+        "Verify record is removed from non-admin user views",
+        "Login as Super Admin and verify deleted record is still visible in admin/audit view"
+      ],
+      "expectedResult": [
+        "Cancel does not remove record from normal role visibility",
+        "Delete removes record from non-admin UI",
+        "Super Admin retains deleted-data visibility"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CANCEL-DELETE-004",
+      "category": "C-9",
+      "type": "cancel_vs_delete_behavior",
+      "title": "Interview Schedule: Cancel keeps visibility, Delete hides from non-admin",
+      "entity": "Interview Schedule",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/interviews",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "student",
+        "college_admin"
+      ],
+      "impactedRoutes": [
+        "/dashboard/student/interviews",
+        "/dashboard/college/interviews"
+      ],
+      "steps": [
+        "Create or pick an active Interview Schedule record",
+        "Run Cancel action (or equivalent status change)",
+        "Verify record remains visible to intended users with cancelled status",
+        "Run Delete action (if permissible)",
+        "Verify record is removed from non-admin user views",
+        "Login as Super Admin and verify deleted record is still visible in admin/audit view"
+      ],
+      "expectedResult": [
+        "Cancel does not remove record from normal role visibility",
+        "Delete removes record from non-admin UI",
+        "Super Admin retains deleted-data visibility"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-CANCEL-DELETE-005",
+      "category": "C-9",
+      "type": "cancel_vs_delete_behavior",
+      "title": "Offer: Cancel keeps visibility, Delete hides from non-admin",
+      "entity": "Offer",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/offers",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "student",
+        "college_admin"
+      ],
+      "impactedRoutes": [
+        "/dashboard/student/offers",
+        "/dashboard/college/offers"
+      ],
+      "steps": [
+        "Create or pick an active Offer record",
+        "Run Cancel action (or equivalent status change)",
+        "Verify record remains visible to intended users with cancelled status",
+        "Run Delete action (if permissible)",
+        "Verify record is removed from non-admin user views",
+        "Login as Super Admin and verify deleted record is still visible in admin/audit view"
+      ],
+      "expectedResult": [
+        "Cancel does not remove record from normal role visibility",
+        "Delete removes record from non-admin UI",
+        "Super Admin retains deleted-data visibility"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C9-ALERT-IMPACT-001",
+      "category": "C-9",
+      "type": "impact_alert_propagation",
+      "title": "Placement Drive deletion/cancel informs impacted users",
+      "entity": "Placement Drive",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/drives",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "college_admin",
+        "student"
+      ],
+      "impactedRoutes": [
+        "/dashboard/college/drives",
+        "/dashboard/student/drives"
+      ],
+      "steps": [
+        "Perform cancel/delete action for Placement Drive",
+        "Capture transaction reference and timestamp",
+        "Login as each impacted role",
+        "Check Alerts/Notifications and impacted module list",
+        "Open alert and verify context (what changed, when, impact)"
+      ],
+      "expectedResult": [
+        "Impacted users receive alert for cancel/delete impact",
+        "Alert message is role-appropriate and context-rich",
+        "No irrelevant users receive this impact alert"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C9-ALERT-IMPACT-002",
+      "category": "C-9",
+      "type": "impact_alert_propagation",
+      "title": "Job Posting deletion/cancel informs impacted users",
+      "entity": "Job Posting",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/jobs",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "college_admin",
+        "student"
+      ],
+      "impactedRoutes": [
+        "/dashboard/college/drives",
+        "/dashboard/student/drives"
+      ],
+      "steps": [
+        "Perform cancel/delete action for Job Posting",
+        "Capture transaction reference and timestamp",
+        "Login as each impacted role",
+        "Check Alerts/Notifications and impacted module list",
+        "Open alert and verify context (what changed, when, impact)"
+      ],
+      "expectedResult": [
+        "Impacted users receive alert for cancel/delete impact",
+        "Alert message is role-appropriate and context-rich",
+        "No irrelevant users receive this impact alert"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C9-ALERT-IMPACT-003",
+      "category": "C-9",
+      "type": "impact_alert_propagation",
+      "title": "Application deletion/cancel informs impacted users",
+      "entity": "Application",
+      "ownerRole": "student",
+      "ownerRoute": "/dashboard/student/applications",
+      "ownerAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "employer",
+        "college_admin"
+      ],
+      "impactedRoutes": [
+        "/dashboard/employer/applications",
+        "/dashboard/college/applications"
+      ],
+      "steps": [
+        "Perform cancel/delete action for Application",
+        "Capture transaction reference and timestamp",
+        "Login as each impacted role",
+        "Check Alerts/Notifications and impacted module list",
+        "Open alert and verify context (what changed, when, impact)"
+      ],
+      "expectedResult": [
+        "Impacted users receive alert for cancel/delete impact",
+        "Alert message is role-appropriate and context-rich",
+        "No irrelevant users receive this impact alert"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C9-ALERT-IMPACT-004",
+      "category": "C-9",
+      "type": "impact_alert_propagation",
+      "title": "Interview Schedule deletion/cancel informs impacted users",
+      "entity": "Interview Schedule",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/interviews",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "student",
+        "college_admin"
+      ],
+      "impactedRoutes": [
+        "/dashboard/student/interviews",
+        "/dashboard/college/interviews"
+      ],
+      "steps": [
+        "Perform cancel/delete action for Interview Schedule",
+        "Capture transaction reference and timestamp",
+        "Login as each impacted role",
+        "Check Alerts/Notifications and impacted module list",
+        "Open alert and verify context (what changed, when, impact)"
+      ],
+      "expectedResult": [
+        "Impacted users receive alert for cancel/delete impact",
+        "Alert message is role-appropriate and context-rich",
+        "No irrelevant users receive this impact alert"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C9-ALERT-IMPACT-005",
+      "category": "C-9",
+      "type": "impact_alert_propagation",
+      "title": "Offer deletion/cancel informs impacted users",
+      "entity": "Offer",
+      "ownerRole": "employer",
+      "ownerRoute": "/dashboard/employer/offers",
+      "ownerAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "impactedRoles": [
+        "student",
+        "college_admin"
+      ],
+      "impactedRoutes": [
+        "/dashboard/student/offers",
+        "/dashboard/college/offers"
+      ],
+      "steps": [
+        "Perform cancel/delete action for Offer",
+        "Capture transaction reference and timestamp",
+        "Login as each impacted role",
+        "Check Alerts/Notifications and impacted module list",
+        "Open alert and verify context (what changed, when, impact)"
+      ],
+      "expectedResult": [
+        "Impacted users receive alert for cancel/delete impact",
+        "Alert message is role-appropriate and context-rich",
+        "No irrelevant users receive this impact alert"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C9-AUDIT-001",
+      "category": "C-9",
+      "type": "policy_coverage_matrix",
+      "title": "Lifecycle policy matrix: Add/Edit/Delete/View/Cancel by entity",
+      "entity": "all transactional entities",
+      "ownerRole": "all_roles",
+      "ownerRoute": "all transactional modules",
+      "ownerAccount": {
+        "email": "role-wise demo",
+        "password": "Admin@123"
+      },
+      "steps": [
+        "Prepare entity-wise lifecycle matrix (Add/Edit/Delete/View/Cancel)",
+        "Mark delete permission and constraints per entity",
+        "Validate Super Admin deleted-data visibility path",
+        "Validate impacted-user alert requirements",
+        "Publish gaps where behavior diverges from policy"
+      ],
+      "expectedResult": [
+        "Complete lifecycle governance coverage exists",
+        "Delete vs Cancel semantics are consistent across entities",
+        "Admin retention and user impact alerts are validated"
+      ],
+      "priority": "critical"
+    }
+  ]
+}

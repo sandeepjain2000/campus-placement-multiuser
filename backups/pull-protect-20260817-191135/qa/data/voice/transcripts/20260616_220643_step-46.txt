@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CLOSURE
+# Stage: step-46
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open My Applications — Internships. Student sees Selected — internship full cycle verified end-to-end.

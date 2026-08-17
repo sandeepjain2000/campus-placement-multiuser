@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-04
+# Stage: step-10
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Browse Internships. List of internships visible to IIT Madras. Guided posting should appear if publish step included your campus.

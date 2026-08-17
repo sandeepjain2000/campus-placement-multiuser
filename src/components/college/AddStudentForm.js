@@ -17,6 +17,7 @@ import {
   validateCollegeStudentForm,
 } from '@/lib/collegeStudentAdminFields';
 import AcademicProgramPicker from '@/components/college/AcademicProgramPicker';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import AdmissionBatchYearPicker from '@/components/college/AdmissionBatchYearPicker';
 import { mapProgramToStudentFields } from '@/lib/academicTaxonomy/mapProgram';
 import { getMaxAdmissionBatchYear } from '@/lib/admissionBatchYear';
@@ -28,40 +29,107 @@ import StudentListAvatar from '@/components/student/StudentListAvatar';
 import { uploadCollegeStudentAvatarViaServer } from '@/lib/clientCollegeStudentAvatarUpload';
 import { studentAvatarAcceptAttr } from '@/lib/studentAvatarUpload';
 import { errorMessageFromApiBody } from '@/lib/errorReference';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Field as FormField,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 
 export { ADD_STUDENT_DEPARTMENTS };
 
 const settingsFetcher = (url) => fetch(url).then((r) => r.json());
 
-function SectionLegend({ children }) {
+const STUDENT_FORM_TAB_ORDER = [
+  'identity',
+  'academic',
+  'demographics',
+  'placement',
+  'profile',
+  'preferences',
+];
+
+const STUDENT_FIELD_TO_TAB = {
+  name: 'identity',
+  roll_number: 'identity',
+  email: 'identity',
+  communication_email: 'identity',
+  phone: 'identity',
+  photo_url: 'identity',
+  department: 'academic',
+  academic_program_code: 'academic',
+  degree_level: 'academic',
+  specialization: 'academic',
+  cgpa: 'academic',
+  semester: 'academic',
+  backlogs_active: 'academic',
+  backlogs_history: 'academic',
+  batch_year: 'academic',
+  graduation_year: 'academic',
+  batch: 'academic',
+  gender: 'demographics',
+  category: 'demographics',
+  disability_status: 'demographics',
+  date_of_birth: 'demographics',
+  placement_status: 'placement',
+  internship_status: 'placement',
+  skills: 'profile',
+  bio: 'profile',
+  linkedin_url: 'profile',
+  github_url: 'profile',
+  portfolio_url: 'profile',
+  resume_url: 'profile',
+  expected_salary_min: 'preferences',
+  expected_salary_max: 'preferences',
+  preferred_locations: 'preferences',
+};
+
+function firstTabWithErrors(errors) {
+  const tabs = new Set(
+    Object.keys(errors || {})
+      .filter((key) => errors[key])
+      .map((key) => STUDENT_FIELD_TO_TAB[key] || 'identity'),
+  );
+  return STUDENT_FORM_TAB_ORDER.find((tab) => tabs.has(tab)) || 'identity';
+}
+
+/** Section title above content (AdminCN / FORM_PATTERN) — not HTML legend-on-border. */
+function SectionTitle({ id, children }) {
   return (
-    <legend
-      style={{
-        fontWeight: 700,
-        fontSize: '0.75rem',
-        color: 'var(--text-tertiary)',
-        textTransform: 'uppercase',
-        letterSpacing: '0.06em',
-        marginBottom: '0.875rem',
-      }}
-    >
+    <h3 id={id} className="text-foreground m-0 text-sm font-medium">
       {children}
-    </legend>
+    </h3>
+  );
+}
+
+function FormSection({ id, title, children }) {
+  const titleId = id ? `${id}-title` : undefined;
+  return (
+    <section
+      id={id}
+      aria-labelledby={titleId}
+      className="flex flex-col gap-4 rounded-lg border p-4"
+    >
+      <SectionTitle id={titleId}>{title}</SectionTitle>
+      {children}
+    </section>
   );
 }
 
 function Field({ label, error, hint, children, fullWidth = false }) {
   return (
-    <div className="form-group" style={fullWidth ? { gridColumn: '1 / -1' } : undefined}>
-      <label className="form-label">{label}</label>
+    <FormField data-invalid={Boolean(error)} className={fullWidth ? 'col-span-full' : undefined}>
+      <FieldLabel>{label}</FieldLabel>
       {children}
-      {error ? <p className="form-error">{error}</p> : null}
-      {hint && !error ? (
-        <p className="form-hint" style={{ margin: '0.35rem 0 0', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-          {hint}
-        </p>
-      ) : null}
-    </div>
+      {error ? <FieldError>{error}</FieldError> : null}
+      {hint && !error ? <FieldDescription>{hint}</FieldDescription> : null}
+    </FormField>
   );
 }
 
@@ -84,6 +152,7 @@ export default function AddStudentForm({
   const [pendingAvatarFile, setPendingAvatarFile] = useState(null);
   const [pendingAvatarPreview, setPendingAvatarPreview] = useState('');
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState('identity');
   const nameRef = useRef(null);
   const { data: collegeSettings } = useSWR(active ? '/api/college/settings' : null, settingsFetcher);
   const { data: taxonomySettings } = useSWR(
@@ -102,6 +171,7 @@ export default function AddStudentForm({
     if (!active) return;
     setErrors({});
     setServerError('');
+    setActiveTab('identity');
     setPendingAvatarFile(null);
     setPendingAvatarPreview((prev) => {
       if (prev) URL.revokeObjectURL(prev);
@@ -192,6 +262,7 @@ export default function AddStudentForm({
     const { errors: nextErrors, valid } = validateCollegeStudentForm(form, { isEdit, collegeShortCode });
     if (!valid) {
       setErrors(nextErrors);
+      setActiveTab(firstTabWithErrors(nextErrors));
       return;
     }
     setSubmitting(true);
@@ -238,27 +309,27 @@ export default function AddStudentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-      <div style={{ flex: 1, overflowY: 'auto', padding: bodyPadding }}>
+    <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+      <div className="flex flex-1 flex-col gap-6 overflow-y-auto" style={{ padding: bodyPadding }}>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full gap-4">
+          <TabsList variant="line" className="max-w-full justify-start overflow-x-auto">
+            <TabsTrigger value="identity">Identity</TabsTrigger>
+            <TabsTrigger value="academic">Academic</TabsTrigger>
+            <TabsTrigger value="demographics">Demographics</TabsTrigger>
+            <TabsTrigger value="placement">Placement</TabsTrigger>
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          </TabsList>
+
         {serverError ? (
-          <div
-            style={{
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '8px',
-              padding: '0.875rem 1rem',
-              marginBottom: '1.25rem',
-              color: '#dc2626',
-              fontSize: '0.875rem',
-              fontWeight: 500,
-            }}
-          >
-            {serverError}
-          </div>
+          <Alert variant="destructive">
+            <AlertTitle>Unable to save student</AlertTitle>
+            <AlertDescription>{serverError}</AlertDescription>
+          </Alert>
         ) : null}
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Identity {isEdit ? '(locked)' : '(primary)'}</SectionLegend>
+        <TabsContent value="identity" className="mt-2 flex flex-col gap-4 outline-none">
+        <FormSection id="student-form-identity" title={isEdit ? 'Identity (locked)' : 'Identity (primary)'}>
           {isEdit ? (
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '0 0 0.875rem' }}>
               Name, roll number, and login email cannot be changed after creation.
@@ -266,9 +337,9 @@ export default function AddStudentForm({
           ) : null}
           <div className="add-student-grid">
             <Field label="Full Name *" error={errors.name} fullWidth>
-              <input
+              <Input
                 ref={nameRef}
-                className={`form-input${errors.name ? ' input-error' : ''}`}
+                aria-invalid={Boolean(errors.name)}
                 value={form.name}
                 onChange={(e) => set('name', e.target.value)}
                 disabled={isEdit}
@@ -287,8 +358,8 @@ export default function AddStudentForm({
                     : undefined
               }
             >
-              <input
-                className={`form-input${errors.roll_number ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.roll_number)}
                 value={form.roll_number}
                 onChange={(e) => set('roll_number', e.target.value)}
                 disabled={isEdit}
@@ -296,8 +367,8 @@ export default function AddStudentForm({
               />
             </Field>
             <Field label="Login Email *" error={errors.email}>
-              <input
-                className={`form-input${errors.email ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.email)}
                 type="email"
                 value={form.email}
                 onChange={(e) => set('email', e.target.value)}
@@ -306,8 +377,8 @@ export default function AddStudentForm({
               />
             </Field>
             <Field label="Communication Email" error={errors.communication_email}>
-              <input
-                className={`form-input${errors.communication_email ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.communication_email)}
                 type="email"
                 value={form.communication_email}
                 onChange={(e) => set('communication_email', e.target.value)}
@@ -315,16 +386,15 @@ export default function AddStudentForm({
               />
             </Field>
             <Field label="Phone" error={errors.phone}>
-              <input
-                className={`form-input${errors.phone ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.phone)}
                 value={form.phone}
                 onChange={(e) => set('phone', e.target.value)}
                 placeholder="+91 9876543210"
               />
             </Field>
             <Field label="Enrollment No.">
-              <input
-                className="form-input"
+              <Input
                 value={form.enrollment_number}
                 onChange={(e) => set('enrollment_number', e.target.value)}
               />
@@ -367,31 +437,27 @@ export default function AddStudentForm({
                 )}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', minWidth: 0 }}>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    <label
-                      className="btn btn-secondary btn-sm"
-                      style={{
-                        cursor: avatarUploading || submitting ? 'wait' : 'pointer',
-                        opacity: avatarUploading || submitting ? 0.75 : 1,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                        margin: 0,
-                      }}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      render={<label />}
+                      aria-disabled={avatarUploading || submitting}
                     >
-                      {avatarUploading ? <Loader2 size={14} className="animate-spin" aria-hidden /> : <Upload size={14} aria-hidden />}
+                      {avatarUploading ? <Loader2 className="animate-spin" aria-hidden /> : <Upload aria-hidden />}
                       {avatarUploading ? 'Uploading…' : displayPhoto || pendingAvatarFile ? 'Change photo' : 'Upload photo'}
-                      <input
+                      <Input
                         type="file"
                         accept={studentAvatarAcceptAttr()}
                         hidden
                         disabled={avatarUploading || submitting}
                         onChange={handlePhotoSelected}
                       />
-                    </label>
+                    </Button>
                     {!isEdit && pendingAvatarFile ? (
-                      <button type="button" className="btn btn-ghost btn-sm" onClick={clearPendingPhoto} disabled={avatarUploading || submitting}>
+                      <Button type="button" variant="ghost" size="sm" onClick={clearPendingPhoto} disabled={avatarUploading || submitting}>
                         Remove
-                      </button>
+                      </Button>
                     ) : null}
                   </div>
                   <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
@@ -407,10 +473,11 @@ export default function AddStudentForm({
               </div>
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
+        </TabsContent>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Academic context</SectionLegend>
+        <TabsContent value="academic" className="mt-2 flex flex-col gap-4 outline-none">
+        <FormSection id="student-form-academic" title="Academic context">
           <div className="add-student-grid">
             <AcademicProgramPicker
               value={form.academic_program_code}
@@ -449,33 +516,31 @@ export default function AddStudentForm({
                 }}
                 error={errors.batch}
               />
-              <p className="form-hint" style={{ margin: '0.35rem 0 0', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+              <p className="text-muted-foreground mt-1 mb-0 text-xs">
                 Intake year (YYYY). Latest batch today: {getMaxAdmissionBatchYear()}. A new year is added each May when admissions open.
               </p>
             </Field>
             <Field label="Current academic year">
-              <input
-                className="form-input"
+              <Input
                 value={form.academic_year}
                 onChange={(e) => set('academic_year', e.target.value)}
                 placeholder="e.g. 2025-26"
               />
             </Field>
             <Field label="Semester" error={errors.semester}>
-              <select
-                className={`form-select${errors.semester ? ' input-error' : ''}`}
+              <AdminFilterSelect
+                className="w-full"
                 value={form.semester}
-                onChange={(e) => set('semester', e.target.value)}
-              >
-                <option value="">Select…</option>
-                {SEMESTER_OPTIONS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
+                onValueChange={(v) => set('semester', v)}
+                items={[
+                  { label: 'Select…', value: 'all' },
+                  ...SEMESTER_OPTIONS.map((s) => ({ label: s, value: s })),
+                ]}
+              />
             </Field>
             <Field label="Department" error={errors.department}>
-              <input
-                className={`form-input${errors.department ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.department)}
                 value={form.department}
                 readOnly={Boolean(form.academic_program_code)}
                 onChange={(e) => set('department', e.target.value)}
@@ -483,8 +548,7 @@ export default function AddStudentForm({
               />
             </Field>
             <Field label="Specialization / Branch">
-              <input
-                className="form-input"
+              <Input
                 maxLength={100}
                 value={form.branch}
                 readOnly={Boolean(form.academic_program_code)}
@@ -492,8 +556,7 @@ export default function AddStudentForm({
               />
             </Field>
             <Field label="Degree Pursued">
-              <input
-                className="form-input"
+              <Input
                 value={form.degree_pursued}
                 readOnly={Boolean(form.academic_program_code)}
                 onChange={(e) => set('degree_pursued', e.target.value)}
@@ -503,7 +566,6 @@ export default function AddStudentForm({
             <Field label="CGPA" error={errors.cgpa}>
               <ValidatedNumberInput
                 fieldId={FIELD_IDS.STUDENT_CGPA}
-                className={`form-input${errors.cgpa ? ' input-error' : ''}`}
                 step="0.01"
                 value={form.cgpa}
                 onChange={(v) => set('cgpa', v)}
@@ -513,7 +575,6 @@ export default function AddStudentForm({
               <ValidatedNumberInput
                 fieldId={FIELD_IDS.STUDENT_PERCENT}
                 context={{ label: 'Class X %' }}
-                className={`form-input${errors.tenth_percentage ? ' input-error' : ''}`}
                 step="0.01"
                 value={form.tenth_percentage}
                 onChange={(v) => set('tenth_percentage', v)}
@@ -523,7 +584,6 @@ export default function AddStudentForm({
               <ValidatedNumberInput
                 fieldId={FIELD_IDS.STUDENT_PERCENT}
                 context={{ label: 'Class XII %' }}
-                className={`form-input${errors.twelfth_percentage ? ' input-error' : ''}`}
                 step="0.01"
                 value={form.twelfth_percentage}
                 onChange={(v) => set('twelfth_percentage', v)}
@@ -533,7 +593,6 @@ export default function AddStudentForm({
               <ValidatedNumberInput
                 fieldId={FIELD_IDS.STUDENT_PERCENT}
                 context={{ label: 'Diploma %' }}
-                className={`form-input${errors.diploma_percentage ? ' input-error' : ''}`}
                 step="0.01"
                 value={form.diploma_percentage}
                 onChange={(v) => set('diploma_percentage', v)}
@@ -542,7 +601,6 @@ export default function AddStudentForm({
             <Field label="Active Backlogs" error={errors.backlogs_active}>
               <ValidatedNumberInput
                 fieldId={FIELD_IDS.STUDENT_BACKLOGS_ACTIVE}
-                className={`form-input${errors.backlogs_active ? ' input-error' : ''}`}
                 value={form.backlogs_active}
                 context={{ backlogsTotal: form.backlogs_history }}
                 onChange={(v) => set('backlogs_active', v)}
@@ -551,24 +609,22 @@ export default function AddStudentForm({
             <Field label="Total Backlogs (history)" error={errors.backlogs_history}>
               <ValidatedNumberInput
                 fieldId={FIELD_IDS.STUDENT_BACKLOGS_TOTAL}
-                className={`form-input${errors.backlogs_history ? ' input-error' : ''}`}
                 value={form.backlogs_history}
                 context={{ backlogsActive: form.backlogs_active }}
                 onChange={(v) => set('backlogs_history', v)}
               />
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Programme timeline</SectionLegend>
+        <FormSection title="Programme timeline">
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '0 0 0.875rem' }}>
             Optional calendar years for eligibility. Admission year is usually the start year of the joining batch.
           </p>
           <div className="add-student-grid">
             <Field label="Admission year" error={errors.batch_year} hint="Calendar year (often batch start year)">
-              <input
-                className={`form-input${errors.batch_year ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.batch_year)}
                 inputMode="numeric"
                 value={form.batch_year}
                 onChange={(e) => set('batch_year', e.target.value)}
@@ -576,8 +632,8 @@ export default function AddStudentForm({
               />
             </Field>
             <Field label="Graduation year" error={errors.graduation_year} hint="Expected pass-out year">
-              <input
-                className={`form-input${errors.graduation_year ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.graduation_year)}
                 inputMode="numeric"
                 value={form.graduation_year}
                 onChange={(e) => set('graduation_year', e.target.value)}
@@ -585,100 +641,98 @@ export default function AddStudentForm({
               />
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
+        </TabsContent>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Demographics</SectionLegend>
+        <TabsContent value="demographics" className="mt-2 flex flex-col gap-4 outline-none">
+        <FormSection id="student-form-demographics" title="Demographics">
           <div className="add-student-grid">
             <Field label="Gender">
-              <select className="form-select" value={form.gender} onChange={(e) => set('gender', e.target.value)}>
-                <option value="">Select…</option>
-                {GENDERS.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
+              <AdminFilterSelect
+                className="w-full"
+                value={form.gender}
+                onValueChange={(v) => set('gender', v)}
+                items={[
+                  { label: 'Select…', value: 'all' },
+                  ...GENDERS.map((g) => ({ label: g, value: g })),
+                ]}
+              />
             </Field>
             <Field label="Diversity Category">
-              <select className="form-select" value={form.category} onChange={(e) => set('category', e.target.value)}>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+              <AdminFilterSelect
+                className="w-full"
+                value={form.category}
+                onValueChange={(v) => set('category', v)}
+                emptyMapsToAll={false}
+                items={CATEGORIES.map((c) => ({ label: c, value: c }))}
+              />
             </Field>
             <Field label="Disability Status">
-              <select
-                className="form-select"
+              <AdminFilterSelect
+                className="w-full"
                 value={form.disability_status}
-                onChange={(e) => set('disability_status', e.target.value)}
-              >
-                {DISABILITY_OPTIONS.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
+                onValueChange={(v) => set('disability_status', v)}
+                emptyMapsToAll={false}
+                items={DISABILITY_OPTIONS.map((d) => ({ label: d, value: d }))}
+              />
             </Field>
             <Field label="Date of Birth" error={errors.date_of_birth}>
               <ValidatedDateInput
                 fieldId={FIELD_IDS.STUDENT_DOB}
-                className={`form-input${errors.date_of_birth ? ' input-error' : ''}`}
                 value={form.date_of_birth}
                 onChange={(v) => set('date_of_birth', v)}
               />
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
+        </TabsContent>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Placement status</SectionLegend>
+        <TabsContent value="placement" className="mt-2 flex flex-col gap-4 outline-none">
+        <FormSection id="student-form-placement" title="Placement status">
           <div className="add-student-grid">
             <Field label="Job / Placement Status" error={errors.placement_status}>
-              <select
-                className={`form-select${errors.placement_status ? ' input-error' : ''}`}
+              <AdminFilterSelect
+                className="w-full"
                 value={form.placement_status}
-                onChange={(e) => set('placement_status', e.target.value)}
-              >
-                {PLACEMENT_STATUSES.map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
-              </select>
+                onValueChange={(v) => set('placement_status', v)}
+                emptyMapsToAll={false}
+                items={PLACEMENT_STATUSES.map((s) => ({ label: s.label, value: s.value }))}
+              />
             </Field>
             <Field label="Internship Status" error={errors.internship_status}>
-              <select
-                className={`form-select${errors.internship_status ? ' input-error' : ''}`}
+              <AdminFilterSelect
+                className="w-full"
                 value={form.internship_status}
-                onChange={(e) => set('internship_status', e.target.value)}
-              >
-                {INTERNSHIP_STATUSES.map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
-              </select>
+                onValueChange={(v) => set('internship_status', v)}
+                emptyMapsToAll={false}
+                items={INTERNSHIP_STATUSES.map((s) => ({ label: s.label, value: s.value }))}
+              />
             </Field>
             <Field label="Verification" fullWidth>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={form.verified}
-                  onChange={(e) => set('verified', e.target.checked)}
+                  onCheckedChange={(v) => set('verified', !!v)}
                 />
                 Mark student as verified by college
               </label>
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
+        </TabsContent>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Skills</SectionLegend>
+        <TabsContent value="profile" className="mt-2 flex flex-col gap-4 outline-none">
+        <FormSection title="Skills">
           <TagPicker
             tags={form.skills}
             onChange={(val) => set('skills', val)}
             placeholder="Type a skill and press Enter…"
           />
-        </fieldset>
+        </FormSection>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 1.5rem' }}>
-          <SectionLegend>Profile & links</SectionLegend>
+        <FormSection id="student-form-profile" title="Profile & links">
           <Field label="Bio" fullWidth>
-            <textarea
-              className="form-input"
+            <Textarea
               rows={3}
               value={form.bio}
               onChange={(e) => set('bio', e.target.value)}
@@ -687,43 +741,43 @@ export default function AddStudentForm({
           </Field>
           <div className="add-student-grid" style={{ marginTop: '1rem' }}>
             <Field label="LinkedIn" error={errors.linkedin_url}>
-              <input
-                className={`form-input${errors.linkedin_url ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.linkedin_url)}
                 value={form.linkedin_url}
                 onChange={(e) => set('linkedin_url', e.target.value)}
               />
             </Field>
             <Field label="GitHub" error={errors.github_url}>
-              <input
-                className={`form-input${errors.github_url ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.github_url)}
                 value={form.github_url}
                 onChange={(e) => set('github_url', e.target.value)}
               />
             </Field>
             <Field label="Portfolio" error={errors.portfolio_url}>
-              <input
-                className={`form-input${errors.portfolio_url ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.portfolio_url)}
                 value={form.portfolio_url}
                 onChange={(e) => set('portfolio_url', e.target.value)}
               />
             </Field>
             <Field label="Resume URL" error={errors.resume_url}>
-              <input
-                className={`form-input${errors.resume_url ? ' input-error' : ''}`}
+              <Input
+                aria-invalid={Boolean(errors.resume_url)}
                 value={form.resume_url}
                 onChange={(e) => set('resume_url', e.target.value)}
               />
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
+        </TabsContent>
 
-        <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
-          <SectionLegend>Preferences</SectionLegend>
+        <TabsContent value="preferences" className="mt-2 flex flex-col gap-4 outline-none">
+        <FormSection id="student-form-preferences" title="Preferences">
           <div className="add-student-grid">
             <Field label="Expected Salary Min (₹/year)" error={errors.expected_salary_min}>
               <CurrencyAmountInput
                 fieldId={FIELD_IDS.STUDENT_SALARY_MIN}
-                className={`form-input${errors.expected_salary_min ? ' input-error' : ''}`}
                 value={form.expected_salary_min}
                 onChange={(v) => set('expected_salary_min', v)}
                 placeholder="100000"
@@ -733,7 +787,6 @@ export default function AddStudentForm({
               <CurrencyAmountInput
                 fieldId={FIELD_IDS.STUDENT_SALARY_MAX}
                 context={{ salaryMin: form.expected_salary_min }}
-                className={`form-input${errors.expected_salary_max ? ' input-error' : ''}`}
                 value={form.expected_salary_max}
                 onChange={(v) => set('expected_salary_max', v)}
                 placeholder="200000"
@@ -748,60 +801,48 @@ export default function AddStudentForm({
             </Field>
             <Field label="Relocation" fullWidth>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={form.willing_to_relocate}
-                  onChange={(e) => set('willing_to_relocate', e.target.checked)}
+                  onCheckedChange={(v) => set('willing_to_relocate', !!v)}
                 />
                 Willing to relocate
               </label>
             </Field>
           </div>
-        </fieldset>
+        </FormSection>
+        </TabsContent>
+        </Tabs>
       </div>
 
-      <div
-        style={{
-          padding: '1rem 1.5rem',
-          borderTop: '1px solid var(--border-default)',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '0.75rem',
-          flexShrink: 0,
-          background: 'var(--bg-secondary)',
-        }}
-      >
-        <button type="button" className="btn btn-ghost" onClick={onCancel} disabled={submitting}>
+      <div className="flex shrink-0 justify-end gap-3 border-t bg-muted/30 px-6 py-4">
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={submitting}>
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="btn btn-primary"
           disabled={submitting}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', minWidth: 130 }}
+          className="min-w-32"
         >
           {submitting ? (
             <>
-              <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
+              <Loader2 data-icon="inline-start" className="animate-spin" />
               {isEdit ? 'Saving…' : 'Adding…'}
             </>
           ) : isEdit ? (
             <>
-              <Save size={15} />
+              <Save data-icon="inline-start" />
               Save changes
             </>
           ) : (
             <>
-              <Plus size={15} />
+              <Plus data-icon="inline-start" />
               Add Student
             </>
           )}
-        </button>
+        </Button>
       </div>
 
       <style>{`
-        .form-error { color: #dc2626; font-size: 0.75rem; margin: 0.25rem 0 0; }
-        .input-error { border-color: #fca5a5 !important; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .add-student-grid {
           display: grid;

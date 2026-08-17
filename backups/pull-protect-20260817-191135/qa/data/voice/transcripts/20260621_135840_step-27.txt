@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-27
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm drive in employer list. Employer request complete — handoff to College next.

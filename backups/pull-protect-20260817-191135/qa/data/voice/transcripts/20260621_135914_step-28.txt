@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-28
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as college admin. Approve the drive for campus visibility.

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-31
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Approve guided internship for campus. Row with GT-2026-06-161622 — click Approve (skipped if already Approved from a prior run).

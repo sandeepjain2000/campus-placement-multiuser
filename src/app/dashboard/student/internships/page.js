@@ -14,7 +14,7 @@ import {
   opportunitySearchText,
 } from '@/lib/tableQueryPresets';
 import { GraduationCap } from 'lucide-react';
-import { formatCurrency, formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import EntityLogo from '@/components/EntityLogo';
 import CompanyNameLink from '@/components/CompanyNameLink';
@@ -24,6 +24,11 @@ import StudentOpportunityDetailModal from '@/components/student/StudentOpportuni
 import StudentOpportunityApplyButton from '@/components/student/StudentOpportunityApplyButton';
 import PageLoading from '@/components/PageLoading';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   globalApplyBlockedReason,
   resolveApplyBlockReason,
@@ -127,26 +132,38 @@ export default function StudentInternshipsPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <GraduationCap size={28} className="text-secondary" strokeWidth={1.5} />
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <GraduationCap className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
             Browse Internships
           </h1>
-          <p className="text-secondary">
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             Published internships visible to your college. Apply directly from here.
           </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center gap-2">
           {canBrowseListings && notProcessedCount > 0 ? (
-            <Link href="/dashboard/student/internships/not-processed" className="btn btn-secondary btn-sm">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-fit shrink-0"
+              render={<Link href="/dashboard/student/internships/not-processed" />}
+              nativeButton={false}
+            >
               Not processed ({notProcessedCount})
-            </Link>
+            </Button>
           ) : canBrowseListings && internshipLocked ? (
-            <Link href="/dashboard/student/internships/not-processed" className="btn btn-secondary btn-sm">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-fit shrink-0"
+              render={<Link href="/dashboard/student/internships/not-processed" />}
+              nativeButton={false}
+            >
               Not processed internships
-            </Link>
+            </Button>
           ) : null}
           {canBrowseListings && totalCount > 0 ? (
             <ExportCsvSplitButton
@@ -158,17 +175,18 @@ export default function StudentInternshipsPage() {
             />
           ) : null}
           {canBrowseListings ? (
-            <span className="badge badge-blue" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <StatusBadge tone="blue" className="px-3 py-1 text-sm">
               {totalCount} internship{totalCount !== 1 ? 's' : ''} available
-            </span>
+            </StatusBadge>
           ) : null}
         </div>
       </div>
 
       {isLoading && <PageLoading message="Loading internships…" inline />}
       {error && (
-        <div className="card" style={{ borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0 }}>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load internships</AlertTitle>
+          <AlertDescription>
             {error.message}
             {/job_posting_visibility|program_applications|member_tenant_id|does not exist/i.test(error.message) ? (
               <>
@@ -178,193 +196,208 @@ export default function StudentInternshipsPage() {
                 <code className="text-xs">004_group_tenants_student_affiliation.sql</code>, then reload.
               </>
             ) : null}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {!isLoading && !error && (
-      <StudentBrowsePrerequisitePanel {...browseGateProps}>
-      <StudentApplyResumeBanner
-        canApply={canApply}
-        placementLocked={placementLocked}
-        applyBlockedReason={applyBlockedReason}
-      />
+        <StudentBrowsePrerequisitePanel {...browseGateProps}>
+          <div className="flex flex-col gap-4">
+            <StudentApplyResumeBanner
+              canApply={canApply}
+              placementLocked={placementLocked}
+              applyBlockedReason={applyBlockedReason}
+            />
 
-      {canBrowseListings && internshipLocked && selectedInternship ? (
-        <div
-          role="status"
-          className="card"
-          style={{
-            marginBottom: '1.25rem',
-            padding: '1rem 1.25rem',
-            borderColor: 'var(--primary-200)',
-            background: 'var(--primary-50)',
-          }}
-        >
-          <p className="text-sm" style={{ margin: 0, lineHeight: 1.55 }}>
-            You were selected for <strong>{selectedInternship.companyName}</strong> — {selectedInternship.title}. Campus
-            rule allows <strong>1 internship</strong> (FCFS). Other internships are hidden here; see{' '}
-            <Link href="/dashboard/student/internships/not-processed" style={{ fontWeight: 600 }}>
-              not processed internships
-            </Link>{' '}
-            for the read-only list.
-          </p>
-        </div>
-      ) : null}
+            {canBrowseListings && internshipLocked && selectedInternship ? (
+              <Card className="border-primary/25 bg-primary/5 gap-0 py-4" role="status">
+                <CardContent className="px-4">
+                  <p className="text-foreground m-0 text-sm leading-relaxed">
+                    You were selected for <strong>{selectedInternship.companyName}</strong> — {selectedInternship.title}.
+                    Campus rule allows <strong>1 internship</strong> (FCFS). Other internships are hidden here; see{' '}
+                    <Link
+                      href="/dashboard/student/internships/not-processed"
+                      className="text-primary font-semibold hover:underline"
+                    >
+                      not processed internships
+                    </Link>{' '}
+                    for the read-only list.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : null}
 
-      {canBrowseListings && totalCount === 0 && (
-        <div className="empty-state-container" style={{ textAlign: 'center', padding: '3rem 1rem', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)' }}>
-          <div style={{ background: 'var(--primary-50)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-            <GraduationCap size={28} />
+            {canBrowseListings && totalCount === 0 && (
+              <Card className="gap-0 py-10">
+                <CardContent className="flex flex-col items-center px-6 text-center">
+                  <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+                    <GraduationCap className="size-7" />
+                  </div>
+                  <CardTitle className="mb-1 text-lg">No internships available</CardTitle>
+                  <CardDescription className="max-w-md text-sm">
+                    No published internships for your campus right now. When an employer publishes one and selects your
+                    college, it will appear here.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            )}
+
+            {canBrowseListings && totalCount > 0 && (
+              <Card className="gap-0 overflow-hidden py-0">
+                <CardHeader className="border-border gap-3 border-b px-4 py-3">
+                  <div className="flex flex-col gap-1">
+                    <CardTitle className="text-base">Open listings</CardTitle>
+                    <CardDescription>
+                      Showing {filteredCount} of {totalCount}
+                    </CardDescription>
+                  </div>
+                  <DataTableToolbar
+                    search={search}
+                    onSearchChange={setSearch}
+                    searchPlaceholder="Search company, role, or status…"
+                    filter={filter}
+                    onFilterChange={setFilter}
+                    filterOptions={STUDENT_OPPORTUNITY_FILTER_OPTIONS}
+                    filterLabel="Status"
+                    sort={sort}
+                    onSortChange={setSort}
+                    sortOptions={COMPANY_SORT_OPTIONS}
+                    filteredCount={filteredCount}
+                    totalCount={totalCount}
+                    hasActiveFilters={hasActiveFilters}
+                    onClear={clearFilters}
+                  />
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table className="student-opportunities-table">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Stipend</TableHead>
+                        <TableHead>CGPA</TableHead>
+                        <TableHead>Openings</TableHead>
+                        <TableHead>Period</TableHead>
+                        <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {displayItems.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
+                            No internships match your search or filters.
+                          </TableCell>
+                        </TableRow>
+                      ) : null}
+                      {displayItems.map((row) => {
+                        const stipendText =
+                          row.salaryMin != null || row.salaryMax != null
+                            ? `${formatCurrency(row.salaryMin || row.salaryMax)}${
+                                row.salaryMax != null &&
+                                row.salaryMin != null &&
+                                Number(row.salaryMax) !== Number(row.salaryMin)
+                                  ? ` – ${formatCurrency(row.salaryMax)}`
+                                  : ''
+                              } /mo`
+                            : '—';
+                        return (
+                          <TableRow key={row.id}>
+                            <TableCell>
+                              <div className="flex min-w-0 items-center gap-2">
+                                <EntityLogo name={row.companyName} size="sm" shape="rounded" />
+                                <span className="truncate font-medium" title={row.companyName || undefined}>
+                                  <CompanyNameLink name={row.companyName} website={row.website} />
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="max-w-[12rem]">
+                              <span className="block truncate" title={row.title || undefined}>
+                                {row.title}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-sm" title={stipendText !== '—' ? stipendText : undefined}>
+                              {row.salaryMin != null || row.salaryMax != null ? (
+                                <>
+                                  {formatCurrency(row.salaryMin || row.salaryMax)}
+                                  {row.salaryMax != null &&
+                                  row.salaryMin != null &&
+                                  Number(row.salaryMax) !== Number(row.salaryMin)
+                                    ? ` – ${formatCurrency(row.salaryMax)}`
+                                    : ''}
+                                  <span className="text-muted-foreground"> /mo</span>
+                                </>
+                              ) : (
+                                '—'
+                              )}
+                            </TableCell>
+                            <TableCell className="text-sm">{row.minCgpa != null ? row.minCgpa : '—'}</TableCell>
+                            <TableCell className="text-sm">{row.vacancies ?? '—'}</TableCell>
+                            <TableCell
+                              className="max-w-[10rem] text-sm"
+                              title={
+                                formatInternshipPeriodLabel(row.startDate, row.endDate, formatDate) || undefined
+                              }
+                            >
+                              <span className="block truncate">
+                                {formatInternshipPeriodLabel(row.startDate, row.endDate, formatDate) || '—'}
+                              </span>
+                            </TableCell>
+                              <TableCell className="min-w-[6.5rem]" data-label="Status">
+                                {row.hasApplied ? (
+                                  <StatusBadge status={row.applicationStatus || 'applied'} showDot>
+                                    {formatStatus(row.applicationStatus) || 'Applied'}
+                                  </StatusBadge>
+                                ) : (
+                                  <StatusBadge tone="gray" showDot>
+                                    Open
+                                  </StatusBadge>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right whitespace-nowrap" data-label="Actions">
+                              <div className="inline-flex items-center justify-end gap-1.5">
+                                <StandardTableIconAction
+                                  action="view"
+                                  showLabel={false}
+                                  onClick={() => setSelectedRow(row)}
+                                />
+                                {!row.hasApplied && (
+                                  <StudentOpportunityApplyButton
+                                    row={row}
+                                    currentStudent={currentStudent}
+                                    applyOptions={applyOptions}
+                                    globalBlockedReason={globalBlockedReason}
+                                    applyingId={applyingId}
+                                    onApply={apply}
+                                    onShowEligibility={setSelectedRow}
+                                  />
+                                )}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            )}
+
+            {selectedRow ? (
+              <StudentOpportunityDetailModal
+                row={selectedRow}
+                kind="internship"
+                onClose={() => setSelectedRow(null)}
+                onApply={apply}
+                applyingId={applyingId}
+                currentStudent={currentStudent}
+                applyOptions={applyOptions}
+                canApply={canApply}
+                applyBlockedReason={applyBlockedReason}
+              />
+            ) : null}
           </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>No internships available</h3>
-          <p className="text-secondary" style={{ margin: 0 }}>
-            No published internships for your campus right now. When an employer publishes one and selects your college, it will appear here.
-          </p>
-        </div>
-      )}
-
-      {canBrowseListings && totalCount > 0 && (
-        <DataTableToolbar
-          search={search}
-          onSearchChange={setSearch}
-          searchPlaceholder="Search company, role, or status…"
-          filter={filter}
-          onFilterChange={setFilter}
-          filterOptions={STUDENT_OPPORTUNITY_FILTER_OPTIONS}
-          filterLabel="Status"
-          sort={sort}
-          onSortChange={setSort}
-          sortOptions={COMPANY_SORT_OPTIONS}
-          filteredCount={filteredCount}
-          totalCount={totalCount}
-          hasActiveFilters={hasActiveFilters}
-          onClear={clearFilters}
-        />
-      )}
-
-      {/* ── Tabular list ── */}
-      {canBrowseListings && totalCount > 0 && (
-        <div className="card card-table-shell">
-          <div className="table-container">
-          <table className="data-table student-opportunities-table">
-            <colgroup>
-              <col className="student-opportunities-col-company" />
-              <col className="student-opportunities-col-role" />
-              <col className="student-opportunities-col-stipend" />
-              <col className="student-opportunities-col-cgpa" />
-              <col className="student-opportunities-col-openings" />
-              <col className="student-opportunities-col-deadline" />
-              <col className="student-opportunities-col-status" />
-              <col className="student-opportunities-col-actions" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th className="student-opportunities-col-company" style={{ paddingLeft: '1rem' }}>Company</th>
-                <th className="student-opportunities-col-role">Role</th>
-                <th className="student-opportunities-col-stipend">Stipend</th>
-                <th className="student-opportunities-col-cgpa">CGPA</th>
-                <th className="student-opportunities-col-openings">Openings</th>
-                <th className="student-opportunities-col-deadline">Period</th>
-                <th className="student-opportunities-col-status">Status</th>
-                <th className="student-opportunities-col-actions" style={{ textAlign: 'right', paddingRight: '1rem' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {displayItems.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="text-center text-secondary">
-                    No internships match your search or filters.
-                  </td>
-                </tr>
-              ) : null}
-              {displayItems.map((row) => {
-                const stipendText =
-                  row.salaryMin != null || row.salaryMax != null
-                    ? `${formatCurrency(row.salaryMin || row.salaryMax)}${
-                        row.salaryMax != null && row.salaryMin != null && Number(row.salaryMax) !== Number(row.salaryMin)
-                          ? ` – ${formatCurrency(row.salaryMax)}`
-                          : ''
-                      } /mo`
-                    : '—';
-                return (
-                <tr key={row.id}>
-                  <td className="student-opportunities-col-company" data-label="Company" style={{ paddingLeft: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: 0 }}>
-                      <EntityLogo name={row.companyName} size="sm" shape="rounded" />
-                      <span className="cell-truncate font-semibold" title={row.companyName || undefined}>
-                        <CompanyNameLink name={row.companyName} website={row.website} />
-                      </span>
-                    </div>
-                  </td>
-                  <td className="cell-truncate" data-label="Role" title={row.title || undefined}>{row.title}</td>
-                  <td className="text-sm cell-truncate" data-label="Stipend" title={stipendText !== '—' ? stipendText : undefined}>
-                    {row.salaryMin != null || row.salaryMax != null ? (
-                      <>
-                        {formatCurrency(row.salaryMin || row.salaryMax)}
-                        {row.salaryMax != null && row.salaryMin != null && Number(row.salaryMax) !== Number(row.salaryMin)
-                          ? ` – ${formatCurrency(row.salaryMax)}`
-                          : ''}
-                        <span className="text-tertiary"> /mo</span>
-                      </>
-                    ) : '—'}
-                  </td>
-                  <td className="text-sm" data-label="CGPA">{row.minCgpa != null ? row.minCgpa : '—'}</td>
-                  <td className="text-sm" data-label="Openings">{row.vacancies ?? '—'}</td>
-                  <td
-                    className="text-sm cell-truncate"
-                    data-label="Period"
-                    title={formatInternshipPeriodLabel(row.startDate, row.endDate, formatDate) || undefined}
-                  >
-                    {formatInternshipPeriodLabel(row.startDate, row.endDate, formatDate) || '—'}
-                  </td>
-                  <td data-label="Status">
-                    {row.hasApplied ? (
-                      <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
-                        {formatStatus(row.applicationStatus)}
-                      </span>
-                    ) : (
-                      <span className="badge badge-gray">Open</span>
-                    )}
-                  </td>
-                  <td className="student-opportunities-col-actions" data-label="Actions" style={{ textAlign: 'right', paddingRight: '1rem', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center', justifyContent: 'flex-end' }}>
-                      <StandardTableIconAction action="view" showLabel={false} onClick={() => setSelectedRow(row)} />
-                      {!row.hasApplied && (
-                        <StudentOpportunityApplyButton
-                          row={row}
-                          currentStudent={currentStudent}
-                          applyOptions={applyOptions}
-                          globalBlockedReason={globalBlockedReason}
-                          applyingId={applyingId}
-                          onApply={apply}
-                          onShowEligibility={setSelectedRow}
-                        />
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );})}
-            </tbody>
-          </table>
-          </div>
-        </div>
-      )}
-
-      {selectedRow ? (
-        <StudentOpportunityDetailModal
-          row={selectedRow}
-          kind="internship"
-          onClose={() => setSelectedRow(null)}
-          onApply={apply}
-          applyingId={applyingId}
-          currentStudent={currentStudent}
-          applyOptions={applyOptions}
-          canApply={canApply}
-          applyBlockedReason={applyBlockedReason}
-        />
-      ) : null}
-      </StudentBrowsePrerequisitePanel>
+        </StudentBrowsePrerequisitePanel>
       )}
       {pickerModal}
     </div>

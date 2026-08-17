@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-05
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Edit hiring_result inline — manual. Change round values; Save changes shows dirty row count.

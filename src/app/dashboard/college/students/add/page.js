@@ -6,6 +6,8 @@ import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import AddStudentForm from '@/components/college/AddStudentForm';
 import { CURRENT_ACADEMIC_YEAR, CURRENT_SEMESTER } from '@/lib/collegeStudentsCsv';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function CollegeAddStudentPage() {
   const router = useRouter();
@@ -23,80 +25,41 @@ export default function CollegeAddStudentPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{
-        marginBottom: '1.5rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        flexWrap: 'wrap',
-        gap: '1rem',
-      }}
-      >
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <Link
-            href="/dashboard/college/students"
-            className="btn btn-ghost btn-sm"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              marginBottom: '0.75rem',
-              paddingLeft: 0,
-            }}
-          >
-            <ArrowLeft size={16} />
+          <Button variant="ghost" size="sm" className="mb-2" render={<Link href="/dashboard/college/students" />}>
+            <ArrowLeft data-icon="inline-start" />
             Back to Students
-          </Link>
-          <h1 style={{
-            fontSize: '1.75rem',
-            fontWeight: 800,
-            color: 'var(--text-primary)',
-            margin: '0 0 0.35rem',
-            letterSpacing: '-0.02em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-          >
-            <span style={{
-              display: 'flex',
-              padding: '0.35rem',
-              background: 'var(--primary-50)',
-              borderRadius: '8px',
-              color: 'var(--primary-600)',
-            }}
-            >
-              <UserPlus size={22} />
-            </span>
+          </Button>
+          <h1 className="flex items-center gap-2 font-heading text-2xl font-semibold tracking-tight">
+            <span className="rounded-lg bg-muted p-2 text-muted-foreground"><UserPlus /></span>
             Add Student
           </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0, maxWidth: 640 }}>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
             Create a student with the same fields as CSV import and the full profile. A welcome email is sent with a temporary password. Roll number and login email are locked after creation.
             {' '}
-            <span style={{ color: 'var(--text-tertiary)' }}>
+            <span>
               AY {CURRENT_ACADEMIC_YEAR} · Sem {CURRENT_SEMESTER}
             </span>
           </p>
         </div>
       </div>
 
-      <div
-        className="card"
-        style={{
-          width: '100%',
-          padding: 0,
-          overflow: 'hidden',
-          border: '1px solid var(--border-default)',
-        }}
-      >
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-5">
+          <CardTitle>Student details</CardTitle>
+          <CardDescription>Complete each section, then review before saving.</CardDescription>
+        </CardHeader>
+        <CardContent className="px-0">
         <AddStudentForm
           active
           onSuccess={handleSuccess}
           onCancel={() => router.push('/dashboard/college/students')}
           bodyPadding="1.5rem 1.5rem 0.5rem"
         />
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -3,6 +3,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@/components/ToastProvider';
 import { Mail, RotateCcw, Save } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 /**
  * @param {{ variant?: 'section' | 'page' }} props
@@ -15,6 +23,7 @@ export default function CollegeSystemEmailTemplates({ variant = 'section' }) {
   const [catalog, setCatalog] = useState([]);
   const [forms, setForms] = useState({});
   const [savingKey, setSavingKey] = useState(null);
+  const [versionPickerReset, setVersionPickerReset] = useState({});
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -123,23 +132,14 @@ export default function CollegeSystemEmailTemplates({ variant = 'section' }) {
   const isPage = variant === 'page';
 
   return (
-    <section style={isPage ? undefined : { marginTop: '2.5rem' }}>
+    <section className={isPage ? undefined : 'mt-10'}>
       {!isPage ? (
         <>
-          <h2
-            style={{
-              fontSize: '1.15rem',
-              fontWeight: 700,
-              margin: '0 0 0.35rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <Mail size={20} className="text-primary" aria-hidden />
+          <h2 className="m-0 flex items-center gap-2 text-lg font-semibold">
+            <Mail className="text-primary size-5" aria-hidden />
             Automated sponsorship emails
           </h2>
-          <p className="text-sm text-secondary" style={{ marginBottom: '1rem', maxWidth: 720 }}>
+          <p className="text-muted-foreground mb-4 max-w-3xl text-sm">
             Customize wording for emails your campus sends to sponsors after payment (thank-you and receipt). Scoped to{' '}
             <strong>your college only</strong>; other campuses keep their own copy or the platform default.
           </p>
@@ -147,119 +147,114 @@ export default function CollegeSystemEmailTemplates({ variant = 'section' }) {
       ) : null}
 
       {loading ? (
-        <div className="skeleton" style={{ height: 200 }} />
+        <div className="skeleton h-52 rounded-xl" />
       ) : catalog.length === 0 ? (
-        <div className="card" style={{ padding: '1.5rem' }}>
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+        <Alert>
+          <AlertDescription>
             Could not load email templates. Sign in as a college admin with a campus assigned. If saving fails, apply
             migration <code className="text-xs">058_email_template_overrides.sql</code>.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.25rem',
-            maxWidth: isPage ? 900 : undefined,
-          }}
-        >
+        <div className={`flex flex-col gap-5 ${isPage ? 'max-w-4xl' : ''}`}>
           {catalog.map((row) => {
             const f = forms[row.template_key] || { subject: '', body: '', has_override: false };
             const placeholders = row.placeholders || [];
             return (
-              <div key={row.template_key} className="card" style={{ padding: '1.25rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  <h3 style={{ fontSize: '1rem', margin: 0 }}>{row.title}</h3>
-                  <span className={`badge ${f.has_override ? 'badge-indigo' : 'badge-gray'}`}>
+              <Card key={row.template_key}>
+                <CardHeader>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                  <CardTitle>{row.title}</CardTitle>
+                  <Badge variant={f.has_override ? 'default' : 'secondary'}>
                     {f.has_override ? 'Your campus' : 'Platform default'}
-                  </span>
-                </div>
-                {row.summary ? <p className="text-sm text-secondary">{row.summary}</p> : null}
-                <div
-                  className="text-xs"
-                  style={{
-                    marginBottom: '0.75rem',
-                    padding: '0.65rem',
-                    background: 'var(--bg-secondary)',
-                    borderRadius: 8,
-                    border: '1px solid var(--border-default)',
-                  }}
-                >
+                  </Badge>
+                  </div>
+                  {row.summary ? <CardDescription>{row.summary}</CardDescription> : null}
+                </CardHeader>
+                <CardContent>
+                <div className="bg-muted border-border mb-4 rounded-md border p-3 text-xs">
                   <strong>Placeholders:</strong>{' '}
                   <code style={{ whiteSpace: 'pre-wrap' }}>{placeholders.map((p) => `{{${p}}}`).join('  ')}</code>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Subject</label>
-                  <input
-                    className="form-input"
+                <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor={`${row.template_key}-subject`}>Subject</FieldLabel>
+                  <Input
+                    id={`${row.template_key}-subject`}
                     value={f.subject}
                     onChange={(e) => setFormField(row.template_key, 'subject', e.target.value)}
                   />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Body</label>
-                  <textarea
-                    className="form-input"
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`${row.template_key}-body`}>Body</FieldLabel>
+                  <Textarea
+                    id={`${row.template_key}-body`}
                     rows={10}
                     value={f.body}
                     onChange={(e) => setFormField(row.template_key, 'body', e.target.value)}
-                    style={{ fontFamily: 'var(--font-mono, ui-monospace, monospace)', fontSize: '0.85rem' }}
+                    className="font-mono text-sm"
                   />
-                </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <button
+                </Field>
+                </FieldGroup>
+                </CardContent>
+                <CardFooter className="flex flex-wrap gap-2">
+                  <Button
                     type="button"
-                    className="btn btn-primary btn-sm"
+                    size="sm"
                     disabled={savingKey === row.template_key}
                     onClick={() => void save(row.template_key)}
                   >
-                    <Save size={14} style={{ marginRight: 4 }} />
+                    <Save data-icon="inline-start" />
                     {savingKey === row.template_key ? 'Saving…' : 'Save for campus'}
-                  </button>
+                  </Button>
                   {f.has_override ? (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-secondary btn-sm"
+                      variant="outline"
+                      size="sm"
                       disabled={savingKey === row.template_key}
                       onClick={() => void resetToPlatform(row.template_key)}
                     >
-                      <RotateCcw size={14} style={{ marginRight: 4 }} />
+                      <RotateCcw data-icon="inline-start" />
                       Current platform default
-                    </button>
+                    </Button>
                   ) : null}
                   {Array.isArray(row.versions) && row.versions.length > 0 ? (
-                    <label className="text-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                      <span className="text-secondary">Restore system version</span>
-                      <select
-                        className="form-select"
-                        style={{ width: 'auto', minWidth: 180 }}
-                        defaultValue=""
+                    <Field className="ml-auto max-w-xs">
+                      <FieldLabel htmlFor={`${row.template_key}-version`}>Restore system version</FieldLabel>
+                      <AdminFilterSelect
+                        key={`${row.template_key}-version-${versionPickerReset[row.template_key] ?? 0}`}
+                        id={`${row.template_key}-version`}
+                        className="min-w-44"
+                        value=""
                         disabled={savingKey === row.template_key}
-                        onChange={(e) => {
-                          const id = e.target.value;
-                          e.target.value = '';
-                          if (id) void restoreSystemVersion(row.template_key, id);
+                        emptyMapsToAll={false}
+                        onValueChange={(id) => {
+                          if (id) {
+                            void restoreSystemVersion(row.template_key, id);
+                            setVersionPickerReset((prev) => ({
+                              ...prev,
+                              [row.template_key]: (prev[row.template_key] ?? 0) + 1,
+                            }));
+                          }
                         }}
-                      >
-                        <option value="">Choose…</option>
-                        {row.versions.map((v) => (
-                          <option key={v.id} value={v.id}>
-                            {v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}
-                            {v.is_current ? ' (current)' : ''}
-                            {` — v${v.version_number}`}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                        items={[
+                          { label: 'Choose…', value: '' },
+                          ...row.versions.map((v) => ({
+                            label: `${v.is_baseline ? 'Baseline' : (v.label || `v${v.version_number}`)}${v.is_current ? ' (current)' : ''} — v${v.version_number}`,
+                            value: String(v.id),
+                          })),
+                        ]}
+                      />
+                    </Field>
                   ) : null}
-                </div>
+                </CardFooter>
                 {Array.isArray(row.versions) && row.versions.length > 0 ? (
-                  <p className="text-xs text-secondary" style={{ margin: '0.65rem 0 0' }}>
+                  <FieldDescription className="px-6 pb-5">
                     System keeps the original baseline and each later platform publish so you can undo campus edits.
-                  </p>
+                  </FieldDescription>
                 ) : null}
-              </div>
+              </Card>
             );
           })}
         </div>

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-09
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Navigate to college Hiring Assessment. Same outcomes visible to college TPO.

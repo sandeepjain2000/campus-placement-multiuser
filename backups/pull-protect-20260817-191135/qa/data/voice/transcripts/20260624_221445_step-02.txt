@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-02
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open college Internships list. Partner listings appear as Pending review until you approve them for campus.

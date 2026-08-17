@@ -17,6 +17,15 @@ import {
   MessageSquare,
   Mic,
 } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export const dynamic = 'force-dynamic';
 
@@ -183,17 +192,16 @@ export default function FeaturesPage() {
         >
           <Link
             href="/"
-            className="btn btn-ghost btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+            className={buttonVariants({ variant: 'ghost', size: 'sm' })}
           >
-            <ArrowLeft size={16} aria-hidden />
+            <ArrowLeft data-icon="inline-start" aria-hidden />
             Home
           </Link>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <Link href="/register" className="btn btn-secondary btn-sm">
+            <Link href="/register" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
               Register
             </Link>
-            <Link href="/login" className="btn btn-primary btn-sm">
+            <Link href="/login" className={buttonVariants({ size: 'sm' })}>
               Sign in
             </Link>
           </div>
@@ -423,86 +431,32 @@ export default function FeaturesPage() {
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: '0 0 1rem', lineHeight: 1.5 }}>
             Major capabilities — not every screen, but enough to see who does what.
           </p>
-          <div
-            style={{
-              overflowX: 'auto',
-              border: '1px solid var(--border-default)',
-              borderRadius: 'var(--radius-lg)',
-              background: 'var(--bg-primary)',
-            }}
-          >
-            <table
-              style={{
-                width: '100%',
-                minWidth: 640,
-                borderCollapse: 'collapse',
-                fontSize: '0.8125rem',
-                lineHeight: 1.45,
-              }}
-            >
-              <thead>
-                <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-default)' }}>
-                  <th
-                    scope="col"
-                    style={{
-                      textAlign: 'left',
-                      padding: '0.65rem 0.85rem',
-                      fontWeight: 700,
-                      color: 'var(--text-primary)',
-                      width: '9.5rem',
-                      verticalAlign: 'bottom',
-                    }}
-                  >
+          <div style={{ border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+            <Table className="min-w-[640px] text-[0.8125rem]">
+              <TableHeader>
+                <TableRow>
+                  <TableHead scope="col" className="w-38 font-bold">
                     Category
-                  </th>
+                  </TableHead>
                   {ROLE_COLUMNS.map((col) => (
-                    <th
+                    <TableHead
                       key={col.key}
                       scope="col"
-                      style={{
-                        textAlign: 'left',
-                        padding: '0.65rem 0.85rem',
-                        fontWeight: 700,
-                        color: 'var(--primary-700, var(--primary-600))',
-                        verticalAlign: 'bottom',
-                      }}
+                      className="text-primary font-bold"
                     >
                       {col.label}
-                    </th>
+                    </TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
-                {ROLE_FEATURE_MATRIX.map((row, idx) => (
-                  <tr
-                    key={row.category}
-                    style={{
-                      borderBottom:
-                        idx < ROLE_FEATURE_MATRIX.length - 1 ? '1px solid var(--border-default)' : undefined,
-                    }}
-                  >
-                    <th
-                      scope="row"
-                      style={{
-                        textAlign: 'left',
-                        padding: '0.65rem 0.85rem',
-                        fontWeight: 600,
-                        color: 'var(--text-primary)',
-                        background: 'var(--bg-secondary)',
-                        verticalAlign: 'top',
-                      }}
-                    >
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ROLE_FEATURE_MATRIX.map((row) => (
+                  <TableRow key={row.category}>
+                    <TableHead scope="row" className="bg-muted/50 align-top font-semibold whitespace-normal">
                       {row.category}
-                    </th>
+                    </TableHead>
                     {ROLE_COLUMNS.map((col) => (
-                      <td
-                        key={col.key}
-                        style={{
-                          padding: '0.65rem 0.85rem',
-                          color: 'var(--text-secondary)',
-                          verticalAlign: 'top',
-                        }}
-                      >
+                      <TableCell key={col.key} className="text-muted-foreground align-top whitespace-normal">
                         <ul style={{ margin: 0, paddingLeft: '1rem' }}>
                           {row[col.key].map((point) => (
                             <li key={point} style={{ marginBottom: '0.2rem' }}>
@@ -510,12 +464,12 @@ export default function FeaturesPage() {
                             </li>
                           ))}
                         </ul>
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </section>
 

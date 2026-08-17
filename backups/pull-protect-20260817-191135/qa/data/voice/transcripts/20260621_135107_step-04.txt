@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-04
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Request tie-up with IIT Madras (if not already Approved). Toast confirms request, or row already shows Approved.

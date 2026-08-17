@@ -8,6 +8,10 @@ import DataTableToolbar from '@/components/DataTableToolbar';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { SORT_DATE_ASC, SORT_DATE_DESC } from '@/lib/dataTableQuery';
 import { formatDate, formatStatus } from '@/lib/utils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const FEEDBACK_SORT_OPTIONS = [
   {
@@ -40,7 +44,10 @@ const fetcher = async (url) => {
 export default function CollegeInternshipFeedbackPage() {
   const { data, error, isLoading } = useSWR('/api/college/internship-feedback', fetcher);
   const items = Array.isArray(data?.items) ? data.items : [];
-  const summary = data?.summary || { total: 0, withStudentFeedback: 0, withEmployerFeedback: 0 };
+  const summary = useMemo(
+    () => data?.summary || { total: 0, withStudentFeedback: 0, withEmployerFeedback: 0 },
+    [data?.summary],
+  );
 
   const {
     search,
@@ -109,27 +116,27 @@ export default function CollegeInternshipFeedbackPage() {
   if (isLoading) return <PageLoading message="Loading progress reviews…" variant="skeleton-card" />;
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <MessageSquareText size={26} aria-hidden />
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex max-w-3xl flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <MessageSquareText className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
             Internship Progress Reviews
           </h1>
-          <p className="text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.55 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Read-only view of student and employer progress reviews for selected / in-progress internships on your campus.
           </p>
-          <p className="text-sm text-tertiary" style={{ margin: '0.35rem 0 0' }}>{statLine}</p>
+          <p className="text-muted-foreground m-0 text-xs">{statLine}</p>
         </div>
-        <div className="page-header-actions">
-          <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={!filtered.length}>
+        <div>
+          <Button type="button" variant="outline" size="sm" onClick={exportCsv} disabled={!filtered.length}>
             Export CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {error ? (
-        <div className="card" style={{ padding: '1.5rem', color: 'var(--danger-600)' }}>{error.message}</div>
+        <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : null}
 
       <DataTableToolbar
@@ -144,35 +151,35 @@ export default function CollegeInternshipFeedbackPage() {
         onClearFilters={clearFilters}
       />
 
-      <div className="card table-container">
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Branch</th>
-                <th>Company / Internship</th>
-                <th>Student</th>
-                <th>Employer</th>
-                <th>Updated</th>
-              </tr>
-            </thead>
-            <tbody>
+      <Card>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                <TableHead>Branch</TableHead>
+                <TableHead>Company / Internship</TableHead>
+                <TableHead>Student</TableHead>
+                <TableHead>Employer</TableHead>
+                <TableHead>Updated</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filtered.map((row) => {
                 const updated =
                   row.studentFeedback?.updatedAt || row.employerFeedback?.updatedAt || null;
                 return (
-                  <tr key={row.programApplicationId}>
-                    <td>
-                      <div style={{ fontWeight: 600 }}>{row.studentName}</div>
-                      <div className="text-xs text-secondary">{row.rollNumber}</div>
-                    </td>
-                    <td>{row.branch}</td>
-                    <td>
+                  <TableRow key={row.programApplicationId}>
+                    <TableCell>
+                      <div className="font-medium">{row.studentName}</div>
+                      <div className="text-muted-foreground text-xs">{row.rollNumber}</div>
+                    </TableCell>
+                    <TableCell>{row.branch}</TableCell>
+                    <TableCell>
                       <div>{row.companyName}</div>
-                      <div className="text-xs text-secondary">{row.openingTitle}</div>
-                    </td>
-                    <td style={{ maxWidth: '280px', whiteSpace: 'pre-wrap', fontSize: '0.875rem' }}>
+                      <div className="text-muted-foreground text-xs">{row.openingTitle}</div>
+                    </TableCell>
+                    <TableCell className="max-w-[280px] whitespace-pre-wrap text-sm">
                       {row.studentFeedback ? (
                         <>
                           {row.studentFeedback.rating ? `${row.studentFeedback.rating}/5 · ` : ''}
@@ -181,8 +188,8 @@ export default function CollegeInternshipFeedbackPage() {
                       ) : (
                         '—'
                       )}
-                    </td>
-                    <td style={{ maxWidth: '280px', whiteSpace: 'pre-wrap', fontSize: '0.875rem' }}>
+                    </TableCell>
+                    <TableCell className="max-w-[280px] whitespace-pre-wrap text-sm">
                       {row.employerFeedback ? (
                         <>
                           {row.employerFeedback.rating ? `${row.employerFeedback.rating}/5 · ` : ''}
@@ -191,22 +198,22 @@ export default function CollegeInternshipFeedbackPage() {
                       ) : (
                         '—'
                       )}
-                    </td>
-                    <td>{updated ? formatDate(updated) : '—'}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell>{updated ? formatDate(updated) : '—'}</TableCell>
+                  </TableRow>
                 );
               })}
               {!error && filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)' }}>
+                <TableRow>
+                  <TableCell colSpan={6} className="text-muted-foreground py-10 text-center">
                     No progress reviews submitted yet.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : null}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

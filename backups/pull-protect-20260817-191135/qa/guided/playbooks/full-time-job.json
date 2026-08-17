@@ -1,0 +1,98 @@
+{
+  "id": "full-time-job",
+  "title": "Full-time job (no placement drive)",
+  "oneLiner": "Voice-guided tour for use case: Full-time job (no placement drive)",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer",
+      "observe": "Employer hub ready to publish a full-time job.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Jobs and Programs",
+      "observe": "Job posting list and create form.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/jobs"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Publish full_time job — manual",
+      "observe": "Set campus visibility; publish with GT- marker title if testing linkage.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Approve job on Internships and Programs or Jobs list.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open college Internships and Programs",
+      "observe": "Pending job or internship row for employer posting.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internships"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student browses Jobs",
+      "observe": "Eligible full-time job visible after approval.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open Browse Jobs",
+      "observe": "Apply via program application path.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/jobs"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer reviews Applications for Jobs",
+      "observe": "Pipeline shows student application; update status or record offer.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Applications",
+      "observe": "Filter Jobs tab for new applicant.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/applications"
+      }
+    }
+  ]
+}

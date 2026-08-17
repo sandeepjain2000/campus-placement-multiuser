@@ -10,6 +10,9 @@ import InternshipSupervisorForm from '@/components/internship/InternshipSupervis
 import { useToast } from '@/components/ToastProvider';
 import { formatDate, formatStatus } from '@/lib/utils';
 import { useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -47,83 +50,44 @@ export default function StudentInternshipFeedbackPage() {
   if (isLoading) return <PageLoading message="Loading internships…" variant="skeleton-card" />;
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem', maxWidth: '880px' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-            <MessageSquareText size={26} aria-hidden />
-            Internship Progress Reviews
-          </h1>
-          <p className="text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.55 }}>
-            Share progress reviews on internships where you were <strong>selected</strong> or <strong>in progress</strong>.
-            Your placement office and employer can review submissions.
-          </p>
-        </div>
+    <div className="animate-fadeIn flex max-w-4xl flex-col gap-4">
+      <div className="min-w-0">
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <MessageSquareText className="text-muted-foreground size-7" strokeWidth={1.5} aria-hidden />
+          Internship Progress Reviews
+        </h1>
+        <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm leading-relaxed">
+          Share progress reviews for internships where you were selected or are in progress.
+        </p>
       </div>
 
-      {error ? (
-        <div className="card" style={{ padding: '1.5rem', color: 'var(--danger-600)' }}>{error.message}</div>
-      ) : null}
+      {error ? <Alert variant="destructive"><AlertTitle>Could not load internships</AlertTitle><AlertDescription>{error.message}</AlertDescription></Alert> : null}
 
-      {!error && items.length === 0 ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
-            No selected internships yet. After you are selected, return here to submit a progress review.
-          </p>
-        </div>
-      ) : null}
+      {!error && items.length === 0 ? <Card><CardContent className="text-muted-foreground py-10 text-center">No selected internships yet. After you are selected, return here to submit a progress review.</CardContent></Card> : null}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <div className="flex flex-col gap-4">
         {items.map((item) => (
-          <div key={item.programApplicationId} className="card" style={{ padding: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-              <div>
-                <h3 style={{ margin: '0 0 0.25rem', fontSize: '1.05rem' }}>
-                  <CompanyNameLink name={item.companyName} website={item.website} />
-                </h3>
-                <p className="text-sm text-secondary" style={{ margin: 0 }}>
-                  {item.openingTitle}
-                </p>
-              </div>
-              <span className={`badge badge-${item.status === 'selected' ? 'green' : 'amber'} badge-dot`}>
-                {formatStatus(item.status)}
-              </span>
-            </div>
+          <Card key={item.programApplicationId}>
+            <CardHeader className="flex-row items-start justify-between gap-3">
+              <div><CardTitle><CompanyNameLink name={item.companyName} website={item.website} /></CardTitle><CardDescription className="mt-1">{item.openingTitle}</CardDescription></div>
+              <StatusBadge tone={item.status === 'selected' ? 'green' : 'amber'} showDot>{formatStatus(item.status) || '—'}</StatusBadge>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
             {item.feedback?.updatedAt ? (
-              <p className="text-xs text-tertiary" style={{ margin: '0 0 0.5rem' }}>
+              <p className="text-muted-foreground m-0 text-xs">
                 Last updated {formatDate(item.feedback.updatedAt)}
                 {item.feedback.rating ? ` · ${item.feedback.rating}/5` : ''}
               </p>
             ) : null}
             {item.guide ? (
-              <div
-                style={{
-                  marginBottom: '1rem',
-                  padding: '0.85rem 1rem',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'var(--surface-muted)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <p className="text-xs text-tertiary" style={{ margin: '0 0 0.35rem', fontWeight: 600, letterSpacing: '0.04em' }}>
-                  CAMPUS GUIDE
-                </p>
+              <div className="bg-muted/50 rounded-lg border p-4">
+                <p className="text-muted-foreground mt-0 mb-2 text-xs font-semibold tracking-wide uppercase">Campus guide</p>
                 <InternshipGuideForm initialGuide={item.guide} readOnly />
               </div>
             ) : null}
             {item.supervisor ? (
-              <div
-                style={{
-                  marginBottom: '1rem',
-                  padding: '0.85rem 1rem',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'var(--surface-muted)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <p className="text-xs text-tertiary" style={{ margin: '0 0 0.35rem', fontWeight: 600, letterSpacing: '0.04em' }}>
-                  COMPANY SUPERVISOR
-                </p>
+              <div className="bg-muted/50 rounded-lg border p-4">
+                <p className="text-muted-foreground mt-0 mb-2 text-xs font-semibold tracking-wide uppercase">Company supervisor</p>
                 <InternshipSupervisorForm initialSupervisor={item.supervisor} readOnly />
               </div>
             ) : null}
@@ -133,7 +97,8 @@ export default function StudentInternshipFeedbackPage() {
               saving={savingId === item.programApplicationId}
               onSubmit={(payload) => submitFeedback(item.programApplicationId, payload)}
             />
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

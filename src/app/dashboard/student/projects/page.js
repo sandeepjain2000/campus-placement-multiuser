@@ -1,14 +1,17 @@
 'use client';
 
 import useSWR from 'swr';
-import { FolderGit2 } from 'lucide-react';
-import { formatCurrency, formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { BookOpen, Calendar, FolderGit2, IndianRupee } from 'lucide-react';
+import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import StudentApplyResumeBanner from '@/components/StudentApplyResumeBanner';
 import PostingEligibilitySection from '@/components/student/PostingEligibilitySection';
 import StudentApplyEligibilityControls from '@/components/student/StudentApplyEligibilityControls';
 import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 import {
   globalApplyBlockedReason,
   resolveApplyBlockReason,
@@ -23,10 +26,10 @@ async function fetcher(url) {
   return data;
 }
 
-function typeLabel(t) {
-  if (t === 'hackathon') return 'Hackathon';
-  if (t === 'short_project') return 'Short project';
-  return t || 'Program';
+function typeMeta(t) {
+  if (t === 'hackathon') return { label: 'Hackathon', tone: 'amber' };
+  if (t === 'short_project') return { label: 'Short project', tone: 'indigo' };
+  return { label: t || 'Program', tone: 'gray' };
 }
 
 export default function StudentProjectsPage() {
@@ -37,6 +40,7 @@ export default function StudentProjectsPage() {
   });
 
   const items = data?.items || [];
+  const totalCount = items.length;
   const placementLocked = data?.placementLocked === true;
   const applyBlockedReason = data?.applyBlockedReason || '';
   const currentStudent = buildStudentApplyContext(data);
@@ -55,17 +59,22 @@ export default function StudentProjectsPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <FolderGit2 size={28} className="text-secondary" strokeWidth={1.5} />
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <FolderGit2 className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
             Browse Projects
           </h1>
-          <p className="text-secondary">
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
             Short projects published for your campus. Apply when you meet the criteria — listings are real DB data only.
           </p>
         </div>
+        {!isLoading && !error && totalCount > 0 ? (
+          <StatusBadge tone="blue" className="px-3 py-1 text-sm">
+            {totalCount} project{totalCount !== 1 ? 's' : ''} available
+          </StatusBadge>
+        ) : null}
       </div>
 
       <StudentApplyResumeBanner
@@ -76,8 +85,9 @@ export default function StudentProjectsPage() {
 
       {isLoading && <PageLoading message="Loading projects…" inline />}
       {error && (
-        <div className="card" style={{ borderColor: 'var(--danger-500)' }}>
-          <p className="text-sm" style={{ margin: 0 }}>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load projects</AlertTitle>
+          <AlertDescription>
             {error.message}
             {/job_posting_visibility|program_applications|member_tenant_id|does not exist/i.test(error.message) ? (
               <>
@@ -87,87 +97,121 @@ export default function StudentProjectsPage() {
                 <code className="text-xs">004_group_tenants_student_affiliation.sql</code>, then reload.
               </>
             ) : null}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
-      {!isLoading && !error && items.length === 0 && (
-        <div className="card">
-          <p className="text-secondary" style={{ margin: 0 }}>
-            No published short projects for your campus yet. Employers post these from Projects and select your college. For hackathons,
-            use Browse Hackathons in the Placements menu.
-          </p>
-        </div>
+      {!isLoading && !error && totalCount === 0 && (
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+              <FolderGit2 className="size-7" />
+            </div>
+            <CardTitle className="mb-1 text-lg">No projects available</CardTitle>
+            <CardDescription className="max-w-md text-sm">
+              No published short projects for your campus yet. Employers post these from Projects and select your college.
+              For hackathons, use Browse Hackathons in the Placements menu.
+            </CardDescription>
+          </CardContent>
+        </Card>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {items.map((row) => (
-          <div key={row.id} className="card" style={{ margin: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span className="font-semibold text-lg">{row.title}</span>
-                  <span className="badge badge-indigo">{typeLabel(row.jobType)}</span>
-                </div>
-                <div className="text-sm text-secondary">
-                  <CompanyNameLink name={row.companyName} website={row.website} />
-                </div>
-                {row.description && (
-                  <p className="text-sm" style={{ marginTop: '0.5rem', whiteSpace: 'pre-wrap' }}>
-                    {row.description}
-                  </p>
-                )}
-                <div className="text-sm text-tertiary" style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  {row.salaryMin != null || row.salaryMax != null ? (
-                    <span>
-                      Comp / stipend: {formatCurrency(row.salaryMin || row.salaryMax)}
-                      {row.salaryMax != null && row.salaryMin != null && Number(row.salaryMax) !== Number(row.salaryMin)
-                        ? ` – ${formatCurrency(row.salaryMax)}`
-                        : ''}
-                    </span>
-                  ) : null}
-                  {row.minCgpa != null ? <span>Min CGPA: {row.minCgpa}</span> : null}
-                  {row.vacancies != null ? <span>Openings: {row.vacancies}</span> : null}
-                  {row.applicationDeadline ? <span>Deadline: {formatDate(row.applicationDeadline)}</span> : null}
-                </div>
-                {row.skillsRequired?.length > 0 && (
-                  <div style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                    {row.skillsRequired.map((s) => (
-                      <span key={s} className="badge badge-gray">
-                        {s}
-                      </span>
-                    ))}
+      {!isLoading && !error && totalCount > 0 ? (
+        <div className="flex flex-col gap-3">
+          {items.map((row) => {
+            const jobType = typeMeta(row.jobType);
+            return (
+              <Card key={row.id} size="sm" className="gap-3">
+                <CardHeader className="gap-2 px-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-base">{row.title}</CardTitle>
+                    <StatusBadge tone={jobType.tone} showDot>
+                      {jobType.label}
+                    </StatusBadge>
+                    {row.hasApplied ? (
+                      <StatusBadge status={row.applicationStatus || 'applied'} showDot>
+                        {formatStatus(row.applicationStatus) || 'Applied'}
+                      </StatusBadge>
+                    ) : (
+                      <StatusBadge tone="gray" showDot>
+                        Open
+                      </StatusBadge>
+                    )}
                   </div>
-                )}
-                {!row.hasApplied ? (
-                  <div style={{ marginTop: '1rem' }}>
+                  <CardDescription>
+                    <CompanyNameLink name={row.companyName} website={row.website} />
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3 px-4">
+                  {row.description ? (
+                    <p className="text-muted-foreground m-0 text-sm leading-relaxed whitespace-pre-wrap">
+                      {row.description}
+                    </p>
+                  ) : null}
+                  <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
+                    {row.salaryMin != null || row.salaryMax != null ? (
+                      <span className="inline-flex items-center gap-1">
+                        <IndianRupee className="size-3.5" aria-hidden />
+                        Comp / stipend: {formatCurrency(row.salaryMin || row.salaryMax)}
+                        {row.salaryMax != null &&
+                        row.salaryMin != null &&
+                        Number(row.salaryMax) !== Number(row.salaryMin)
+                          ? ` – ${formatCurrency(row.salaryMax)}`
+                          : ''}
+                      </span>
+                    ) : null}
+                    {row.minCgpa != null ? (
+                      <span className="inline-flex items-center gap-1">
+                        <BookOpen className="size-3.5" aria-hidden />
+                        Min CGPA: {row.minCgpa}
+                      </span>
+                    ) : null}
+                    {row.vacancies != null ? <span>Openings: {row.vacancies}</span> : null}
+                    {row.applicationDeadline ? (
+                      <span className="inline-flex items-center gap-1">
+                        <Calendar className="size-3.5" aria-hidden />
+                        Deadline: {formatDate(row.applicationDeadline)}
+                      </span>
+                    ) : null}
+                  </div>
+                  {row.skillsRequired?.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {row.skillsRequired.map((s) => (
+                        <StatusBadge key={s} tone="gray">
+                          {s}
+                        </StatusBadge>
+                      ))}
+                    </div>
+                  ) : null}
+                  {!row.hasApplied ? (
                     <PostingEligibilitySection
                       opportunity={programOpportunityFromRow(row)}
                       student={currentStudent}
                       audience="student"
                     />
+                  ) : null}
+                  <div className="flex justify-end border-t pt-3">
+                    {row.hasApplied ? (
+                      <StatusBadge status={row.applicationStatus || 'applied'} showDot>
+                        {formatStatus(row.applicationStatus) || 'Applied'}
+                      </StatusBadge>
+                    ) : (
+                      <StudentApplyEligibilityControls
+                        opportunity={programOpportunityFromRow(row)}
+                        student={currentStudent}
+                        applyLabel="Apply"
+                        globalBlockedReason={globalBlockedReason}
+                        applying={applyingId === row.id}
+                        onApply={() => apply(row.id, row.title)}
+                      />
+                    )}
                   </div>
-                ) : null}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', minWidth: 'min(11rem, 100%)', flex: '1 1 10rem' }}>
-                {row.hasApplied ? (
-                  <span className={`badge badge-${getStatusColor(row.applicationStatus)} badge-dot`}>
-                    {formatStatus(row.applicationStatus)}
-                  </span>
-                ) : (
-                  <StudentApplyEligibilityControls
-                    opportunity={programOpportunityFromRow(row)}
-                    student={currentStudent}
-                    applyLabel="Apply"
-                    globalBlockedReason={globalBlockedReason}
-                    onApply={() => apply(row.id, row.title)}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      ) : null}
       {pickerModal}
     </div>
   );

@@ -13,6 +13,9 @@ import DeleteImportedCalendarModal from '@/components/college/DeleteImportedCale
 import ExportCollegeCalendarButton from '@/components/college/ExportCollegeCalendarButton';
 import CollegeCalendarCategoryFilter from '@/components/college/CollegeCalendarCategoryFilter';
 import CollegeCalendarClashBanner from '@/components/college/CollegeCalendarClashBanner';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -146,9 +149,9 @@ export default function mb_Calendar() {
       <MobileHeader
         title="Calendar"
         action={
-          <button className="btn btn-primary btn-sm" onClick={() => setShowForm(!showForm)}>
-            <Plus size={16} /> Add
-          </button>
+          <Button size="sm" onClick={() => setShowForm(!showForm)}>
+            <Plus data-icon="inline-start" /> Add
+          </Button>
         }
       />
       <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
@@ -164,37 +167,39 @@ export default function mb_Calendar() {
         <CollegeCalendarClashBanner items={allCalItems} />
 
         {showForm && (
-          <div className="card" style={{ padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--primary-300)' }}>
-            <h3 style={{ margin: '0 0 1rem', fontSize: '1rem' }}>Add to calendar</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <button
-                className="btn btn-outline"
+          <Card className="border-primary/30 mb-5 gap-3 py-4">
+            <CardHeader className="px-4">
+              <CardTitle className="text-base">Add to calendar</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2 px-4">
+              <Button
+                variant="outline"
                 onClick={() => { setModalMode('program'); setShowForm(false); }}
-                style={{ justifyContent: 'flex-start' }}
+                className="justify-start"
               >
-                <GraduationCap size={16} /> Add exam / program
-              </button>
-              <button
-                className="btn btn-outline"
+                <GraduationCap data-icon="inline-start" /> Add exam / program
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => { setModalMode('block'); setShowForm(false); }}
-                style={{ justifyContent: 'flex-start' }}
+                className="justify-start"
               >
-                <Building2 size={16} /> Block dates
-              </button>
-              <button
-                className="btn btn-outline"
+                <Building2 data-icon="inline-start" /> Block dates
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => { setImportOpen(true); setShowForm(false); }}
-                style={{ justifyContent: 'flex-start' }}
+                className="justify-start"
               >
-                <CalendarIcon size={16} /> Import calendar (.ics)
-              </button>
-              <button
-                className="btn btn-outline"
+                <CalendarIcon data-icon="inline-start" /> Import calendar (.ics)
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => { setDeleteImportedOpen(true); setShowForm(false); }}
-                style={{ justifyContent: 'flex-start', color: 'var(--danger-700)', borderColor: 'var(--danger-200)' }}
+                className="text-destructive justify-start"
               >
-                <Trash2 size={16} /> Delete imported
-              </button>
+                <Trash2 data-icon="inline-start" /> Delete imported
+              </Button>
               <div style={{ paddingTop: '0.25rem' }}>
                 <ExportCollegeCalendarButton
                   year={currentMonth.getFullYear()}
@@ -206,14 +211,14 @@ export default function mb_Calendar() {
                   size="sm"
                 />
               </div>
-              <button className="btn btn-outline" onClick={() => setShowForm(false)} style={{ color: 'var(--danger-600)', borderColor: 'var(--danger-200)', justifyContent: 'flex-start' }}>
+              <Button variant="ghost" onClick={() => setShowForm(false)} className="justify-start">
                 Cancel
-              </button>
-            </div>
-          </div>
+              </Button>
+            </CardContent>
+          </Card>
         )}
 
-        <div className="card" style={{ padding: 0, marginBottom: '1.25rem', overflow: 'hidden' }}>
+        <Card className="mb-5 gap-0 overflow-hidden py-0">
           <CampusCalendarGrid
             items={calItems}
             initialYear={currentMonth.getFullYear()}
@@ -223,7 +228,7 @@ export default function mb_Calendar() {
             onCursorChange={(year, month) => setCurrentMonth(new Date(year, month, 1))}
             onDaySelect={(year, month, day) => setSelectedDate(new Date(year, month, day))}
           />
-        </div>
+        </Card>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.75rem' }}>
           <h3 style={{ margin: 0, fontWeight: 700, fontSize: '1rem' }}>
@@ -239,24 +244,28 @@ export default function mb_Calendar() {
             <div className="skeleton" style={{ height: 60, borderRadius: '8px' }} />
           </div>
         ) : selectedDayEvents.length === 0 ? (
-          <div className="card" style={{ padding: '2rem 1rem', textAlign: 'center', borderStyle: 'dashed' }}>
-            <CalendarIcon size={24} style={{ margin: '0 auto 0.5rem', opacity: 0.3 }} />
-            <p style={{ margin: 0, color: 'var(--text-secondary)' }}>No events scheduled for this day</p>
-          </div>
+          <Card className="border-dashed">
+            <CardContent className="flex flex-col items-center py-8 text-center">
+              <CalendarIcon className="text-muted-foreground mb-2" aria-hidden />
+              <p className="text-muted-foreground">No events scheduled for this day</p>
+            </CardContent>
+          </Card>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {selectedDayEvents.map(e => {
               const meta = getEventMeta(e.type, e.category);
               return (
-                <div key={e.id} className="card" style={{ padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ width: 40, height: 40, borderRadius: '10px', background: meta.bg, color: meta.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Card key={e.id}>
+                  <CardContent className="flex items-center gap-4">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg" style={{ background: meta.bg, color: meta.color }}>
                     {meta.icon}
                   </div>
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{e.title}</div>
-                    <div style={{ fontSize: '0.75rem', color: meta.color, fontWeight: 500, marginTop: '0.15rem' }}>{meta.label}</div>
+                    <div className="font-medium">{e.title}</div>
+                    <StatusBadge className="mt-1" tone={e.category === 'imported' ? 'amber' : e.type === 'exam' ? 'red' : e.type === 'holiday' ? 'green' : 'indigo'} showDot>{meta.label}</StatusBadge>
                   </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

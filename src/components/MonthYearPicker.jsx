@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -63,113 +65,88 @@ export default function MonthYearPicker({ value, onChange, minYear, maxYear, dis
   const label = formatMonthKeyLabel(value);
 
   return (
-    <div ref={wrapRef} style={{ position: 'relative', display: 'block', width: '100%' }}>
-      <button
+    <div ref={wrapRef} className="relative block w-full">
+      <Button
         type="button"
+        variant="outline"
         id={id}
         disabled={disabled}
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-label={label ? `Drive month filter: ${label}` : 'Filter drives by month and year'}
-        className="form-input"
+        className="w-full justify-between font-normal"
         onClick={() => !disabled && setOpen((o) => !o)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          width: '100%',
-          minWidth: 0,
-          justifyContent: 'space-between',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          textAlign: 'left',
-          opacity: disabled ? 0.6 : 1,
-        }}
       >
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', overflow: 'hidden' }}>
-          <CalendarDays size={16} aria-hidden style={{ flexShrink: 0 }} />
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value ? label : 'Any month'}</span>
+        <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+          <CalendarDays data-icon="inline-start" aria-hidden />
+          <span className="truncate">{value ? label : 'Any month'}</span>
         </span>
-        <span aria-hidden style={{ color: 'var(--text-tertiary)', fontSize: '0.65rem', flexShrink: 0 }}>
-          ▾
-        </span>
-      </button>
+        <span aria-hidden className="text-muted-foreground">▾</span>
+      </Button>
       {open && (
-        <div
+        <Card
           role="dialog"
           aria-label="Choose month and year"
-          className="card"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            marginTop: '0.25rem',
-            zIndex: 100,
-            padding: '0.75rem',
-            minWidth: '17rem',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.14)',
-            border: '1px solid var(--border-default)',
-          }}
+          className="absolute top-full left-0 z-50 mt-1 min-w-68 shadow-xl"
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
-            <button
+          <CardContent className="p-3">
+          <div className="mb-3 flex items-center justify-between">
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
-              style={{ padding: '0.25rem' }}
+              variant="ghost"
+              size="icon-sm"
               aria-label="Previous year"
               onClick={() => setViewYear((y) => clampYear(y - 1, minYear, maxYear))}
               disabled={viewYear <= minYear}
             >
-              <ChevronLeft size={18} aria-hidden />
-            </button>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem', fontVariantNumeric: 'tabular-nums' }}>{viewYear}</span>
-            <button
+              <ChevronLeft aria-hidden />
+            </Button>
+            <span className="text-sm font-semibold tabular-nums">{viewYear}</span>
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
-              style={{ padding: '0.25rem' }}
+              variant="ghost"
+              size="icon-sm"
               aria-label="Next year"
               onClick={() => setViewYear((y) => clampYear(y + 1, minYear, maxYear))}
               disabled={viewYear >= maxYear}
             >
-              <ChevronRight size={18} aria-hidden />
-            </button>
+              <ChevronRight aria-hidden />
+            </Button>
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '0.35rem',
-            }}
-          >
+          <div className="grid grid-cols-3 gap-1.5">
             {MONTH_SHORT.map((name, i) => {
               const key = `${viewYear}-${String(i + 1).padStart(2, '0')}`;
               const selected = value === key;
               return (
-                <button
+                <Button
                   key={name}
                   type="button"
-                  className={selected ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm'}
-                  style={{ fontSize: '0.72rem', padding: '0.45rem 0.2rem', fontWeight: selected ? 700 : 500 }}
+                  variant={selected ? 'default' : 'outline'}
+                  size="sm"
+                  className="text-xs"
                   onClick={() => selectMonth(i)}
                 >
                   {name}
-                </button>
+                </Button>
               );
             })}
           </div>
           {value ? (
-            <button
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
-              style={{ width: '100%', marginTop: '0.55rem', fontSize: '0.8rem' }}
+              variant="ghost"
+              size="sm"
+              className="mt-2 w-full"
               onClick={() => {
                 onChange('');
                 setOpen(false);
               }}
             >
               Clear month
-            </button>
+            </Button>
           ) : null}
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

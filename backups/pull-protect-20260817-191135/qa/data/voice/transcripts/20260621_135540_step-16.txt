@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-16
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type notes for placement office. Notes include guided test marker.

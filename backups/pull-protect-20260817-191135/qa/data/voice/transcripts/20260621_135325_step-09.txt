@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-09
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Navigate to Placement Drives. Placement Drives list or empty state.

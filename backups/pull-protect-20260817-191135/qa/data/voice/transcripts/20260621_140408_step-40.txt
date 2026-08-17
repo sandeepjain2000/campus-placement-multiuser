@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-40
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Search applicants by guided drive marker. Arjun Verma row for GT- drive opening.

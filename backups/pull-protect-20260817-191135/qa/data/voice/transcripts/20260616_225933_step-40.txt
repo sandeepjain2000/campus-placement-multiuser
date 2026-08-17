@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-40
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as employer. Review and advance the student application.

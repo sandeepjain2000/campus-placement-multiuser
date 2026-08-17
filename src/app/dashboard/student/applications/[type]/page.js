@@ -1,17 +1,17 @@
 'use client';
 import { useEffect, useState } from 'react';
 import useSWR, { mutate as swrMutate } from 'swr';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatDate, formatStatus } from '@/lib/utils';
 import EntityLogo from '@/components/EntityLogo';
 import CompanyNameLink from '@/components/CompanyNameLink';
-import PageError from '@/components/PageError';
 import PageLoading from '@/components/PageLoading';
 import { useToast } from '@/components/ToastProvider';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import StudentSelectionOfferPanel from '@/components/student/StudentSelectionOfferPanel';
-import { ClipboardList, Mail, X } from 'lucide-react';
+import { ClipboardList, Mail } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { use, useMemo } from 'react';
 import DataTableToolbar from '@/components/DataTableToolbar';
@@ -36,6 +36,21 @@ import {
   studentApplicationStageLabel,
 } from '@/lib/studentApplicationListTabs';
 import { formatFilterBadgeLabelParen } from '@/lib/filterBadgeLabel';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -48,6 +63,15 @@ const fetcher = async (url) => {
 
 function roundLabel(item) {
   return studentApplicationStageLabel(item);
+}
+
+function DetailField({ label, children }) {
+  return (
+    <div className="bg-muted/50 rounded-lg border px-3.5 py-3">
+      <div className="text-muted-foreground mb-1.5 text-xs font-medium tracking-wide uppercase">{label}</div>
+      <div className="text-foreground text-sm leading-relaxed">{children}</div>
+    </div>
+  );
 }
 
 /** Map application row to opportunity shape for email / CSV actions. */
@@ -103,6 +127,15 @@ const TYPE_META = {
     emptyMessage: "You haven't applied to any mentorship programs yet.",
   },
 };
+
+const STATUS_TABS = [
+  { key: '', tabValue: 'all', label: 'All' },
+  { key: 'applied', tabValue: 'applied', label: 'Applied' },
+  { key: 'shortlisted', tabValue: 'shortlisted', label: 'Shortlisted' },
+  { key: 'selected', tabValue: 'selected', label: 'Selected' },
+  { key: 'rejected', tabValue: 'rejected', label: 'Rejected' },
+  { key: 'withdrawn', tabValue: 'withdrawn', label: 'Withdrawn' },
+];
 
 export default function StudentApplicationsPage({ params }) {
   const unwrappedParams = use(params);
@@ -282,8 +315,6 @@ export default function StudentApplicationsPage({ params }) {
     return { headers, rows };
   };
 
-  if (error) return <PageError error={error} />;
-
   if (isJobApplications && (status === 'loading' || !isAlumni)) {
     return <PageLoading message="Loading…" />;
   }
@@ -293,189 +324,210 @@ export default function StudentApplicationsPage({ params }) {
   const browseHref = meta.browseHref;
   const browseText = meta.browseText;
   const emptyMessage = meta.emptyMessage;
+  const listTitle =
+    type === 'hackathons' ? 'Hackathons' : `${pageTitle} Applications`;
+  const trackLabel = type === 'hackathons' ? 'hackathon' : type;
+  const tableColSpan = isJobApplications ? 8 : 6;
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <ClipboardList size={28} /> My {type === 'hackathons' ? 'Hackathons' : `${pageTitle} Applications`}
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <ClipboardList className="text-muted-foreground size-7 shrink-0" strokeWidth={1.5} />
+            My {listTitle}
           </h1>
-          <p>Track the status of your {type === 'hackathons' ? 'hackathon' : type} applications</p>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">
+            Track the status of your {trackLabel} applications
+          </p>
         </div>
-        <div className="page-header-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-          <a href={browseHref} className="btn btn-secondary">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-fit shrink-0"
+            render={<Link href={browseHref} />}
+            nativeButton={false}
+          >
             {browseText}
-          </a>
+          </Button>
           {isJobApplications && tabTotalCount > 0 ? (
             <>
-              <button
+              <Button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                variant="outline"
+                size="sm"
+                className="w-fit shrink-0"
                 onClick={emailFilteredJobs}
                 title="Compose email for jobs in the current view"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
               >
-                <Mail size={15} aria-hidden />
+                <Mail data-icon="inline-start" aria-hidden />
                 Email view ({displayApplications.length})
-              </button>
+              </Button>
               {displayApplications.length !== typeApplications.length ? (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-ghost btn-sm"
+                  variant="ghost"
+                  size="sm"
+                  className="w-fit shrink-0"
                   onClick={emailAllJobs}
                   title="Compose email for all your job applications"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
-                  <Mail size={15} aria-hidden />
+                  <Mail data-icon="inline-start" aria-hidden />
                   Email all ({typeApplications.length})
-                </button>
+                </Button>
               ) : null}
             </>
           ) : null}
-          <ExportCsvSplitButton
-            filenameBase={`${type}_applications`}
-            currentCount={displayApplications.length}
-            fullCount={typeApplications.length}
-            getRows={buildCsvRows}
-          />
+          {tabTotalCount > 0 ? (
+            <ExportCsvSplitButton
+              filenameBase={`${type}_applications`}
+              currentCount={displayApplications.length}
+              fullCount={typeApplications.length}
+              getRows={buildCsvRows}
+              size="sm"
+            />
+          ) : null}
         </div>
       </div>
 
-      {/* Status Tabs */}
-      <div className="tabs">
-        {[
-          { key: '', label: 'All', count: statusCounts.all },
-          { key: 'applied', label: 'Applied', count: statusCounts.applied },
-          { key: 'shortlisted', label: 'Shortlisted', count: statusCounts.shortlisted },
-          { key: 'selected', label: 'Selected', count: statusCounts.selected },
-          { key: 'rejected', label: 'Rejected', count: statusCounts.rejected },
-          { key: 'withdrawn', label: 'Withdrawn', count: statusCounts.withdrawn },
-        ].map(({ key, label, count }) => (
-          <button
-            key={key || 'all'}
-            className={`tab ${statusTab === key ? 'active' : ''}`}
-            onClick={() => setStatusTab(key)}
-          >
-            {formatFilterBadgeLabelParen(label, count)}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={statusTab || 'all'}
+        onValueChange={(value) => setStatusTab(value === 'all' ? '' : value)}
+      >
+        <TabsList className="h-auto w-fit max-w-full flex-wrap">
+          {STATUS_TABS.map(({ key, tabValue, label }) => {
+            const countKey = key || 'all';
+            const count = statusCounts[countKey] ?? statusCounts.all ?? 0;
+            return (
+              <TabsTrigger key={tabValue} value={tabValue} className="text-xs sm:text-sm">
+                {formatFilterBadgeLabelParen(label, count)}
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
+      </Tabs>
 
-      {/* Tabular Applications */}
-      <div style={{ marginTop: '1.5rem' }}>
-        {isLoading && <PageLoading message="Loading applications…" inline />}
+      {isLoading && <PageLoading message="Loading applications…" inline />}
+      {error && (
+        <Alert variant="destructive">
+          <AlertTitle>Could not load applications</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+      )}
 
-        {!isLoading && tabTotalCount > 0 && (
-          <DataTableToolbar
-            search={search}
-            onSearchChange={setSearch}
-            searchPlaceholder="Search company, role, or status…"
-            sort={sort}
-            onSortChange={setSort}
-            sortOptions={COMPANY_SORT_OPTIONS}
-            filteredCount={filteredCount}
-            totalCount={tabTotalCount}
-            hasActiveFilters={hasActiveFilters}
-            onClear={clearFilters}
-          />
-        )}
-
-        {isJobApplications && !isLoading && tabTotalCount > 0 ? (
-          <TableBulkActionBar
-            count={selection.count}
-            onEmail={emailSelectedJobs}
-            onClear={selection.clear}
-            emailLabel="Email selected jobs"
-          />
-        ) : null}
-
-        {!isLoading && tabTotalCount > 0 && (
-          <div className="card card-table-shell">
-            <div className="table-container">
-            <table className={`data-table data-table-mobile-cards${isJobApplications ? ' student-opportunities-table' : ''}`}>
-              <thead>
-                <tr>
+      {!isLoading && !error && tabTotalCount > 0 && (
+        <Card className="gap-0 overflow-hidden py-0">
+          <CardHeader className="border-border gap-3 border-b px-4 py-3">
+            <div className="flex flex-col gap-1">
+              <CardTitle className="text-base">Your applications</CardTitle>
+              <CardDescription>
+                Showing {filteredCount} of {tabTotalCount}
+              </CardDescription>
+            </div>
+            <DataTableToolbar
+              search={search}
+              onSearchChange={setSearch}
+              searchPlaceholder="Search company, role, or status…"
+              sort={sort}
+              onSortChange={setSort}
+              sortOptions={COMPANY_SORT_OPTIONS}
+              filteredCount={filteredCount}
+              totalCount={tabTotalCount}
+              hasActiveFilters={hasActiveFilters}
+              onClear={clearFilters}
+            />
+            {isJobApplications ? (
+              <TableBulkActionBar
+                count={selection.count}
+                onEmail={emailSelectedJobs}
+                onClear={selection.clear}
+                emailLabel="Email selected jobs"
+              />
+            ) : null}
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table className="student-opportunities-table">
+              <TableHeader>
+                <TableRow>
                   {isJobApplications ? (
-                    <th className="student-opportunities-col-select" style={{ paddingLeft: '0.75rem' }}>
-                      <input
-                        type="checkbox"
+                    <TableHead className="w-10 pl-3">
+                      <Checkbox
                         aria-label="Select all job applications on this page"
                         checked={pageAllSelected}
-                        ref={(el) => {
-                          if (el) el.indeterminate = pageSomeSelected;
-                        }}
-                        onChange={() => selection.toggleAll(displayApplications)}
+                        indeterminate={pageSomeSelected}
+                        onCheckedChange={() => selection.toggleAll(displayApplications)}
                       />
-                    </th>
+                    </TableHead>
                   ) : null}
-                  <th style={{ paddingLeft: isJobApplications ? '0.5rem' : '1rem' }}>Company</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Stage</th>
-                  <th>Applied On</th>
-                  {type === 'jobs' && <th>Drive Date</th>}
-                  <th
-                    className={isJobApplications ? 'student-opportunities-col-actions' : undefined}
-                    style={{ textAlign: isJobApplications ? 'right' : 'center', paddingRight: isJobApplications ? '1rem' : undefined }}
-                  >
+                  <TableHead className={isJobApplications ? 'pl-4' : undefined}>Company</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                  <TableHead>Stage</TableHead>
+                  <TableHead>Applied On</TableHead>
+                  {type === 'jobs' ? <TableHead>Drive Date</TableHead> : null}
+                  <TableHead className={isJobApplications ? 'pr-4 text-right' : 'text-center'}>
                     Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {displayApplications.length === 0 ? (
-                  <tr>
-                    <td colSpan={isJobApplications ? 8 : type === 'jobs' ? 7 : 6} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={tableColSpan} className="text-muted-foreground h-24 text-center">
                       No applications match your search.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
-                {displayApplications.map(app => (
-                  <tr
+                {displayApplications.map((app) => (
+                  <TableRow
                     key={app.id}
-                    className={isJobApplications && selection.isSelected(app) ? 'is-row-selected' : undefined}
+                    data-state={isJobApplications && selection.isSelected(app) ? 'selected' : undefined}
                   >
                     {isJobApplications ? (
-                      <td className="student-opportunities-col-select" data-label="" style={{ paddingLeft: '0.75rem' }}>
-                        <input
-                          type="checkbox"
+                      <TableCell data-label="" className="pl-3">
+                        <Checkbox
                           aria-label={`Select ${app.role || 'job application'} at ${app.company || 'company'}`}
                           checked={selection.isSelected(app)}
-                          onChange={() => selection.toggle(app)}
+                          onCheckedChange={() => selection.toggle(app)}
                         />
-                      </td>
+                      </TableCell>
                     ) : null}
-                    <td data-label="Company" style={{ paddingLeft: isJobApplications ? '0.5rem' : '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <TableCell data-label="Company" className={isJobApplications ? 'pl-4' : undefined}>
+                      <div className="flex min-w-0 items-center gap-2">
                         <EntityLogo name={app.company} size="sm" shape="rounded" />
-                        <CompanyNameLink name={app.company} website={app.website} className="font-semibold" />
+                        <span className="truncate font-medium" title={app.company || undefined}>
+                          <CompanyNameLink name={app.company} website={app.website} />
+                        </span>
                       </div>
-                    </td>
-                    <td className="text-sm" data-label="Role">{app.role}</td>
-                    <td data-label="Status">
-                      <span className={`badge badge-${getStatusColor(app.status)} badge-dot`}>{formatStatus(app.status)}</span>
-                    </td>
-                    <td className="text-sm" data-label="Stage">{roundLabel(app)}</td>
-                    <td className="text-sm" data-label="Applied">{formatDate(app.appliedAt)}</td>
-                    {type === 'jobs' && <td className="text-sm" data-label="Drive date">{formatDate(app.driveDate)}</td>}
-                    <td
-                      className={isJobApplications ? 'student-opportunities-col-actions' : undefined}
+                    </TableCell>
+                    <TableCell data-label="Role" className="max-w-[12rem] text-sm">
+                      <span className="block truncate" title={app.role || undefined}>
+                        {app.role}
+                      </span>
+                    </TableCell>
+                    <TableCell data-label="Status" className="min-w-[6.5rem]">
+                      <StatusBadge status={app.status || 'applied'} showDot>
+                        {formatStatus(app.status) || 'Applied'}
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell data-label="Stage" className="text-sm">
+                      {roundLabel(app)}
+                    </TableCell>
+                    <TableCell data-label="Applied On" className="text-sm">
+                      {formatDate(app.appliedAt)}
+                    </TableCell>
+                    {type === 'jobs' ? (
+                      <TableCell data-label="Drive Date" className="text-sm">
+                        {formatDate(app.driveDate)}
+                      </TableCell>
+                    ) : null}
+                    <TableCell
                       data-label="Actions"
-                      style={{ textAlign: isJobApplications ? 'right' : 'center', paddingRight: isJobApplications ? '1rem' : undefined }}
+                      className={`whitespace-nowrap ${isJobApplications ? 'pr-4 text-right' : 'text-center'}`}
                     >
                       {isJobApplications ? (
-                        <div
-                          className="table-actions"
-                          style={{
-                            display: 'inline-flex',
-                            gap: '0.35rem',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            flexWrap: 'nowrap',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
+                        <div className="inline-flex items-center justify-end gap-1.5">
                           <StandardTableIconAction
                             action="view"
                             showLabel={false}
@@ -497,30 +549,18 @@ export default function StudentApplicationsPage({ params }) {
                             disabled={!app.jobId}
                           />
                           {normalizeAppStatus(app.status) === 'applied' ? (
-                            <button
-                              type="button"
-                              className="btn btn-danger btn-sm btn-icon"
+                            <StandardTableIconAction
+                              action="withdraw"
+                              variant="danger"
+                              loading={withdrawingId === app.id}
                               disabled={withdrawingId === app.id}
                               onClick={() => requestWithdraw(app.id)}
-                              title="Withdraw application"
-                              aria-label="Withdraw application"
-                            >
-                              <X size={14} aria-hidden />
-                            </button>
+                              tooltip="Withdraw application"
+                            />
                           ) : null}
                         </div>
                       ) : (
-                        <div
-                          className="table-actions"
-                          style={{
-                            display: 'inline-flex',
-                            gap: '0.35rem',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            flexWrap: 'nowrap',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
+                        <div className="inline-flex items-center justify-end gap-1.5">
                           <StandardTableIconAction
                             action="view"
                             showLabel={false}
@@ -534,158 +574,127 @@ export default function StudentApplicationsPage({ params }) {
                               loading={withdrawingId === app.id}
                               disabled={withdrawingId === app.id}
                               onClick={() => requestWithdraw(app.id)}
+                              tooltip="Withdraw application"
                             />
                           ) : null}
                         </div>
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-            </div>
-          </div>
-        )}
-
-        {!isLoading && tabTotalCount === 0 && (
-          <div className="empty-state-container" style={{ textAlign: 'center', padding: '3rem 1rem', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)' }}>
-            <div style={{ background: 'var(--primary-50)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-              <span style={{ fontSize: '1.75rem' }}>📝</span>
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              {statusTab === '' ? `No ${type} applications yet` : `No ${statusTab} applications`}
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: '1.5', maxWidth: '400px', margin: '0 auto 1.5rem' }}>
-              {statusTab === '' 
-                ? emptyMessage 
-                : `You don't have any applications in the '${statusTab}' stage at the moment.`}
-            </p>
-            {statusTab === '' && (
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <a href={browseHref} className="btn btn-primary">
-                  {browseText}
-                </a>
-              </div>
-            )}
-            {statusTab !== '' && (
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setStatusTab('')}
-                  >
-                    View All
-                  </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* ── Detail drawer ── */}
-      {selectedApp && (
-        <div
-          style={{
-            position: 'fixed', inset: 0, zIndex: 1000,
-            background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)',
-            display: 'flex', justifyContent: 'flex-end',
-          }}
-          onClick={() => setSelectedApp(null)}
-        >
-          <div
-            className="animate-fadeIn app-detail-drawer"
-            style={{
-              width: '480px', maxWidth: '95vw', height: '100vh',
-              background: 'var(--bg-surface)', boxShadow: 'var(--shadow-xl)',
-              overflow: 'auto', padding: '2rem',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                <EntityLogo name={selectedApp.company} size="lg" shape="rounded" />
-                <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
-                    <CompanyNameLink name={selectedApp.company} website={selectedApp.website} />
-                  </h2>
-                  <p className="text-sm text-secondary" style={{ margin: '0.125rem 0 0 0' }}>{selectedApp.role}</p>
-                </div>
-              </div>
-              <button className="btn btn-secondary btn-sm" onClick={() => setSelectedApp(null)} title="Close">
-                <X size={16} />
-              </button>
-            </div>
-
-            {/* Status */}
-            <div style={{ marginBottom: '1.25rem' }}>
-              <span className={`badge badge-${getStatusColor(selectedApp.status)} badge-dot`} style={{ fontSize: '0.85rem', padding: '0.375rem 0.75rem' }}>
-                {formatStatus(selectedApp.status)}
-              </span>
-              {normalizeAppStatus(selectedApp.status) === 'selected' && (
-                <span className="badge badge-blue" style={{ padding: '0.375rem 1rem', marginLeft: '0.5rem' }}>
-                  Selection complete
-                </span>
-              )}
-            </div>
-
-            {normalizeAppStatus(selectedApp.status) === 'selected' && (
-              <StudentSelectionOfferPanel
-                application={selectedApp}
-                offers={offers}
-                type={type}
-                onOfferUpdated={async () => {
-                  await mutateOffers();
-                  await mutate();
-                }}
-              />
-            )}
-
-            {/* Details grid */}
-            <div
-              className="form-grid-2"
-              style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr',
-                gap: '1rem', padding: '1.25rem',
-                background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-lg)',
-                marginBottom: '1.5rem',
-              }}
-            >
-              <div>
-                <div className="text-xs text-tertiary" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Current Stage</div>
-                <div className="text-sm font-semibold">{roundLabel(selectedApp)}</div>
-              </div>
-              <div>
-                <div className="text-xs text-tertiary" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Applied On</div>
-                <div className="text-sm font-semibold">{formatDate(selectedApp.appliedAt)}</div>
-              </div>
-              {type === 'jobs' && selectedApp.driveDate && (
-                <div>
-                  <div className="text-xs text-tertiary" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Drive Date</div>
-                  <div className="text-sm font-semibold">{formatDate(selectedApp.driveDate)}</div>
-                </div>
-              )}
-              {selectedApp.notes && (
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <div className="text-xs text-tertiary" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Notes</div>
-                  <div className="text-sm">{selectedApp.notes}</div>
-                </div>
-              )}
-            </div>
-
-            {/* Withdraw */}
-            {normalizeAppStatus(selectedApp.status) === 'applied' && (
-              <button
-                className="btn btn-danger"
-                style={{ width: '100%' }}
-                disabled={withdrawingId === selectedApp.id}
-                onClick={() => requestWithdraw(selectedApp.id)}
-              >
-                {withdrawingId === selectedApp.id ? 'Withdrawing...' : 'Withdraw Application'}
-              </button>
-            )}
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
+
+      {!isLoading && !error && tabTotalCount === 0 && (
+        <Card className="gap-0 py-10">
+          <CardContent className="flex flex-col items-center px-6 text-center">
+            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full text-2xl">
+              📝
+            </div>
+            <CardTitle className="mb-1 text-lg">
+              {statusTab === '' ? `No ${type} applications yet` : `No ${statusTab} applications`}
+            </CardTitle>
+            <CardDescription className="max-w-md text-sm">
+              {statusTab === ''
+                ? emptyMessage
+                : `You don't have any applications in the '${statusTab}' stage at the moment.`}
+            </CardDescription>
+            <div className="mt-6 flex justify-center">
+              {statusTab === '' ? (
+                <Button
+                  size="sm"
+                  render={<Link href={browseHref} />}
+                  nativeButton={false}
+                >
+                  {browseText}
+                </Button>
+              ) : (
+                <Button type="button" variant="outline" size="sm" onClick={() => setStatusTab('')}>
+                  View All
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {selectedApp ? (
+        <Dialog
+          open
+          onOpenChange={(next) => {
+            if (!next) setSelectedApp(null);
+          }}
+        >
+          <DialogContent className="gap-4 sm:max-w-xl" showCloseButton>
+            <DialogHeader className="gap-3 pr-8">
+              <div className="flex min-w-0 items-start gap-3">
+                <EntityLogo name={selectedApp.company} size="lg" shape="rounded" />
+                <div className="min-w-0">
+                  <DialogTitle className="text-xl font-semibold">
+                    <CompanyNameLink name={selectedApp.company} website={selectedApp.website} />
+                  </DialogTitle>
+                  <DialogDescription className="mt-1.5">{selectedApp.role}</DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+
+            <div className="grid max-h-[min(60vh,28rem)] gap-3 overflow-y-auto pr-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge status={selectedApp.status || 'applied'} showDot className="px-3 py-1.5 text-[0.85rem]">
+                  {formatStatus(selectedApp.status) || 'Applied'}
+                </StatusBadge>
+                {normalizeAppStatus(selectedApp.status) === 'selected' ? (
+                  <StatusBadge tone="blue" className="px-3 py-1.5 text-[0.85rem]">
+                    Selection complete
+                  </StatusBadge>
+                ) : null}
+              </div>
+
+              {normalizeAppStatus(selectedApp.status) === 'selected' ? (
+                <StudentSelectionOfferPanel
+                  application={selectedApp}
+                  offers={offers}
+                  type={type}
+                  onOfferUpdated={async () => {
+                    await mutateOffers();
+                    await mutate();
+                  }}
+                />
+              ) : null}
+
+              <div className="grid grid-cols-2 gap-3">
+                <DetailField label="Current Stage">{roundLabel(selectedApp)}</DetailField>
+                <DetailField label="Applied On">{formatDate(selectedApp.appliedAt)}</DetailField>
+                {type === 'jobs' && selectedApp.driveDate ? (
+                  <DetailField label="Drive Date">{formatDate(selectedApp.driveDate)}</DetailField>
+                ) : null}
+                {selectedApp.notes ? (
+                  <div className="col-span-2">
+                    <DetailField label="Notes">{selectedApp.notes}</DetailField>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
+            {normalizeAppStatus(selectedApp.status) === 'applied' ? (
+              <DialogFooter className="sm:justify-stretch">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="w-full"
+                  disabled={withdrawingId === selectedApp.id}
+                  onClick={() => requestWithdraw(selectedApp.id)}
+                >
+                  {withdrawingId === selectedApp.id ? 'Withdrawing…' : 'Withdraw Application'}
+                </Button>
+              </DialogFooter>
+            ) : null}
+          </DialogContent>
+        </Dialog>
+      ) : null}
 
       <ConfirmDialog
         open={Boolean(withdrawConfirmId)}

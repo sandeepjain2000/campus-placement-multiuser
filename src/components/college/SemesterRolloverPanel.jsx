@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshCw, Play, AlertCircle, Save } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
 
 function defaultFailedBatch(batchYear, graduationYear) {
   const batch = batchYear != null ? Number(batchYear) : null;
@@ -180,7 +186,8 @@ export default function SemesterRolloverPanel() {
   const failedDraftCount = Object.values(edits).filter((e) => e.repeatYear).length;
 
   return (
-    <section className="card" style={{ padding: '1.25rem', marginTop: '1.5rem' }}>
+    <Card className="mt-6">
+      <CardHeader>
       <div
         style={{
           display: 'flex',
@@ -188,85 +195,71 @@ export default function SemesterRolloverPanel() {
           alignItems: 'flex-start',
           justifyContent: 'space-between',
           gap: '1rem',
-          marginBottom: '1rem',
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>
+          <CardTitle>
             Semester rollover (May–June)
-          </h2>
-          <p
-            style={{
-              margin: '0.35rem 0 0',
-              fontSize: '0.875rem',
-              color: 'var(--text-secondary)',
-              maxWidth: '52rem',
-            }}
-          >
+          </CardTitle>
+          <CardDescription className="mt-1 max-w-3xl">
             Mark students who failed and update their batch before running rollover. Default for
             failed students shifts batch and graduation year by one so semester progression stays
             aligned while they repeat the year.
-          </p>
+          </CardDescription>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button
+          <Button
             type="button"
-            className="btn btn-secondary btn-sm"
+            variant="outline"
+            size="sm"
             onClick={load}
             disabled={loading || running || saving}
           >
-            <RefreshCw size={14} style={{ marginRight: '0.25rem' }} />
+            <RefreshCw data-icon="inline-start" />
             Refresh
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="btn btn-secondary btn-sm"
+            variant="outline"
+            size="sm"
             onClick={() => saveAdjustments()}
             disabled={loading || running || saving}
           >
-            <Save size={14} style={{ marginRight: '0.25rem' }} />
+            <Save data-icon="inline-start" />
             {saving ? 'Saving…' : 'Save failed list'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="btn btn-secondary btn-sm"
+            variant="outline"
+            size="sm"
             onClick={() => runRollover({ dryRun: true, force: true })}
             disabled={loading || running || saving}
           >
             Preview
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="btn btn-primary btn-sm"
+            size="sm"
             onClick={() => runRollover({ force: !inWindow })}
             disabled={loading || running || saving}
           >
-            <Play size={14} style={{ marginRight: '0.25rem' }} />
+            <Play data-icon="inline-start" />
             {running ? 'Running…' : 'Run rollover'}
-          </button>
+          </Button>
         </div>
       </div>
+      </CardHeader>
+      <CardContent>
 
       {!inWindow && !loading ? (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '0.5rem',
-            padding: '0.75rem 1rem',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--warning-50)',
-            border: '1px solid var(--warning-100)',
-            marginBottom: '1rem',
-            fontSize: '0.85rem',
-          }}
-        >
-          <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
-          <span>
+        <Alert className="mb-4 border-amber-500/40 bg-amber-500/5">
+          <AlertCircle aria-hidden="true" />
+          <AlertTitle>Outside the scheduled rollover window</AlertTitle>
+          <AlertDescription>
             Automated rollover is scheduled for <strong>May–June</strong>. Save failed-student
             batch changes first, then preview or run rollover.
-          </span>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {loading ? (
@@ -326,77 +319,72 @@ export default function SemesterRolloverPanel() {
               marginBottom: '0.75rem',
             }}
           >
-            <input
-              className="form-input"
+            <Input
               placeholder="Search name, roll, email…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ maxWidth: 260 }}
             />
             <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={showFailedOnly}
-                onChange={(e) => setShowFailedOnly(e.target.checked)}
+                onCheckedChange={(v) => setShowFailedOnly(!!v)}
               />
               Show failed only ({failedDraftCount})
             </label>
           </div>
 
-          <div style={{ overflowX: 'auto', marginBottom: '1rem' }}>
-            <table className="data-table" style={{ fontSize: '0.85rem', minWidth: 920 }}>
-              <thead>
-                <tr>
-                  <th>Failed</th>
-                  <th>Student</th>
-                  <th>Roll</th>
-                  <th>Current batch</th>
-                  <th>Grad year</th>
-                  <th>Sem</th>
-                  <th>New batch</th>
-                  <th>New grad</th>
-                  <th>After rollover</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="mb-4">
+            <Table className="min-w-[920px] text-xs">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Failed</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Roll</TableHead>
+                  <TableHead>Current batch</TableHead>
+                  <TableHead>Grad year</TableHead>
+                  <TableHead>Sem</TableHead>
+                  <TableHead>New batch</TableHead>
+                  <TableHead>New grad</TableHead>
+                  <TableHead>After rollover</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {visibleStudents.map((student) => {
                   const id = rowKey(student);
                   const edit = edits[id] || {};
                   const failed = Boolean(edit.repeatYear);
                   return (
-                    <tr key={id} style={failed ? { background: 'var(--warning-50)' } : undefined}>
-                      <td>
-                        <input
-                          type="checkbox"
+                    <TableRow key={id} data-state={failed ? 'selected' : undefined}>
+                      <TableCell>
+                        <Checkbox
                           checked={failed}
-                          onChange={() => toggleFailed(student)}
+                          onCheckedChange={() => toggleFailed(student)}
                           aria-label={`Mark ${student.name || student.rollNumber} as failed`}
                         />
-                      </td>
-                      <td>{student.name || '—'}</td>
-                      <td>{student.rollNumber || '—'}</td>
-                      <td>{student.batchYear ?? '—'}</td>
-                      <td>{student.graduationYear ?? '—'}</td>
-                      <td>{student.previousSemester ?? '—'}</td>
-                      <td>
-                        <input
-                          className="form-input"
-                          style={{ width: 88, padding: '0.35rem 0.5rem' }}
+                      </TableCell>
+                      <TableCell>{student.name || '—'}</TableCell>
+                      <TableCell>{student.rollNumber || '—'}</TableCell>
+                      <TableCell>{student.batchYear ?? '—'}</TableCell>
+                      <TableCell>{student.graduationYear ?? '—'}</TableCell>
+                      <TableCell>{student.previousSemester ?? '—'}</TableCell>
+                      <TableCell>
+                        <Input
+                          className="w-22"
                           disabled={!failed}
                           value={edit.newBatchYear ?? ''}
                           onChange={(e) => setEdit(id, { newBatchYear: e.target.value })}
                         />
-                      </td>
-                      <td>
-                        <input
-                          className="form-input"
-                          style={{ width: 88, padding: '0.35rem 0.5rem' }}
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          className="w-22"
                           disabled={!failed}
                           value={edit.newGraduationYear ?? ''}
                           onChange={(e) => setEdit(id, { newGraduationYear: e.target.value })}
                         />
-                      </td>
-                      <td>
+                      </TableCell>
+                      <TableCell>
                         {failed ? (
                           <span>
                             Sem {student.nextSemester ?? '—'}
@@ -409,12 +397,12 @@ export default function SemesterRolloverPanel() {
                         ) : (
                           <span>Sem {student.nextSemester ?? student.previousSemester ?? '—'}</span>
                         )}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </>
       ) : null}
@@ -433,34 +421,33 @@ export default function SemesterRolloverPanel() {
           >
             Recent runs
           </h3>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ fontSize: '0.85rem' }}>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Academic year</th>
-                  <th>Sem</th>
-                  <th>Updated</th>
-                  <th>Trigger</th>
-                </tr>
-              </thead>
-              <tbody>
+          <Table className="text-xs">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Academic year</TableHead>
+                  <TableHead>Sem</TableHead>
+                  <TableHead>Updated</TableHead>
+                  <TableHead>Trigger</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {data.recentRuns.map((run) => (
-                  <tr key={run.id}>
-                    <td>{run.asOfDate || '—'}</td>
-                    <td>{run.academicYearLabel}</td>
-                    <td>{run.semesterInYear}</td>
-                    <td>
+                  <TableRow key={run.id}>
+                    <TableCell>{run.asOfDate || '—'}</TableCell>
+                    <TableCell>{run.academicYearLabel}</TableCell>
+                    <TableCell>{run.semesterInYear}</TableCell>
+                    <TableCell>
                       {run.studentsUpdated} / {run.studentsScanned}
-                    </td>
-                    <td>{run.triggeredBy}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell>{run.triggeredBy}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+          </Table>
         </>
       ) : null}
-    </section>
+      </CardContent>
+    </Card>
   );
 }

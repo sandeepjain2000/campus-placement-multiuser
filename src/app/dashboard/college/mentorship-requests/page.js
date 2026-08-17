@@ -4,14 +4,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import { mentorshipStatusLabel } from '@/lib/studentMentorshipRequest';
-import { Check, HandHeart, X } from 'lucide-react';
+import { Check, HandHeart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { StatusBadge } from '@/components/ui/status-badge';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
-function statusBadgeClass(status) {
-  if (status === 'approved') return 'badge-green';
-  if (status === 'submitted') return 'badge-yellow';
-  if (status === 'rejected') return 'badge-red';
-  if (status === 'closed') return 'badge-gray';
-  return 'badge-gray';
+function statusBadgeTone(status) {
+  if (status === 'approved') return 'green';
+  if (status === 'submitted') return 'amber';
+  if (status === 'rejected') return 'red';
+  return 'gray';
 }
 
 export default function CollegeMentorshipRequestsPage() {
@@ -91,71 +98,63 @@ export default function CollegeMentorshipRequestsPage() {
   const filtered = useMemo(() => items, [items]);
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-        <span
-          style={{
-            display: 'flex',
-            padding: '0.5rem',
-            background: 'var(--primary-50)',
-            borderRadius: '10px',
-            color: 'var(--primary-600)',
-          }}
-        >
-          <HandHeart size={24} />
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex items-start gap-3">
+        <span className="bg-primary/10 text-primary flex rounded-lg p-2">
+          <HandHeart className="size-6" />
         </span>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem' }}>
+        <div className="flex flex-col gap-1">
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">
             Student mentorship requests
           </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <p className="text-muted-foreground m-0 text-sm">
             Review informal mentor requests before they are visible to partnered employers.
           </p>
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1.25rem', padding: '1rem' }}>
-        <select
-          className="form-select"
-          style={{ width: 'auto', minWidth: 200 }}
+      <Card size="sm"><CardContent>
+        <AdminFilterSelect
+          aria-label="Filter mentorship requests by status"
+          className="min-w-[200px]"
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">All statuses</option>
-          <option value="submitted">Pending review</option>
-          <option value="approved">Approved (open)</option>
-          <option value="rejected">Rejected</option>
-          <option value="closed">Closed</option>
-          <option value="draft">Draft</option>
-        </select>
-      </div>
+          onValueChange={setStatusFilter}
+          items={[
+            { label: 'All statuses', value: 'all' },
+            { label: 'Pending review', value: 'submitted' },
+            { label: 'Approved (open)', value: 'approved' },
+            { label: 'Rejected', value: 'rejected' },
+            { label: 'Closed', value: 'closed' },
+            { label: 'Draft', value: 'draft' },
+          ]}
+        />
+      </CardContent></Card>
 
       {loading ? (
         <p className="text-secondary">Loading…</p>
       ) : filtered.length === 0 ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>No requests in this filter.</p>
-        </div>
+        <Card><CardContent className="text-muted-foreground py-10 text-center">No requests in this filter.</CardContent></Card>
       ) : (
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
+        <div className="grid gap-3">
           {filtered.map((item) => (
-            <div key={item.id} className="card" style={{ padding: '1rem 1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+            <Card key={item.id}>
+              <CardHeader>
+              <div className="flex flex-wrap justify-between gap-4">
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <strong>{item.title}</strong>
-                    <span className={`badge ${statusBadgeClass(item.status)}`}>
-                      {mentorshipStatusLabel(item.status)}
-                    </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle>{item.title}</CardTitle>
+                    <StatusBadge tone={statusBadgeTone(item.status)}>
+                      {mentorshipStatusLabel(item.status) || '—'}
+                    </StatusBadge>
                   </div>
                   {item.student && (
-                    <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    <CardDescription className="mt-1">
                       {item.student.name || 'Student'}
                       {item.student.rollNumber ? ` · ${item.student.rollNumber}` : ''}
                       {item.student.department ? ` · ${item.student.department}` : ''}
-                    </p>
+                    </CardDescription>
                   )}
-                  <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}>{item.summary}</p>
+                  <p className="mt-2 mb-0 text-sm">{item.summary}</p>
                   {item.status === 'approved' && (
                     <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem' }}>
                       {item.volunteerCount || 0} volunteer{(item.volunteerCount || 0) === 1 ? '' : 's'}
@@ -163,107 +162,83 @@ export default function CollegeMentorshipRequestsPage() {
                   )}
                 </div>
                 {item.status === 'submitted' && (
-                  <button type="button" className="btn btn-primary btn-sm" onClick={() => openReview(item)}>
+                  <Button type="button" size="sm" onClick={() => openReview(item)}>
                     Review
-                  </button>
+                  </Button>
                 )}
               </div>
-            </div>
+              </CardHeader>
+            </Card>
           ))}
         </div>
       )}
 
-      {review && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.45)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 50,
-            padding: '1rem',
-          }}
-          onClick={() => setReview(null)}
-        >
-          <div
-            className="card"
-            style={{ maxWidth: 560, width: '100%', padding: '1.25rem', maxHeight: '90vh', overflow: 'auto' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h2 style={{ margin: 0 }}>Review request</h2>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setReview(null)}>
-                <X size={16} />
-              </button>
-            </div>
+      <Dialog open={Boolean(review)} onOpenChange={(open) => !open && setReview(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Review request</DialogTitle>
+              <DialogDescription>Edit request details before approving, or explain a rejection.</DialogDescription>
+            </DialogHeader>
+            {review && <>
             {review.student && (
               <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                 {review.student.name} {review.student.rollNumber ? `(${review.student.rollNumber})` : ''}
               </p>
             )}
-            <div style={{ display: 'grid', gap: '0.75rem' }}>
-              <label>
-                <span className="form-label">Title (you may edit before approving)</span>
-                <input
-                  className="form-input"
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="mentorship-review-title">Title (you may edit before approving)</FieldLabel>
+                <Input id="mentorship-review-title"
                   value={review.title}
                   onChange={(e) => setReview((r) => ({ ...r, title: e.target.value }))}
                 />
-              </label>
-              <label>
-                <span className="form-label">Summary</span>
-                <textarea
-                  className="form-input"
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="mentorship-review-summary">Summary</FieldLabel>
+                <Textarea id="mentorship-review-summary"
                   rows={4}
                   value={review.summary}
                   onChange={(e) => setReview((r) => ({ ...r, summary: e.target.value }))}
                 />
-              </label>
-              <label>
-                <span className="form-label">Topics</span>
-                <input
-                  className="form-input"
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="mentorship-review-topics">Topics</FieldLabel>
+                <Input id="mentorship-review-topics"
                   value={review.topics}
                   onChange={(e) => setReview((r) => ({ ...r, topics: e.target.value }))}
                 />
-              </label>
-              <label>
-                <span className="form-label">Note to student (required if rejecting)</span>
-                <textarea
-                  className="form-input"
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="mentorship-review-note">Note to student (required if rejecting)</FieldLabel>
+                <Textarea id="mentorship-review-note"
                   rows={2}
                   value={collegeNote}
                   onChange={(e) => setCollegeNote(e.target.value)}
                   placeholder="Optional on approve; required on reject"
                 />
-              </label>
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-              <button
+              </Field>
+            </FieldGroup>
+            <DialogFooter>
+              <Button
                 type="button"
-                className="btn btn-primary"
                 disabled={saving}
                 onClick={() => patchReview('approve')}
               >
-                <Check size={14} style={{ marginRight: 6 }} />
+                <Check data-icon="inline-start" />
                 Approve for employers
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="btn btn-secondary"
+                variant="outline"
                 disabled={saving}
                 onClick={() => patchReview('reject')}
               >
                 Reject
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              </Button>
+            </DialogFooter>
+            </>}
+        </DialogContent>
+      </Dialog>
 
       <p style={{ marginTop: '1.5rem', fontSize: '0.8rem' }}>
         <Link href="/dashboard/college/overview">Back to overview</Link>

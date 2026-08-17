@@ -2,6 +2,8 @@
 
 import { useCallback, useState } from 'react';
 import { validateField, validateFieldWithConfirm } from '@/lib/inputConstraints';
+import { Field, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 /**
  * Text input with shared constraints (e.g. board name must include a letter).
@@ -12,7 +14,7 @@ export default function ValidatedTextInput({
   onChange,
   onValidatedChange,
   context = {},
-  className = 'form-input',
+  className,
   confirmWarnings = true,
   placeholder,
   disabled = false,
@@ -44,11 +46,12 @@ export default function ValidatedTextInput({
   );
 
   return (
-    <div>
-      <input
+    <Field data-invalid={Boolean(error)}>
+      <Input
         id={id}
         type="text"
-        className={`${className}${error ? ' input-error' : ''}`}
+        className={className}
+        aria-invalid={Boolean(error)}
         value={value ?? ''}
         onChange={(e) => {
           onChange(e.target.value);
@@ -66,11 +69,7 @@ export default function ValidatedTextInput({
         placeholder={placeholder}
         disabled={disabled}
       />
-      {error ? (
-        <p className="text-xs" style={{ color: 'var(--danger-600)', marginTop: '0.35rem' }}>
-          {error}
-        </p>
-      ) : null}
-    </div>
+      {error ? <FieldError>{error}</FieldError> : null}
+    </Field>
   );
 }

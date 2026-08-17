@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-10
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Request placement drive form. Full-page request form with campus selector and fields.

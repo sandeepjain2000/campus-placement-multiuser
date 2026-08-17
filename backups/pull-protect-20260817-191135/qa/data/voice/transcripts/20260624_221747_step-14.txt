@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EI-15
+# Stage: step-14
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as employer. Employer hub loads.

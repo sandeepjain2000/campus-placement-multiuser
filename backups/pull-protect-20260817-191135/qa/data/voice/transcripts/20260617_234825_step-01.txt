@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SETUP
+# Stage: step-01
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Landing page ready. Home page is open. Full cycle starts with employer sign-in (automatic).

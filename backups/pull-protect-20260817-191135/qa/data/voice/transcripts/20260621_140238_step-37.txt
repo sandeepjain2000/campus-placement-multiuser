@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-37
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm Applied status. Student step done — handoff to Employer.

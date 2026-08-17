@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EI-15
+# Stage: step-17
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Shortlist the applicant. Status changes from Applied to Shortlisted; Shortlist button disappears.

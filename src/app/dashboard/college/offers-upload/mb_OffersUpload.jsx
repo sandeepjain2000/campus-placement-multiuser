@@ -6,6 +6,8 @@ import { mutate } from 'swr';
 import { FileUp, Send, Download, FileText } from 'lucide-react';
 import MobileHeader from '@/components/mobile/MobileHeader';
 import { useToast } from '@/components/ToastProvider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   CollegeOffersUploadMeta,
   useCollegeOffersUploadActions,
@@ -36,46 +38,40 @@ export default function MbCollegeOffersUpload() {
       <MobileHeader
         title="Upload Offers"
         action={
-          <Link href="/dashboard/college/offers" className="btn btn-ghost btn-sm" style={{ padding: '0.4rem', color: 'var(--primary-600)' }}>
-            <Send size={18} />
-          </Link>
+          <Button render={<Link href="/dashboard/college/offers" />} variant="ghost" size="icon-sm" aria-label="View all offers"><Send /></Button>
         }
       />
 
-      <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
+      <div className="animate-fadeIn flex flex-col gap-4 px-4 pt-4 pb-20">
         <CollegeOffersUploadMeta compact />
 
-        <div className="card" style={{ padding: '1.25rem', marginBottom: '1.25rem', border: '1px solid var(--border-default)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-            <span style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--text-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700 }}>1</span>
-            <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>Download template</h3>
-          </div>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            Required: roll_number, company_name, job_title
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <button type="button" className="btn btn-outline" onClick={downloadBlankTemplate} style={{ width: '100%', justifyContent: 'center' }}>
-              <FileText size={16} style={{ marginRight: '0.5rem' }} />
+        <Card>
+          <CardHeader>
+            <CardTitle>1. Download template</CardTitle>
+            <CardDescription>Required: roll_number, company_name, job_title</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <Button type="button" variant="outline" onClick={downloadBlankTemplate}>
+              <FileText data-icon="inline-start" />
               Blank template
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={downloadAssessmentStarter} style={{ width: '100%', justifyContent: 'center' }}>
-              <Download size={16} style={{ marginRight: '0.5rem' }} />
+            </Button>
+            <Button type="button" variant="secondary" onClick={downloadAssessmentStarter}>
+              <Download data-icon="inline-start" />
               All students (assessment prefill)
-            </button>
-          </div>
-        </div>
+            </Button>
+          </CardContent>
+        </Card>
 
-        <div className="card" style={{ padding: '1.25rem', border: '1px solid var(--border-default)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-            <span style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--text-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700 }}>2</span>
-            <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>Upload CSV</h3>
-          </div>
-          <label className="btn btn-primary" style={{ display: 'flex', width: '100%', justifyContent: 'center', cursor: uploading ? 'wait' : 'pointer' }}>
-            <FileUp size={16} style={{ marginRight: '0.5rem' }} />
+        <Card>
+          <CardHeader><CardTitle>2. Upload CSV</CardTitle></CardHeader>
+          <CardContent>
+          <Button render={<label />} className="w-full" aria-disabled={uploading}>
+            <FileUp data-icon="inline-start" />
             {uploading ? 'Importing…' : 'Select CSV file'}
             <input type="file" accept=".csv,text/csv" hidden disabled={uploading} onChange={handleUpload} />
-          </label>
-        </div>
+          </Button>
+          </CardContent>
+        </Card>
       </div>
     </>
   );

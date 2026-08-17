@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CLOSURE
+# Stage: phase-closure
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Closure. The internship workflow is complete.

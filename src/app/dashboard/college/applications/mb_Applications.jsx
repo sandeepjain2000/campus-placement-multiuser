@@ -1,10 +1,22 @@
 'use client';
 
 import useSWR from 'swr';
-import { ClipboardList, Building2, GraduationCap } from 'lucide-react';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { Building2, ClipboardList, GraduationCap } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 import MobileHeader from '@/components/mobile/MobileHeader';
 import CompanyNameLink from '@/components/CompanyNameLink';
+import PageLoading from '@/components/PageLoading';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import {
+  applicationKindLabel,
+  computeApplicationStats,
+  getApplicationKindMeta,
+  getApplicationStatusMeta,
+  openingLabel,
+  studentInitials,
+} from './applicationRowUtils';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -13,95 +25,100 @@ const fetcher = async (url) => {
   return json;
 };
 
-function openingLabel(a) {
-  return a.opening_title || a.drive_title || '—';
-}
-
-function applicationKindLabel(a) {
-  if (a.source_kind === 'drive') return 'Placement drive';
-  const jt = String(a.job_type || '').toLowerCase();
-  if (jt === 'internship') return 'Internship';
-  if (jt === 'short_project' || jt === 'hackathon') return 'Project';
-  if (jt === 'full_time' || jt === 'part_time' || jt === 'contract') return 'Job';
-  return 'Program';
-}
-
 export default function mb_Applications() {
   const { data, isLoading, error } = useSWR('/api/college/applications', fetcher);
   const applications = Array.isArray(data?.applications) ? data.applications : [];
   const counts = data?.counts || { drives: 0, programs: 0, total: 0 };
+  const stats = computeApplicationStats(applications, counts);
 
   return (
     <>
       <MobileHeader title="Applications" />
-      <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
+      <div className="animate-fadeIn flex flex-col gap-4 px-4 pb-20 pt-4">
+        {isLoading && !applications.length ? <PageLoading message="Loading applications…" inline /> : null}
 
-        {isLoading && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {[1, 2, 3, 4].map(i => <div key={i} className="skeleton" style={{ height: 120, borderRadius: '12px' }} />)}
-          </div>
-        )}
-        
-        {error && (
-          <div className="card" style={{ padding: '1.25rem', background: 'var(--danger-50)', border: '1px solid var(--danger-200)', marginBottom: '1rem' }}>
-            <p style={{ margin: 0, color: 'var(--danger-700)', fontWeight: 600 }}>{error.message || 'Could not load applications.'}</p>
-          </div>
-        )}
+        {error ? (
+          <Alert variant="destructive">
+            <AlertTitle>Could not load applications</AlertTitle>
+            <AlertDescription>{error.message || 'Could not load applications.'}</AlertDescription>
+          </Alert>
+        ) : null}
 
-        {!isLoading && !error && applications.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px dashed var(--border-default)' }}>
-            <ClipboardList size={40} style={{ margin: '0 auto 1rem', opacity: 0.25 }} />
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>No applications yet</div>
-            <p style={{ color: 'var(--text-secondary)', margin: '0', fontSize: '0.9rem' }}>
-              Students apply from Placement Drives, Jobs, Internships, and Projects on their dashboard.
-            </p>
-          </div>
-        )}
+        {!isLoading && !error && applications.length > 0 ? (
+          <Alert>
+            <AlertTitle>
+              {stats.total} application{stats.total === 1 ? '' : 's'}
+            </AlertTitle>
+            <AlertDescription>
+              {stats.drives} drives · {stats.programs} programs
+            </AlertDescription>
+          </Alert>
+        ) : null}
 
-        {!isLoading && !error && applications.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
-              {counts.total || applications.length} applications · {counts.drives || 0} drives · {counts.programs || 0} programs
-            </div>
+        {!isLoading && !error && applications.length === 0 ? (
+          <Card className="gap-0 py-10">
+            <CardContent className="flex flex-col items-center px-6 text-center">
+              <div className="bg-primary/10 text-primary mb-4 flex size-14 items-center justify-center rounded-full">
+                <ClipboardList className="size-6" />
+              </div>
+              <CardTitle className="mb-1 text-base">No applications yet</CardTitle>
+              <CardDescription className="text-sm">
+                Students apply from placement drives, jobs, internships, and projects on their dashboard.
+              </CardDescription>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        {!isLoading && !error && applications.length > 0 ? (
+          <div className="flex flex-col gap-3">
             {applications.map((a) => {
-              const initials = (a.student_name || 'S').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+              const kindMeta = getApplicationKindMeta(a);
+              const statusMeta = getApplicationStatusMeta(a.status);
+              const initials = studentInitials(a.student_name);
               return (
-                <div key={`${a.source_kind}-${a.id}`} className="card" style={{ padding: '1rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary-100), var(--primary-200))', color: 'var(--primary-700)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700, flexShrink: 0, border: '1px solid var(--primary-300)' }}>
-                        {initials}
+                <Card key={`${a.source_kind}-${a.id}`} size="sm" className="gap-3">
+                  <CardHeader className="gap-2 px-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="bg-primary/10 text-primary border-primary/20 flex size-9 shrink-0 items-center justify-center rounded-full border text-xs font-bold">
+                          {initials}
+                        </div>
+                        <div className="min-w-0">
+                          <CardTitle className="truncate text-base">{a.student_name || '—'}</CardTitle>
+                          <CardDescription className="font-mono">{a.roll_number || '—'}</CardDescription>
+                        </div>
                       </div>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{a.student_name || '—'}</div>
-                        <div style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{a.roll_number || '—'}</div>
-                      </div>
+                      <StatusBadge status={a.status} tone={statusMeta.tone} showDot>
+                        {statusMeta.label}
+                      </StatusBadge>
                     </div>
-                    <span className={`badge badge-${getStatusColor(a.status)} badge-dot`} style={{ fontSize: '0.7rem' }}>
-                      {formatStatus(a.status)}
-                    </span>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                      <GraduationCap size={14} style={{ flexShrink: 0 }} />
-                      <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.department || '—'}</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <StatusBadge tone={kindMeta.tone} showDot>
+                        {kindMeta.label || applicationKindLabel(a)}
+                      </StatusBadge>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                      <Building2 size={14} style={{ flexShrink: 0 }} />
-                      <CompanyNameLink name={a.company_name} website={a.company_website} style={{ fontWeight: 500, color: 'var(--text-primary)' }} />
+                  </CardHeader>
+                  <CardContent className="flex flex-col gap-2 px-4">
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <GraduationCap className="size-3.5 shrink-0" aria-hidden />
+                      <span className="truncate">{a.department || '—'}</span>
                     </div>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-default)', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                    <span>{applicationKindLabel(a)} · {openingLabel(a)}</span>
-                    <span>{a.applied_at ? formatDate(a.applied_at) : '—'}</span>
-                  </div>
-                </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Building2 className="text-muted-foreground size-3.5 shrink-0" aria-hidden />
+                      <CompanyNameLink name={a.company_name} website={a.company_website} />
+                    </div>
+                    <div className="text-muted-foreground flex items-center justify-between gap-2 border-t pt-3 text-xs">
+                      <span className="truncate">
+                        {applicationKindLabel(a)} · {openingLabel(a)}
+                      </span>
+                      <span className="shrink-0">{a.applied_at ? formatDate(a.applied_at) : '—'}</span>
+                    </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );

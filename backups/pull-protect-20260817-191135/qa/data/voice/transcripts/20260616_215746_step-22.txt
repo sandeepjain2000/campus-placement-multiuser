@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-22
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type skills / keywords. Skills: Python, SQL, Data Analysis.

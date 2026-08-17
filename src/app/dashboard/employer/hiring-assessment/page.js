@@ -12,6 +12,12 @@ import { useToast } from '@/components/ToastProvider';
 import { pickRepresentativeAssessmentRows, buildAssessmentSummary } from '@/lib/assessmentHiringViewShared';
 import { toCsvIsoDate } from '@/lib/csvExport';
 import { shouldShowFilterCount } from '@/lib/filterBadgeLabel';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const KIND_TABS = [
   { id: 'internship', label: 'Internship', icon: GraduationCap },
@@ -27,6 +33,15 @@ export default function EmployerHiringAssessmentPage() {
   const [kindTab, setKindTab] = useState('internship');
   const [loading, setLoading] = useState(false);
   const [payload, setPayload] = useState(null);
+
+  const campusFilterItems = useMemo(() => {
+    if (campusesLoading) return [{ label: 'Loading…', value: '' }];
+    if (approvedCampuses.length === 0) return [{ label: 'No approved campuses', value: '' }];
+    return approvedCampuses.map((c) => ({
+      label: `${c.name}${c.city ? ` (${c.city})` : ''}`,
+      value: String(c.id),
+    }));
+  }, [approvedCampuses, campusesLoading]);
 
   useEffect(() => {
     let mounted = true;
@@ -153,11 +168,11 @@ export default function EmployerHiringAssessmentPage() {
 
   return (
     <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1>Hiring Results Dashboard</h1>
         </div>
-        <div className="page-header-actions">
+        <div className="flex flex-wrap gap-2">
           <ExportCsvSplitButton
             filenameBase={`hiring_results_${kindTab}`}
             currentCount={displayRows.length}
@@ -167,64 +182,33 @@ export default function EmployerHiringAssessmentPage() {
         </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <div className="form-group" style={{ marginBottom: 0, maxWidth: '70ch' }}>
-          <label className="form-label" htmlFor="hiring-results-campus">
+      <Card className="mb-4"><CardContent>
+        <Field className="max-w-[70ch]">
+          <FieldLabel htmlFor="hiring-results-campus">
             Campus
-          </label>
-          <select
+          </FieldLabel>
+          <AdminFilterSelect
             id="hiring-results-campus"
-            className="form-select"
+            className="h-9 w-full max-w-[70ch]"
             value={selectedTenantId}
+            onValueChange={setSelectedTenantId}
             disabled={campusesLoading || approvedCampuses.length === 0}
-            onChange={(e) => setSelectedTenantId(e.target.value)}
-            style={{ maxWidth: '70ch' }}
-          >
-            {approvedCampuses.length === 0 ? (
-              <option value="">{campusesLoading ? 'Loading…' : 'No approved campuses'}</option>
-            ) : (
-              approvedCampuses.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                  {c.city ? ` (${c.city})` : ''}
-                </option>
-              ))
-            )}
-          </select>
-        </div>
-      </div>
+            emptyMapsToAll={false}
+            items={campusFilterItems}
+          />
+        </Field>
+      </CardContent></Card>
 
-      <div
-        role="tablist"
-        aria-label="Opportunity type"
-        style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}
-      >
+      <Tabs value={kindTab} onValueChange={setKindTab} className="mb-6"><TabsList aria-label="Opportunity type">
         {KIND_TABS.map((t) => {
           const Icon = t.icon;
           const active = kindTab === t.id;
           const n = kindCounts[t.id] ?? 0;
           return (
-            <button
+            <TabsTrigger
               key={t.id}
               type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => setKindTab(t.id)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.6rem 1.25rem',
-                borderRadius: '999px',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                transition: 'background 0.2s ease-out, color 0.2s ease-out, box-shadow 0.2s ease-out',
-                border: 'none',
-                cursor: 'pointer',
-                background: active ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                color: active ? 'white' : 'var(--text-secondary)',
-                boxShadow: active ? '0 4px 10px rgba(79, 70, 229, 0.25)' : 'none',
-              }}
+              value={t.id}
             >
               <Icon size={16} strokeWidth={active ? 2.5 : 1.75} aria-hidden />
               {t.label}
@@ -243,20 +227,18 @@ export default function EmployerHiringAssessmentPage() {
                   {n}
                 </span>
               ) : null}
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
+      </TabsList></Tabs>
 
       {loading ? (
         <div className="skeleton skeleton-card" style={{ height: 200 }} />
       ) : (
         <>
-          <div className="grid grid-3" style={{ marginBottom: '1.25rem' }}>
-            <div className="stats-card">
-              <div className="stats-card-value">{summary.uniqueStudentCount ?? 0}</div>
-              <div className="stats-card-label">Total students</div>
-              <div className="text-xs text-tertiary" style={{ marginTop: '0.25rem' }}>
+          <Card className="mb-5"><CardContent className="flex flex-wrap gap-x-8 gap-y-3">
+            <div><strong className="text-lg">{summary.uniqueStudentCount ?? 0}</strong> <span className="text-muted-foreground">students</span>
+              <div className="text-xs text-muted-foreground">
                 Distinct students (this campus · {KIND_TABS.find((t) => t.id === kindTab)?.label})
                 {summary.totalResultRows > 0 ? (
                   <>
@@ -266,28 +248,23 @@ export default function EmployerHiringAssessmentPage() {
                 ) : null}
               </div>
             </div>
-            <div className="stats-card">
-              <div className="stats-card-value">{summary.uploadsCount}</div>
-              <div className="stats-card-label">Upload batches</div>
-              <div className="text-xs text-tertiary" style={{ marginTop: '0.25rem' }}>
+            <div><strong className="text-lg">{summary.uploadsCount}</strong> <span className="text-muted-foreground">upload batches</span>
+              <div className="text-xs text-muted-foreground">
                 Distinct CSV uploads represented
               </div>
             </div>
-            <div className="stats-card">
-              <div className="stats-card-value">{summary.withHiringResult ?? 0}</div>
-              <div className="stats-card-label">With hiring result</div>
-              <div className="text-xs text-tertiary" style={{ marginTop: '0.25rem' }}>
+            <div><strong className="text-lg">{summary.withHiringResult ?? 0}</strong> <span className="text-muted-foreground">with hiring result</span>
+              <div className="text-xs text-muted-foreground">
                 {summary.withoutHiringResult ?? 0} with no decision yet
               </div>
             </div>
-          </div>
+          </CardContent></Card>
 
           <HiringResultBreakdown summary={summary} />
 
-          <div className="card">
-            <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-              Detail
-            </h3>
+          <Card>
+            <CardHeader><CardTitle>Detail</CardTitle><CardDescription>Candidate-level results for the selected campus and opportunity type.</CardDescription></CardHeader>
+            <CardContent>
             {totalCount > 0 ? (
               <DataTableToolbar
                 search={search}
@@ -303,56 +280,47 @@ export default function EmployerHiringAssessmentPage() {
                 style={{ marginBottom: '1rem' }}
               />
             ) : null}
-            <div className="table-container" style={{ overflowX: 'auto', border: 'none' }}>
-              <table className="data-table" style={{ minWidth: 900 }}>
-                <thead>
-                  <tr>
-                    <th>File</th>
-                    <th>System ID</th>
-                    <th>Roll</th>
-                    <th>Candidate</th>
-                    <th>Hiring result</th>
-                    <th>Status</th>
-                    <th>Remarks</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="min-w-[900px]">
+                <TableHeader><TableRow>
+                    <TableHead>File</TableHead><TableHead>System ID</TableHead><TableHead>Roll</TableHead><TableHead>Candidate</TableHead><TableHead>Hiring result</TableHead><TableHead>Status</TableHead><TableHead>Remarks</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
                   {displayRows.length === 0 && totalCount > 0 ? (
-                    <tr>
-                      <td colSpan={7} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
                         No rows match your search.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : null}
                   {displayRows.map((r) => (
-                    <tr key={r.id}>
-                      <td className="text-xs">{r.original_file_name || '—'}</td>
-                      <td className="font-mono text-sm">{r.system_id || '—'}</td>
-                      <td className="font-mono text-sm">{r.roll_number || '—'}</td>
-                      <td className="text-sm">{r.candidate_name || '—'}</td>
-                      <td className="text-sm">{r.hiring_result || '—'}</td>
-                      <td className="text-sm">
-                        <span className="badge badge-secondary" style={{ textTransform: 'capitalize' }}>
+                    <TableRow key={r.id}>
+                      <TableCell className="text-xs">{r.original_file_name || '—'}</TableCell>
+                      <TableCell className="font-mono">{r.system_id || '—'}</TableCell>
+                      <TableCell className="font-mono">{r.roll_number || '—'}</TableCell>
+                      <TableCell>{r.candidate_name || '—'}</TableCell>
+                      <TableCell>{r.hiring_result || '—'}</TableCell>
+                      <TableCell>
+                        <StatusBadge status={r.submission_status} showDot>
                           {r.submission_status || 'draft'}
-                        </span>
-                      </td>
-                      <td className="text-sm" style={{ maxWidth: 220 }}>
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell className="max-w-[220px]">
                         {r.remarks || '—'}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
                   {totalCount === 0 && (
-                    <tr>
-                      <td colSpan={7} className="text-center text-secondary">
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
                         No assessment rows for this campus and type yet. Upload a CSV under{' '}
                         <Link href="/dashboard/employer/assessment-uploads">Assessment uploads</Link>.
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </>
       )}
     </div>

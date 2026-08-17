@@ -1,6 +1,7 @@
 'use client';
 
 import { ExternalLink, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 /**
  * View (inline preview in new tab) + Download (attachment) actions for CV files.
@@ -14,28 +15,28 @@ export default function CvViewDownloadButtons({
   className = '',
 }) {
   if (!viewUrl) return null;
-  const btnClass = `btn btn-${size}`;
+  const buttonSize = size === 'lg' ? 'lg' : size === 'xs' ? 'xs' : 'sm';
   return (
-    <div className={className} style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', alignItems: 'center' }}>
-      <a
-        href={viewUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${btnClass} btn-secondary`}
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+    <div className={`flex flex-wrap items-center gap-1.5 ${className}`}>
+      <Button
+        size={buttonSize}
+        variant="secondary"
+        render={<a href={viewUrl} target="_blank" rel="noopener noreferrer" />}
+        nativeButton={false}
       >
-        <ExternalLink size={14} aria-hidden />
+        <ExternalLink data-icon="inline-start" aria-hidden />
         {viewLabel}
-      </a>
+      </Button>
       {downloadUrl ? (
-        <a
-          href={downloadUrl}
-          className={`${btnClass} btn-ghost`}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+        <Button
+          size={buttonSize}
+          variant="outline"
+          render={<a href={downloadUrl} />}
+          nativeButton={false}
         >
-          <Download size={14} aria-hidden />
+          <Download data-icon="inline-start" aria-hidden />
           {downloadLabel}
-        </a>
+        </Button>
       ) : null}
     </div>
   );

@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Award,
   BookOpen,
   Briefcase,
   ClipboardList,
   ExternalLink,
-  FileText,
   FolderDot,
   FolderOpen,
   GraduationCap,
@@ -17,11 +16,23 @@ import {
   Phone,
   CheckCircle2,
   UserRound,
-  X,
 } from 'lucide-react';
-import { formatDate, formatStatus, getStatusColor } from '@/lib/utils';
+import { formatDate, formatStatus } from '@/lib/utils';
 import { getDegreeTimelineWarning } from '@/lib/degreeTimeline';
 import CvViewDownloadButtons from '@/components/student/CvViewDownloadButtons';
+import StudentListAvatar from '@/components/student/StudentListAvatar';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const PROFILE_TABS = [
   { id: 'overview', label: 'Overview' },
@@ -94,7 +105,7 @@ function InfoBlock({ label, value, mono = false }) {
 function InfoGrid({ children }) {
   const items = Array.isArray(children) ? children.filter(Boolean) : [];
   if (!items.length) {
-    return <p className="text-sm text-secondary" style={{ margin: 0 }}>No details provided.</p>;
+    return <p className="text-muted-foreground m-0 text-sm">No details provided.</p>;
   }
   return <div className="employer-student-profile-grid">{items}</div>;
 }
@@ -115,17 +126,17 @@ function ProfileSection({ icon: Icon, title, children }) {
 
 function TagList({ items }) {
   const values = asList(items).filter(Boolean);
-  if (!values.length) return <p className="text-sm text-secondary" style={{ margin: 0 }}>None listed.</p>;
+  if (!values.length) return <p className="text-muted-foreground m-0 text-sm">None listed.</p>;
   return (
     <div className="employer-student-profile-tags">
       {values.map((item, index) => {
         const label = typeof item === 'string' ? item : item.name || item.title;
         const meta = typeof item === 'string' ? '' : item.proficiency;
         return (
-          <span key={`${label}-${index}`} className="badge badge-gray">
+          <Badge key={`${label}-${index}`} variant="secondary">
             {label}
             {meta ? ` · ${meta}` : ''}
-          </span>
+          </Badge>
         );
       })}
     </div>
@@ -134,7 +145,7 @@ function TagList({ items }) {
 
 function ActivityList({ items }) {
   const rows = asList(items);
-  if (!rows.length) return <p className="text-sm text-secondary" style={{ margin: 0 }}>None listed.</p>;
+  if (!rows.length) return <p className="text-muted-foreground m-0 text-sm">None listed.</p>;
   return (
     <div className="employer-student-profile-list">
       {rows.map((item, index) => (
@@ -177,7 +188,7 @@ function SchoolingDetails({ details }) {
   return <div className="employer-student-profile-list">{rows}</div>;
 }
 
-function DocumentsPanel({ student, onOpenResume }) {
+function DocumentsPanel({ student }) {
   const documents = asList(student?.documents);
   const resume = student?.resume;
 
@@ -197,7 +208,7 @@ function DocumentsPanel({ student, onOpenResume }) {
             />
           </article>
         ) : (
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>No CV uploaded yet.</p>
+          <p className="text-muted-foreground m-0 text-sm">No CV uploaded yet.</p>
         )}
         {documents.map((doc) => (
           <article key={doc.id} className="employer-student-profile-list-row employer-student-profile-doc-row">
@@ -208,11 +219,17 @@ function DocumentsPanel({ student, onOpenResume }) {
               </div>
             </div>
             {doc.viewUrl ? (
-              <a href={doc.viewUrl} target="_blank" rel="noreferrer" className="btn btn-secondary btn-sm">
-                <ExternalLink size={14} /> Open
-              </a>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                render={<a href={doc.viewUrl} target="_blank" rel="noreferrer" />}
+              >
+                <ExternalLink data-icon="inline-start" />
+                Open
+              </Button>
             ) : (
-              <span className="text-xs text-tertiary">Unavailable</span>
+              <span className="text-muted-foreground text-xs">Unavailable</span>
             )}
           </article>
         ))}
@@ -228,26 +245,8 @@ export default function EmployerStudentProfileModal({
   profileLoading,
   applicationContext,
   onClose,
-  onOpenResume,
 }) {
   const [activeTab, setActiveTab] = useState('overview');
-
-  useEffect(() => {
-    if (!open) return undefined;
-    setActiveTab('overview');
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose?.();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
 
   const student = profileData?.student;
   const profile = student?.profile || {};
@@ -272,300 +271,293 @@ export default function EmployerStudentProfileModal({
     batch: profile.batch,
   });
 
-  const statusTone = applicationContext?.status ? getStatusColor(applicationContext.status) : 'gray';
-
   return (
-    <div
-      className="employer-student-profile-overlay"
-      role="presentation"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose?.();
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onClose?.();
       }}
     >
-      <div
-        className="employer-student-profile-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="employer-student-profile-title"
+      <DialogContent
+        className="flex max-h-[min(92vh,880px)] flex-col gap-0 overflow-hidden p-0 sm:max-w-[min(920px,calc(100vw-2rem))]"
+        showCloseButton
       >
-        <header className="employer-student-profile-header">
-          <div className="employer-student-profile-identity">
-            <StudentListAvatar
-              photo={avatarPhoto}
-              name={student?.name || 'Student'}
-              size={56}
-              className="employer-student-profile-avatar employer-student-profile-avatar-img"
-            />
-            <div className="employer-student-profile-identity-text">
-              <h2 id="employer-student-profile-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <span>{student?.name || 'Student profile'}</span>
-                {student?.collegeVerified ? (
-                  <span
-                    className="badge badge-green"
-                    title={
-                      student.collegeVerifiedAt
-                        ? `College verified ${new Date(student.collegeVerifiedAt).toLocaleString()}`
-                        : 'College or placement committee verified this profile'
-                    }
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 600 }}
-                  >
-                    <CheckCircle2 size={13} aria-hidden />
-                    Verified
-                  </span>
-                ) : null}
-              </h2>
-              <p>
-                {student?.collegeName || 'College'}
-                {student?.systemId ? ` · ${student.systemId}` : ''}
-                {student?.rollNumber && !student?.systemId?.includes(student.rollNumber)
-                  ? ` · Roll ${student.rollNumber}`
-                  : ''}
-              </p>
-            </div>
-          </div>
-          <div className="employer-student-profile-header-actions">
-            {student?.resume?.hasResume ? (
-              <CvViewDownloadButtons
-                viewUrl={student.resume.viewUrl}
-                downloadUrl={student.resume.downloadUrl}
-                viewLabel="View CV"
+        <DialogHeader className="border-border shrink-0 gap-3 border-b px-5 py-4 pr-12">
+          <div className="flex items-start justify-between gap-4">
+            <div className="employer-student-profile-identity min-w-0">
+              <StudentListAvatar
+                photo={avatarPhoto}
+                name={student?.name || 'Student'}
+                size={56}
+                className="employer-student-profile-avatar employer-student-profile-avatar-img"
               />
+              <div className="employer-student-profile-identity-text min-w-0">
+                <DialogTitle
+                  id="employer-student-profile-title"
+                  className="flex flex-wrap items-center gap-2 text-xl font-semibold"
+                >
+                  <span>{student?.name || 'Student profile'}</span>
+                  {student?.collegeVerified ? (
+                    <StatusBadge
+                      tone="green"
+                      showDot
+                      className="gap-1 px-2 py-0.5 text-xs"
+                      title={
+                        student.collegeVerifiedAt
+                          ? `College verified ${new Date(student.collegeVerifiedAt).toLocaleString()}`
+                          : 'College or placement committee verified this profile'
+                      }
+                    >
+                      <CheckCircle2 className="size-3.5" aria-hidden />
+                      Verified
+                    </StatusBadge>
+                  ) : null}
+                </DialogTitle>
+                <DialogDescription className="mt-1">
+                  {student?.collegeName || 'College'}
+                  {student?.systemId ? ` · ${student.systemId}` : ''}
+                  {student?.rollNumber && !student?.systemId?.includes(student.rollNumber)
+                    ? ` · Roll ${student.rollNumber}`
+                    : ''}
+                </DialogDescription>
+              </div>
+            </div>
+            {student?.resume?.hasResume ? (
+              <div className="flex shrink-0 items-center gap-2">
+                <CvViewDownloadButtons
+                  viewUrl={student.resume.viewUrl}
+                  downloadUrl={student.resume.downloadUrl}
+                  viewLabel="View CV"
+                />
+              </div>
             ) : null}
-            <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close profile">
-              <X size={18} />
-            </button>
           </div>
-        </header>
+        </DialogHeader>
 
         {profileLoading ? (
           <div className="employer-student-profile-body">
-            <div className="card" style={{ padding: '2.5rem', textAlign: 'center' }}>Loading profile…</div>
+            <div className="text-muted-foreground py-10 text-center text-sm">Loading profile…</div>
           </div>
         ) : profileError ? (
-          <div className="employer-student-profile-body">
-            <div className="card" style={{ padding: '1.5rem', borderColor: 'var(--danger-200)', background: 'var(--danger-50)' }}>
-              <p style={{ color: 'var(--danger-700)', margin: 0 }}>{profileError.message}</p>
-            </div>
+          <div className="employer-student-profile-body px-5 pb-5">
+            <Alert variant="destructive">
+              <AlertTitle>Could not load profile</AlertTitle>
+              <AlertDescription>{profileError.message}</AlertDescription>
+            </Alert>
           </div>
         ) : student ? (
-          <>
-            <nav className="employer-student-profile-tabs" aria-label="Profile sections">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="flex min-h-0 flex-1 flex-col gap-0"
+          >
+            <TabsList className="mx-5 mt-3 shrink-0" aria-label="Profile sections">
               {PROFILE_TABS.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  className={`employer-student-profile-tab${activeTab === t.id ? ' employer-student-profile-tab--active' : ''}`}
-                  aria-selected={activeTab === t.id}
-                  onClick={() => setActiveTab(t.id)}
-                >
+                <TabsTrigger key={t.id} value={t.id}>
                   {t.label}
-                </button>
+                </TabsTrigger>
               ))}
-            </nav>
+            </TabsList>
 
-            <div className="employer-student-profile-body">
-              {activeTab === 'overview' && (
-                <>
-                  {applicationContext ? (
-                    <section className="employer-student-profile-application-card">
-                      <div className="employer-student-profile-application-card-head">
-                        <ClipboardList size={18} />
-                        <div>
-                          <div className="employer-student-profile-label">This application</div>
-                          <div className="employer-student-profile-application-title">{applicationContext.openingTitle || 'Opening'}</div>
-                        </div>
-                        <span className={`badge badge-${statusTone} badge-dot`}>{formatStatus(applicationContext.status)}</span>
+            <TabsContent value="overview" className="employer-student-profile-body mt-0 min-h-0 flex-1 overflow-y-auto">
+              {applicationContext ? (
+                <section className="employer-student-profile-application-card">
+                  <div className="employer-student-profile-application-card-head">
+                    <ClipboardList size={18} />
+                    <div className="min-w-0 flex-1">
+                      <div className="employer-student-profile-label">This application</div>
+                      <div className="employer-student-profile-application-title">
+                        {applicationContext.openingTitle || 'Opening'}
                       </div>
-                      <div className="employer-student-profile-grid employer-student-profile-grid--compact">
-                        <InfoBlock label="Type" value={jobTypeLabel(applicationContext.jobType)} />
-                        <InfoBlock label="Applied" value={applicationContext.appliedAt ? formatDate(applicationContext.appliedAt) : ''} />
-                        {applicationContext.currentRound ? (
-                          <InfoBlock label="Current round" value={String(applicationContext.currentRound)} />
-                        ) : null}
-                      </div>
-                      {applicationContext.notes ? (
-                        <p className="employer-student-profile-notes">{applicationContext.notes}</p>
-                      ) : null}
-                    </section>
-                  ) : null}
-
-                  <div className="employer-student-profile-summary">
-                    <InfoBlock label="CGPA" value={hasValue(profile.cgpa) ? Number(profile.cgpa).toFixed(2) : ''} />
-                    <InfoBlock label="Branch" value={profile.branch || profile.department} />
-                    <InfoBlock label="Batch" value={profile.batch || profile.batchYear} />
-                    <InfoBlock label="Placement" value={formatPlacementStatus(student.placementStatus)} />
-                    <InfoBlock
-                      label="Expected CTC"
-                      value={formatSalaryRange(
-                        profile.expectedSalaryMin ?? student.expectedSalaryMin,
-                        profile.expectedSalaryMax ?? student.expectedSalaryMax,
-                      )}
-                    />
+                    </div>
+                    <StatusBadge status={applicationContext.status} showDot className="min-w-fit shrink-0">
+                      {formatStatus(applicationContext.status) || 'Applied'}
+                    </StatusBadge>
                   </div>
-
-                  <DocumentsPanel student={student} onOpenResume={onOpenResume} />
-
-                  <ProfileSection icon={UserRound} title="Contact">
-                    <InfoGrid>
-                      <InfoBlock label="Account email" value={student.email} />
-                      <InfoBlock label="College email" value={profile.collegeEmail} />
-                      <InfoBlock label="Phone" value={phones[0]?.value || student.phone} />
-                      <InfoBlock label="Roll number" value={student.rollNumber} mono />
-                      <InfoBlock label="Preferred locations" value={profile.preferredLocations} />
-                    </InfoGrid>
-                    {(phones.length > 1 || emails.length || profileLinks.length) ? (
-                      <div className="employer-student-profile-links">
-                        {phones.slice(1).map((phone, index) => (
-                          <span key={`p-${index}`}>
-                            <Phone size={13} /> {phone.label ? `${phone.label}: ` : ''}
-                            {phone.value}
-                          </span>
-                        ))}
-                        {emails.map((entry, index) => (
-                          <span key={`e-${index}`}>
-                            <Mail size={13} /> {entry.value}
-                          </span>
-                        ))}
-                        {profileLinks.map((link) => (
-                          <a key={link.url} href={link.url} target="_blank" rel="noreferrer">
-                            <LinkIcon size={13} /> {link.title || link.kind || 'Link'}
-                          </a>
-                        ))}
-                        {profile.preferredLocations ? (
-                          <span>
-                            <MapPin size={13} /> {profile.preferredLocations}
-                          </span>
-                        ) : null}
-                      </div>
+                  <div className="employer-student-profile-grid employer-student-profile-grid--compact">
+                    <InfoBlock label="Type" value={jobTypeLabel(applicationContext.jobType)} />
+                    <InfoBlock label="Applied" value={applicationContext.appliedAt ? formatDate(applicationContext.appliedAt) : ''} />
+                    {applicationContext.currentRound ? (
+                      <InfoBlock label="Current round" value={String(applicationContext.currentRound)} />
                     ) : null}
-                  </ProfileSection>
-                </>
-              )}
-
-              {activeTab === 'academics' && (
-                <>
-                  {degreeTimelineWarning ? (
-                    <div className="employer-student-profile-timeline-warning" role="status">
-                      <strong>Unusual degree timeline</strong>
-                      <p>{degreeTimelineWarning.message}</p>
-                    </div>
+                  </div>
+                  {applicationContext.notes ? (
+                    <p className="employer-student-profile-notes">{applicationContext.notes}</p>
                   ) : null}
-                  <ProfileSection icon={GraduationCap} title="Academics">
-                    <InfoGrid>
-                      <InfoBlock
-                        label="Admission year"
-                        value={degreeTimelineWarning?.joiningYear ?? profile.batchYear ?? profile.batch}
-                      />
-                      <InfoBlock label="Graduation year" value={profile.graduationYear} />
-                      <InfoBlock label="Department" value={profile.department} />
-                      <InfoBlock label="Class X %" value={formatPercent(profile.tenthPercentage)} />
-                      <InfoBlock label="Class XII %" value={formatPercent(profile.twelfthPercentage)} />
-                      <InfoBlock label="Diploma %" value={formatPercent(profile.diplomaPercentage)} />
-                      <InfoBlock label="Active backlogs" value={hasValue(profile.backlogsActive) ? profile.backlogsActive : ''} />
-                      <InfoBlock label="Total backlogs" value={hasValue(profile.backlogsHistory) ? profile.backlogsHistory : ''} />
-                    </InfoGrid>
-                    <SchoolingDetails details={profile.educationDetails} />
-                    {educationRecords.length ? (
-                      <div className="employer-student-profile-list" style={{ marginTop: '0.85rem' }}>
-                        {educationRecords.map((record, index) => (
-                          <article key={`${record.institution}-${record.degree}-${index}`} className="employer-student-profile-list-row">
-                            <div className="employer-student-profile-list-title">
-                              {record.degree || 'Education'} — {record.fieldOfStudy || 'Field not specified'}
-                            </div>
-                            <div className="employer-student-profile-list-meta">
-                              {[record.institution, [record.startYear, record.endYear].filter(Boolean).join('–'), record.grade]
-                                .filter(Boolean)
-                                .join(' · ')}
-                            </div>
-                            {record.description ? <p>{record.description}</p> : null}
-                          </article>
-                        ))}
-                      </div>
+                </section>
+              ) : null}
+
+              <div className="employer-student-profile-summary">
+                <InfoBlock label="CGPA" value={hasValue(profile.cgpa) ? Number(profile.cgpa).toFixed(2) : ''} />
+                <InfoBlock label="Branch" value={profile.branch || profile.department} />
+                <InfoBlock label="Batch" value={profile.batch || profile.batchYear} />
+                <InfoBlock label="Placement" value={formatPlacementStatus(student.placementStatus)} />
+                <InfoBlock
+                  label="Expected CTC"
+                  value={formatSalaryRange(
+                    profile.expectedSalaryMin ?? student.expectedSalaryMin,
+                    profile.expectedSalaryMax ?? student.expectedSalaryMax,
+                  )}
+                />
+              </div>
+
+              <DocumentsPanel student={student} />
+
+              <ProfileSection icon={UserRound} title="Contact">
+                <InfoGrid>
+                  <InfoBlock label="Account email" value={student.email} />
+                  <InfoBlock label="College email" value={profile.collegeEmail} />
+                  <InfoBlock label="Phone" value={phones[0]?.value || student.phone} />
+                  <InfoBlock label="Roll number" value={student.rollNumber} mono />
+                  <InfoBlock label="Preferred locations" value={profile.preferredLocations} />
+                </InfoGrid>
+                {(phones.length > 1 || emails.length || profileLinks.length) ? (
+                  <div className="employer-student-profile-links">
+                    {phones.slice(1).map((phone, index) => (
+                      <span key={`p-${index}`}>
+                        <Phone size={13} /> {phone.label ? `${phone.label}: ` : ''}
+                        {phone.value}
+                      </span>
+                    ))}
+                    {emails.map((entry, index) => (
+                      <span key={`e-${index}`}>
+                        <Mail size={13} /> {entry.value}
+                      </span>
+                    ))}
+                    {profileLinks.map((link) => (
+                      <a key={link.url} href={link.url} target="_blank" rel="noreferrer">
+                        <LinkIcon size={13} /> {link.title || link.kind || 'Link'}
+                      </a>
+                    ))}
+                    {profile.preferredLocations ? (
+                      <span>
+                        <MapPin size={13} /> {profile.preferredLocations}
+                      </span>
                     ) : null}
-                  </ProfileSection>
-                  <ProfileSection icon={BookOpen} title="Skills">
-                    <TagList items={skillItems} />
-                    {(asList(student.languages).length > 0 || asList(student.subjects).length > 0) && (
-                      <div className="employer-student-profile-two-col" style={{ marginTop: '0.85rem' }}>
-                        <div>
-                          <div className="employer-student-profile-label">Languages</div>
-                          <TagList items={student.languages} />
-                        </div>
-                        <div>
-                          <div className="employer-student-profile-label">Subjects</div>
-                          <TagList items={student.subjects} />
-                        </div>
-                      </div>
-                    )}
-                  </ProfileSection>
-                </>
-              )}
-
-              {activeTab === 'experience' && (
-                <>
-                  <ProfileSection icon={FolderDot} title="Projects">
-                    {projects.length ? (
-                      <div className="employer-student-profile-list">
-                        {projects.map((project, index) => (
-                          <article key={`${project.title}-${index}`} className="employer-student-profile-list-row">
-                            <div className="employer-student-profile-list-title">{project.title || 'Project'}</div>
-                            <div className="employer-student-profile-list-meta">{formatPeriod(project.startDate, project.endDate)}</div>
-                            {project.description ? <p>{project.description}</p> : null}
-                            <TagList items={project.techStack} />
-                          </article>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-secondary" style={{ margin: 0 }}>No projects listed.</p>
-                    )}
-                  </ProfileSection>
-                  <div className="employer-student-profile-two-col">
-                    <ProfileSection icon={Briefcase} title="Internships">
-                      <ActivityList items={internships} />
-                    </ProfileSection>
-                    <ProfileSection icon={Briefcase} title="Work experience">
-                      <ActivityList items={workExperience} />
-                    </ProfileSection>
                   </div>
-                  {otherWork.length ? (
-                    <ProfileSection icon={Briefcase} title="Other work">
-                      <ActivityList items={otherWork} />
-                    </ProfileSection>
-                  ) : null}
-                </>
-              )}
+                ) : null}
+              </ProfileSection>
+            </TabsContent>
 
-              {activeTab === 'activities' && (
-                <ProfileSection icon={Award} title="Activities & achievements">
-                  <div className="employer-student-profile-two-col">
+            <TabsContent value="academics" className="employer-student-profile-body mt-0 min-h-0 flex-1 overflow-y-auto">
+              {degreeTimelineWarning ? (
+                <Alert className="mb-4">
+                  <AlertTitle>Unusual degree timeline</AlertTitle>
+                  <AlertDescription>{degreeTimelineWarning.message}</AlertDescription>
+                </Alert>
+              ) : null}
+              <ProfileSection icon={GraduationCap} title="Academics">
+                <InfoGrid>
+                  <InfoBlock
+                    label="Admission year"
+                    value={degreeTimelineWarning?.joiningYear ?? profile.batchYear ?? profile.batch}
+                  />
+                  <InfoBlock label="Graduation year" value={profile.graduationYear} />
+                  <InfoBlock label="Department" value={profile.department} />
+                  <InfoBlock label="Class X %" value={formatPercent(profile.tenthPercentage)} />
+                  <InfoBlock label="Class XII %" value={formatPercent(profile.twelfthPercentage)} />
+                  <InfoBlock label="Diploma %" value={formatPercent(profile.diplomaPercentage)} />
+                  <InfoBlock label="Active backlogs" value={hasValue(profile.backlogsActive) ? profile.backlogsActive : ''} />
+                  <InfoBlock label="Total backlogs" value={hasValue(profile.backlogsHistory) ? profile.backlogsHistory : ''} />
+                </InfoGrid>
+                <SchoolingDetails details={profile.educationDetails} />
+                {educationRecords.length ? (
+                  <div className="employer-student-profile-list mt-3">
+                    {educationRecords.map((record, index) => (
+                      <article key={`${record.institution}-${record.degree}-${index}`} className="employer-student-profile-list-row">
+                        <div className="employer-student-profile-list-title">
+                          {record.degree || 'Education'} — {record.fieldOfStudy || 'Field not specified'}
+                        </div>
+                        <div className="employer-student-profile-list-meta">
+                          {[record.institution, [record.startYear, record.endYear].filter(Boolean).join('–'), record.grade]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </div>
+                        {record.description ? <p>{record.description}</p> : null}
+                      </article>
+                    ))}
+                  </div>
+                ) : null}
+              </ProfileSection>
+              <ProfileSection icon={BookOpen} title="Skills">
+                <TagList items={skillItems} />
+                {(asList(student.languages).length > 0 || asList(student.subjects).length > 0) && (
+                  <div className="employer-student-profile-two-col mt-3">
                     <div>
-                      <div className="employer-student-profile-label">Responsibilities</div>
-                      <ActivityList items={profile.responsibilities} />
+                      <div className="employer-student-profile-label">Languages</div>
+                      <TagList items={student.languages} />
                     </div>
                     <div>
-                      <div className="employer-student-profile-label">Accomplishments</div>
-                      <ActivityList items={profile.accomplishments} />
-                    </div>
-                    <div>
-                      <div className="employer-student-profile-label">Volunteering</div>
-                      <ActivityList items={profile.volunteering} />
-                    </div>
-                    <div>
-                      <div className="employer-student-profile-label">Extracurriculars</div>
-                      <ActivityList items={profile.extracurriculars} />
+                      <div className="employer-student-profile-label">Subjects</div>
+                      <TagList items={student.subjects} />
                     </div>
                   </div>
-                  {profile.bio ? <p className="employer-student-profile-notes">{profile.bio}</p> : null}
+                )}
+              </ProfileSection>
+            </TabsContent>
+
+            <TabsContent value="experience" className="employer-student-profile-body mt-0 min-h-0 flex-1 overflow-y-auto">
+              <ProfileSection icon={FolderDot} title="Projects">
+                {projects.length ? (
+                  <div className="employer-student-profile-list">
+                    {projects.map((project, index) => (
+                      <article key={`${project.title}-${index}`} className="employer-student-profile-list-row">
+                        <div className="employer-student-profile-list-title">{project.title || 'Project'}</div>
+                        <div className="employer-student-profile-list-meta">{formatPeriod(project.startDate, project.endDate)}</div>
+                        {project.description ? <p>{project.description}</p> : null}
+                        <TagList items={project.techStack} />
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground m-0 text-sm">No projects listed.</p>
+                )}
+              </ProfileSection>
+              <div className="employer-student-profile-two-col">
+                <ProfileSection icon={Briefcase} title="Internships">
+                  <ActivityList items={internships} />
                 </ProfileSection>
-              )}
-            </div>
-          </>
+                <ProfileSection icon={Briefcase} title="Work experience">
+                  <ActivityList items={workExperience} />
+                </ProfileSection>
+              </div>
+              {otherWork.length ? (
+                <ProfileSection icon={Briefcase} title="Other work">
+                  <ActivityList items={otherWork} />
+                </ProfileSection>
+              ) : null}
+            </TabsContent>
+
+            <TabsContent value="activities" className="employer-student-profile-body mt-0 min-h-0 flex-1 overflow-y-auto">
+              <ProfileSection icon={Award} title="Activities & achievements">
+                <div className="employer-student-profile-two-col">
+                  <div>
+                    <div className="employer-student-profile-label">Responsibilities</div>
+                    <ActivityList items={profile.responsibilities} />
+                  </div>
+                  <div>
+                    <div className="employer-student-profile-label">Accomplishments</div>
+                    <ActivityList items={profile.accomplishments} />
+                  </div>
+                  <div>
+                    <div className="employer-student-profile-label">Volunteering</div>
+                    <ActivityList items={profile.volunteering} />
+                  </div>
+                  <div>
+                    <div className="employer-student-profile-label">Extracurriculars</div>
+                    <ActivityList items={profile.extracurriculars} />
+                  </div>
+                </div>
+                {profile.bio ? <p className="employer-student-profile-notes">{profile.bio}</p> : null}
+              </ProfileSection>
+            </TabsContent>
+          </Tabs>
         ) : (
           <div className="employer-student-profile-body">
-            <p className="text-secondary">No profile data available.</p>
+            <p className="text-muted-foreground">No profile data available.</p>
           </div>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

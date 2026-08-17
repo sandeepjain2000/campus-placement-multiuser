@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: phase-student
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Student role. Arjun applies for the internship.

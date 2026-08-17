@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-03
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open campus tie-up directory. IIT Madras should be Approved (or request tie-up if needed).

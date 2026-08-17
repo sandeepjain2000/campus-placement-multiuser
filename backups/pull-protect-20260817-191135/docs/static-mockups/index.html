@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PlacementHub — Static mockups</title>
+    <link rel="stylesheet" href="assets/placementhub-globals.css" />
+    <link rel="stylesheet" href="assets/placementhub-mockup.css" />
+    <style>
+      .mockup-index { max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+      .mockup-index h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+      .mockup-index .lede { color: var(--text-secondary); margin: 0 0 1.75rem; line-height: 1.55; }
+      .mockup-index-grid { display: grid; gap: 0.85rem; }
+      .mockup-index-card {
+        display: flex; flex-direction: column; gap: 0.35rem;
+        padding: 1rem 1.15rem; border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg); background: var(--bg-primary); text-decoration: none; color: inherit;
+      }
+      .mockup-index-card:hover { border-color: var(--primary-300); background: var(--bg-secondary); }
+      .mockup-index-card strong { font-size: 1rem; }
+      .mockup-index-card span { font-size: 0.8125rem; color: var(--text-tertiary); }
+      .mockup-index-card em { font-style: normal; font-size: 0.75rem; color: var(--text-link); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <main class="mockup-index">
+      <h1>PlacementHub static mockups</h1>
+      <p class="lede">Open a <strong>role Home / landing</strong> page (full-screen mega-menu hub). Inner screens live under <code>pages/{role}/</code>.</p>
+      <div class="mockup-index-grid">
+        <a class="mockup-index-card" href="employer.html"><strong>Employer Home</strong><span>Mega-menu landing · TechCorp Solutions</span><em>employer.html · pages/employer/home.html</em></a>
+        <a class="mockup-index-card" href="student.html"><strong>Student Home</strong><span>Mega-menu landing</span><em>student.html · pages/student/home.html</em></a>
+        <a class="mockup-index-card" href="college.html"><strong>College Admin Home</strong><span>Mega-menu landing</span><em>college.html · pages/college/home.html</em></a>
+        <a class="mockup-index-card" href="placement-committee.html"><strong>Placement Committee Home</strong><span>Mega-menu landing (read-only subset)</span><em>placement-committee.html · pages/placement-committee/home.html</em></a>
+        <a class="mockup-index-card" href="super-admin.html"><strong>Super Admin Home</strong><span>Platform operations hub</span><em>super-admin.html · pages/super-admin/home.html</em></a>
+      </div>
+    </main>
+  </body>
+</html>

@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastProvider';
 import { MAX_CSV_UPLOAD_BYTES, PLATFORM_SETTINGS_DEFAULTS } from '@/lib/platformSettingsDefaults';
+import { Button } from '@/components/ui/button';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 const MAX_CSV_BYTES = MAX_CSV_UPLOAD_BYTES;
 const CSV_MIME_TYPES = new Set(['text/csv', 'application/csv', 'application/vnd.ms-excel', 'text/plain']);
@@ -106,23 +109,21 @@ export function AssessmentCsvUploadForm({
   };
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'flex-end' }}>
-      <div className="form-group" style={{ marginBottom: 0, flex: '1 1 16rem', minWidth: '14rem' }}>
-        <label className="form-label" htmlFor={`assessment-csv-${kind}`}>
+    <div className="flex flex-wrap items-end gap-3">
+      <Field className="min-w-56 flex-1">
+        <FieldLabel htmlFor={`assessment-csv-${kind}`}>
           CSV file
-        </label>
-        <input
+        </FieldLabel>
+        <Input
           id={`assessment-csv-${kind}`}
-          className="form-input"
           type="file"
           accept=".csv,text/csv"
           disabled={disabled || submitting}
           onChange={(e) => setFile(e.target.files?.[0] || null)}
         />
-      </div>
-      <button
+      </Field>
+      <Button
         type="button"
-        className="btn btn-primary"
         disabled={disabled || submitting}
         title={
           disabled && !resolvedDriveId && !resolvedJobId ? 'Select a drive or job above first' : undefined
@@ -130,7 +131,7 @@ export function AssessmentCsvUploadForm({
         onClick={onUpload}
       >
         {submitting ? 'Uploading…' : 'CSV upload'}
-      </button>
+      </Button>
     </div>
   );
 }

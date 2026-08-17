@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-38
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm application status on list. Row shows Applied (not Open).

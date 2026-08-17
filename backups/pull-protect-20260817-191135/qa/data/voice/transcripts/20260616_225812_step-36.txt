@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-36
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Browse Internships. Internships visible to IIT Madras including GT- posting.

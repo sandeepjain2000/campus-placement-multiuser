@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-26
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm posting in published list. Employer publish complete — handoff to College next.

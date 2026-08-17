@@ -1,0 +1,592 @@
+{
+  "category": "C-12",
+  "categoryTitle": "Use case flow executability",
+  "description": "Validate that each defined business use case can be executed end-to-end across relevant actors.",
+  "useCaseCatalog": [
+    {
+      "id": "UC-001",
+      "name": "Employer onboarding and campus partnership",
+      "actors": [
+        "employer",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "preconditions": [
+        "Employer account exists",
+        "Target college exists"
+      ],
+      "mainFlow": [
+        "Employer logs in and opens campus selection",
+        "Employer sends partnership request",
+        "College admin reviews request",
+        "College admin approves request",
+        "Employer sees campus as approved/active"
+      ],
+      "successEvidence": [
+        "Approval status visible to both roles",
+        "Partnership appears in respective lists"
+      ]
+    },
+    {
+      "id": "UC-002",
+      "name": "Create and publish placement drive",
+      "actors": [
+        "employer",
+        "college_admin",
+        "student"
+      ],
+      "primaryActor": "employer",
+      "preconditions": [
+        "Employer approved for campus",
+        "Job posting exists or can be created"
+      ],
+      "mainFlow": [
+        "Employer creates drive request",
+        "College admin reviews and approves/schedules drive",
+        "Student opens drives list",
+        "Student can view approved drive details"
+      ],
+      "successEvidence": [
+        "Drive state transitions correctly",
+        "Drive is visible to eligible students"
+      ]
+    },
+    {
+      "id": "UC-003",
+      "name": "Student application lifecycle",
+      "actors": [
+        "student",
+        "employer",
+        "college_admin"
+      ],
+      "primaryActor": "student",
+      "preconditions": [
+        "Approved drive visible to student"
+      ],
+      "mainFlow": [
+        "Student applies to drive",
+        "Employer sees application in pipeline",
+        "Employer updates status (shortlist/reject/progress)",
+        "Student and college see updated status"
+      ],
+      "successEvidence": [
+        "Application record appears across role views",
+        "Status is synchronized"
+      ]
+    },
+    {
+      "id": "UC-004",
+      "name": "Interview scheduling and visibility",
+      "actors": [
+        "employer",
+        "student",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "preconditions": [
+        "At least one shortlisted/in-progress candidate"
+      ],
+      "mainFlow": [
+        "Employer creates interview slot",
+        "Student sees interview schedule",
+        "College admin sees interview schedule",
+        "Employer edits schedule and all viewers see update"
+      ],
+      "successEvidence": [
+        "Interview appears in all intended calendars/lists",
+        "Edit propagates"
+      ]
+    },
+    {
+      "id": "UC-005",
+      "name": "Offer release and response",
+      "actors": [
+        "employer",
+        "student",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "preconditions": [
+        "Candidate reaches offer stage"
+      ],
+      "mainFlow": [
+        "Employer releases offer",
+        "Student sees offer details",
+        "Student accepts/rejects offer",
+        "Employer and college see final response state"
+      ],
+      "successEvidence": [
+        "Offer visibility across roles",
+        "Response persisted and reflected"
+      ]
+    },
+    {
+      "id": "UC-006",
+      "name": "Assessment upload to decision support",
+      "actors": [
+        "employer",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "preconditions": [
+        "Assessment template available"
+      ],
+      "mainFlow": [
+        "Employer uploads assessment CSV",
+        "Upload rows are accepted",
+        "Assessment summary reflects uploaded records",
+        "College hiring-assessment view reflects mapped outcomes"
+      ],
+      "successEvidence": [
+        "No processing errors",
+        "Rows visible in downstream views"
+      ]
+    },
+    {
+      "id": "UC-007",
+      "name": "College offers upload and student visibility",
+      "actors": [
+        "college_admin",
+        "student"
+      ],
+      "primaryActor": "college_admin",
+      "preconditions": [
+        "Offer CSV template available"
+      ],
+      "mainFlow": [
+        "College uploads offers CSV",
+        "Offers appear in college offers table",
+        "Concerned student sees offer"
+      ],
+      "successEvidence": [
+        "Uploaded rows persist",
+        "Student sees applicable records"
+      ]
+    },
+    {
+      "id": "UC-008",
+      "name": "Clarification and discussion communication",
+      "actors": [
+        "college_admin",
+        "student",
+        "employer"
+      ],
+      "primaryActor": "college_admin",
+      "preconditions": [
+        "Communication modules enabled"
+      ],
+      "mainFlow": [
+        "College publishes clarification",
+        "Student sees clarification entry",
+        "Employer sees related discussion/communication context"
+      ],
+      "successEvidence": [
+        "Message visibility aligns with audience"
+      ]
+    },
+    {
+      "id": "UC-009",
+      "name": "Profile completion and document handling",
+      "actors": [
+        "student"
+      ],
+      "primaryActor": "student",
+      "preconditions": [
+        "Student logged in"
+      ],
+      "mainFlow": [
+        "Student updates profile fields",
+        "Student uploads resume/document",
+        "Profile and documents persist after refresh"
+      ],
+      "successEvidence": [
+        "Updated profile fields visible",
+        "Document listed and retrievable"
+      ]
+    },
+    {
+      "id": "UC-010",
+      "name": "Admin governance and audit visibility",
+      "actors": [
+        "super_admin"
+      ],
+      "primaryActor": "super_admin",
+      "preconditions": [
+        "Platform has multi-tenant data"
+      ],
+      "mainFlow": [
+        "Admin reviews platform overview",
+        "Admin checks users/colleges/employers lists",
+        "Admin inspects audit reports",
+        "Admin validates traceability for key operations"
+      ],
+      "successEvidence": [
+        "Governance screens load with current data",
+        "Audit artifacts accessible"
+      ]
+    }
+  ],
+  "testCases": [
+    {
+      "testCaseId": "C12-UC-001",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-001",
+      "useCaseName": "Employer onboarding and campus partnership",
+      "actors": [
+        "employer",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "primaryActorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Employer account exists",
+        "Target college exists"
+      ],
+      "steps": [
+        "Employer logs in and opens campus selection",
+        "Employer sends partnership request",
+        "College admin reviews request",
+        "College admin approves request",
+        "Employer sees campus as approved/active"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Approval status visible to both roles",
+        "Partnership appears in respective lists"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-002",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-002",
+      "useCaseName": "Create and publish placement drive",
+      "actors": [
+        "employer",
+        "college_admin",
+        "student"
+      ],
+      "primaryActor": "employer",
+      "primaryActorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Employer approved for campus",
+        "Job posting exists or can be created"
+      ],
+      "steps": [
+        "Employer creates drive request",
+        "College admin reviews and approves/schedules drive",
+        "Student opens drives list",
+        "Student can view approved drive details"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Drive state transitions correctly",
+        "Drive is visible to eligible students"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-003",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-003",
+      "useCaseName": "Student application lifecycle",
+      "actors": [
+        "student",
+        "employer",
+        "college_admin"
+      ],
+      "primaryActor": "student",
+      "primaryActorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Approved drive visible to student"
+      ],
+      "steps": [
+        "Student applies to drive",
+        "Employer sees application in pipeline",
+        "Employer updates status (shortlist/reject/progress)",
+        "Student and college see updated status"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Application record appears across role views",
+        "Status is synchronized"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-004",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-004",
+      "useCaseName": "Interview scheduling and visibility",
+      "actors": [
+        "employer",
+        "student",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "primaryActorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "At least one shortlisted/in-progress candidate"
+      ],
+      "steps": [
+        "Employer creates interview slot",
+        "Student sees interview schedule",
+        "College admin sees interview schedule",
+        "Employer edits schedule and all viewers see update"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Interview appears in all intended calendars/lists",
+        "Edit propagates"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-005",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-005",
+      "useCaseName": "Offer release and response",
+      "actors": [
+        "employer",
+        "student",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "primaryActorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Candidate reaches offer stage"
+      ],
+      "steps": [
+        "Employer releases offer",
+        "Student sees offer details",
+        "Student accepts/rejects offer",
+        "Employer and college see final response state"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Offer visibility across roles",
+        "Response persisted and reflected"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-006",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-006",
+      "useCaseName": "Assessment upload to decision support",
+      "actors": [
+        "employer",
+        "college_admin"
+      ],
+      "primaryActor": "employer",
+      "primaryActorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Assessment template available"
+      ],
+      "steps": [
+        "Employer uploads assessment CSV",
+        "Upload rows are accepted",
+        "Assessment summary reflects uploaded records",
+        "College hiring-assessment view reflects mapped outcomes"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "No processing errors",
+        "Rows visible in downstream views"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-007",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-007",
+      "useCaseName": "College offers upload and student visibility",
+      "actors": [
+        "college_admin",
+        "student"
+      ],
+      "primaryActor": "college_admin",
+      "primaryActorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Offer CSV template available"
+      ],
+      "steps": [
+        "College uploads offers CSV",
+        "Offers appear in college offers table",
+        "Concerned student sees offer"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Uploaded rows persist",
+        "Student sees applicable records"
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C12-UC-008",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-008",
+      "useCaseName": "Clarification and discussion communication",
+      "actors": [
+        "college_admin",
+        "student",
+        "employer"
+      ],
+      "primaryActor": "college_admin",
+      "primaryActorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Communication modules enabled"
+      ],
+      "steps": [
+        "College publishes clarification",
+        "Student sees clarification entry",
+        "Employer sees related discussion/communication context"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Message visibility aligns with audience"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C12-UC-009",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-009",
+      "useCaseName": "Profile completion and document handling",
+      "actors": [
+        "student"
+      ],
+      "primaryActor": "student",
+      "primaryActorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Student logged in"
+      ],
+      "steps": [
+        "Student updates profile fields",
+        "Student uploads resume/document",
+        "Profile and documents persist after refresh"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Updated profile fields visible",
+        "Document listed and retrievable"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C12-UC-010",
+      "category": "C-12",
+      "type": "use_case_flow_executability",
+      "useCaseId": "UC-010",
+      "useCaseName": "Admin governance and audit visibility",
+      "actors": [
+        "super_admin"
+      ],
+      "primaryActor": "super_admin",
+      "primaryActorAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "preconditions": [
+        "Platform has multi-tenant data"
+      ],
+      "steps": [
+        "Admin reviews platform overview",
+        "Admin checks users/colleges/employers lists",
+        "Admin inspects audit reports",
+        "Admin validates traceability for key operations"
+      ],
+      "expectedResult": [
+        "Entire use case flow executes without blocking errors",
+        "All mandatory handoffs between actors succeed",
+        "Final success evidence is observable in UI/data",
+        "Governance screens load with current data",
+        "Audit artifacts accessible"
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C12-AUDIT-001",
+      "category": "C-12",
+      "type": "use_case_catalog_governance",
+      "useCaseId": "UC-AUDIT",
+      "useCaseName": "Use case catalog coverage and gap register",
+      "actors": [
+        "all_roles"
+      ],
+      "primaryActor": "qa",
+      "primaryActorAccount": {
+        "email": "n/a",
+        "password": "n/a"
+      },
+      "preconditions": [
+        "Current feature list available"
+      ],
+      "steps": [
+        "Prepare complete product use-case inventory",
+        "Map each use case to at least one executable test case",
+        "Run smoke pass for each use case flow",
+        "Log failed handoffs and missing paths"
+      ],
+      "expectedResult": [
+        "No core use case remains untested",
+        "Gap list exists for non-executable or partially executable flows"
+      ],
+      "priority": "critical"
+    }
+  ]
+}

@@ -2,6 +2,15 @@
 
 import { Users } from 'lucide-react';
 import EmployerCampusTargetPicker from '@/components/employer/EmployerCampusTargetPicker';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 /**
  * Modal for syncing published job/internship visibility to approved campuses.
@@ -16,80 +25,33 @@ export default function EmployerCampusSyncDialog({
   onClose,
   onSubmit,
 }) {
-  if (!open) return null;
-
   const title = jobTitle?.trim() || 'Posting';
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="employer-campus-sync-title"
-      aria-busy={submitting}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 110,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem',
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next && !submitting) onClose();
       }}
     >
-      <button
-        type="button"
-        aria-label="Close campus sync"
-        disabled={submitting}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'rgba(0,0,0,0.45)',
-          border: 'none',
-          cursor: submitting ? 'default' : 'pointer',
-        }}
-        onClick={() => {
-          if (!submitting) onClose();
-        }}
-      />
-      <div
-        className="card animate-slideUp"
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: 520,
-          maxHeight: '90vh',
-          overflow: 'auto',
-        }}
-      >
-        <div className="card-header">
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem' }}>
-            <div
-              style={{
-                background: 'var(--primary-50)',
-                padding: '0.45rem',
-                borderRadius: 'var(--radius-md)',
-                lineHeight: 0,
-              }}
-            >
-              <Users size={20} className="text-primary-700" aria-hidden />
+      <DialogContent className="sm:max-w-lg gap-4" showCloseButton={!submitting}>
+        <DialogHeader className="gap-3 pr-8">
+          <div className="flex items-start gap-3">
+            <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-md">
+              <Users className="size-5" aria-hidden />
             </div>
-            <div>
-              <h3 id="employer-campus-sync-title" className="card-title" style={{ margin: 0 }}>
-                Sync campuses
-              </h3>
-              <p className="text-sm text-secondary" style={{ margin: '0.25rem 0 0' }}>
-                {title}
-              </p>
+            <div className="min-w-0">
+              <DialogTitle id="employer-campus-sync-title">Sync campuses</DialogTitle>
+              <DialogDescription className="mt-1">{title}</DialogDescription>
             </div>
           </div>
-          <button type="button" className="btn btn-ghost btn-sm" disabled={submitting} onClick={onClose}>
-            ✕ Close
-          </button>
-        </div>
-        <p className="text-sm text-secondary" style={{ marginBottom: '0.75rem' }}>
+        </DialogHeader>
+
+        <p className="text-muted-foreground m-0 text-sm">
           Choose which approved campuses should see this posting on college and student dashboards. An active employer
           tie-up is required for each campus.
         </p>
+
         <EmployerCampusTargetPicker
           campuses={campuses}
           selection={selection}
@@ -97,15 +59,16 @@ export default function EmployerCampusSyncDialog({
           compact
           emptyMessage="No approved campuses. Complete a campus tie-up first."
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-          <button type="button" className="btn btn-secondary" disabled={submitting} onClick={onClose}>
+
+        <DialogFooter className="gap-2">
+          <Button type="button" variant="secondary" disabled={submitting} onClick={onClose}>
             Cancel
-          </button>
-          <button type="button" className="btn btn-primary" disabled={submitting} onClick={onSubmit}>
+          </Button>
+          <Button type="button" disabled={submitting} onClick={onSubmit}>
             {submitting ? 'Syncing…' : 'Save visibility'}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

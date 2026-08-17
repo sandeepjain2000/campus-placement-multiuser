@@ -5,6 +5,7 @@ import { useState } from 'react';
 import MobileHamburgerMenu from './MobileHamburgerMenu';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
 
 export default function MobileHeader({ title = 'PlacementHub' }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,15 +19,15 @@ export default function MobileHeader({ title = 'PlacementHub' }) {
         position: 'sticky', top: 0, zIndex: 40
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button onClick={() => setMenuOpen(true)} className="btn btn-ghost btn-icon" aria-label="Open menu" style={{ marginLeft: '-0.5rem' }}>
-            <Menu size={24} />
-          </button>
+          <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(true)} aria-label="Open menu" className="-ml-2">
+            <Menu aria-hidden="true" />
+          </Button>
           <span style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em' }}>{title}</span>
         </div>
         
-        <Link href="/dashboard/alerts" className="btn btn-ghost btn-icon" aria-label="Notifications" style={{ marginRight: '-0.5rem' }}>
-          <Bell size={22} />
-        </Link>
+        <Button render={<Link href="/dashboard/alerts" />} variant="ghost" size="icon" aria-label="Notifications" className="-mr-2">
+          <Bell aria-hidden="true" />
+        </Button>
       </header>
 
       <MobileHamburgerMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} session={session} />

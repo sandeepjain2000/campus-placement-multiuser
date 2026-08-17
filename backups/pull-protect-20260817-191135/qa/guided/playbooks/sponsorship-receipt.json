@@ -1,0 +1,62 @@
+{
+  "id": "sponsorship-receipt",
+  "title": "Sponsorship donation receipt",
+  "oneLiner": "Voice-guided tour for use case: Sponsorship donation receipt",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Sponsorships module for donation tracking.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Sponsorships",
+      "observe": "Record donation and send receipt to sponsor email.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/sponsorships"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Send donation receipt — manual",
+      "observe": "sponsorship_donation_receipt context in email logs.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin opens Email logs",
+      "observe": "Search sponsor email or sponsorship context.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Navigate to Email delivery logs",
+      "observe": "Receipt row with recipient_login_email audit trail.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    }
+  ]
+}

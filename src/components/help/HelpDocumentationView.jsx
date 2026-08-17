@@ -22,6 +22,9 @@ import {
 } from 'lucide-react';
 import { HELP_SECTIONS } from '@/content/helpDocumentation';
 import HelpDiagram from '@/components/help/HelpDiagram';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 
 function DocScreenshot({ src, alt, caption }) {
   return (
@@ -158,30 +161,20 @@ export default function HelpDocumentationView({
               }}
             >
               {backHref ? (
-                <Link
-                  href={backHref}
-                  className="btn btn-secondary btn-sm"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    background: 'rgba(255,255,255,0.12)',
-                    borderColor: 'rgba(255,255,255,0.25)',
-                    color: 'white',
-                  }}
+                <Button
+                  render={<Link href={backHref} />}
+                  variant="outline"
+                  size="sm"
+                  className="border-white/25 bg-white/10 text-white hover:bg-white/20 hover:text-white"
                 >
-                  <ArrowLeft size={14} aria-hidden />
+                  <ArrowLeft data-icon="inline-start" aria-hidden />
                   {backLabel}
-                </Link>
+                </Button>
               ) : null}
               {showSignInLink ? (
-                <Link
-                  href="/login"
-                  className="btn btn-primary btn-sm"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-                >
+                <Button render={<Link href="/login" />} size="sm">
                   Sign in
-                </Link>
+                </Button>
               ) : null}
             </div>
           )}
@@ -245,91 +238,43 @@ export default function HelpDocumentationView({
             </span>
           </div>
 
-          <div
-            style={{
-              position: 'relative',
-              maxWidth: '600px',
-              margin: '0 auto',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-              borderRadius: '999px',
-              background: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '0.5rem 1rem',
-            }}
-          >
-            <Search size={24} style={{ color: 'var(--primary-600)', marginLeft: '0.5rem' }} aria-hidden />
-            <input
+          <InputGroup className="mx-auto max-w-[600px] bg-background shadow-lg">
+            <InputGroupAddon>
+              <Search aria-hidden />
+            </InputGroupAddon>
+            <InputGroupInput
               type="search"
               placeholder="Search all topics, articles, and guides..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               aria-label="Search documentation"
-              style={{
-                width: '100%',
-                padding: '1rem',
-                border: 'none',
-                background: 'transparent',
-                fontSize: '1.1rem',
-                outline: 'none',
-                color: 'var(--text-primary)',
-              }}
+              name="documentation-search"
+              autoComplete="off"
             />
-          </div>
+          </InputGroup>
         </div>
       </div>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
         <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <div
-            style={{
-              width: 'min(100%, 280px)',
-              flexShrink: 0,
-              position: 'sticky',
-              top: '2rem',
-              background: 'var(--bg-primary)',
-              border: '1px solid var(--border-default)',
-              borderRadius: 'var(--radius-xl)',
-              padding: '1.5rem 1rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
-            }}
-          >
-            <h3
-              style={{
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-tertiary)',
-                margin: '0 0 1rem 1rem',
-              }}
-            >
-              Table of contents
-            </h3>
+          <Card size="sm" className="sticky top-8 w-full shrink-0 md:w-[280px]">
+            <CardHeader>
+              <CardTitle>Table of Contents</CardTitle>
+              <CardDescription>Browse help by role or workflow.</CardDescription>
+            </CardHeader>
+            <CardContent>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               {SECTIONS.map((section) => {
                 const isActive = activeSection === section.id && !searchQuery;
                 return (
                   <li key={section.id}>
-                    <button
+                    <Button
                       type="button"
+                      variant={isActive ? 'secondary' : 'ghost'}
+                      className="h-auto w-full justify-between whitespace-normal px-3 py-2 text-left"
                       onClick={() => {
                         setActiveSection(section.id);
                         setSearchQuery('');
-                      }}
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '0.75rem 1rem',
-                        borderRadius: 'var(--radius-lg)',
-                        border: 'none',
-                        background: isActive ? 'var(--primary-50)' : 'transparent',
-                        color: isActive ? 'var(--primary-700)' : 'var(--text-secondary)',
-                        fontWeight: isActive ? 600 : 500,
-                        cursor: 'pointer',
-                        textAlign: 'left',
                       }}
                     >
                       <span style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -337,30 +282,25 @@ export default function HelpDocumentationView({
                         {section.title}
                       </span>
                       {isActive ? <ChevronRight size={16} /> : null}
-                    </button>
+                    </Button>
                   </li>
                 );
               })}
             </ul>
-          </div>
+            </CardContent>
+          </Card>
 
           <div style={{ flex: 1, minWidth: 'min(100%, 320px)', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {filteredSections.length === 0 ? (
-              <div
-                style={{
-                  textAlign: 'center',
-                  padding: '5rem 2rem',
-                  background: 'var(--bg-primary)',
-                  borderRadius: 'var(--radius-xl)',
-                  border: '1px dashed var(--border-default)',
-                }}
-              >
-                <Search size={48} style={{ margin: '0 auto 1rem', opacity: 0.5, color: 'var(--text-tertiary)' }} />
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: '0 0 0.5rem' }}>No results found</h3>
-                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+              <Card className="border-dashed text-center">
+                <CardHeader className="items-center py-12">
+                  <Search className="text-muted-foreground" aria-hidden />
+                  <CardTitle>No Results Found</CardTitle>
+                  <CardDescription>
                   We couldn&apos;t find any documentation matching &quot;<strong>{searchQuery}</strong>&quot;.
-                </p>
-              </div>
+                  </CardDescription>
+                </CardHeader>
+              </Card>
             ) : (
               filteredSections.map((section) => {
                 if (!searchQuery && section.id !== activeSection) return null;
@@ -392,30 +332,28 @@ export default function HelpDocumentationView({
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                       {section.items.map((item) => (
-                        <article
+                        <Card
                           key={item.id}
                           id={item.id}
-                          className="card"
-                          style={{
-                            padding: '2rem',
-                            transition: 'background 0.15s ease-out',
-                          }}
+                          className="scroll-mt-6"
                         >
-                          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 1rem' }}>
-                            {item.title}
-                          </h3>
-                          {item.diagramId ? <HelpDiagram diagramId={item.diagramId} /> : null}
-                          <div style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-                            {item.content.split('\n').map((line, i) => renderContentLine(line, i))}
-                          </div>
-                          {item.screenshot ? (
-                            <DocScreenshot
-                              src={item.screenshot.src}
-                              alt={item.screenshot.alt}
-                              caption={item.screenshot.caption}
-                            />
-                          ) : null}
-                        </article>
+                          <CardHeader>
+                            <CardTitle>{item.title}</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            {item.diagramId ? <HelpDiagram diagramId={item.diagramId} /> : null}
+                            <div className="text-muted-foreground text-base leading-7">
+                              {item.content.split('\n').map((line, i) => renderContentLine(line, i))}
+                            </div>
+                            {item.screenshot ? (
+                              <DocScreenshot
+                                src={item.screenshot.src}
+                                alt={item.screenshot.alt}
+                                caption={item.screenshot.caption}
+                              />
+                            ) : null}
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
                   </div>

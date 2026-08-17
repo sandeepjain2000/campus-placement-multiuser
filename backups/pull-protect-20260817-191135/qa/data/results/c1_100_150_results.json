@@ -1,0 +1,252 @@
+[
+  {
+    "id": "C1-BLOCK-101",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/employers"
+  },
+  {
+    "id": "C1-BLOCK-102",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/employers/requests"
+  },
+  {
+    "id": "C1-BLOCK-103",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/enrollment-key\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-104",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/events"
+  },
+  {
+    "id": "C1-BLOCK-105",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/guest-engagements\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-106",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/hiring-assessment\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-107",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/infrastructure\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-108",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/internship-results\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-109",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/internships"
+  },
+  {
+    "id": "C1-BLOCK-110",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/interviews\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-111",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/offers\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-112",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/offers-upload"
+  },
+  {
+    "id": "C1-BLOCK-113",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/overview"
+  },
+  {
+    "id": "C1-BLOCK-114",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/reports\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-115",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/rules\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-116",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/settings\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-117",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/college/sponsorships"
+  },
+  {
+    "id": "C1-BLOCK-118",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/students\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-119",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/student/applications"
+  },
+  {
+    "id": "C1-BLOCK-120",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/calendar\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-121",
+    "status": "Failed",
+    "notes": "User was able to access restricted route /dashboard/student/clarifications"
+  },
+  {
+    "id": "C1-BLOCK-122",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/discussions\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-123",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/documents\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-124",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/drives\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-125",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/internships\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-126",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/interviews\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-127",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/offers\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-128",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/overview\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-129",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/profile\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-BLOCK-130",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/student/projects\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-131",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/alerts\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-132",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/applications\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-133",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/audit-reports\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-134",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/calendar\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-135",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/clarifications\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-136",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/discussions\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-137",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/drives\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-138",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/employers\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-139",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/employers/requests\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-140",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/enrollment-key\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-141",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/events\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-142",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/guest-engagements\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-143",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/hiring-assessment\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-144",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/infrastructure\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-145",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/internship-results\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-146",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/internships\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-147",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/interviews\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-148",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/offers\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-149",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/offers-upload\", waiting until \"networkidle\"\u001b[22m\n"
+  },
+  {
+    "id": "C1-VISIT-150",
+    "status": "Failed",
+    "notes": "page.goto: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard/college/overview\", waiting until \"networkidle\"\u001b[22m\n"
+  }
+]

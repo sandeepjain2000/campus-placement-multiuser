@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EI-15
+# Stage: step-16
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Search applicants by guided internship marker. Filters to Arjun Verma (or the student who applied) for the GT- internship opening.

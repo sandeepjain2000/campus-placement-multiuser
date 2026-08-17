@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CLOSURE
+# Stage: step-44
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as student — verify Selected status. My Applications → Drives shows Selected for GT-2026-06-210819 drive.

@@ -1,0 +1,2097 @@
+{
+  "version": 1,
+  "source": "Focus Areas.xlsx",
+  "defaultBaseUrl": "http://127.0.0.1:3000",
+  "accounts": {
+    "student": "arjun.verma@iitm.edu",
+    "employer": "hr@techcorp.com",
+    "college_admin": "admin@iitm.edu",
+    "super_admin": "admin@placementhub.com"
+  },
+  "modules": [
+    {
+      "id": "internships",
+      "title": "4.3 Internships — use cases by role (with CSV)",
+      "assumptions": "college and employer exist with approved partnership. Flow: publish → apply → select. CSV paths are listed per role.",
+      "groups": [
+        {
+          "role": "employer",
+          "roleKey": "employer",
+          "idPrefix": "EI",
+          "cases": [
+            {
+              "id": "EI-01",
+              "oneLiner": "View all internship postings for the company (draft, published, closed)",
+              "instruction": "View all internship postings for the company (draft, published, closed)",
+              "observe": "Validate as described for EI-01. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-02",
+              "oneLiner": "Open the create-internship form and enter title, duration, stipend range, vacancies, min CGPA, skills/keywords, and notes",
+              "instruction": "Open the create-internship form and enter title, duration, stipend range, vacancies, min CGPA, skills/keywords, and notes",
+              "observe": "Validate as described for EI-02. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-03",
+              "oneLiner": "Publish a new internship to one or more approved partner campuses",
+              "instruction": "Publish a new internship to one or more approved partner campuses",
+              "observe": "Validate as described for EI-03. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-04",
+              "oneLiner": "Attempt to publish without selecting any campus and confirm validation blocks save",
+              "instruction": "Attempt to publish without selecting any campus and confirm validation blocks save",
+              "observe": "Validate as described for EI-04. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-05",
+              "oneLiner": "Attempt to publish when no campus partnership is approved",
+              "instruction": "Attempt to publish when no campus partnership is approved",
+              "observe": "Validate as described for EI-05. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-06",
+              "oneLiner": "Save a draft internship without publishing (students must not see it)",
+              "instruction": "Save a draft internship without publishing (students must not see it)",
+              "observe": "Validate as described for EI-06. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-07",
+              "oneLiner": "Sync campus visibility on an existing internship (add or remove colleges)",
+              "instruction": "Sync campus visibility on an existing internship (add or remove colleges)",
+              "observe": "Validate as described for EI-07. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-08",
+              "oneLiner": "Confirm published internship shows correct metadata on the employer list",
+              "instruction": "Confirm published internship shows correct metadata on the employer list",
+              "observe": "Validate as described for EI-08. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-09",
+              "oneLiner": "Open Applications → Internships tab and see program applicants only",
+              "instruction": "Open Applications → Internships tab and see program applicants only",
+              "observe": "Validate as described for EI-09. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "EI-10",
+              "oneLiner": "Filter internship applicants by status",
+              "instruction": "Filter internship applicants by status",
+              "observe": "Validate as described for EI-10. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-11",
+              "oneLiner": "Search internship applicants by name, system ID, roll, email, college, branch, or opening",
+              "instruction": "Search internship applicants by name, system ID, roll, email, college, branch, or opening",
+              "observe": "Validate as described for EI-11. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-12",
+              "oneLiner": "Sort internship applicants by date, CGPA, or name",
+              "instruction": "Sort internship applicants by date, CGPA, or name",
+              "observe": "Validate as described for EI-12. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-13",
+              "oneLiner": "Open full student profile from an internship application",
+              "instruction": "Open full student profile from an internship application",
+              "observe": "Validate as described for EI-13. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-14",
+              "oneLiner": "Open student CV when resume exists; confirm no CV action when missing",
+              "instruction": "Open student CV when resume exists; confirm no CV action when missing",
+              "observe": "Validate as described for EI-14. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-15",
+              "oneLiner": "Shortlist an applicant in Applied or On hold status",
+              "instruction": "Shortlist an applicant in Applied or On hold status",
+              "observe": "Validate as described for EI-15. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-16",
+              "oneLiner": "Mark applicant In progress, Selected, Rejected, or On hold",
+              "instruction": "Mark applicant In progress, Selected, Rejected, or On hold",
+              "observe": "Validate as described for EI-16. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-17",
+              "oneLiner": "Confirm status updates appear in the list and in exported data",
+              "instruction": "Confirm status updates appear in the list and in exported data",
+              "observe": "Validate as described for EI-17. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-18",
+              "oneLiner": "Export filtered internship applicants to CSV (Applications → Internships → Export → current list)",
+              "instruction": "Export filtered internship applicants to CSV (Applications → Internships → Export → current list)",
+              "observe": "Validate as described for EI-18. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "EI-19",
+              "oneLiner": "Export all internship applicants to CSV (Export → full list)",
+              "instruction": "Export all internship applicants to CSV (Export → full list)",
+              "observe": "Validate as described for EI-19. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-20",
+              "oneLiner": "Verify applicant export CSV columns (student, system ID, roll, email, college, branch, CGPA, opening, type, status, applied date, source = Program)",
+              "instruction": "Verify applicant export CSV columns (student, system ID, roll, email, college, branch, CGPA, opening, type, status, applied date, source = Program)",
+              "observe": "Validate as described for EI-20. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/internships"
+                }
+              ]
+            },
+            {
+              "id": "EI-21",
+              "oneLiner": "Export CSV on Assessment uploads (CSV) — Internship tab (all applications; same format for re-upload)",
+              "instruction": "Export CSV on Assessment uploads (CSV) — Internship tab (all applications; same format for re-upload)",
+              "observe": "Validate as described for EI-21. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/assessment-uploads"
+                }
+              ]
+            },
+            {
+              "id": "EI-22",
+              "oneLiner": "CSV upload or Assessment Update Online — Internship tab (round labels from Assessment map)",
+              "instruction": "CSV upload or Assessment Update Online — Internship tab (round labels from Assessment map)",
+              "observe": "Validate as described for EI-22. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/assessment-update-online"
+                }
+              ]
+            },
+            {
+              "id": "EI-23",
+              "oneLiner": "Offers bulk CSV via Offers page (route /offers-upload — no sidebar menu link)",
+              "instruction": "Offers bulk CSV via Offers page (route /offers-upload — no sidebar menu link)",
+              "observe": "Validate as described for EI-23. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/offers-upload"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "student",
+          "roleKey": "student",
+          "idPrefix": "SI",
+          "cases": [
+            {
+              "id": "SI-01",
+              "oneLiner": "View published internships visible to the student’s college",
+              "instruction": "View published internships visible to the student’s college",
+              "observe": "Validate as described for SI-01. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-02",
+              "oneLiner": "Search and filter the internship list",
+              "instruction": "Search and filter the internship list",
+              "observe": "Validate as described for SI-02. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-03",
+              "oneLiner": "Open internship detail (description, stipend, CGPA, vacancies, company)",
+              "instruction": "Open internship detail (description, stipend, CGPA, vacancies, company)",
+              "observe": "Validate as described for SI-03. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-04",
+              "oneLiner": "Apply to a published internship when a valid primary resume/CV exists",
+              "instruction": "Apply to a published internship when a valid primary resume/CV exists",
+              "observe": "Validate as described for SI-04. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-05",
+              "oneLiner": "Confirm apply blocked without resume, when placement-locked, archived, or below min CGPA",
+              "instruction": "Confirm apply blocked without resume, when placement-locked, archived, or below min CGPA",
+              "observe": "Validate as described for SI-05. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-06",
+              "oneLiner": "Confirm apply blocked when posting is unpublished or not visible to the campus",
+              "instruction": "Confirm apply blocked when posting is unpublished or not visible to the campus",
+              "observe": "Validate as described for SI-06. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-07",
+              "oneLiner": "Confirm re-apply on same internship updates existing row (no duplicate applications)",
+              "instruction": "Confirm re-apply on same internship updates existing row (no duplicate applications)",
+              "observe": "Validate as described for SI-07. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-08",
+              "oneLiner": "View internship applications under My Applications → Internships",
+              "instruction": "View internship applications under My Applications → Internships",
+              "observe": "Validate as described for SI-08. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-09",
+              "oneLiner": "See status updates when employer shortlists, selects, or rejects",
+              "instruction": "See status updates when employer shortlists, selects, or rejects",
+              "observe": "Validate as described for SI-09. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-10",
+              "oneLiner": "Withdraw an internship application and re-apply while posting remains published",
+              "instruction": "Withdraw an internship application and re-apply while posting remains published",
+              "observe": "Validate as described for SI-10. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-11",
+              "oneLiner": "Export filtered internship applications to CSV (My Applications → Internships → Export → current tab/filter)",
+              "instruction": "Export filtered internship applications to CSV (My Applications → Internships → Export → current tab/filter)",
+              "observe": "Validate as described for SI-11. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-12",
+              "oneLiner": "Export all internship applications to CSV (Export → full list for that type)",
+              "instruction": "Export all internship applications to CSV (Export → full list for that type)",
+              "observe": "Validate as described for SI-12. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-13",
+              "oneLiner": "Verify student application export CSV includes company, role/title, status, applied date, and related fields",
+              "instruction": "Verify student application export CSV includes company, role/title, status, applied date, and related fields",
+              "observe": "Validate as described for SI-13. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/applications"
+                }
+              ]
+            },
+            {
+              "id": "SI-14",
+              "oneLiner": "Confirm student cannot upload a CSV to apply to internships (apply is UI-only per posting)",
+              "instruction": "Confirm student cannot upload a CSV to apply to internships (apply is UI-only per posting)",
+              "observe": "Validate as described for SI-14. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            },
+            {
+              "id": "SI-15",
+              "oneLiner": "New student (including college CSV import) completes profile + resume, then applies successfully",
+              "instruction": "New student (including college CSV import) completes profile + resume, then applies successfully",
+              "observe": "Validate as described for SI-15. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/internships"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "college",
+          "roleKey": "college_admin",
+          "idPrefix": "CI",
+          "cases": [
+            {
+              "id": "CI-01",
+              "oneLiner": "Review and approve employer internship listings for campus (Pending review → Approved)",
+              "instruction": "Open college Internships, find a pending listing, approve it for campus",
+              "observe": "Listing shows Pending review; after Approve, Campus badge is Approved and students can browse it.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internships"
+                },
+                {
+                  "type": "select",
+                  "id": "college-listing-approval-filter",
+                  "value": "pending"
+                }
+              ]
+            },
+            {
+              "id": "CI-02",
+              "oneLiner": "Confirm non-approved employers’ internships do not appear",
+              "instruction": "Confirm non-approved employers’ internships do not appear",
+              "observe": "Validate as described for CI-02. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internships"
+                }
+              ]
+            },
+            {
+              "id": "CI-03",
+              "oneLiner": "Add a single student manually (roll, email) as alternative to CSV",
+              "instruction": "Add a single student manually (roll, email) as alternative to CSV",
+              "observe": "Validate as described for CI-03. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internships"
+                }
+              ]
+            },
+            {
+              "id": "CI-04",
+              "oneLiner": "Download student bulk-import CSV template (Students → Template)",
+              "instruction": "Download student bulk-import CSV template (Students → Template)",
+              "observe": "Validate as described for CI-04. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "CI-05",
+              "oneLiner": "Bulk-import students via CSV and confirm accounts created with welcome credentials",
+              "instruction": "Bulk-import students via CSV and confirm accounts created with welcome credentials",
+              "observe": "Validate as described for CI-05. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "CI-06",
+              "oneLiner": "Review bulk-import result — success count and per-row error report for invalid CSV rows",
+              "instruction": "Review bulk-import result — success count and per-row error report for invalid CSV rows",
+              "observe": "Validate as described for CI-06. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "CI-07",
+              "oneLiner": "Export master student list to CSV (filtered or full, from Students screen)",
+              "instruction": "Export master student list to CSV (filtered or full, from Students screen)",
+              "observe": "Validate as described for CI-07. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "CI-08",
+              "oneLiner": "Confirm CSV-imported student can sign in, add resume, and apply to a visible internship",
+              "instruction": "Confirm CSV-imported student can sign in, add resume, and apply to a visible internship",
+              "observe": "Validate as described for CI-08. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internships"
+                }
+              ]
+            },
+            {
+              "id": "CI-09",
+              "oneLiner": "View internship program applications on college Applications (read-only)",
+              "instruction": "View internship program applications on college Applications (read-only)",
+              "observe": "Validate as described for CI-09. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/applications"
+                }
+              ]
+            },
+            {
+              "id": "CI-10",
+              "oneLiner": "Export published internship catalog to CSV (Internship results → export)",
+              "instruction": "Export published internship catalog to CSV (Internship results → export)",
+              "observe": "Validate as described for CI-10. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internship-results"
+                }
+              ]
+            },
+            {
+              "id": "CI-11",
+              "oneLiner": "View employer assessment upload rows for campus (Hiring assessment — read-only mirror of employer CSV uploads)",
+              "instruction": "View employer assessment upload rows for campus (Hiring assessment — read-only mirror of employer CSV uploads)",
+              "observe": "Validate as described for CI-11. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/hiring-assessment"
+                }
+              ]
+            },
+            {
+              "id": "CI-12",
+              "oneLiner": "Export hiring-assessment view to CSV for campus reporting",
+              "instruction": "Export hiring-assessment view to CSV for campus reporting",
+              "observe": "Validate as described for CI-12. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internships"
+                }
+              ]
+            },
+            {
+              "id": "CI-13",
+              "oneLiner": "After employer uploads internship assessments (CSV or Online), rows appear on college Hiring Assessment",
+              "instruction": "After employer uploads internship assessments (CSV or Online), rows appear on college Hiring Assessment",
+              "observe": "Validate as described for CI-13. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/internships"
+                }
+              ]
+            },
+            {
+              "id": "CI-14",
+              "oneLiner": "Download offers/assessment-starter CSV listing campus students (College Offers or Hiring assessment — prep sheet, not internship apply)",
+              "instruction": "Download offers/assessment-starter CSV listing campus students (College Offers or Hiring assessment — prep sheet, not internship apply)",
+              "observe": "Validate as described for CI-14. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/hiring-assessment"
+                }
+              ]
+            },
+            {
+              "id": "CI-15",
+              "oneLiner": "Import offers via CSV on college Offers (separate from internship selection; optional regression only)",
+              "instruction": "Import offers via CSV on college Offers (separate from internship selection; optional regression only)",
+              "observe": "Validate as described for CI-15. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/offers"
+                }
+              ]
+            },
+            {
+              "id": "CI-16",
+              "oneLiner": "Revoke employer partnership and confirm that employer’s internships disappear for students",
+              "instruction": "Revoke employer partnership and confirm that employer’s internships disappear for students",
+              "observe": "Validate as described for CI-16. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "placement-drives",
+      "title": "Placement drives — use cases by role (with CSV)",
+      "assumptions": "College and employer already exist with an approved partnership. Students may be seeded or newly added. Flow: employer requests drive → college approves → students apply → employer shortlists / selects → optional assessment and offers CSV. Status pipeline (drive): requested → college approve (approved) or reject (cancelled) → students see approved / scheduled → application statuses: applied → shortlisted → in_progress → selected (or rejected / on_hold).",
+      "groups": [
+        {
+          "role": "employer",
+          "roleKey": "employer",
+          "idPrefix": "DRV-E",
+          "cases": [
+            {
+              "id": "DRV-E01",
+              "oneLiner": "View all placement drives across partner campuses (requested, approved, scheduled, in progress, completed, cancelled)",
+              "instruction": "View all placement drives across partner campuses (requested, approved, scheduled, in progress, completed, cancelled)",
+              "observe": "Validate as described for DRV-E01. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E02",
+              "oneLiner": "Filter drives list by one or more approved campuses",
+              "instruction": "Filter drives list by one or more approved campuses",
+              "observe": "Validate as described for DRV-E02. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E03",
+              "oneLiner": "Export placement drives list to CSV (id, college, title, date, drive type, status, venue, registered count, CTC breakup)",
+              "instruction": "Export placement drives list to CSV (id, college, title, date, drive type, status, venue, registered count, CTC breakup)",
+              "observe": "Validate as described for DRV-E03. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E04",
+              "oneLiner": "Open Request placement drive and enter title, description, drive type, date, venue, optional linked job, and CTC breakup",
+              "instruction": "Open Request placement drive and enter title, description, drive type, date, venue, optional linked job, and CTC breakup",
+              "observe": "Validate as described for DRV-E04. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives/request"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E05",
+              "oneLiner": "Submit drive request to an approved campus and confirm status is Requested",
+              "instruction": "Submit drive request to an approved campus and confirm status is Requested",
+              "observe": "Validate as described for DRV-E05. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E06",
+              "oneLiner": "Attempt drive request on a campus without approved partnership and confirm rejection",
+              "instruction": "Attempt drive request on a campus without approved partnership and confirm rejection",
+              "observe": "Validate as described for DRV-E06. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E07",
+              "oneLiner": "Link an optional company job posting to the drive and confirm job belongs to the employer",
+              "instruction": "Link an optional company job posting to the drive and confirm job belongs to the employer",
+              "observe": "Validate as described for DRV-E07. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E08",
+              "oneLiner": "Open Applications → Jobs tab for all placement-drive applicants (applications table, not internships)",
+              "instruction": "Open Applications → Jobs tab for all placement-drive applicants (applications table, not internships)",
+              "observe": "Validate as described for DRV-E08. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E09",
+              "oneLiner": "Open applicants filtered to one drive via link from the drives list (?tab=jobs&driveId=…)",
+              "instruction": "Open applicants filtered to one drive via link from the drives list (?tab=jobs&driveId=…)",
+              "observe": "Validate as described for DRV-E09. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E10",
+              "oneLiner": "Filter drive applicants by status, search, and sort (date, CGPA, name)",
+              "instruction": "Filter drive applicants by status, search, and sort (date, CGPA, name)",
+              "observe": "Validate as described for DRV-E10. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E11",
+              "oneLiner": "Open full student profile and CV from a drive application",
+              "instruction": "Open full student profile and CV from a drive application",
+              "observe": "Validate as described for DRV-E11. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E12",
+              "oneLiner": "Shortlist a drive applicant in Applied or On hold status",
+              "instruction": "Shortlist a drive applicant in Applied or On hold status",
+              "observe": "Validate as described for DRV-E12. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E13",
+              "oneLiner": "Mark drive applicant In progress, Selected, Rejected, or On hold",
+              "instruction": "Mark drive applicant In progress, Selected, Rejected, or On hold",
+              "observe": "Validate as described for DRV-E13. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E14",
+              "oneLiner": "Export filtered drive applicants to CSV (Applications → Jobs → Export → current list)",
+              "instruction": "Export filtered drive applicants to CSV (Applications → Jobs → Export → current list)",
+              "observe": "Validate as described for DRV-E14. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E15",
+              "oneLiner": "Export all drive applicants to CSV (Export → full list)",
+              "instruction": "Export all drive applicants to CSV (Export → full list)",
+              "observe": "Validate as described for DRV-E15. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E16",
+              "oneLiner": "Verify drive applicant export CSV (system ID, roll, college, opening/drive, status, applied date, source = Placement drive)",
+              "instruction": "Verify drive applicant export CSV (system ID, roll, college, opening/drive, status, applied date, source = Placement drive)",
+              "observe": "Validate as described for DRV-E16. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E17",
+              "oneLiner": "Export CSV — Drive tab on Assessment uploads (CSV) (all drive applications)",
+              "instruction": "Export CSV — Drive tab on Assessment uploads (CSV) (all drive applications)",
+              "observe": "Validate as described for DRV-E17. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/assessment-uploads"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E18",
+              "oneLiner": "CSV upload on Drive tab (placement_drive_id per row; round_1…round_5; labels from Assessment map)",
+              "instruction": "CSV upload on Drive tab (placement_drive_id per row; round_1…round_5; labels from Assessment map)",
+              "observe": "Validate as described for DRV-E18. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/assessment-uploads"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E19",
+              "oneLiner": "Review assessment upload summary (accepted vs rejected rows) and edit individual rows after upload",
+              "instruction": "Review assessment upload summary (accepted vs rejected rows) and edit individual rows after upload",
+              "observe": "Validate as described for DRV-E19. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/assessment-uploads"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E20",
+              "oneLiner": "Re-upload assessment CSV after fixing rejected rows and confirm outcomes update",
+              "instruction": "Re-upload assessment CSV after fixing rejected rows and confirm outcomes update",
+              "observe": "Validate as described for DRV-E20. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/assessment-uploads"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E21",
+              "oneLiner": "Offers starter CSV from Offers page (prefilled students; route /offers-upload)",
+              "instruction": "Offers starter CSV from Offers page (prefilled students; route /offers-upload)",
+              "observe": "Validate as described for DRV-E21. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/offers-upload"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E22",
+              "oneLiner": "Bulk-import offers via CSV for students on campus master list (system_id or roll + job_title, optional drive_id, status)",
+              "instruction": "Bulk-import offers via CSV for students on campus master list (system_id or roll + job_title, optional drive_id, status)",
+              "observe": "Validate as described for DRV-E22. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E23",
+              "oneLiner": "Confirm offers CSV row fails when student has not applied to the referenced drive (if product enforces apply-before-offer for that path)",
+              "instruction": "Confirm offers CSV row fails when student has not applied to the referenced drive (if product enforces apply-before-offer for that path)",
+              "observe": "Validate as described for DRV-E23. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-E24",
+              "oneLiner": "Create or edit a single offer linked to a placement drive from the Offers screen (non-CSV path)",
+              "instruction": "Create or edit a single offer linked to a placement drive from the Offers screen (non-CSV path)",
+              "observe": "Validate as described for DRV-E24. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "employer"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/employer/drives"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "student",
+          "roleKey": "student",
+          "idPrefix": "DRV-S",
+          "cases": [
+            {
+              "id": "DRV-S01",
+              "oneLiner": "Browse placement drives visible for the student’s college (approved / scheduled only)",
+              "instruction": "Browse placement drives visible for the student’s college (approved / scheduled only)",
+              "observe": "Validate as described for DRV-S01. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S02",
+              "oneLiner": "Filter drives by mode (on-campus, off-campus, virtual, hybrid), status, and month/year",
+              "instruction": "Filter drives by mode (on-campus, off-campus, virtual, hybrid), status, and month/year",
+              "observe": "Validate as described for DRV-S02. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S03",
+              "oneLiner": "View drive details (company, role, date, venue, salary/CGPA eligibility, vacancies, registered count)",
+              "instruction": "View drive details (company, role, date, venue, salary/CGPA eligibility, vacancies, registered count)",
+              "observe": "Validate as described for DRV-S03. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S04",
+              "oneLiner": "Apply to an open placement drive when a valid primary resume/CV exists",
+              "instruction": "Apply to an open placement drive when a valid primary resume/CV exists",
+              "observe": "Validate as described for DRV-S04. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S05",
+              "oneLiner": "Confirm apply blocked without resume, when placement-locked, archived, or below drive/job min CGPA",
+              "instruction": "Confirm apply blocked without resume, when placement-locked, archived, or below drive/job min CGPA",
+              "observe": "Validate as described for DRV-S05. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S06",
+              "oneLiner": "Confirm apply blocked when drive date is in the past",
+              "instruction": "Confirm apply blocked when drive date is in the past",
+              "observe": "Validate as described for DRV-S06. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S07",
+              "oneLiner": "Confirm apply blocked when drive is not approved/scheduled for the campus",
+              "instruction": "Confirm apply blocked when drive is not approved/scheduled for the campus",
+              "observe": "Validate as described for DRV-S07. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S08",
+              "oneLiner": "Confirm duplicate apply updates existing application (same student + drive)",
+              "instruction": "Confirm duplicate apply updates existing application (same student + drive)",
+              "observe": "Validate as described for DRV-S08. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S09",
+              "oneLiner": "Track drive applications under My Applications → Drives",
+              "instruction": "Track drive applications under My Applications → Drives",
+              "observe": "Validate as described for DRV-S09. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S10",
+              "oneLiner": "See status updates when employer shortlists, selects, or rejects",
+              "instruction": "See status updates when employer shortlists, selects, or rejects",
+              "observe": "Validate as described for DRV-S10. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S11",
+              "oneLiner": "Withdraw a drive application and re-apply while the drive remains open",
+              "instruction": "Withdraw a drive application and re-apply while the drive remains open",
+              "observe": "Validate as described for DRV-S11. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S12",
+              "oneLiner": "Export filtered drive applications to CSV (My Applications → Drives → Export → current filter/tab)",
+              "instruction": "Export filtered drive applications to CSV (My Applications → Drives → Export → current filter/tab)",
+              "observe": "Validate as described for DRV-S12. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S13",
+              "oneLiner": "Export all drive applications to CSV (Export → full list)",
+              "instruction": "Export all drive applications to CSV (Export → full list)",
+              "observe": "Validate as described for DRV-S13. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S14",
+              "oneLiner": "Verify student drive-application export CSV (company, role, status, applied date, drive date)",
+              "instruction": "Verify student drive-application export CSV (company, role, status, applied date, drive date)",
+              "observe": "Validate as described for DRV-S14. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S15",
+              "oneLiner": "Confirm student cannot upload a CSV to apply to a drive (apply is UI-only)",
+              "instruction": "Confirm student cannot upload a CSV to apply to a drive (apply is UI-only)",
+              "observe": "Validate as described for DRV-S15. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S16",
+              "oneLiner": "View drive-related dates on the Placement calendar",
+              "instruction": "View drive-related dates on the Placement calendar",
+              "observe": "Validate as described for DRV-S16. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/calendar"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S17",
+              "oneLiner": "View interview slots tied to drive applications under My Interviews (when scheduled)",
+              "instruction": "View interview slots tied to drive applications under My Interviews (when scheduled)",
+              "observe": "Validate as described for DRV-S17. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/interviews"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S18",
+              "oneLiner": "View and respond to offers linked to a drive under My Offers (when employer/college records an offer)",
+              "instruction": "View and respond to offers linked to a drive under My Offers (when employer/college records an offer)",
+              "observe": "Validate as described for DRV-S18. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/offers"
+                }
+              ]
+            },
+            {
+              "id": "DRV-S19",
+              "oneLiner": "New or CSV-imported student completes profile + resume, then applies to an approved drive",
+              "instruction": "New or CSV-imported student completes profile + resume, then applies to an approved drive",
+              "observe": "Validate as described for DRV-S19. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "student"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/student/drives"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "college",
+          "roleKey": "college_admin",
+          "idPrefix": "DRV-C",
+          "cases": [
+            {
+              "id": "DRV-C01",
+              "oneLiner": "View all placement drives for the campus (including Awaiting approval)",
+              "instruction": "View all placement drives for the campus (including Awaiting approval)",
+              "observe": "Validate as described for DRV-C01. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C02",
+              "oneLiner": "Filter drives by academic year when academic-year context is set",
+              "instruction": "Filter drives by academic year when academic-year context is set",
+              "observe": "Validate as described for DRV-C02. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C03",
+              "oneLiner": "Approve a drive in Requested status and confirm it becomes Approved",
+              "instruction": "Approve a drive in Requested status and confirm it becomes Approved",
+              "observe": "Validate as described for DRV-C03. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C04",
+              "oneLiner": "Reject a requested drive and confirm status becomes Cancelled",
+              "instruction": "Reject a requested drive and confirm status becomes Cancelled",
+              "observe": "Validate as described for DRV-C04. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C05",
+              "oneLiner": "Attempt approve/reject on a drive not in Requested status and confirm 409 / error",
+              "instruction": "Attempt approve/reject on a drive not in Requested status and confirm 409 / error",
+              "observe": "Validate as described for DRV-C05. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C06",
+              "oneLiner": "Confirm employer receives notification/email after drive approval",
+              "instruction": "Confirm employer receives notification/email after drive approval",
+              "observe": "Validate as described for DRV-C06. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/employers"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C07",
+              "oneLiner": "Export campus placement drives list to CSV (company, role, date, type, status, venue, registered, selected)",
+              "instruction": "Export campus placement drives list to CSV (company, role, date, type, status, venue, registered, selected)",
+              "observe": "Validate as described for DRV-C07. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C08",
+              "oneLiner": "Assign attached placement staff to a drive and save",
+              "instruction": "Assign attached placement staff to a drive and save",
+              "observe": "Validate as described for DRV-C08. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C09",
+              "oneLiner": "Mark social share channels planned for a drive (Twitter, Facebook, LinkedIn, etc.)",
+              "instruction": "Mark social share channels planned for a drive (Twitter, Facebook, LinkedIn, etc.)",
+              "observe": "Validate as described for DRV-C09. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C10",
+              "oneLiner": "Post drive to Facebook Page when integration is configured",
+              "instruction": "Post drive to Facebook Page when integration is configured",
+              "observe": "Validate as described for DRV-C10. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C11",
+              "oneLiner": "Download post-drive report as JSON (applicant stats by status — not CSV)",
+              "instruction": "Download post-drive report as JSON (applicant stats by status — not CSV)",
+              "observe": "Validate as described for DRV-C11. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C12",
+              "oneLiner": "Switch drives view between list and calendar",
+              "instruction": "Switch drives view between list and calendar",
+              "observe": "Validate as described for DRV-C12. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/drives"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C13",
+              "oneLiner": "Download student bulk-import CSV template (Students → Template)",
+              "instruction": "Download student bulk-import CSV template (Students → Template)",
+              "observe": "Validate as described for DRV-C13. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C14",
+              "oneLiner": "Bulk-import students via CSV before drive apply testing",
+              "instruction": "Bulk-import students via CSV before drive apply testing",
+              "observe": "Validate as described for DRV-C14. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C15",
+              "oneLiner": "Export master student list to CSV (filtered or full)",
+              "instruction": "Export master student list to CSV (filtered or full)",
+              "observe": "Validate as described for DRV-C15. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C16",
+              "oneLiner": "View drive-related applications on college Applications (read-only)",
+              "instruction": "View drive-related applications on college Applications (read-only)",
+              "observe": "Validate as described for DRV-C16. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/applications"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C17",
+              "oneLiner": "View employer assessment CSV upload rows for the campus (Hiring assessment — read-only)",
+              "instruction": "View employer assessment CSV upload rows for the campus (Hiring assessment — read-only)",
+              "observe": "Validate as described for DRV-C17. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/hiring-assessment"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C18",
+              "oneLiner": "Export hiring-assessment view to CSV after employer uploads drive assessment results",
+              "instruction": "Export hiring-assessment view to CSV after employer uploads drive assessment results",
+              "observe": "Validate as described for DRV-C18. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/employers"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C19",
+              "oneLiner": "Download offers/assessment-starter CSV for campus students (College Offers or Hiring assessment)",
+              "instruction": "Download offers/assessment-starter CSV for campus students (College Offers or Hiring assessment)",
+              "observe": "Validate as described for DRV-C19. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/hiring-assessment"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C20",
+              "oneLiner": "Import offers via CSV on college Offers (optional; separate from drive apply, for offer logging)",
+              "instruction": "Import offers via CSV on college Offers (optional; separate from drive apply, for offer logging)",
+              "observe": "Validate as described for DRV-C20. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/offers"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C21",
+              "oneLiner": "Confirm students on campus see the drive only after college approval (not while requested)",
+              "instruction": "Confirm students on campus see the drive only after college approval (not while requested)",
+              "observe": "Validate as described for DRV-C21. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/students"
+                }
+              ]
+            },
+            {
+              "id": "DRV-C22",
+              "oneLiner": "Revoke employer partnership and confirm that employer’s drives and applications path are blocked for new activity",
+              "instruction": "Revoke employer partnership and confirm that employer’s drives and applications path are blocked for new activity",
+              "observe": "Validate as described for DRV-C22. Log pass/fail in manual_session_log.csv.",
+              "manual": true,
+              "auto": [
+                {
+                  "type": "login",
+                  "account": "college_admin"
+                },
+                {
+                  "type": "goto",
+                  "path": "/dashboard/college/applications"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

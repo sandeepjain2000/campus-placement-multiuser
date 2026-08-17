@@ -8,6 +8,20 @@ import {
   STUDENT_CV_LOAD_MESSAGES,
   fetchStudentCvListClassified,
 } from '@/lib/studentCvLoadClient';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 async function loadEligibleCvs() {
   const result = await fetchStudentCvListClassified();
@@ -160,110 +174,75 @@ export function StudentApplyWithCvModal({
     onError,
   ]);
 
-  if (!open) return null;
-
   const showCvPicker = !legacyMode && cvs.length > 0;
   const submitDisabled = Boolean(blockReason) || submitting || loading || Boolean(loadError);
 
   return (
-    <div
-      className="modal-overlay modal-overlay-solid"
-      role="presentation"
-      onClick={submitting ? undefined : onClose}
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next && !submitting) onClose();
+      }}
     >
-      <div
-        className="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="student-apply-cv-modal-title"
-        style={{ maxWidth: 440, width: '100%' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <h2 id="student-apply-cv-modal-title" className="modal-title">
-            {title}
-          </h2>
-        </div>
+      <DialogContent className="sm:max-w-md gap-4" showCloseButton={!submitting}>
+        <DialogHeader>
+          <DialogTitle id="student-apply-cv-modal-title">{title}</DialogTitle>
+          {description ? <DialogDescription>{description}</DialogDescription> : null}
+        </DialogHeader>
 
-        <div className="modal-body" style={{ display: 'grid', gap: '1rem' }}>
-          {description ? (
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
-              {description}
-            </p>
-          ) : null}
-
-          {loading ? (
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
-              Loading your CVs…
-            </p>
-          ) : null}
+        <div className="grid gap-4">
+          {loading ? <p className="text-muted-foreground m-0 text-sm">Loading your CVs…</p> : null}
 
           {loadError ? (
-            <div
-              className="text-sm"
-              style={{
-                margin: 0,
-                padding: '0.75rem',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--warning-50, #fffbeb)',
-                color: 'var(--warning-800, #92400e)',
-                border: '1px solid var(--warning-200, #fde68a)',
-              }}
-            >
-              {loadError}
-            </div>
+            <Alert className="border-amber-600/20 bg-amber-600/10 text-amber-800 dark:text-amber-400">
+              <AlertDescription className="text-amber-800 dark:text-amber-400">{loadError}</AlertDescription>
+            </Alert>
           ) : null}
 
           {showCvPicker ? (
-            <div>
-              <p className="form-label" style={{ marginBottom: '0.5rem' }}>
-                Choose CV
-              </p>
-              <div style={{ display: 'grid', gap: '0.5rem' }}>
-                {cvs.map((cv) => (
-                  <label
-                    key={cv.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.6rem 0.75rem',
-                      borderRadius: 8,
-                      border: `1px solid ${selectedCvId === cv.id ? 'var(--primary-400)' : 'var(--border)'}`,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="apply-cv-picker"
-                      checked={selectedCvId === cv.id}
-                      onChange={() => setSelectedCvId(cv.id)}
-                      disabled={submitting}
-                    />
-                    <span>
-                      {cv.label}
-                      {cv.isDefault ? (
-                        <span className="badge badge-green" style={{ marginLeft: 6 }}>
-                          Default
-                        </span>
-                      ) : null}
-                      {cv.isVerified ? (
-                        <span className="badge badge-green" style={{ marginLeft: 6 }}>
-                          Verified
-                        </span>
-                      ) : null}
-                    </span>
-                  </label>
-                ))}
-              </div>
-              <p className="text-xs text-secondary" style={{ margin: '0.5rem 0 0' }}>
+            <div className="grid gap-2">
+              <p className="text-foreground m-0 text-sm font-medium">Choose CV</p>
+              <RadioGroup
+                value={selectedCvId || ''}
+                onValueChange={setSelectedCvId}
+                disabled={submitting}
+                className="grid gap-2"
+              >
+                {cvs.map((cv) => {
+                  const selected = selectedCvId === cv.id;
+                  return (
+                    <label
+                      key={cv.id}
+                      className={`border-input bg-background flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 ${
+                        selected ? 'border-primary ring-primary/30 ring-2' : ''
+                      }`}
+                    >
+                      <RadioGroupItem value={cv.id} disabled={submitting} />
+                      <span className="text-sm">
+                        {cv.label}
+                        {cv.isDefault ? (
+                          <StatusBadge tone="green" className="ml-1.5">
+                            Default
+                          </StatusBadge>
+                        ) : null}
+                        {cv.isVerified ? (
+                          <StatusBadge tone="green" className="ml-1.5">
+                            Verified
+                          </StatusBadge>
+                        ) : null}
+                      </span>
+                    </label>
+                  );
+                })}
+              </RadioGroup>
+              <p className="text-muted-foreground m-0 text-xs">
                 Employers see your CV label only — not the original file name.
               </p>
             </div>
           ) : null}
 
           {!loading && legacyMode ? (
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
+            <p className="text-muted-foreground m-0 text-sm">
               Your profile résumé will be submitted with this application.
             </p>
           ) : null}
@@ -271,33 +250,36 @@ export function StudentApplyWithCvModal({
           {children}
         </div>
 
-        <div className="modal-footer" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
-          <Link href="/dashboard/student/my-cvs" className="btn btn-secondary btn-sm">
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-fit"
+            render={<Link href="/dashboard/student/my-cvs" />}
+            nativeButton={false}
+          >
             Manage CVs
-          </Link>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-outline" onClick={onClose} disabled={submitting}>
+          </Button>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-primary"
               onClick={() => void handleSubmit()}
               disabled={submitDisabled}
               aria-disabled={submitDisabled ? 'true' : undefined}
               title={blockReason || undefined}
             >
               {submitting ? 'Submitting…' : submitLabel}
-            </button>
+            </Button>
           </div>
           {blockReason ? (
-            <p className="text-sm" style={{ width: '100%', margin: '0.25rem 0 0', color: 'var(--warning-700, #b45309)' }}>
-              {blockReason}
-            </p>
+            <p className="text-amber-700 dark:text-amber-400 m-0 w-full text-sm sm:col-span-2">{blockReason}</p>
           ) : null}
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -446,21 +428,20 @@ export function useProgramApplicationWithCv({ addToast, mutate, fetchApply = fet
 
 export function CvLabelInput({ label, onChange, disabled }) {
   return (
-    <label style={{ display: 'block' }}>
-      <span className="form-label">
-        CV label <span style={{ color: 'var(--danger-600)' }}>*</span>
-      </span>
-      <input
-        className="form-input"
+    <Field data-disabled={disabled || undefined}>
+      <FieldLabel>
+        CV label <span className="text-destructive">*</span>
+      </FieldLabel>
+      <Input
         value={label}
         maxLength={CV_LABEL_MAX_LENGTH}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
         placeholder="e.g. Product resume"
       />
-      <span className="text-xs text-secondary">
+      <FieldDescription>
         {label.length}/{CV_LABEL_MAX_LENGTH} — shown to employers instead of the file name
-      </span>
-    </label>
+      </FieldDescription>
+    </Field>
   );
 }

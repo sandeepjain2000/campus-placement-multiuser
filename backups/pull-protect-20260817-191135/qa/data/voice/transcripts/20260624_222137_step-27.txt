@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-27
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Assign company supervisor — manual. Enter supervisor name, team or role, email, phone, and notes for the intern.

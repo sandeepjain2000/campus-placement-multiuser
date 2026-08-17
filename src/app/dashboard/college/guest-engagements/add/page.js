@@ -5,7 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ArrowLeft, Mic } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import { FIELD_IDS, validateFieldOrError } from '@/lib/inputConstraints';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const KIND_LABEL = {
   guest_faculty: 'Guest faculty',
@@ -64,130 +71,103 @@ export default function CollegeGuestEngagementsAddPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div
-        style={{
-          marginBottom: '1.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
+    <div className="animate-fadeIn flex max-w-3xl flex-col gap-6 pb-8">
+      <div className="flex flex-col gap-3">
+        <Button variant="ghost" size="sm" render={<Link href="/dashboard/college/guest-engagements" />} className="w-fit">
+            <ArrowLeft data-icon="inline-start" />
+            Back to guest engagements
+        </Button>
         <div>
-          <Link
-            href="/dashboard/college/guest-engagements"
-            className="btn btn-ghost btn-sm"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              marginBottom: '0.75rem',
-              paddingLeft: 0,
-            }}
-          >
-            <ArrowLeft size={16} />
-            Back to Guest faculty & lectures
-          </Link>
-          <h1
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
-              margin: '0 0 0.35rem',
-              letterSpacing: '-0.02em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <span
-              style={{
-                display: 'flex',
-                padding: '0.35rem',
-                background: 'var(--primary-50)',
-                borderRadius: '8px',
-                color: 'var(--primary-600)',
-              }}
-            >
-              <Mic size={22} />
-            </span>
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Mic className="text-muted-foreground size-7" />
             Add guest engagement
           </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0, maxWidth: 560 }}>
+          <p className="text-muted-foreground mt-1 text-sm">
             Create a listing for guest faculty or a lecture session. Published posts are visible to employer partners.
           </p>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '1.25rem', maxWidth: 720 }}>
-        <form onSubmit={create} style={{ display: 'grid', gap: '0.75rem' }}>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Type</label>
-            <select
-              className="form-select"
+      <Card>
+        <CardHeader>
+          <CardTitle>Engagement details</CardTitle>
+          <CardDescription>Describe the session and the expertise your college needs.</CardDescription>
+        </CardHeader>
+        <CardContent>
+        <form onSubmit={create}>
+          <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="engagement-kind">Type</FieldLabel>
+            <AdminFilterSelect
+              id="engagement-kind"
+              className="w-full"
               value={form.kind}
-              onChange={(e) => setForm({ ...form, kind: e.target.value })}
-            >
-              <option value="guest_lecture">{KIND_LABEL.guest_lecture}</option>
-              <option value="guest_faculty">{KIND_LABEL.guest_faculty}</option>
-            </select>
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Title</label>
-            <input
-              className="form-input"
+              onValueChange={(kind) => setForm({ ...form, kind })}
+              emptyMapsToAll={false}
+              items={[
+                { label: KIND_LABEL.guest_lecture, value: 'guest_lecture' },
+                { label: KIND_LABEL.guest_faculty, value: 'guest_faculty' },
+              ]}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="engagement-title">Title</FieldLabel>
+            <Input
+              id="engagement-title"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               required
             />
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Summary</label>
-            <textarea
-              className="form-input"
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="engagement-summary">Summary</FieldLabel>
+            <Textarea
+              id="engagement-summary"
               rows={2}
               value={form.summary}
               onChange={(e) => setForm({ ...form, summary: e.target.value })}
+              required
             />
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Requirements / expertise needed</label>
-            <textarea
-              className="form-input"
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="engagement-requirements">Requirements / expertise needed</FieldLabel>
+            <Textarea
+              id="engagement-requirements"
               rows={3}
               value={form.requirements}
               onChange={(e) => setForm({ ...form, requirements: e.target.value })}
             />
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Preferred timing</label>
-            <input
-              className="form-input"
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="engagement-timing">Preferred timing</FieldLabel>
+            <Input
+              id="engagement-timing"
               placeholder="e.g. March 2026, weekday mornings"
               value={form.timeHint}
               onChange={(e) => setForm({ ...form, timeHint: e.target.value })}
             />
-          </div>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input
-              type="checkbox"
+          </Field>
+          <Field orientation="horizontal">
+            <Checkbox
+              id="engagement-publish"
               checked={form.publishNow}
-              onChange={(e) => setForm({ ...form, publishNow: e.target.checked })}
+              onCheckedChange={(v) => setForm({ ...form, publishNow: !!v })}
             />
-            Publish immediately (visible to companies)
-          </label>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
+            <div>
+              <FieldLabel htmlFor="engagement-publish">Publish immediately</FieldLabel>
+              <FieldDescription>Make this listing visible to employer partners after saving.</FieldDescription>
+            </div>
+          </Field>
+          <div className="flex flex-wrap gap-3">
+            <Button type="submit" disabled={saving}>
               {saving ? 'Saving…' : 'Save listing'}
-            </button>
-            <Link href="/dashboard/college/guest-engagements" className="btn btn-ghost">
-              Cancel
-            </Link>
+            </Button>
+            <Button type="button" variant="outline" render={<Link href="/dashboard/college/guest-engagements" />}>Cancel</Button>
           </div>
+          </FieldGroup>
         </form>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

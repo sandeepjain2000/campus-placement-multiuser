@@ -1,7 +1,16 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { Minus, Plus } from 'lucide-react';
 import { validateField, validateFieldWithConfirm, FIELD_IDS } from '@/lib/inputConstraints';
+import { Field, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group';
 
 /**
  * Number input with shared constraints (no negatives; zero policy per field).
@@ -28,13 +37,14 @@ export default function ValidatedNumberInput({
   onChange,
   onValidatedChange,
   context = {},
-  className = 'form-input',
+  className,
   confirmWarnings = true,
   step,
   stepperStep,
   placeholder,
   disabled = false,
   id,
+  prefix,
 }) {
   const [error, setError] = useState('');
 
@@ -102,55 +112,58 @@ export default function ValidatedNumberInput({
     runValidation(nextValue, { confirm: false });
   };
 
-  const input = (
-    <input
-      id={id}
-      type="number"
-      className={`${className}${error ? ' input-error' : ''}`}
-      value={value === '' || value == null ? '' : value}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      step={step ?? (stepperStep != null ? stepperStep : undefined)}
-      placeholder={placeholder}
-      disabled={disabled}
-    />
-  );
-
   return (
-    <div>
-      {stepperStep != null ? (
-        <div className={`number-stepper-field${disabled ? ' number-stepper-field--disabled' : ''}`}>
-          <div className="number-stepper-field__control">{input}</div>
-          <div className="number-stepper-field__actions" role="group" aria-label="Adjust value">
-            <button
-              type="button"
-              className="number-stepper-field__btn"
+    <Field data-invalid={Boolean(error)} data-disabled={disabled || undefined}>
+      {stepperStep != null || prefix ? (
+        <InputGroup data-disabled={disabled || undefined}>
+          {prefix ? <InputGroupAddon aria-hidden="true">{prefix}</InputGroupAddon> : null}
+          <InputGroupInput
+            id={id}
+            type="number"
+            className={className}
+            aria-invalid={Boolean(error)}
+            value={value === '' || value == null ? '' : value}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            step={step ?? (stepperStep != null ? stepperStep : undefined)}
+            placeholder={placeholder}
+            disabled={disabled}
+          />
+          {stepperStep != null ? <InputGroupAddon align="inline-end" aria-label="Adjust value">
+            <InputGroupButton
+              size="icon-xs"
               disabled={disabled}
               aria-label="Decrease by one"
               onClick={() => adjustByStepper(-1)}
             >
-              −
-            </button>
-            <button
-              type="button"
-              className="number-stepper-field__btn"
+              <Minus aria-hidden />
+            </InputGroupButton>
+            <InputGroupButton
+              size="icon-xs"
               disabled={disabled}
               aria-label="Increase by one"
               onClick={() => adjustByStepper(1)}
             >
-              +
-            </button>
-          </div>
-        </div>
+              <Plus aria-hidden />
+            </InputGroupButton>
+          </InputGroupAddon> : null}
+        </InputGroup>
       ) : (
-        input
+        <Input
+          id={id}
+          type="number"
+          className={className}
+          aria-invalid={Boolean(error)}
+          value={value === '' || value == null ? '' : value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          step={step}
+          placeholder={placeholder}
+          disabled={disabled}
+        />
       )}
-      {error ? (
-        <p className="text-xs" style={{ color: 'var(--danger-600)', marginTop: '0.35rem' }}>
-          {error}
-        </p>
-      ) : null}
-    </div>
+      {error ? <FieldError>{error}</FieldError> : null}
+    </Field>
   );
 }
 

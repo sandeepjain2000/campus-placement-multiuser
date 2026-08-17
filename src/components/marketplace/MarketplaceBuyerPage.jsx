@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/components/ToastProvider';
 import DataTableToolbar from '@/components/DataTableToolbar';
+import AppPageHeader from '@/components/layout/AppPageHeader';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useDataTableQuery } from '@/hooks/useDataTableQuery';
 import { COMMON_SORT_OPTIONS } from '@/lib/tableQueryPresets';
 import { marketplaceCategoryLabel } from '@/lib/marketplace';
@@ -109,22 +115,15 @@ export default function MarketplaceBuyerPage({ audienceLabel = 'your organizatio
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>Marketplace</h1>
-          <p>
-            Browse vetted providers — aptitude tests, assessments, and related services — and request a
-            purchase for {audienceLabel}. Payment and scheduling are coordinated after confirmation.
-          </p>
-        </div>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => load()} disabled={loading}>
-          Refresh
-        </button>
-      </div>
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <AppPageHeader
+        title="Marketplace"
+        description={`Browse vetted providers and request a purchase for ${audienceLabel}. Payment and scheduling are coordinated after confirmation.`}
+        actions={<Button type="button" variant="outline" size="sm" onClick={() => load()} disabled={loading}>Refresh</Button>}
+      />
 
       {loading ? (
-        <div className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }} />
+        <div className="skeleton" style={{ height: 200, borderRadius: 'var(--radius-lg)' }} />
       ) : null}
 
       {!loading && totalCount > 0 ? (
@@ -151,118 +150,117 @@ export default function MarketplaceBuyerPage({ audienceLabel = 'your organizatio
         />
       ) : null}
 
-      <div className="card card-table-shell" style={{ marginBottom: '1.25rem' }}>
-        <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-          Catalog
-        </h3>
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Service</th>
-                <th>Provider</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Notes</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+      <Card className="gap-0 py-0 shadow-none">
+        <CardHeader className="border-border border-b px-4 py-4">
+          <CardTitle>Catalog</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="text-muted-foreground h-12 pl-4">Service</TableHead>
+                <TableHead className="text-muted-foreground">Provider</TableHead>
+                <TableHead className="text-muted-foreground">Category</TableHead>
+                <TableHead className="text-muted-foreground">Price</TableHead>
+                <TableHead className="text-muted-foreground min-w-48">Notes</TableHead>
+                <TableHead className="text-muted-foreground pr-4 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {!loading && displayServices.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center text-secondary">
+                <TableRow>
+                  <TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                     {totalCount === 0
                       ? 'No published services are available yet. Ask the platform admin to add providers.'
                       : 'No services match your filters.'}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : null}
               {displayServices.map((s) => (
-                <tr key={s.id}>
-                  <td>
-                    <div className="font-semibold">{s.title}</div>
+                <TableRow key={s.id}>
+                  <TableCell className="max-w-md whitespace-normal pl-4 align-top">
+                    <div className="text-foreground font-medium">{s.title}</div>
                     {s.description ? (
-                      <div className="text-sm text-secondary" style={{ maxWidth: '28rem' }}>
-                        {s.description}
-                      </div>
+                      <div className="text-muted-foreground mt-1 text-sm leading-snug">{s.description}</div>
                     ) : null}
-                  </td>
-                  <td>
-                    <div>{s.providerName}</div>
+                  </TableCell>
+                  <TableCell className="max-w-xs whitespace-normal align-top">
+                    <div className="font-medium">{s.providerName}</div>
                     {s.providerTagline ? (
-                      <div className="text-xs text-tertiary">{s.providerTagline}</div>
+                      <div className="text-muted-foreground mt-0.5 text-xs">{s.providerTagline}</div>
                     ) : null}
-                  </td>
-                  <td>{s.providerCategoryLabel}</td>
-                  <td>
-                    <div className="font-mono">{s.priceLabel}</div>
-                    <div className="text-xs text-tertiary">{s.billingLabel}</div>
-                  </td>
-                  <td style={{ minWidth: '12rem' }}>
-                    <input
-                      className="form-input"
+                  </TableCell>
+                  <TableCell className="align-top">{s.providerCategoryLabel}</TableCell>
+                  <TableCell className="align-top">
+                    <div className="font-mono font-medium">{s.priceLabel}</div>
+                    <div className="text-muted-foreground text-xs">{s.billingLabel}</div>
+                  </TableCell>
+                  <TableCell className="align-top">
+                    <Input
+                      className="min-w-[10rem]"
                       placeholder="Optional note"
                       value={notesByService[s.id] || ''}
                       onChange={(e) =>
                         setNotesByService((m) => ({ ...m, [s.id]: e.target.value }))
                       }
                     />
-                  </td>
-                  <td>
-                    <button
+                  </TableCell>
+                  <TableCell className="pr-4 align-top text-right">
+                    <Button
                       type="button"
-                      className="btn btn-primary btn-sm"
+                      size="sm"
+                      className="whitespace-nowrap"
                       disabled={requestingId === s.id}
                       onClick={() => requestPurchase(s)}
                     >
                       {requestingId === s.id ? 'Requesting…' : 'Request purchase'}
-                    </button>
-                  </td>
-                </tr>
+                    </Button>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-      <div className="card card-table-shell">
-        <h3 className="card-title" style={{ marginBottom: '0.75rem' }}>
-          Your purchase requests
-        </h3>
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Requested</th>
-                <th>Service</th>
-                <th>Provider</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
+      <Card className="gap-0 py-0 shadow-none">
+        <CardHeader className="border-border border-b px-4 py-4">
+          <CardTitle>Your purchase requests</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="text-muted-foreground h-12 pl-4">Requested</TableHead>
+                <TableHead className="text-muted-foreground">Service</TableHead>
+                <TableHead className="text-muted-foreground">Provider</TableHead>
+                <TableHead className="text-muted-foreground">Amount</TableHead>
+                <TableHead className="text-muted-foreground pr-4">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {orders.map((o) => (
-                <tr key={o.id}>
-                  <td className="text-sm">{o.createdAt ? new Date(o.createdAt).toLocaleString() : '—'}</td>
-                  <td>{o.serviceTitle}</td>
-                  <td>{o.providerName}</td>
-                  <td className="font-mono">{o.priceLabel}</td>
-                  <td>
-                    <span className={`badge badge-${o.statusBadge}`}>{o.statusLabel}</span>
-                  </td>
-                </tr>
+                <TableRow key={o.id}>
+                  <TableCell className="pl-4">{o.createdAt ? new Date(o.createdAt).toLocaleString() : '—'}</TableCell>
+                  <TableCell>{o.serviceTitle}</TableCell>
+                  <TableCell>{o.providerName}</TableCell>
+                  <TableCell className="font-mono">{o.priceLabel}</TableCell>
+                  <TableCell className="pr-4">
+                    <StatusBadge tone={o.statusBadge}>{o.statusLabel}</StatusBadge>
+                  </TableCell>
+                </TableRow>
               ))}
               {orders.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="text-center text-secondary">
+                <TableRow>
+                  <TableCell colSpan={5} className="text-muted-foreground h-24 text-center">
                     No requests yet.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : null}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

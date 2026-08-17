@@ -1,0 +1,44 @@
+{
+  "id": "college-offers-upload",
+  "title": "College offers upload and student visibility",
+  "oneLiner": "College uploads offers CSV → student sees matching offer",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open.",
+      "action": { "type": "wait", "ms": 400 }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "College dashboard loads.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Offers upload",
+      "observe": "CSV upload UI for formal offers.",
+      "action": { "type": "goto", "path": "/dashboard/college/offers-upload" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Upload offers CSV — manual",
+      "observe": "Valid rows imported; errors shown per row.",
+      "action": { "type": "wait", "ms": 14000 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in",
+      "observe": "Student can open My Offers.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open My Offers",
+      "observe": "Uploaded offer visible for matching student.",
+      "action": { "type": "goto", "path": "/dashboard/student/offers" }
+    }
+  ]
+}

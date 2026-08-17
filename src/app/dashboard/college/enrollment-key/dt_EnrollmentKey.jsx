@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import { fetchJson } from '@/lib/fetchJson';
+import { Copy, KeyRound, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function CollegeEnrollmentKeyPage() {
   const { addToast } = useToast();
@@ -38,53 +41,46 @@ export default function CollegeEnrollmentKeyPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      {/* Glassmorphic Hero */}
-      <div style={{
-        position: 'relative', background: 'var(--banner-gradient)',
-        borderRadius: 'var(--radius-xl)', padding: '2.5rem', color: 'white', overflow: 'hidden',
-        marginBottom: '2rem', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem'
-      }}>
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', borderRadius: '50%' }} />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 style={{ color: '#ffffff', fontSize: '2.25rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>🔑 Student Enrollment Key</h1>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.85)', margin: 0, maxWidth: 500 }}>
-            Share this key through official channels. Students paste it when creating a PlacementHub account to link to your campus.
+    <div className="animate-fadeIn flex max-w-3xl flex-col gap-6 pb-8">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <KeyRound className="text-muted-foreground size-7" strokeWidth={1.5} />
+            Student enrollment key
+          </h1>
+          <p className="text-muted-foreground m-0 text-sm">
+            Share this key through official channels so students can link their account to your campus.
           </p>
         </div>
-        <Link href="/dashboard/college/students" className="btn" style={{ position: 'relative', zIndex: 1, background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
-          Students →
-        </Link>
+        <Button render={<Link href="/dashboard/college/students" />} variant="outline">
+          <Users data-icon="inline-start" />
+          Students
+        </Button>
       </div>
 
-      <div className="card" style={{ maxWidth: 640, padding: '1.25rem' }}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Campus key</CardTitle>
+          <CardDescription>Students enter this value during account registration.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
         {loading ? (
-          <div className="skeleton" style={{ height: 24, width: '80%' }} />
+          <div className="skeleton h-12 w-full rounded-md" />
         ) : key ? (
           <>
-            <div
-              className="font-mono"
-              style={{
-                fontSize: '0.9rem',
-                wordBreak: 'break-all',
-                padding: '0.75rem 1rem',
-                background: 'var(--surface-elevated)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-default)',
-                marginBottom: '1rem',
-              }}
-            >
+            <div className="bg-muted border-border break-all rounded-md border px-4 py-3 font-mono text-sm">
               {key}
             </div>
-            <button type="button" className="btn btn-primary" onClick={copy}>
+            <Button type="button" className="w-fit" onClick={copy}>
+              <Copy data-icon="inline-start" />
               Copy key
-            </button>
+            </Button>
           </>
         ) : (
-          <p className="text-secondary">No key is available for this campus.</p>
+          <p className="text-muted-foreground m-0 text-sm">No key is available for this campus.</p>
         )}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

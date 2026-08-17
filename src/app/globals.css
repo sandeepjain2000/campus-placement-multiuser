@@ -3,6 +3,8 @@
    Premium dark/light mode with glassmorphism
    ============================================ */
 
+@import '../styles/shadcn.css';
+
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 /* ============================================
@@ -211,22 +213,64 @@
 
 /* ============================================
    Reset & Base
+   Keep element/universal resets in @layer base so Tailwind/shadcn
+   @layer utilities (AdminCN) can win on spacing, color, typography.
+   Legacy .btn / .form-input remain unlayered and keep working.
    ============================================ */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--topbar-height) + var(--sandbox-banner-height, 0px));
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-  max-width: 100vw;
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--topbar-height) + var(--sandbox-banner-height, 0px));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    max-width: 100vw;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Dashboard shell: keep body fill matching AdminCN background (no grey band on scroll) */
+  html:has(.dashboard-layout),
+  body:has(.dashboard-layout) {
+    background: var(--background, var(--bg-primary));
+  }
+
+  a { color: var(--text-link); text-decoration: none; transition: color var(--transition-fast); }
+  a:hover { color: var(--primary-500); }
+
+  img { max-width: 100%; height: auto; }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  h1 { font-size: 2.25rem; letter-spacing: -0.025em; }
+  h2 { font-size: 1.875rem; letter-spacing: -0.025em; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1rem; }
 }
 
 /* Site-wide sandbox notice (root layout) */
@@ -258,40 +302,9 @@ html:has(.sandbox-env-banner) {
   border-bottom-color: rgba(251, 191, 36, 0.45);
 }
 
-body {
-  font-family: var(--font-sans);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: hidden;
-  max-width: 100vw;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
-a { color: var(--text-link); text-decoration: none; transition: color var(--transition-fast); }
-a:hover { color: var(--primary-500); }
-
-img { max-width: 100%; height: auto; }
-
 /* ============================================
    Typography
    ============================================ */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--text-primary);
-}
-
-h1 { font-size: 2.25rem; letter-spacing: -0.025em; }
-h2 { font-size: 1.875rem; letter-spacing: -0.025em; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
-h5 { font-size: 1.125rem; }
-h6 { font-size: 1rem; }
-
 .text-gradient {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-400), #06B6D4);
   -webkit-background-clip: text;
@@ -1681,11 +1694,11 @@ a.admin-entity-name-btn {
   min-width: 72rem;
 }
 
-/* College applications — fit all columns in viewport (override data-table max-content) */
+/* College applications — AdminCN Table (auto layout; Status col min-width in JSX — BUG-001) */
 .college-applications-table {
-  table-layout: fixed;
+  table-layout: auto;
   width: 100%;
-  min-width: 0;
+  min-width: 980px;
 }
 
 .college-applications-col-student {
@@ -1812,7 +1825,7 @@ a.admin-entity-name-btn {
 
 /* Student browse opportunities (internships, jobs) — fit columns in viewport */
 .student-opportunities-table {
-  table-layout: fixed;
+  table-layout: auto;
   width: 100%;
   min-width: 0;
 }
@@ -3111,9 +3124,14 @@ button.dev-screen-id-tag {
 
 .employer-campus-picker-card {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: flex-start;
   gap: 0.65rem;
   width: 100%;
+  min-width: 0;
+  height: auto;
+  white-space: normal;
+  overflow: hidden;
   text-align: left;
   padding: 0.75rem 0.85rem;
   border-radius: var(--radius-md);
@@ -3147,7 +3165,7 @@ button.dev-screen-id-tag {
   flex-shrink: 0;
   width: 1.25rem;
   height: 1.25rem;
-  margin-top: 0.15rem;
+  margin-top: 0;
   border-radius: 0.35rem;
   border: 1.5px solid var(--border-strong, var(--border-default));
   background: var(--bg-primary);
@@ -3167,7 +3185,9 @@ button.dev-screen-id-tag {
 
 .employer-campus-picker-card-logo {
   flex-shrink: 0;
-  margin-top: 0.05rem;
+  margin-top: 0;
+  align-self: center;
+  overflow: hidden;
 }
 
 .employer-campus-picker-card-body {
@@ -3179,19 +3199,32 @@ button.dev-screen-id-tag {
 }
 
 .employer-campus-picker-card-name {
+  display: block;
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 1.35;
   color: var(--text-primary);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .employer-campus-picker-card-meta {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
   gap: 0.25rem;
+  min-width: 0;
   font-size: 0.75rem;
   color: var(--text-tertiary);
   line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.employer-campus-picker-card-meta svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
 }
 
 .employer-campus-picker-empty {
@@ -4109,33 +4142,41 @@ button.dev-screen-id-tag {
   border-color: var(--primary-500);
 }
 
-/* Hub: 5-column grid matching screenshot */
-.dashboard-nav-hub-grid {
+/* Hub category card grid — LAYOUT only (equal columns). Used by AdminCN Card hub.
+   Prefer horizontal packing (more cols sooner) to reduce vertical scroll. */
+.dashboard-nav-hub-grid,
+.ph-hub-card-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr;
+  width: 100%;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 @media (min-width: 640px) {
-  .dashboard-nav-hub-grid {
+  .dashboard-nav-hub-grid,
+  .ph-hub-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 900px) {
-  .dashboard-nav-hub-grid {
+@media (min-width: 768px) {
+  .dashboard-nav-hub-grid,
+  .ph-hub-card-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1200px) {
-  .dashboard-nav-hub-grid {
+@media (min-width: 1024px) {
+  .dashboard-nav-hub-grid,
+  .ph-hub-card-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1400px) {
-  .dashboard-nav-hub-grid {
+@media (min-width: 1280px) {
+  .dashboard-nav-hub-grid,
+  .ph-hub-card-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
@@ -5091,9 +5132,12 @@ html:not([data-theme='dark']) .auth-job-aid-btn-primary {
 }
 
 .flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
+/*
+  Do not redefine .flex-col / .items-* / .justify-* here.
+  Unconditional `.flex-col { flex-direction: column }` loads after Tailwind
+  (globals imports shadcn.css first) and overrides `sm:flex-row`, which leaves
+  `sm:items-end` stacking AdminCN page headers on the RIGHT.
+*/
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
 .gap-lg { gap: var(--space-lg); }

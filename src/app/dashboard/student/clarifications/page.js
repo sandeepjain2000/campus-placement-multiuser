@@ -15,8 +15,14 @@ import {
   Lightbulb,
   Plus,
   Send,
-  X,
 } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Textarea } from '@/components/ui/textarea';
 
 /** Per-company inline question form */
 function InlinePostForm({ company, onSuccess }) {
@@ -48,47 +54,28 @@ function InlinePostForm({ company, onSuccess }) {
 
   if (!show) {
     return (
-      <button
-        className="btn btn-secondary"
-        style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         onClick={() => setShow(true)}
       >
-        <Plus size={14} /> Ask a Question
-      </button>
+        <Plus data-icon="inline-start" /> Ask a question
+      </Button>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{
-      marginTop: '1rem', padding: '1rem', borderRadius: '10px',
-      background: 'var(--primary-50)', border: '1px solid var(--primary-200)',
-      display: 'flex', flexDirection: 'column', gap: '0.75rem',
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-700)' }}>
-          Post a question to {company}
-        </span>
-        <button type="button" onClick={() => setShow(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)' }}>
-          <X size={16} />
-        </button>
-      </div>
-      <textarea
-        className="form-input"
-        value={questionText}
-        onChange={(e) => setQuestionText(e.target.value)}
-        placeholder={`What would you like to ask ${company}?`}
-        rows={3}
-        required
-        style={{ resize: 'vertical' }}
-      />
-      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-        <button type="button" className="btn btn-secondary" style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem' }} onClick={() => setShow(false)}>
-          Cancel
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting || !questionText.trim()}
-          style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Send size={13} /> {isSubmitting ? 'Posting…' : 'Post Question'}
-        </button>
+    <form onSubmit={handleSubmit} className="bg-muted/50 flex flex-col gap-3 rounded-lg border p-4">
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor={`clarification-${company}`}>Post a question to {company}</FieldLabel>
+          <Textarea id={`clarification-${company}`} name="question" autoComplete="off" value={questionText} onChange={(e) => setQuestionText(e.target.value)} placeholder={`What would you like to ask ${company}?`} rows={3} required />
+        </Field>
+      </FieldGroup>
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={() => setShow(false)}>Cancel</Button>
+        <Button type="submit" size="sm" disabled={isSubmitting || !questionText.trim()}><Send data-icon="inline-start" />{isSubmitting ? 'Posting…' : 'Post question'}</Button>
       </div>
     </form>
   );
@@ -195,240 +182,67 @@ export default function StudentClarificationsPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ maxWidth: '860px', margin: '0 auto' }}>
-      {/* Header */}
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left" style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-            <div style={{
-              width: '36px', height: '36px', borderRadius: '50%',
-              background: 'var(--primary-100)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <MessageSquare size={18} color="var(--primary-600)" />
-            </div>
-            <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700 }}>Clarifications</h1>
+    <div className="animate-fadeIn mx-auto flex max-w-4xl flex-col gap-4">
+      <div className="min-w-0">
+        <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+          <MessageSquare className="text-muted-foreground size-7" strokeWidth={1.5} />
+          Clarifications
+        </h1>
+        <p className="text-muted-foreground mt-1 mb-0 text-sm">Read official company Q&amp;A and ask questions directly.</p>
+      </div>
+
+      <Card>
+        <CardContent className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+            <Input type="search" name="clarification-search" aria-label="Search clarifications" className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search companies or questions…" />
           </div>
-          <p className="text-secondary" style={{ margin: 0, fontSize: '0.9rem' }}>
-            Expand a company to read Q&amp;A and ask your own questions directly.
-          </p>
-        </div>
-      </div>
+          <div className="flex shrink-0 gap-2" role="group" aria-label="Sort clarifications">
+            <Button type="button" size="sm" variant={sortBy === 'date' ? 'secondary' : 'outline'} aria-pressed={sortBy === 'date'} onClick={() => setSortBy('date')}>Recent</Button>
+            <Button type="button" size="sm" variant={sortBy === 'name' ? 'secondary' : 'outline'} aria-pressed={sortBy === 'name'} onClick={() => setSortBy('name')}>A–Z</Button>
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Search + Sort Row */}
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)', pointerEvents: 'none' }} />
-          <input
-            type="text"
-            className="form-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search companies or questions…"
-            style={{ paddingLeft: '2.5rem', borderRadius: '999px', background: 'var(--surface-2)' }}
-          />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>Sort:</span>
-          <button
-            onClick={() => setSortBy('date')}
-            style={{
-              padding: '0.35rem 0.85rem', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 500,
-              border: '1px solid', cursor: 'pointer',
-              background: sortBy === 'date' ? 'var(--primary-600)' : 'var(--surface-2)',
-              color: sortBy === 'date' ? '#fff' : 'var(--gray-600)',
-              borderColor: sortBy === 'date' ? 'var(--primary-600)' : 'var(--gray-300)',
-              transition: 'all 0.15s',
-            }}
-          >
-            Recent
-          </button>
-          <button
-            onClick={() => setSortBy('name')}
-            style={{
-              padding: '0.35rem 0.85rem', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 500,
-              border: '1px solid', cursor: 'pointer',
-              background: sortBy === 'name' ? 'var(--primary-600)' : 'var(--surface-2)',
-              color: sortBy === 'name' ? '#fff' : 'var(--gray-600)',
-              borderColor: sortBy === 'name' ? 'var(--primary-600)' : 'var(--gray-300)',
-              transition: 'all 0.15s',
-            }}
-          >
-            A–Z
-          </button>
-        </div>
-      </div>
-
-      {/* Company Accordion List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      <div className="flex flex-col gap-3">
         {filtered.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--gray-400)' }}>
-            <MessageSquare size={32} style={{ marginBottom: '0.75rem', opacity: 0.4 }} />
-            <p style={{ margin: 0 }}>No clarification threads found{search ? ` for "${search}"` : ''}.</p>
-          </div>
-        ) : (
-          filtered.map((batch) => {
-            const isOpen = openBatchIds.has(batch.id);
-            const answeredCount = batch.questions.filter((q) => q.answer).length;
-            return (
-              <div
-                key={batch.id}
-                className="card"
-                style={{
-                  padding: 0,
-                  overflow: 'hidden',
-                  border: isOpen ? '1px solid var(--primary-300)' : '1px solid var(--gray-200)',
-                  transition: 'border-color 0.2s',
-                }}
-              >
-                {/* Accordion Header */}
-                <button
-                  onClick={() => toggleBatch(batch.id)}
-                  style={{
-                    width: '100%', display: 'flex', alignItems: 'center', gap: '1rem',
-                    padding: '1rem 1.25rem', background: 'none', border: 'none',
-                    cursor: 'pointer', textAlign: 'left',
-                    background: isOpen ? 'var(--primary-50)' : 'var(--surface)',
-                    transition: 'background 0.2s',
-                  }}
-                >
-                  <div style={{
-                    width: '40px', height: '40px', borderRadius: '10px',
-                    background: 'var(--primary-100)', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    <Building2 size={18} color="var(--primary-600)" />
-                  </div>
-
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--gray-900)', marginBottom: '0.2rem' }}>
-                      {batch.company}
-                    </div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--gray-500)' }}>
-                      {formatDate(batch.postedAt)}
+          <Card><CardContent className="text-muted-foreground flex flex-col items-center gap-2 py-10 text-center"><MessageSquare className="size-8" /><p className="m-0">No clarification threads found{search ? ` for "${search}"` : ''}.</p></CardContent></Card>
+        ) : filtered.map((batch) => {
+          const isOpen = openBatchIds.has(batch.id);
+          const answeredCount = batch.questions.filter((q) => q.answer).length;
+          return (
+            <Card key={batch.id} className="gap-0 overflow-hidden py-0">
+              <button type="button" className="hover:bg-muted/50 focus-visible:ring-ring flex w-full items-center gap-3 px-4 py-4 text-left outline-none focus-visible:ring-3" aria-expanded={isOpen} onClick={() => toggleBatch(batch.id)}>
+                <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"><Building2 className="size-5" /></span>
+                <span className="min-w-0 flex-1"><span className="block truncate font-semibold">{batch.company}</span><span className="text-muted-foreground block text-xs">{formatDate(batch.postedAt)}</span></span>
+                <span className="hidden items-center gap-2 sm:flex"><StatusBadge tone="gray">{batch.questions.length} question{batch.questions.length === 1 ? '' : 's'}</StatusBadge>{answeredCount > 0 ? <StatusBadge tone="green" showDot>{answeredCount} answered</StatusBadge> : null}</span>
+                {isOpen ? <ChevronUp className="text-muted-foreground size-4" /> : <ChevronDown className="text-muted-foreground size-4" />}
+              </button>
+              {isOpen ? (
+                <CardContent className="flex flex-col gap-5 border-t p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <InlinePostForm company={batch.company} onSuccess={refresh} />
+                    <div className="flex gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => exportAsText(batch)}><FileText data-icon="inline-start" />Text</Button>
+                      <Button type="button" variant="outline" size="sm" onClick={() => exportAsCsv(batch)}><Download data-icon="inline-start" />CSV</Button>
                     </div>
                   </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-                    <span style={{
-                      padding: '0.2rem 0.7rem', borderRadius: '999px',
-                      background: 'var(--gray-100)', color: 'var(--gray-600)',
-                      fontSize: '0.78rem', fontWeight: 500,
-                    }}>
-                      {batch.questions.length} Q{batch.questions.length !== 1 ? 's' : ''}
-                    </span>
-                    {answeredCount > 0 && (
-                      <span style={{
-                        padding: '0.2rem 0.7rem', borderRadius: '999px',
-                        background: 'var(--success-100, #dcfce7)', color: 'var(--success-700, #15803d)',
-                        fontSize: '0.78rem', fontWeight: 500,
-                      }}>
-                        {answeredCount} Answered
-                      </span>
-                    )}
-                    {isOpen ? <ChevronUp size={18} color="var(--primary-600)" /> : <ChevronDown size={18} color="var(--gray-400)" />}
-                  </div>
-                </button>
-
-                {/* Expanded Content */}
-                {isOpen && (
-                  <div style={{ padding: '1.25rem', borderTop: '1px solid var(--gray-200)', background: 'var(--surface)' }}>
-                    {/* Toolbar: Export + Ask Question */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                      <InlinePostForm company={batch.company} onSuccess={refresh} />
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                          className="btn btn-secondary"
-                          style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-                          onClick={() => exportAsText(batch)}
-                        >
-                          <FileText size={14} /> Export Text
-                        </button>
-                        <button
-                          className="btn btn-secondary"
-                          style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-                          onClick={() => exportAsCsv(batch)}
-                        >
-                          <Download size={14} /> Export CSV
-                        </button>
+                  <div className="flex flex-col gap-4">
+                    {batch.questions.map((q, idx) => (
+                      <div key={q.id} className="flex flex-col gap-2">
+                        <div className="bg-muted/50 rounded-lg border p-4"><p className="text-muted-foreground mt-0 mb-1 text-xs font-semibold">Q{idx + 1} · {batch.postedBy}</p><p className="m-0 text-sm leading-relaxed">{q.text}</p></div>
+                        {q.answer ? <div className="border-primary/20 bg-primary/5 ml-6 rounded-lg border p-4"><p className="text-primary mt-0 mb-1 text-xs font-semibold">{q.answeredBy || batch.company} · Official answer</p><p className="m-0 text-sm leading-relaxed">{q.answer}</p></div> : <p className="text-muted-foreground ml-6 m-0 text-xs">Awaiting response from {batch.company}</p>}
                       </div>
-                    </div>
-
-                    {/* Q&A Thread */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                      {batch.questions.map((q, idx) => (
-                        <div key={q.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                          {/* Question */}
-                          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                            <div style={{
-                              width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-                              background: 'var(--gray-200)', display: 'flex', alignItems: 'center',
-                              justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-600)',
-                            }}>
-                              Q{idx + 1}
-                            </div>
-                            <div style={{
-                              flex: 1, background: 'var(--gray-50)', border: '1px solid var(--gray-200)',
-                              borderRadius: '0 12px 12px 12px', padding: '0.75rem 1rem',
-                            }}>
-                              <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '0.3rem' }}>
-                                {batch.postedBy}
-                              </div>
-                              <div style={{ fontSize: '0.9rem', color: 'var(--gray-800)', lineHeight: '1.5' }}>{q.text}</div>
-                            </div>
-                          </div>
-
-                          {/* Answer */}
-                          {q.answer ? (
-                            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', paddingLeft: '2rem' }}>
-                              <div style={{
-                                flex: 1, background: 'var(--primary-50)', border: '1px solid var(--primary-200)',
-                                borderRadius: '12px 12px 12px 0', padding: '0.75rem 1rem',
-                              }}>
-                                <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--primary-600)', marginBottom: '0.3rem' }}>
-                                  {q.answeredBy || batch.company} · Official Answer
-                                </div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--gray-800)', lineHeight: '1.5' }}>{q.answer}</div>
-                              </div>
-                              <div style={{
-                                width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-                                background: 'var(--primary-100)', display: 'flex', alignItems: 'center',
-                                justifyContent: 'center',
-                              }}>
-                                <Building2 size={14} color="var(--primary-600)" />
-                              </div>
-                            </div>
-                          ) : (
-                            <div style={{ paddingLeft: '3.75rem' }}>
-                              <span style={{
-                                fontSize: '0.8rem', color: 'var(--gray-400)',
-                                fontStyle: 'italic', display: 'flex', alignItems: 'center', gap: '0.4rem',
-                              }}>
-                                ⏳ Awaiting response from {batch.company}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
-                )}
-              </div>
-            );
-          })
-        )}
+                </CardContent>
+              ) : null}
+            </Card>
+          );
+        })}
       </div>
 
-      {/* Tip Box */}
-      <div style={{
-        marginTop: '2rem', padding: '1rem 1.25rem', borderRadius: '10px',
-        background: 'var(--warning-50, #fffbeb)', border: '1px solid var(--warning-200, #fde68a)',
-        display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
-      }}>
-        <Lightbulb size={18} color="var(--warning-500, #f59e0b)" style={{ flexShrink: 0, marginTop: '2px' }} />
-        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--warning-800, #92400e)', lineHeight: '1.6' }}>
-          <strong>Tip:</strong> Expand any company card to ask a question or export the discussion. Answers will appear once provided by the company or Placement Office.
-        </p>
-      </div>
+      <Alert><Lightbulb /><AlertTitle>Tip</AlertTitle><AlertDescription>Expand a company to ask a question or export the discussion. Answers appear after the company or placement office responds.</AlertDescription></Alert>
     </div>
   );
 }

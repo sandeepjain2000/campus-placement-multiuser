@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-12
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Review target campuses (pre-selected). At least one approved campus checkbox is checked.

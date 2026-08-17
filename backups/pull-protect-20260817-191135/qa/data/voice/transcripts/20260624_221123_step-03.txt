@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-03
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Assessment uploads (CSV). Tabbed Internship, Jobs, Drive, Projects — export CSV per tab.

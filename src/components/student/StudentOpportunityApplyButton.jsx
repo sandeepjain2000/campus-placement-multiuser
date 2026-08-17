@@ -3,6 +3,7 @@
 import { ShieldAlert, Send, Loader2 } from 'lucide-react';
 import { resolveApplyBlockReason } from '@/lib/getApplyBlockReason';
 import { programOpportunityFromRow } from '@/lib/studentApplyContext';
+import { Button } from '@/components/ui/button';
 
 /**
  * Compact apply control for table rows (disabled upfront + eligibility hint).
@@ -24,21 +25,22 @@ export default function StudentOpportunityApplyButton({
   const applying = applyingId === row.id;
 
   return (
-    <div style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
+    <div className="inline-flex items-center gap-1">
       {blockReason ? (
-        <button
+        <Button
           type="button"
-          className="btn btn-ghost btn-icon btn-sm"
+          size="icon-sm"
+          variant="ghost"
           title={blockReason}
           aria-label="Why am I not eligible?"
           onClick={() => onShowEligibility?.(row)}
         >
-          <ShieldAlert size={15} aria-hidden />
-        </button>
+          <ShieldAlert />
+        </Button>
       ) : null}
-      <button
+      <Button
         type="button"
-        className="btn btn-primary btn-icon btn-sm"
+        size="icon-sm"
         disabled={Boolean(blockReason) || applying}
         aria-disabled={blockReason || applying ? 'true' : undefined}
         title={blockReason || 'Apply'}
@@ -48,8 +50,8 @@ export default function StudentOpportunityApplyButton({
           onApply(row.id, row.title);
         }}
       >
-        {applying ? <Loader2 size={15} className="animate-spin" aria-hidden /> : <Send size={15} aria-hidden />}
-      </button>
+        {applying ? <Loader2 className="animate-spin" /> : <Send />}
+      </Button>
     </div>
   );
 }

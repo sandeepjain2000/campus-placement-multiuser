@@ -11,6 +11,14 @@ import { formatDate } from '@/lib/utils';
 import { auditReportsFetcher, AUDIT_CLIENT_ERRORS } from '@/lib/auditReportsFetcher';
 import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 const swrQuiet = { shouldRetryOnError: false, revalidateOnFocus: false };
 
@@ -122,39 +130,37 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>🧾 {scopeLabel}</h1>
-          <p>
+    <div className="animate-fadeIn flex flex-col gap-6 pb-12">
+      <div className="flex max-w-4xl flex-col gap-1">
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">🧾 {scopeLabel}</h1>
+          <p className="text-muted-foreground m-0 text-sm">
             Platform and college screen actions written to the audit trail — college/employer updates,
             onboarding decisions, settings, demos, and assessment changes. Filter by date and export CSV
             via secure email link.
           </p>
-        </div>
       </div>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
+      <Card>
+        <CardHeader><CardTitle>Report filters</CardTitle><CardDescription>Choose the audit range and optional event filters.</CardDescription></CardHeader>
+        <CardContent className="flex flex-col gap-5">
         {isSuperAdmin && (
-          <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-            <label className="form-label">College scope</label>
-            <select
-              className="form-input"
+          <Field>
+            <FieldLabel htmlFor="audit-college-scope">College scope</FieldLabel>
+            <AdminFilterSelect
+              id="audit-college-scope"
+              className="h-9 w-full"
               value={tenantFilter}
-              onChange={(e) => setTenantFilter(e.target.value)}
-            >
-              <option value="">All colleges (platform-wide)</option>
-              {colleges.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+              onValueChange={setTenantFilter}
+              items={[
+                { label: 'All colleges (platform-wide)', value: 'all' },
+                ...colleges.map((c) => ({ label: c.name, value: String(c.id) })),
+              ]}
+            />
+          </Field>
         )}
-        <div className="grid grid-4">
-          <div className="form-group">
-            <label className="form-label">From date</label>
+        <FieldGroup className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <Field>
+            <FieldLabel>From date</FieldLabel>
             <ValidatedDateInput
               fieldId={FIELD_IDS.DATE_RANGE_FROM}
               context={{ dateTo: to, maxSpanYears: 10 }}
@@ -162,9 +168,9 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
               onChange={setFrom}
               aria-label="From date"
             />
-          </div>
-          <div className="form-group">
-            <label className="form-label">To date</label>
+          </Field>
+          <Field>
+            <FieldLabel>To date</FieldLabel>
             <ValidatedDateInput
               fieldId={FIELD_IDS.DATE_RANGE_TO}
               context={{ dateFrom: from, maxSpanYears: 10 }}
@@ -172,98 +178,93 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
               onChange={setTo}
               aria-label="To date"
             />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Action (optional)</label>
-            <input className="form-input" placeholder="e.g. UPDATE_COLLEGE, APPROVE_REGISTRATION, DEMO_PURGE" value={action} onChange={(e) => setAction(e.target.value)} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Entity type (optional)</label>
-            <input className="form-input" placeholder="e.g. tenants" value={entityType} onChange={(e) => setEntityType(e.target.value)} />
-          </div>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="audit-action">Action (optional)</FieldLabel>
+            <Input id="audit-action" placeholder="e.g. UPDATE_COLLEGE" value={action} onChange={(e) => setAction(e.target.value)} />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="audit-entity-type">Entity type (optional)</FieldLabel>
+            <Input id="audit-entity-type" placeholder="e.g. tenants" value={entityType} onChange={(e) => setEntityType(e.target.value)} />
+          </Field>
+        </FieldGroup>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" size="sm" onClick={() => setPresetDays(7)}>Last 7 days</Button>
+          <Button variant="ghost" size="sm" onClick={() => setPresetDays(30)}>Last 30 days</Button>
+          <Button variant="ghost" size="sm" onClick={() => setPresetDays(90)}>Last 90 days</Button>
+          <Button variant="ghost" size="sm" onClick={() => setAction('DEMO_PURGE')}>Demo purges</Button>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
-          <button className="btn btn-ghost btn-sm" onClick={() => setPresetDays(7)}>Last 7 days</button>
-          <button className="btn btn-ghost btn-sm" onClick={() => setPresetDays(30)}>Last 30 days</button>
-          <button className="btn btn-ghost btn-sm" onClick={() => setPresetDays(90)}>Last 90 days</button>
-          <button className="btn btn-ghost btn-sm" onClick={() => setAction('DEMO_PURGE')}>Demo purges</button>
-        </div>
-        <div className="grid grid-2" style={{ marginTop: '0.75rem' }}>
-          <div className="form-group">
-            <label className="form-label">Email for export link</label>
-            <input className="form-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', gap: '0.5rem' }}>
-            <button className="btn btn-secondary" onClick={() => mutateLogs()}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="audit-export-email">Email for export link</FieldLabel>
+            <Input id="audit-export-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </Field>
+          <div className="flex items-end justify-end gap-2">
+            <Button variant="outline" onClick={() => mutateLogs()}>
               Refresh logs
-            </button>
-            <button className="btn btn-primary" onClick={runExport} disabled={exporting}>
+            </Button>
+            <Button onClick={runExport} disabled={exporting}>
               {exporting ? 'Exporting...' : 'Export CSV & email link'}
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 className="card-title">Recent export jobs</h3>
-          <button className="btn btn-secondary btn-sm" onClick={() => mutateExports()}>
+      <Card>
+        <CardHeader className="border-b">
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle>Recent export jobs</CardTitle>
+          <Button variant="outline" size="sm" onClick={() => mutateExports()}>
             Refresh exports
-          </button>
+          </Button>
         </div>
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Created</th>
-                {isSuperAdmin && !tenantFilter ? <th>College</th> : null}
-                <th>Date range</th>
-                <th>Status</th>
-                <th>Email</th>
-                <th>S3 key</th>
-              </tr>
-            </thead>
-            <tbody>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Created</TableHead>
+                {isSuperAdmin && !tenantFilter ? <TableHead>College</TableHead> : null}
+                <TableHead>Date range</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>S3 key</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {exportsList.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.created_at ? formatDate(r.created_at) : '—'}</td>
+                <TableRow key={r.id}>
+                  <TableCell>{r.created_at ? formatDate(r.created_at) : '—'}</TableCell>
                   {isSuperAdmin && !tenantFilter ? (
-                    <td>{r.tenant_name || (r.tenant_id ? 'College' : 'Platform')}</td>
+                    <TableCell>{r.tenant_name || (r.tenant_id ? 'College' : 'Platform')}</TableCell>
                   ) : null}
-                  <td>{r.from_date} → {r.to_date}</td>
-                  <td><span className={`badge badge-${r.status === 'completed' ? 'success' : r.status === 'failed' ? 'danger' : 'warning'}`}>{r.status}</span></td>
-                  <td>{r.emailed_to || '—'}</td>
-                  <td className="text-sm text-tertiary" style={{ maxWidth: '24rem', wordBreak: 'break-word' }}>
+                  <TableCell>{r.from_date} → {r.to_date}</TableCell>
+                  <TableCell><StatusBadge tone={r.status === 'completed' ? 'green' : r.status === 'failed' ? 'red' : 'amber'}>{r.status || '—'}</StatusBadge></TableCell>
+                  <TableCell>{r.emailed_to || '—'}</TableCell>
+                  <TableCell className="text-muted-foreground max-w-96 break-words text-sm">
                     {r.status === 'failed' ? 'Export failed' : r.s3_key ? 'Stored' : '—'}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {exportsList.length === 0 && (
-                <tr>
-                  <td colSpan={isSuperAdmin && !tenantFilter ? 6 : 5} style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <TableRow>
+                  <TableCell colSpan={isSuperAdmin && !tenantFilter ? 6 : 5} className="text-muted-foreground py-8 text-center">
                     No export jobs yet.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       {(logsData?.unavailable ||
         exportsData?.unavailable ||
         logsData?.error ||
         exportsData?.error) && (
-        <div
-          className="card"
-          style={{
-            marginBottom: '1rem',
-            padding: '1rem 1.25rem',
-            borderColor: 'var(--warning-200)',
-            background: 'var(--warning-50)',
-          }}
-        >
-          <p style={{ margin: 0, color: 'var(--warning-800)', fontSize: '0.9rem', lineHeight: 1.5 }}>
+        <Alert>
+          <AlertDescription>
             {(() => {
               const raw = logsData?.error || exportsData?.error || '';
               const code = logsData?.errorCode || exportsData?.errorCode;
@@ -285,12 +286,13 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
                 </>
               );
             })()}
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
-      <div className="card">
-        <h3 className="card-title">Audit log entries</h3>
+      <Card>
+        <CardHeader><CardTitle>Audit log entries</CardTitle></CardHeader>
+        <CardContent>
         {logsLoading ? (
           <div className="skeleton skeleton-card" style={{ height: 180 }} />
         ) : (
@@ -310,59 +312,58 @@ export default function AuditReportsPage({ scopeLabel = 'Audit Reports' }) {
                 style={{ marginBottom: '1rem' }}
               />
             ) : null}
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  {isSuperAdmin && !tenantFilter ? <th>College</th> : null}
-                  <th>Action</th>
-                  <th>Entity</th>
-                  <th>User</th>
-                  <th>IP</th>
-                </tr>
-              </thead>
-              <tbody>
+          <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Time</TableHead>
+                  {isSuperAdmin && !tenantFilter ? <TableHead>College</TableHead> : null}
+                  <TableHead>Action</TableHead>
+                  <TableHead>Entity</TableHead>
+                  <TableHead>User</TableHead>
+                  <TableHead>IP</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {displayLogs.length === 0 && logsTotalCount > 0 ? (
-                  <tr>
-                    <td colSpan={isSuperAdmin && !tenantFilter ? 6 : 5} className="text-center text-secondary">
+                  <TableRow>
+                    <TableCell colSpan={isSuperAdmin && !tenantFilter ? 6 : 5} className="text-muted-foreground text-center">
                       No log entries match your search.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : null}
                 {displayLogs.map((l) => (
-                  <tr key={l.id}>
-                    <td>{l.created_at ? new Date(l.created_at).toLocaleString() : '—'}</td>
+                  <TableRow key={l.id}>
+                    <TableCell>{l.created_at ? new Date(l.created_at).toLocaleString() : '—'}</TableCell>
                     {isSuperAdmin && !tenantFilter ? (
-                      <td className="text-sm">{l.tenant_name || '—'}</td>
+                      <TableCell className="text-sm">{l.tenant_name || '—'}</TableCell>
                     ) : null}
-                    <td><span className="badge badge-gray">{l.action || '—'}</span></td>
-                    <td>
+                    <TableCell><StatusBadge>{l.action || '—'}</StatusBadge></TableCell>
+                    <TableCell>
                       <div>{l.entity_type || '—'}{l.new_values?.label ? ` — ${l.new_values.label}` : ''}</div>
-                      {l.details ? <div className="text-xs text-tertiary">{l.details}</div> : null}
-                      {l.entity_id ? <div className="text-xs text-tertiary">{String(l.entity_id).slice(0, 8)}…</div> : null}
-                    </td>
-                    <td>{l.actor_email || l.actor_name || (l.user_id ? `${String(l.user_id).slice(0, 8)}…` : '—')}</td>
-                    <td>{l.ip_address || '—'}</td>
-                  </tr>
+                      {l.details ? <div className="text-muted-foreground text-xs">{l.details}</div> : null}
+                      {l.entity_id ? <div className="text-muted-foreground text-xs">{String(l.entity_id).slice(0, 8)}…</div> : null}
+                    </TableCell>
+                    <TableCell>{l.actor_email || l.actor_name || (l.user_id ? `${String(l.user_id).slice(0, 8)}…` : '—')}</TableCell>
+                    <TableCell>{l.ip_address || '—'}</TableCell>
+                  </TableRow>
                 ))}
                 {logsTotalCount === 0 && (
-                  <tr>
-                    <td colSpan={isSuperAdmin && !tenantFilter ? 6 : 5} style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <TableRow>
+                    <TableCell colSpan={isSuperAdmin && !tenantFilter ? 6 : 5} className="text-muted-foreground py-8 text-center">
                       {demoPurgeFilterActive
                         ? 'No demo purges logged for this college yet. Run a purge from Data Entry while logged in, then refresh.'
                         : isCollegeScope
                           ? 'No audit entries for your college in this date range. Try Last 90 days or clear filters.'
                           : 'No logs found for selected filters.'}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
           </>
         )}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

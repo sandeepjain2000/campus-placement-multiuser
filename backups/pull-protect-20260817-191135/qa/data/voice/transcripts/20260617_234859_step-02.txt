@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-02
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as employer (TechCorp). Employer dashboard loads. Password Admin@123 via guided sign-in.

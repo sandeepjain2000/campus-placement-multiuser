@@ -12,6 +12,13 @@ import { useToast } from '@/components/ToastProvider';
 import { employerPpoStatusLabel } from '@/lib/internshipPpo';
 import { templateMatchesEventTab } from '@/lib/offerEventType';
 import { formatDate, formatStatus } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Textarea } from '@/components/ui/textarea';
 
 const PPO_SORT_OPTIONS = [
   {
@@ -107,8 +114,8 @@ export default function EmployerInternshipPpoPage() {
 
   return (
     <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
             <Award size={26} aria-hidden />
             Internship PPO
@@ -124,17 +131,17 @@ export default function EmployerInternshipPpoPage() {
       </div>
 
       {error ? (
-        <div className="card" style={{ padding: '1.5rem', color: 'var(--danger-600)' }}>{error.message}</div>
+        <Alert variant="destructive"><AlertTitle>Could not load interns</AlertTitle><AlertDescription>{error.message}</AlertDescription></Alert>
       ) : null}
 
       {!templates.length ? (
-        <div className="card" style={{ padding: '1rem 1.25rem', marginBottom: '1rem' }}>
-          <p className="text-sm text-secondary" style={{ margin: 0 }}>
+        <Alert className="mb-4">
+          <AlertDescription>
             Create at least one{' '}
             <Link href="/dashboard/employer/offer-templates">job offer template</Link> before generating formal offers
             after PPO acceptance.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       <DataTableToolbar
@@ -158,7 +165,8 @@ export default function EmployerInternshipPpoPage() {
           const statusLabel = employerPpoStatusLabel(ppoStatus);
 
           return (
-            <div key={row.programApplicationId} className="card" style={{ padding: '1.25rem' }}>
+            <Card key={row.programApplicationId}>
+              <CardHeader className="flex-row justify-between gap-4">
               <div
                 style={{
                   display: 'flex',
@@ -181,16 +189,18 @@ export default function EmployerInternshipPpoPage() {
                   ) : null}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span className={`badge badge-${row.applicationStatus === 'selected' ? 'green' : 'amber'} badge-dot`}>
-                    {formatStatus(row.applicationStatus)}
-                  </span>
+                  <StatusBadge status={row.applicationStatus} showDot>
+                    {formatStatus(row.applicationStatus) || 'Applied'}
+                  </StatusBadge>
                   {row.ppo ? (
-                    <span className="badge badge-blue badge-dot">{statusLabel}</span>
+                    <StatusBadge status={ppoStatus} showDot>{statusLabel || '—'}</StatusBadge>
                   ) : (
-                    <span className="badge badge-gray badge-dot">No PPO yet</span>
+                    <StatusBadge tone="gray" showDot>No PPO yet</StatusBadge>
                   )}
                 </div>
               </div>
+              </CardHeader>
+              <CardContent>
 
               {row.ppoNotAvailableReason && !row.ppo ? (
                 <p className="text-sm text-secondary" style={{ margin: '0 0 0.75rem' }}>
@@ -213,9 +223,9 @@ export default function EmployerInternshipPpoPage() {
 
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                 {row.canConfirmPpo && !isConfirming ? (
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-primary btn-sm"
+                    size="sm"
                     disabled={isBusy}
                     onClick={() => {
                       setConfirmingId(row.programApplicationId);
@@ -224,13 +234,14 @@ export default function EmployerInternshipPpoPage() {
                     }}
                   >
                     Confirm PPO
-                  </button>
+                  </Button>
                 ) : null}
 
                 {row.canRevokePpo ? (
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-secondary btn-sm"
+                    variant="outline"
+                    size="sm"
                     disabled={isBusy}
                     onClick={() => {
                       if (!window.confirm('Revoke this PPO? You can confirm again later if allowed.')) return;
@@ -238,13 +249,13 @@ export default function EmployerInternshipPpoPage() {
                     }}
                   >
                     Revoke PPO
-                  </button>
+                  </Button>
                 ) : null}
 
                 {row.canGenerateJobOffer && !isGenerating ? (
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-primary btn-sm"
+                    size="sm"
                     disabled={isBusy || !templates.length}
                     onClick={() => {
                       setGeneratingId(row.programApplicationId);
@@ -253,38 +264,40 @@ export default function EmployerInternshipPpoPage() {
                     }}
                   >
                     Generate job offer
-                  </button>
+                  </Button>
                 ) : null}
               </div>
 
               {isConfirming ? (
                 <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
-                  <label className="form-label" htmlFor={`ppo-notes-${row.programApplicationId}`}>
+                  <Field>
+                  <FieldLabel htmlFor={`ppo-notes-${row.programApplicationId}`}>
                     Optional note to student
-                  </label>
-                  <textarea
+                  </FieldLabel>
+                  <Textarea
                     id={`ppo-notes-${row.programApplicationId}`}
-                    className="form-input"
                     rows={3}
                     maxLength={2000}
                     value={employerNotes}
                     onChange={(e) => setEmployerNotes(e.target.value)}
                     placeholder="Context about the PPO (not the job offer letter)."
                   />
+                  </Field>
                   <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-primary btn-sm"
+                      size="sm"
                       disabled={isBusy}
                       onClick={() =>
                         postAction(row.programApplicationId, { action: 'confirm', employerNotes })
                       }
                     >
                       Confirm & notify student
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-sm"
+                      variant="ghost"
+                      size="sm"
                       disabled={isBusy}
                       onClick={() => {
                         setConfirmingId(null);
@@ -292,36 +305,38 @@ export default function EmployerInternshipPpoPage() {
                       }}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : null}
 
               {isGenerating ? (
                 <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
-                  <label className="form-label" htmlFor={`ppo-template-${row.programApplicationId}`}>
+                  <Field>
+                  <FieldLabel htmlFor={`ppo-template-${row.programApplicationId}`}>
                     Job offer template
-                  </label>
-                  <select
+                  </FieldLabel>
+                  <AdminFilterSelect
                     id={`ppo-template-${row.programApplicationId}`}
-                    className="form-input"
+                    className="w-full"
                     value={templateId}
-                    onChange={(e) => setTemplateId(e.target.value)}
-                  >
-                    <option value="">Select template…</option>
-                    {templates.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name} — {t.job_title} (₹{Number(t.salary || 0).toLocaleString('en-IN')})
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-tertiary" style={{ margin: '0.5rem 0 0' }}>
+                    onValueChange={setTemplateId}
+                    items={[
+                      { label: 'Select template…', value: 'all' },
+                      ...templates.map((t) => ({
+                        label: `${t.name} — ${t.job_title} (₹${Number(t.salary || 0).toLocaleString('en-IN')})`,
+                        value: t.id,
+                      })),
+                    ]}
+                  />
+                  <FieldDescription>
                     CTC and letter content come from the template you choose — not from the PPO step.
-                  </p>
+                  </FieldDescription>
+                  </Field>
                   <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-primary btn-sm"
+                      size="sm"
                       disabled={isBusy || !templateId}
                       onClick={() =>
                         postAction(row.programApplicationId, {
@@ -331,10 +346,11 @@ export default function EmployerInternshipPpoPage() {
                       }
                     >
                       Generate offer
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-sm"
+                      variant="ghost"
+                      size="sm"
                       disabled={isBusy}
                       onClick={() => {
                         setGeneratingId(null);
@@ -342,18 +358,19 @@ export default function EmployerInternshipPpoPage() {
                       }}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : null}
-            </div>
+              </CardContent>
+            </Card>
           );
         })}
 
         {!error && filtered.length === 0 ? (
-          <div className="card" style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <Card><CardContent className="py-10 text-center text-muted-foreground">
             No selected or in-progress interns yet.
-          </div>
+          </CardContent></Card>
         ) : null}
       </div>
     </div>

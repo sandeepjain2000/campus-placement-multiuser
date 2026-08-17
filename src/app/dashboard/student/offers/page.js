@@ -8,7 +8,11 @@ import { canStudentRespondToOffer, normalizeOfferStatus } from '@/lib/offerStatu
 import CompanyNameLink from '@/components/CompanyNameLink';
 import PageLoading from '@/components/PageLoading';
 import StudentOfferRespondActions from '@/components/student/StudentOfferRespondActions';
-import { FileText } from 'lucide-react';
+import { BriefcaseBusiness, Clock3, FileText, MapPin, PartyPopper } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 import {
   STUDENT_OFFER_LETTER_ERRORS,
 } from '@/lib/studentOfferLetter';
@@ -60,7 +64,7 @@ export default function StudentOffersPage() {
   const { data: offers, error, isLoading, mutate } = useSWR('/api/student/offers', fetcher, {
     shouldRetryOnError: false,
   });
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 60000); // update every minute
     return () => clearInterval(timer);
@@ -74,52 +78,44 @@ export default function StudentOffersPage() {
       ? error.message
       : STUDENT_OFFERS_LIST_ERRORS.LOAD_FAILED;
     return (
-      <div className="animate-fadeIn">
-        <div className="page-header">
-          <div className="page-header-left">
-            <h1>My Offers</h1>
-          </div>
-        </div>
-        <div
-          className="card"
-          role="alert"
-          style={{ padding: '1.25rem 1.5rem', borderColor: 'var(--danger-200)', background: 'var(--danger-50)' }}
-        >
-          <p style={{ margin: '0 0 0.75rem', color: 'var(--danger-800)', lineHeight: 1.55 }}>{message}</p>
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => mutate()}>
+      <div className="animate-fadeIn flex flex-col gap-4">
+        <h1 className="text-2xl font-semibold tracking-tight">My Offers</h1>
+        <Alert variant="destructive">
+          <AlertTitle>Could not load offers</AlertTitle>
+          <AlertDescription>{message}</AlertDescription>
+          <Button type="button" variant="outline" size="sm" className="mt-3" onClick={() => mutate()}>
             Try again
-          </button>
-        </div>
+          </Button>
+        </Alert>
       </div>
     );
   }
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>🎉 My Offers</h1>
-          <p>
+    <div className="animate-fadeIn flex flex-col gap-4">
+      <div className="min-w-0">
+          <h1 className="text-foreground m-0 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <BriefcaseBusiness className="text-muted-foreground size-7" strokeWidth={1.5} />
+            My Offers
+          </h1>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm leading-relaxed">
             Formal offers live here — drafted offer letters, compensation terms, and your accept or decline response.
             Being <strong>selected</strong> on My Applications is an earlier step; you will get a separate email when a
             formal offer is published.
           </p>
-        </div>
       </div>
 
       {offers?.length > 0 && !offers.some((o) => normalizeOfferStatus(o.status) === 'pending' && !isOfferDeadlinePassed(o.deadline, new Date(now))) ? (
-        <div
-          className="card"
-          style={{ marginBottom: '1.25rem', padding: '1rem 1.25rem', borderColor: 'var(--border-default)' }}
-        >
-          <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+        <Alert>
+          <AlertTitle>No response needed</AlertTitle>
+          <AlertDescription>
             You have offer records on file, but none are waiting for your response. New offers must be created with status{' '}
             <strong>pending</strong> (employer bulk generate, Create offer, or college manual add). If you expected Accept / Decline buttons, ask your placement office to re-open the offer as pending.
-          </p>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div className="flex flex-col gap-4">
         {offers && offers.length > 0 ? offers.map(offer => {
           const status = normalizeOfferStatus(offer.status);
           const isExpired = status === 'expired' || (status === 'pending' && isOfferDeadlinePassed(offer.deadline, new Date(now)));
@@ -129,131 +125,84 @@ export default function StudentOffersPage() {
           const offerId = String(offer.id);
 
           return (
-            <div key={offerId} className={`offer-card ${effectiveStatus === 'pending' ? 'highlight' : ''}`} style={{ opacity: effectiveStatus === 'expired' ? 0.75 : 1 }}>
+            <Card key={offerId} className={effectiveStatus === 'pending' ? 'gap-0 overflow-hidden border-amber-500/35 py-0' : 'gap-0 overflow-hidden py-0'}>
               {effectiveStatus === 'pending' && (
-                <div style={{ 
-                  position: 'absolute', top: 0, left: 0, right: 0, 
-                  padding: '0.5rem 1.5rem', 
-                  background: 'linear-gradient(90deg, var(--success-500), var(--success-600))',
-                  color: 'white', fontSize: '0.8125rem', fontWeight: 600, textAlign: 'center',
-                  pointerEvents: 'none',
-                  zIndex: 0,
-                }}
-                >
-                  ⏳ Action required — {timeLeft === 'Expired' ? 'Offer Expired' : `Respond before ${formatDate(offer.deadline)} (${timeLeft})`}
+                <div className="bg-amber-500/10 px-4 py-2 text-center text-xs font-semibold text-amber-700 dark:text-amber-400" role="status">
+                  Action required — {timeLeft === 'Expired' ? 'Offer expired' : `Respond before ${formatDate(offer.deadline)} (${timeLeft})`}
                 </div>
               )}
               
-              <div className="offer-card-header" style={{ marginTop: effectiveStatus === 'pending' ? '2rem' : 0 }}>
-                <div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
+              <CardHeader className="flex-row items-start justify-between gap-3 px-5 py-4">
+                <div className="min-w-0">
+                  <CardTitle className="truncate text-lg">
                     <CompanyNameLink name={offer.company} website={offer.website} />
-                  </h3>
-                  <p className="text-sm text-secondary">{offer.role}</p>
+                  </CardTitle>
+                  <CardDescription className="mt-1">{offer.role}</CardDescription>
                 </div>
-                <span
-                  className={`badge badge-${effectiveStatus === 'accepted' ? 'green' : effectiveStatus === 'pending' ? 'amber' : effectiveStatus === 'expired' ? 'gray' : effectiveStatus === 'revoked' ? 'red' : 'red'} badge-dot`}
-                  style={{ padding: '0.375rem 1rem', fontSize: '0.8125rem' }}
-                >
-                  {effectiveStatus === 'accepted'
-                    ? '✅ Accepted'
-                    : effectiveStatus === 'pending'
-                      ? '⏳ Pending'
-                      : effectiveStatus === 'expired'
-                        ? '⏱️ Expired'
-                        : effectiveStatus === 'revoked'
-                          ? '⛔ Revoked'
-                          : '❌ Declined'}
-                </span>
-              </div>
+                <StatusBadge status={effectiveStatus || 'pending'} showDot className="min-w-fit">
+                  {effectiveStatus === 'rejected' ? 'Declined' : effectiveStatus.charAt(0).toUpperCase() + effectiveStatus.slice(1)}
+                </StatusBadge>
+              </CardHeader>
 
-              <div className="offer-details">
-                <div className="offer-detail-item">
-                  <div className="offer-detail-label">Annual CTC</div>
-                  <div className="offer-detail-value" style={{ color: 'var(--success-600)', fontSize: '1.25rem' }}>
+              <CardContent className="flex flex-col gap-4 border-t px-5 py-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="bg-muted/50 rounded-lg border p-3">
+                  <div className="text-muted-foreground text-xs font-medium uppercase">Annual CTC</div>
+                  <div className="mt-1 text-lg font-semibold">
                     {formatCurrency(offer.salary)}
                   </div>
                 </div>
-                <div className="offer-detail-item">
-                  <div className="offer-detail-label">Location</div>
-                  <div className="offer-detail-value">📍 {offer.location}</div>
+                <div className="bg-muted/50 rounded-lg border p-3">
+                  <div className="text-muted-foreground text-xs font-medium uppercase">Location</div>
+                  <div className="mt-1 flex items-center gap-1.5 text-sm"><MapPin className="size-4" />{offer.location || '—'}</div>
                 </div>
-                <div className="offer-detail-item">
-                  <div className="offer-detail-label">Joining Date</div>
-                  <div className="offer-detail-value">📅 {formatDate(offer.joiningDate)}</div>
+                <div className="bg-muted/50 rounded-lg border p-3">
+                  <div className="text-muted-foreground text-xs font-medium uppercase">Joining Date</div>
+                  <div className="mt-1 text-sm">{formatDate(offer.joiningDate)}</div>
                 </div>
-                <div className="offer-detail-item">
-                  <div className="offer-detail-label">Offer Date</div>
-                  <div className="offer-detail-value">{formatDate(offer.createdAt)}</div>
+                <div className="bg-muted/50 rounded-lg border p-3">
+                  <div className="text-muted-foreground text-xs font-medium uppercase">Offer Date</div>
+                  <div className="mt-1 text-sm">{formatDate(offer.createdAt)}</div>
                 </div>
               </div>
 
-              <div style={{ margin: '0 0 1.25rem' }}>
-                <Link
-                  href={`/dashboard/student/offers/${encodeURIComponent(offerId)}/letter`}
-                  className="btn btn-secondary btn-sm"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  render={<Link href={`/dashboard/student/offers/${encodeURIComponent(offerId)}/letter`} />}
+                  nativeButton={false}
                 >
-                  <FileText size={14} />
+                  <FileText data-icon="inline-start" />
                   Open Offer Letter
-                </Link>
-              </div>
+                </Button>
 
               {canRespond ? (
                 <StudentOfferRespondActions offer={offer} onUpdated={() => mutate()} />
               ) : null}
 
               {effectiveStatus === 'expired' && (
-                <div style={{ 
-                  padding: '0.75rem 1rem', background: 'var(--bg-secondary)', 
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-lg)', fontSize: '0.875rem', color: 'var(--text-tertiary)' 
-                }}>
-                  ⏱️ This offer expired on {formatDate(offer.deadline)}. Your response time lapsed.
-                </div>
+                <Alert><Clock3 /><AlertDescription>This offer expired on {formatDate(offer.deadline)}. Your response time lapsed.</AlertDescription></Alert>
               )}
 
               {effectiveStatus === 'accepted' && (
-                <div style={{ 
-                  padding: '0.75rem 1rem', background: 'var(--success-50)', 
-                  borderRadius: 'var(--radius-lg)', fontSize: '0.875rem', color: 'var(--success-700)' 
-                }}>
-                  ✅ You accepted this offer on {formatDate(offer.acceptedAt)}. Congratulations! 🎊
-                </div>
+                <Alert className="border-green-600/25 bg-green-600/5"><PartyPopper /><AlertDescription>You accepted this offer on {formatDate(offer.acceptedAt)}. Congratulations.</AlertDescription></Alert>
               )}
 
               {effectiveStatus === 'rejected' && (
-                <div
-                  style={{
-                    padding: '0.75rem 1rem',
-                    background: 'var(--bg-secondary)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-lg)',
-                    fontSize: '0.875rem',
-                    color: 'var(--text-secondary)',
-                  }}
-                >
+                <Alert><AlertDescription>
                   You declined this offer{offer.rejectedAt ? ` on ${formatDate(offer.rejectedAt)}` : ''}.
-                </div>
+                </AlertDescription></Alert>
               )}
 
               {effectiveStatus === 'revoked' && (
-                <div
-                  style={{
-                    padding: '0.75rem 1rem',
-                    background: 'var(--danger-50)',
-                    borderRadius: 'var(--radius-lg)',
-                    fontSize: '0.875rem',
-                    color: 'var(--danger-700)',
-                  }}
-                >
-                  This offer was revoked by the employer.
-                </div>
+                <Alert variant="destructive"><AlertDescription>This offer was revoked by the employer.</AlertDescription></Alert>
               )}
-            </div>
+              </CardContent>
+            </Card>
           );
         }) : (
-          <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-tertiary)' }}>No offers yet.</div>
+          <Card className="gap-0 py-10"><CardContent className="text-muted-foreground text-center">No offers yet.</CardContent></Card>
         )}
       </div>
 

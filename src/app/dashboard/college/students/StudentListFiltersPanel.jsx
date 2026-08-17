@@ -3,6 +3,10 @@
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import MultiSelectDropdown from '@/components/filters/MultiSelectDropdown';
 import { JOB_STATUS_OPTIONS, SORT_OPTIONS } from './useStudentListFilters';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 
 export default function StudentListFiltersPanel({
   search,
@@ -31,36 +35,18 @@ export default function StudentListFiltersPanel({
   totalCount,
 }) {
   const activeSort = SORT_OPTIONS.find((o) => o.value === sortBy);
-  const searchActive = Boolean(String(search || '').trim());
 
   return (
-    <div
-      className={`card student-list-filters-panel${hasFilters ? ' is-filtered' : ''}`}
-      style={{ padding: '1.25rem', marginBottom: '1.5rem' }}
-    >
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-        <div
-          className={searchActive ? 'filter-multiselect filter-multiselect--active' : 'filter-multiselect'}
-          style={{ position: 'relative', flex: '1 1 220px' }}
-        >
-          <Search
-            size={16}
-            style={{
-              position: 'absolute',
-              left: '1rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: searchActive ? 'var(--primary-600)' : 'var(--text-tertiary)',
-              pointerEvents: 'none',
-              transition: 'color 0.15s ease-out',
-            }}
-          />
-          <input
-            className={`form-input${searchActive ? ' is-filter-active' : ''}`}
+    <Card size="sm" className={hasFilters ? 'ring-primary/20' : undefined}>
+      <CardContent className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-[220px] flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="pl-9"
             placeholder="Search by name, roll, batch, or degree…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.5rem' }}
             aria-label="Search students"
           />
         </div>
@@ -111,90 +97,67 @@ export default function StudentListFiltersPanel({
         />
 
         {hasFilters && (
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost btn-sm"
+            variant="ghost"
+            size="sm"
             onClick={clearFilters}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--danger-600)' }}
+            className="text-destructive"
           >
-            <X size={14} /> Clear filters
-          </button>
+            <X data-icon="inline-start" /> Clear filters
+          </Button>
         )}
 
-        <span style={{ marginLeft: 'auto', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <span className="ml-auto text-sm font-medium text-muted-foreground">
           {filteredCount} of {totalCount}
         </span>
       </div>
 
-      <div
-        style={{
-          marginTop: '1rem',
-          paddingTop: '1rem',
-          borderTop: '1px solid var(--border-default)',
-        }}
-      >
-        <button
+      <Separator />
+      <div>
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => setSortOpen((v) => !v)}
           aria-expanded={sortOpen}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            padding: 0,
-            border: 'none',
-            background: 'transparent',
-            cursor: 'pointer',
-            color: 'var(--text-primary)',
-          }}
+          className="w-full justify-between"
         >
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-tertiary)' }}>
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Sort by
             {activeSort && !sortOpen ? (
-              <span style={{ marginLeft: '0.5rem', fontWeight: 600, textTransform: 'none', letterSpacing: 0, color: 'var(--text-secondary)' }}>
+              <span className="ml-2 normal-case tracking-normal text-foreground">
                 · {activeSort.label}
               </span>
             ) : null}
           </span>
           {sortOpen ? (
-            <ChevronUp size={18} style={{ color: 'var(--text-tertiary)' }} aria-hidden />
+            <ChevronUp aria-hidden />
           ) : (
-            <ChevronDown size={18} style={{ color: 'var(--text-tertiary)' }} aria-hidden />
+            <ChevronDown aria-hidden />
           )}
-        </button>
+        </Button>
 
         {sortOpen && (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.5rem',
-              marginTop: '0.75rem',
-            }}
-          >
+          <div className="mt-3 flex flex-wrap gap-2">
             {SORT_OPTIONS.map((opt) => {
               const active = sortBy === opt.value;
               return (
-                <button
+                <Button
                   key={opt.value}
                   type="button"
-                  className="btn btn-sm"
+                  size="sm"
+                  variant={active ? 'default' : 'outline'}
                   onClick={() => setSortBy(opt.value)}
-                  style={{
-                    background: active ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                    color: active ? '#fff' : 'var(--text-secondary)',
-                    border: `1px solid ${active ? 'var(--primary-600)' : 'var(--border-default)'}`,
-                    fontWeight: active ? 600 : 500,
-                  }}
                 >
                   {opt.label}
-                </button>
+                </Button>
               );
             })}
           </div>
         )}
       </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

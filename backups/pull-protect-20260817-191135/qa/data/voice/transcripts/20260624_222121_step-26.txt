@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-26
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Internship supervisors. Intern cards for your company; Assign supervisor opens the contact form.

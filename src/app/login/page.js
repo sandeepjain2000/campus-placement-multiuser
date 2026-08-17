@@ -4,13 +4,21 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
-import { getDashboardPath } from '@/lib/utils';
+import { getDashboardPath, cn } from '@/lib/utils';
 import { DEMO_LOGINS, DEMO_SEED_PASSWORD, isDemoLoginsEnabled, SEEDED_EMPLOYER_CREDENTIALS } from '@/lib/demoLogins';
 import { ArrowRight, ChevronDown, ChevronUp, KeyRound, GraduationCap, Building2, School, ShieldCheck, Users, Eye, EyeOff, MessageCircleQuestion, BookOpen, ClipboardList } from 'lucide-react';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
 import LoginSupportContact from '@/components/auth/LoginSupportContact';
 import DevScreenTag from '@/components/DevScreenTag';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Separator } from '@/components/ui/separator';
 import {
   consumeLoginPrefillEmail,
   readLoginFormValues,
@@ -499,440 +507,280 @@ function LoginPageInner() {
     const meta = DEMO_GROUP_META[groupKey];
     const Icon = meta.icon;
     return (
-      <div
-        key={groupKey}
-        style={{
-          background: 'var(--bg-primary)',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-md)',
-          overflow: 'hidden',
-          boxShadow: 'var(--shadow-sm)',
-          minWidth: 0,
-        }}
-      >
-        <div
-          style={{
-            background: meta.bg,
-            borderBottom: `1px solid ${meta.border}`,
-            padding: '0.5rem 0.65rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            color: meta.color,
-            fontWeight: 700,
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-            fontSize: '0.65rem',
-          }}
+      <Card key={groupKey} size="sm" className="min-w-0 gap-0 overflow-hidden py-0">
+        <CardHeader
+          className="gap-1 border-b px-2.5 py-2"
+          style={{ background: meta.bg, borderBottomColor: meta.border, color: meta.color }}
         >
-          <Icon size={13} aria-hidden />
-          {meta.label} ({items.length})
-        </div>
-        <div>
+          <CardTitle className="flex items-center gap-1.5 text-[0.65rem] font-bold tracking-wide uppercase">
+            <Icon className="size-3.5" aria-hidden />
+            {meta.label} ({items.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
           {items.map((demo, i) => (
             <div
               key={demo.email}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.45rem 0.6rem',
-                borderBottom: i < items.length - 1 ? '1px solid var(--border-default)' : 'none',
-                borderLeft: demo.isDummy ? undefined : `3px solid ${meta.color}`,
-                background: 'var(--bg-primary)',
-                gap: '0.4rem',
-              }}
+              className={cn(
+                'flex items-center justify-between gap-2 px-2.5 py-1.5',
+                i < items.length - 1 && 'border-border border-b',
+                !demo.isDummy && 'border-l-[3px]'
+              )}
+              style={!demo.isDummy ? { borderLeftColor: meta.color } : undefined}
             >
-              <div style={{ minWidth: 0 }}>
+              <div className="min-w-0">
                 <div
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    color: demo.isDummy ? 'var(--text-tertiary)' : 'var(--text-primary)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
+                  className={cn(
+                    'truncate text-xs font-semibold',
+                    demo.isDummy ? 'text-muted-foreground' : 'text-foreground'
+                  )}
                 >
                   {demo.label}
-                  {demo.name ? (
-                    <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}> · {demo.name}</span>
-                  ) : null}
+                  {demo.name ? <span className="text-muted-foreground font-normal"> · {demo.name}</span> : null}
                 </div>
-                <div
-                  style={{
-                    fontSize: '0.68rem',
-                    color: 'var(--text-tertiary)',
-                    fontFamily: 'monospace',
-                    marginTop: '0.06rem',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {demo.email}
-                </div>
+                <div className="text-muted-foreground mt-0.5 truncate font-mono text-[0.68rem]">{demo.email}</div>
               </div>
-              <button
+              <Button
                 type="button"
-                onClick={() => fillCredential(demo)}
+                size="sm"
+                variant={demo.isDummy ? 'secondary' : 'outline'}
                 disabled={demo.isDummy}
-                style={{
-                  flexShrink: 0,
-                  padding: '0.2rem 0.45rem',
-                  fontSize: '0.68rem',
-                  fontWeight: 600,
-                  borderRadius: 'var(--radius-sm)',
-                  border: `1px solid ${demo.isDummy ? 'var(--border-default)' : meta.border}`,
-                  background: demo.isDummy ? 'var(--bg-secondary)' : meta.bg,
-                  color: demo.isDummy ? 'var(--text-tertiary)' : meta.color,
-                  cursor: demo.isDummy ? 'not-allowed' : 'pointer',
-                }}
+                className="h-7 shrink-0 px-2 text-[0.68rem]"
+                style={
+                  demo.isDummy
+                    ? undefined
+                    : { borderColor: meta.border, background: meta.bg, color: meta.color }
+                }
+                onClick={() => fillCredential(demo)}
               >
                 {demo.isDummy ? 'Soon' : 'Use →'}
-              </button>
+              </Button>
             </div>
           ))}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-secondary)', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-      <div style={{ position: 'fixed', top: '0.65rem', right: '0.75rem', zIndex: 100000 }}>
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden bg-muted/40 px-4 py-10 sm:px-6 lg:px-8">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary-100),_transparent_55%),radial-gradient(ellipse_at_bottom_right,_var(--info-100),_transparent_45%)] opacity-80"
+        aria-hidden
+      />
+      <div className="fixed top-2.5 right-3 z-[100000]">
         <DevScreenTag />
       </div>
 
       <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '2rem 1rem',
-        }}
+        className={cn(
+          'relative z-10 flex w-full flex-col gap-4',
+          showCredentials && showDemoLogins ? 'max-w-5xl' : 'max-w-lg'
+        )}
       >
-      <div style={{ width: '100%', maxWidth: showCredentials && showDemoLogins ? 'min(960px, 100%)' : '420px', transition: 'max-width 0.2s ease' }}>
+        <Link
+          href="/"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+        >
+          <span>&larr;</span> Back to landing page
+        </Link>
 
-        {/* Back to Landing Link */}
-        <div style={{ marginBottom: '1.25rem', textAlign: 'left' }}>
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--primary-600)', fontSize: '0.875rem', textDecoration: 'none', fontWeight: 500 }}>
-            <span>&larr;</span> Back to landing page
-          </Link>
-        </div>
-
-        {/* Modern Centered Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex', height: '2.5rem', width: '2.5rem', alignItems: 'center', justifyContent: 'center', borderRadius: '0.75rem', backgroundColor: 'var(--primary-600)', color: '#ffffff', fontWeight: 'bold', fontSize: '1.125rem', boxShadow: '0 4px 6px rgba(79, 70, 229, 0.2)' }}>
-              P
+        <Card className="w-full gap-6 py-6">
+          <CardHeader className="gap-6 px-6">
+            <Link href="/" className="inline-flex items-center gap-3 no-underline">
+              <div className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-lg text-lg font-bold shadow-xs">
+                P
+              </div>
+              <span className="text-foreground text-lg font-semibold tracking-tight">PlacementHub</span>
+            </Link>
+            <div>
+              <CardTitle className="mb-2 text-2xl font-semibold">Welcome back</CardTitle>
+              <CardDescription className="text-base">Sign in to your account to continue</CardDescription>
             </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.025em' }}>PlacementHub</span>
-          </Link>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>Welcome back</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Sign in to your account to continue</p>
-        </div>
+          </CardHeader>
 
-        {/* Auth Card */}
-        <div style={{ backgroundColor: 'var(--bg-primary)', borderRadius: 'var(--radius-xl)', padding: '2rem', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-default)' }}>
-          
-          {registeredBanner && !error && (
-            <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--success-50)', border: '1px solid var(--success-100)', borderRadius: 'var(--radius-md)', color: 'var(--success-700)', fontSize: '0.875rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              {registeredBanner}
-            </div>
-          )}
+          <CardContent className="flex flex-col gap-4 px-6">
+            {registeredBanner && !error && (
+              <Alert>
+                <AlertDescription>{registeredBanner}</AlertDescription>
+              </Alert>
+            )}
 
-          {error && (
-            <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--danger-50)', border: '1px solid var(--danger-100)', borderRadius: 'var(--radius-md)', color: 'var(--danger-700)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-              {error}
-            </div>
-          )}
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-          {showDemoLogins && (
-            <div className="hidden-on-mobile" style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-default)' }}>
-              <button
-                type="button"
-                id="view-credentials-btn"
-                onClick={() => setShowCredentials((v) => !v)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0.625rem 0.875rem',
-                  background: showCredentials ? 'var(--primary-50)' : 'var(--bg-secondary)',
-                  border: `1px solid ${showCredentials ? 'var(--primary-300)' : 'var(--border-default)'}`,
-                  borderRadius: 'var(--radius-md)',
-                  cursor: 'pointer',
-                  color: showCredentials ? 'var(--primary-700)' : 'var(--text-primary)',
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  transition: 'all 0.15s',
-                }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <KeyRound size={15} />
-                  Demo accounts
-                </span>
-                {showCredentials ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
-
-              {showCredentials && (
-                <div
-                  style={{
-                    marginTop: '0.625rem',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: 'var(--radius-md)',
-                    overflow: 'hidden',
-                  }}
+            {showDemoLogins && (
+              <div className="hidden-on-mobile flex flex-col gap-2.5">
+                <Button
+                  type="button"
+                  id="view-credentials-btn"
+                  variant={showCredentials ? 'secondary' : 'outline'}
+                  className="h-auto w-full justify-between px-3 py-2.5"
+                  onClick={() => setShowCredentials((v) => !v)}
                 >
-                  <div
-                    style={{
-                      padding: '0.5rem 0.875rem',
-                      background: 'var(--bg-secondary)',
-                      borderBottom: '1px solid var(--border-default)',
-                      fontSize: '0.75rem',
-                      color: 'var(--text-secondary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    Same layout as <strong>View all system accounts</strong> — password:{' '}
-                    <code
-                      style={{
-                        fontWeight: 700,
-                        color: 'var(--text-primary)',
-                        background: 'var(--bg-primary)',
-                        padding: '0.1rem 0.35rem',
-                        borderRadius: 4,
-                      }}
-                    >
-                      {DEMO_SEED_PASSWORD}
-                    </code>
-                  </div>
+                  <span className="inline-flex items-center gap-2">
+                    <KeyRound data-icon="inline-start" />
+                    Demo accounts
+                  </span>
+                  {showCredentials ? <ChevronUp /> : <ChevronDown />}
+                </Button>
 
-                  <div
-                    style={{
-                      padding: '0.75rem',
-                      background: 'var(--bg-primary)',
-                    }}
-                  >
-                    <div
-                      className="login-demo-accounts-grid"
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-                        gap: '0.75rem',
-                        alignItems: 'start',
-                      }}
-                    >
-                      <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {renderDemoListCard('student')}
-                        {renderDemoListCard('alumni')}
-                        {renderDemoListCard('dummy')}
-                      </div>
-                      <div style={{ minWidth: 0 }}>{renderDemoListCard('employer')}</div>
-                      <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {renderDemoListCard('superadmin')}
-                        {renderDemoListCard('admin')}
-                        {renderDemoListCard('placement_committee')}
+                {showCredentials && (
+                  <div className="border-border overflow-hidden rounded-lg border">
+                    <div className="bg-muted text-muted-foreground flex flex-wrap items-center gap-1.5 border-b px-3.5 py-2 text-xs">
+                      Same layout as <strong className="text-foreground">View all system accounts</strong> — password:{' '}
+                      <code className="bg-background text-foreground rounded px-1.5 py-0.5 font-bold">{DEMO_SEED_PASSWORD}</code>
+                    </div>
+
+                    <div className="bg-card p-3">
+                      <div className="login-demo-accounts-grid grid grid-cols-1 gap-3 md:grid-cols-3">
+                        <div className="flex min-w-0 flex-col gap-3">
+                          {renderDemoListCard('student')}
+                          {renderDemoListCard('alumni')}
+                          {renderDemoListCard('dummy')}
+                        </div>
+                        <div className="min-w-0">{renderDemoListCard('employer')}</div>
+                        <div className="flex min-w-0 flex-col gap-3">
+                          {renderDemoListCard('superadmin')}
+                          {renderDemoListCard('admin')}
+                          {renderDemoListCard('placement_committee')}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <style>{`
-                    @media (max-width: 720px) {
-                      .login-demo-accounts-grid {
-                        grid-template-columns: 1fr !important;
-                      }
-                    }
-                  `}</style>
-                </div>
-              )}
-            </div>
-          )}
-
-          {guidedAutoLogin && process.env.NODE_ENV !== 'production' ? (
-            <div
-              className="card"
-              style={{
-                marginBottom: '1rem',
-                padding: '0.75rem 1rem',
-                border: '1px solid var(--primary-200)',
-                background: 'var(--primary-50)',
-                fontSize: '0.875rem',
-                color: 'var(--primary-900)',
-              }}
-            >
-              Guided test — signing in automatically as <strong>{guidedEmail || 'demo user'}</strong>.
-              {loading ? ' Please wait…' : null}
-            </div>
-          ) : null}
-
-          <form id="login-form" ref={loginFormRef} onSubmit={handleSubmit} autoComplete="off">
-            <div className="form-group" style={{ marginBottom: '1.25rem' }}>
-              <label className="form-label" htmlFor="login-email">Email address</label>
-              <input
-                id="login-email"
-                name="email"
-                type="email"
-                autoComplete="off"
-                readOnly={emailReadOnly}
-                onFocus={() => setEmailReadOnly(false)}
-                onClick={() => setEmailReadOnly(false)}
-                className="form-input"
-                placeholder="you@example.com"
-                defaultValue=""
-                onInput={() => {
-                  userChoseCredentials.current = true;
-                }}
-                required
-              />
-            </div>
-
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label className="form-label" htmlFor="login-password">Password</label>
-                <Link href="/forgot-password" style={{ fontSize: '0.8125rem', color: 'var(--primary-600)', fontWeight: 500, textDecoration: 'none' }}>
-                  Forgot password?
-                </Link>
+                )}
               </div>
-              <div style={{ position: 'relative' }}>
-              <input
-                id="login-password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="off"
-                readOnly={passwordReadOnly}
-                onFocus={() => setPasswordReadOnly(false)}
-                onClick={() => setPasswordReadOnly(false)}
-                className="form-input"
-                placeholder="Enter your password"
-                defaultValue=""
-                onInput={() => {
-                  userChoseCredentials.current = true;
-                }}
-                onKeyDown={(e) => {
-                  if (e.key !== 'Enter') return;
-                  if (captchaToken) return; // let form submit
-                  e.preventDefault();
-                  userChoseCredentials.current = true;
-                  setError('Verification is still loading. Wait a moment, then try again.');
-                }}
-                style={{ paddingRight: '2.4rem' }}
-                required
-              />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  title={showPassword ? 'Hide password' : 'Show password'}
-                  className="btn btn-ghost btn-sm"
-                  style={{
-                    position: 'absolute',
-                    right: '0.45rem',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    minWidth: 28,
-                    width: 28,
-                    height: 28,
-                    padding: 0,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
+            )}
+
+            {guidedAutoLogin && process.env.NODE_ENV !== 'production' ? (
+              <Alert>
+                <AlertDescription>
+                  Guided test — signing in automatically as <strong>{guidedEmail || 'demo user'}</strong>.
+                  {loading ? ' Please wait…' : null}
+                </AlertDescription>
+              </Alert>
+            ) : null}
+
+            <form id="login-form" ref={loginFormRef} onSubmit={handleSubmit} autoComplete="off">
+              <FieldGroup className="gap-4">
+                <Field className="gap-2">
+                  <FieldLabel htmlFor="login-email" className="leading-5">
+                    Email address*
+                  </FieldLabel>
+                  <Input
+                    id="login-email"
+                    name="email"
+                    type="email"
+                    autoComplete="off"
+                    readOnly={emailReadOnly}
+                    onFocus={() => setEmailReadOnly(false)}
+                    onClick={() => setEmailReadOnly(false)}
+                    placeholder="Enter your email address"
+                    defaultValue=""
+                    onInput={() => {
+                      userChoseCredentials.current = true;
+                    }}
+                    required
+                  />
+                </Field>
+
+                <Field className="w-full gap-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <FieldLabel htmlFor="login-password" className="leading-5">
+                      Password*
+                    </FieldLabel>
+                    <Link href="/forgot-password" className="text-muted-foreground hover:text-foreground text-sm hover:underline">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <InputGroup>
+                    <InputGroupInput
+                      id="login-password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="off"
+                      readOnly={passwordReadOnly}
+                      onFocus={() => setPasswordReadOnly(false)}
+                      onClick={() => setPasswordReadOnly(false)}
+                      placeholder="••••••••••••••••"
+                      defaultValue=""
+                      onInput={() => {
+                        userChoseCredentials.current = true;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key !== 'Enter') return;
+                        if (captchaToken) return;
+                        e.preventDefault();
+                        userChoseCredentials.current = true;
+                        setError('Verification is still loading. Wait a moment, then try again.');
+                      }}
+                      required
+                    />
+                    <InputGroupAddon align="inline-end" className="pr-1.5">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="text-muted-foreground rounded-l-none hover:bg-transparent"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        title={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </Button>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </Field>
+
+                <LoginCaptchaField
+                  key={captchaKey}
+                  token={captchaToken}
+                  answer={captchaAnswer}
+                  onTokenChange={setCaptchaToken}
+                  onAnswerChange={setCaptchaAnswer}
+                  disabled={loading}
+                />
+
+                <Field>
+                  <Button
+                    id="login-submit"
+                    type="submit"
+                    className="w-full"
+                    disabled={loading || !captchaToken}
+                    title={!captchaToken ? 'Wait for the verification question to load' : undefined}
+                  >
+                    {loading ? 'Signing in…' : !captchaToken ? 'Loading verification…' : 'Sign In'}
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+
+            <div className="hidden-on-mobile flex flex-col gap-2">
+              <div className="flex items-center gap-4">
+                <Separator className="flex-1" />
+                <p className="text-muted-foreground text-sm">or</p>
+                <Separator className="flex-1" />
               </div>
+              <Button variant="outline" className="h-auto w-full justify-between px-3 py-2.5" render={<Link href="/demo-accounts" target="_blank" rel="noopener noreferrer" />} nativeButton={false}>
+                <span className="inline-flex items-center gap-2">
+                  <Users data-icon="inline-start" />
+                  View all system accounts
+                </span>
+                <ArrowRight className="text-muted-foreground" />
+              </Button>
+              <Button variant="outline" className="hidden-on-mobile h-auto w-full justify-between px-3 py-2.5" render={<Link href="/help" />} nativeButton={false}>
+                <span className="inline-flex items-center gap-2">
+                  <BookOpen data-icon="inline-start" />
+                  Help documentation
+                </span>
+                <ArrowRight className="text-muted-foreground" />
+              </Button>
             </div>
-
-            <LoginCaptchaField
-              key={captchaKey}
-              token={captchaToken}
-              answer={captchaAnswer}
-              onTokenChange={setCaptchaToken}
-              onAnswerChange={setCaptchaAnswer}
-              disabled={loading}
-            />
-
-            <button
-              id="login-submit"
-              type="submit"
-              className="btn btn-primary"
-              disabled={loading || !captchaToken}
-              style={{ width: '100%', padding: '0.625rem', fontSize: '1rem', justifyContent: 'center' }}
-              title={
-                !captchaToken
-                  ? 'Wait for the verification question to load'
-                  : undefined
-              }
-            >
-              {loading
-                ? 'Signing in…'
-                : !captchaToken
-                  ? 'Loading verification…'
-                  : 'Sign In'}
-            </button>
-          </form>
-
-          <div className="hidden-on-mobile" style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-default)' }}>
-            <Link
-              href="/demo-accounts"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.625rem 0.875rem',
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-default)',
-                borderRadius: 'var(--radius-md)',
-                textDecoration: 'none',
-                color: 'var(--text-primary)',
-                fontWeight: 600,
-                fontSize: '0.875rem',
-                transition: 'all 0.15s',
-              }}
-            >
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Users size={15} />
-                View all system accounts
-              </span>
-              <ArrowRight size={16} style={{ color: 'var(--text-secondary)' }} />
-            </Link>
-            <Link
-              href="/help"
-              className="hidden-on-mobile"
-              style={{
-                marginTop: '0.5rem',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.625rem 0.875rem',
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-default)',
-                borderRadius: 'var(--radius-md)',
-                textDecoration: 'none',
-                color: 'var(--text-primary)',
-                fontWeight: 600,
-                fontSize: '0.875rem',
-                transition: 'all 0.15s',
-              }}
-            >
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <BookOpen size={15} />
-                Help documentation
-              </span>
-              <ArrowRight size={16} style={{ color: 'var(--text-secondary)' }} />
-            </Link>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <LoginSupportContact
           hideExternalInboxLinks={
@@ -942,69 +790,45 @@ function LoginPageInner() {
           }
         />
 
-        <p
-          className="login-help-faq-hint"
-          style={{
-            marginTop: '0.75rem',
-            fontSize: '0.8125rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.5,
-            textAlign: 'center',
-          }}
-        >
-          <MessageCircleQuestion size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} aria-hidden />
+        <p className="text-muted-foreground mt-1 text-center text-[0.8125rem] leading-relaxed">
+          <MessageCircleQuestion size={14} className="mr-1 inline align-middle" aria-hidden />
           FAQ search: use the <strong>Help</strong> button at the bottom-right.
         </p>
 
-        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+        <div className="text-muted-foreground text-center text-sm">
           Employers and colleges:{' '}
-          <Link href="/register" style={{ color: 'var(--primary-600)', fontWeight: 600, textDecoration: 'none' }}>
+          <Link href="/register" className="text-foreground font-medium hover:underline">
             Request an account
           </Link>
-          <span className="text-secondary" style={{ display: 'block', marginTop: '0.35rem', fontSize: '0.8125rem' }}>
+          <div className="mt-1 text-xs">
             Students are added by their college — use the login email from your welcome message.
-          </span>
+          </div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.75rem', color: 'var(--text-tertiary)', fontFamily: 'monospace' }}>
+        <div className="text-muted-foreground mt-4 text-center font-mono text-xs">
           Build: 13 Jun 2026, 02:37 AM (v1.0.11-debug)
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+        <div className="mt-3 text-center">
           <label
             htmlFor="login-debug-toggle"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.72rem',
-              color: debugMode ? 'var(--warning-600, #d97706)' : 'var(--text-tertiary)',
-              cursor: 'pointer',
-              userSelect: 'none',
-              fontFamily: 'monospace',
-            }}
+            className={cn(
+              'inline-flex cursor-pointer items-center gap-1.5 font-mono text-[0.72rem] select-none',
+              debugMode ? 'text-amber-600' : 'text-muted-foreground'
+            )}
           >
-            <input
+            <Checkbox
               id="login-debug-toggle"
-              type="checkbox"
               checked={debugMode}
-              onChange={(e) => toggleDebugMode(e.target.checked)}
-              style={{ accentColor: 'var(--warning-600, #d97706)', width: 12, height: 12 }}
+              onCheckedChange={(v) => toggleDebugMode(!!v)}
             />
-            {debugMode ? '🔴 Login debug ON — step trace in browser console; failures go to Error Logs' : 'Enable login debug (console only)'}
+            {debugMode
+              ? '🔴 Login debug ON — step trace in browser console; failures go to Error Logs'
+              : 'Enable login debug (console only)'}
           </label>
         </div>
 
         <DocumentationHelpWidget fullDocHref="/help" />
-
-        <style>{`
-          @media (max-width: 768px) {
-            .hidden-on-mobile {
-              display: none !important;
-            }
-          }
-        `}</style>
-      </div>
       </div>
     </div>
   );

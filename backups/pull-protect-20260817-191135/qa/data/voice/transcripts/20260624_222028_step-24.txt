@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-24
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Assign campus guide — manual. Enter guide name, department, email, and notes for the student. Save updates the card.

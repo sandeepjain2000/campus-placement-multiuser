@@ -4,7 +4,13 @@ import { useState } from 'react';
 import ValidatedNumberInput from '@/components/form/ValidatedNumberInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { Building2, Plus, Trash2 } from 'lucide-react';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import { useToast } from '@/components/ToastProvider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const FACILITY_TYPES = [
   { value: 'auditorium', label: 'Auditorium' },
@@ -78,114 +84,105 @@ export default function InfrastructureResourceManager({ assets, onAssetsChange, 
   };
 
   return (
-    <div className="card" style={{ marginBottom: compact ? '1rem' : '1.5rem', padding: compact ? '1rem' : '1.25rem' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          gap: '0.75rem',
-          flexWrap: 'wrap',
-          marginBottom: '0.75rem',
-        }}
-      >
+    <Card className={compact ? 'gap-4 py-4' : undefined}>
+      <CardHeader className="flex-row flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="card-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Building2 size={18} className="text-primary" aria-hidden />
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="text-muted-foreground" aria-hidden />
             Campus resources
-          </h3>
-          <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0', maxWidth: 560 }}>
+          </CardTitle>
+          <CardDescription className="mt-1 max-w-xl">
             Add rooms, labs, and auditoriums before booking. Each resource is scoped to your college only.
-          </p>
+          </CardDescription>
         </div>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowAdd((v) => !v)}>
-          <Plus size={14} style={{ marginRight: 4 }} />
+        <Button type="button" variant="outline" size="sm" onClick={() => setShowAdd((v) => !v)}>
+          <Plus data-icon="inline-start" />
           {showAdd ? 'Close' : 'Add resource'}
-        </button>
-      </div>
-
+        </Button>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
       {assets.length === 0 ? (
-        <p className="text-sm text-secondary" style={{ margin: '0 0 0.75rem' }}>
+        <p className="text-muted-foreground text-sm">
           No resources yet — add at least one room or lab to enable bookings.
         </p>
       ) : (
-        <div className="table-container" style={{ marginBottom: showAdd ? '1rem' : 0 }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Capacity</th>
-                <th style={{ width: 1 }} />
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Capacity</TableHead>
+                <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {assets.map((a) => (
-                <tr key={a.id}>
-                  <td className="font-medium">{a.name}</td>
-                  <td className="text-sm text-secondary">
+                <TableRow key={a.id}>
+                  <TableCell className="font-medium">{a.name}</TableCell>
+                  <TableCell className="text-muted-foreground">
                     {FACILITY_TYPES.find((t) => t.value === a.type)?.label || a.type || '—'}
-                  </td>
-                  <td>{a.capacity != null ? a.capacity : '—'}</td>
-                  <td>
-                    <button
+                  </TableCell>
+                  <TableCell>{a.capacity != null ? a.capacity : '—'}</TableCell>
+                  <TableCell>
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-sm"
-                      style={{ color: 'var(--danger-600)' }}
+                      variant="ghost"
+                      size="icon-sm"
                       onClick={() => void removeResource(a.id)}
                       aria-label={`Remove ${a.name}`}
                     >
-                      <Trash2 size={14} />
-                    </button>
-                  </td>
-                </tr>
+                      <Trash2 />
+                    </Button>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
       )}
 
       {showAdd ? (
-        <form
-          onSubmit={addResource}
-          className={compact ? undefined : 'grid grid-2'}
-          style={compact ? { display: 'flex', flexDirection: 'column', gap: '0.75rem' } : { gap: '1rem' }}
-        >
-          <div className="form-group" style={compact ? undefined : { margin: 0 }}>
-            <label className="form-label">Name</label>
-            <input
-              className="form-input"
+        <form onSubmit={addResource}>
+          <FieldGroup className={compact ? 'gap-4' : 'grid gap-4 md:grid-cols-3'}>
+          <Field>
+            <FieldLabel htmlFor="resource-name">Name</FieldLabel>
+            <Input
+              id="resource-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Main Auditorium"
             />
-          </div>
-          <div className="form-group" style={compact ? undefined : { margin: 0 }}>
-            <label className="form-label">Type</label>
-            <select className="form-select" value={facilityType} onChange={(e) => setFacilityType(e.target.value)}>
-              {FACILITY_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group" style={compact ? undefined : { margin: 0 }}>
-            <label className="form-label">Capacity (optional)</label>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="resource-type">Type</FieldLabel>
+            <AdminFilterSelect
+              id="resource-type"
+              className="w-full"
+              value={facilityType}
+              onValueChange={setFacilityType}
+              emptyMapsToAll={false}
+              items={FACILITY_TYPES.map((t) => ({ label: t.label, value: t.value }))}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="resource-capacity">Capacity (optional)</FieldLabel>
             <ValidatedNumberInput
+              id="resource-capacity"
               fieldId={FIELD_IDS.COLLEGE_FACILITY_CAPACITY}
               value={capacity}
               onChange={setCapacity}
               placeholder="e.g. 200"
+              className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border px-3 text-sm outline-none focus-visible:ring-[3px]"
             />
-          </div>
-          <div style={compact ? undefined : { gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end' }}>
-            <button type="submit" className="btn btn-primary btn-sm" disabled={saving} style={compact ? { width: '100%' } : undefined}>
+          </Field>
+          <div className={compact ? '' : 'flex justify-end md:col-span-3'}>
+            <Button type="submit" size="sm" disabled={saving} className={compact ? 'w-full' : undefined}>
               {saving ? 'Saving…' : 'Save resource'}
-            </button>
+            </Button>
           </div>
+          </FieldGroup>
         </form>
       ) : null}
-    </div>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-22
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+College assigns campus guide for the intern. Programs and Drives → Internship guides. Find the selected student for the GT- internship. Click Assign guide, enter faculty name, email, and notes, then save.

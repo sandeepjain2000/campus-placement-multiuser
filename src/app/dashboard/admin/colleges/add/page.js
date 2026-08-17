@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Building2, Copy, Check } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import { getPasswordValidationError, PASSWORD_MIN_LENGTH, PASSWORD_REQUIREMENTS_HINT } from '@/lib/validators';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldLegend } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 const INITIAL_FORM = {
   collegeName: '',
@@ -71,212 +76,120 @@ export default function AdminAddCollegePage() {
 
   if (created) {
     return (
-      <div className="animate-fadeIn">
-        <div className="page-header">
-          <div className="page-header-left">
-            <h1>Add College</h1>
-            <p>{created.college?.name} is live on the platform.</p>
-          </div>
+      <div className="animate-fadeIn flex max-w-2xl flex-col gap-4 pb-8">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Add College</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">{created.college?.name} is live on the platform.</p>
         </div>
-
-        <div className="card" style={{ maxWidth: 640 }}>
-          <div className="card-header">
-            <h3 className="card-title">College provisioned</h3>
-          </div>
-          <dl className="text-sm" style={{ display: 'grid', gap: '0.75rem', margin: 0 }}>
+        <Card>
+          <CardHeader><CardTitle>College provisioned</CardTitle><CardDescription>The workspace and administrator account are ready.</CardDescription></CardHeader>
+          <CardContent>
+          <dl className="grid gap-4 text-sm">
             <div>
-              <dt className="text-secondary">College</dt>
-              <dd style={{ margin: '0.15rem 0 0', fontWeight: 600 }}>{created.college?.name}</dd>
+              <dt className="text-muted-foreground">College</dt>
+              <dd className="mt-1 font-semibold">{created.college?.name}</dd>
             </div>
             <div>
-              <dt className="text-secondary">Location</dt>
-              <dd style={{ margin: '0.15rem 0 0' }}>
+              <dt className="text-muted-foreground">Location</dt>
+              <dd className="mt-1">
                 {[created.college?.city, created.college?.state].filter(Boolean).join(', ')}
               </dd>
             </div>
             <div>
-              <dt className="text-secondary">College admin</dt>
-              <dd style={{ margin: '0.15rem 0 0' }}>
+              <dt className="text-muted-foreground">College admin</dt>
+              <dd className="mt-1">
                 {created.admin?.firstName} · {created.admin?.email}
               </dd>
             </div>
             <div>
-              <dt className="text-secondary">Student enrollment key</dt>
-              <dd style={{ margin: '0.5rem 0 0', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <code
-                  style={{
-                    fontFamily: 'var(--font-mono, monospace)',
-                    fontSize: '1.125rem',
-                    letterSpacing: '0.06em',
-                    padding: '0.5rem 0.75rem',
-                    background: 'var(--bg-secondary)',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border-default)',
-                  }}
-                >
+              <dt className="text-muted-foreground">Student enrollment key</dt>
+              <dd className="mt-2 flex flex-wrap items-center gap-2">
+                <code className="bg-muted rounded-md border px-3 py-2 font-mono text-base tracking-wider">
                   {created.enrollmentKey}
                 </code>
-                <button type="button" className="btn btn-secondary btn-sm" onClick={copyEnrollmentKey}>
-                  {copiedKey ? <Check size={14} /> : <Copy size={14} />}
+                <Button type="button" variant="outline" size="sm" onClick={copyEnrollmentKey}>
+                  {copiedKey ? <Check data-icon="inline-start" /> : <Copy data-icon="inline-start" />}
                   {copiedKey ? 'Copied' : 'Copy'}
-                </button>
+                </Button>
               </dd>
             </div>
           </dl>
-          <p className="text-sm text-secondary" style={{ marginTop: '1.25rem', marginBottom: 0 }}>
+          <p className="text-muted-foreground mt-5 mb-0 text-sm">
             The admin received approval and enrollment-key emails. Share the login password you set using your official channel.
           </p>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
-            <Link href="/dashboard/admin/colleges" className="btn btn-primary">
-              Back to Colleges
-            </Link>
-            <button
-              type="button"
-              className="btn btn-secondary"
+          </CardContent>
+          <CardFooter className="flex-wrap gap-2 border-t">
+            <Button render={<Link href="/dashboard/admin/colleges" />}>Back to Colleges</Button>
+            <Button
+              type="button" variant="outline"
               onClick={() => {
                 setCreated(null);
                 setForm(INITIAL_FORM);
               }}
             >
               Add another
-            </button>
-          </div>
-        </div>
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <Link
-          href="/dashboard/admin/colleges"
-          className="btn btn-ghost btn-sm"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            marginBottom: '0.75rem',
-            paddingLeft: 0,
-          }}
-        >
-          <ArrowLeft size={16} />
-          Back to Colleges
-        </Link>
-        <h1
-          style={{
-            fontSize: '1.75rem',
-            fontWeight: 800,
-            color: 'var(--text-primary)',
-            margin: '0 0 0.35rem',
-            letterSpacing: '-0.02em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          <span
-            style={{
-              display: 'flex',
-              padding: '0.35rem',
-              background: 'var(--primary-50)',
-              borderRadius: '8px',
-              color: 'var(--primary-600)',
-            }}
-          >
-            <Building2 size={22} />
-          </span>
-          Add College
-        </h1>
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0, maxWidth: 640 }}>
+    <div className="animate-fadeIn flex max-w-3xl flex-col gap-4 pb-12">
+      <div>
+        <Button variant="ghost" size="sm" render={<Link href="/dashboard/admin/colleges" />}><ArrowLeft data-icon="inline-start" />Back to Colleges</Button>
+        <h1 className="mt-3 mb-0 flex items-center gap-2 text-2xl font-semibold tracking-tight"><Building2 aria-hidden />Add College</h1>
+        <p className="text-muted-foreground mt-1 mb-0 max-w-2xl text-sm">
           Provision a college workspace and an active college admin account. Self-service sign-ups still go through{' '}
           <Link href="/dashboard/admin/pending-registrations">Onboard colleges & employers</Link>.
         </p>
       </div>
-
-      <form
-        className="card"
-        onSubmit={handleSubmit}
-        style={{ maxWidth: 720, border: '1px solid var(--border-default)' }}
-      >
-        <div className="card-header">
-          <h3 className="card-title">Institution</h3>
-        </div>
-        <div className="grid grid-2" style={{ gap: '1rem', padding: '0 1.5rem' }}>
-          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-            <label className="form-label" htmlFor="collegeName">College name</label>
-            <input
-              id="collegeName"
-              className="form-input"
+      <form onSubmit={handleSubmit}>
+      <Card>
+        <CardHeader><CardTitle>Provision institution</CardTitle><CardDescription>Create the institution record and its first administrator.</CardDescription></CardHeader>
+        <CardContent><FieldGroup>
+          <FieldSet><FieldLegend>Institution</FieldLegend>
+          <div className="grid gap-5 md:grid-cols-2">
+          <Field className="md:col-span-2">
+            <FieldLabel htmlFor="collegeName">College name</FieldLabel>
+            <Input id="collegeName"
               value={form.collegeName}
               onChange={onChange('collegeName')}
               required
               autoComplete="organization"
             />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="city">City</label>
-            <input id="city" className="form-input" value={form.city} onChange={onChange('city')} required />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="state">State</label>
-            <input id="state" className="form-input" value={form.state} onChange={onChange('state')} required />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="naacGrade">NAAC grade (optional)</label>
-            <input
-              id="naacGrade"
-              className="form-input"
+          </Field>
+          <Field><FieldLabel htmlFor="city">City</FieldLabel><Input id="city" value={form.city} onChange={onChange('city')} required /></Field>
+          <Field><FieldLabel htmlFor="state">State</FieldLabel><Input id="state" value={form.state} onChange={onChange('state')} required /></Field>
+          <Field>
+            <FieldLabel htmlFor="naacGrade">NAAC grade (optional)</FieldLabel>
+            <Input id="naacGrade"
               value={form.naacGrade}
               onChange={onChange('naacGrade')}
               placeholder="e.g. A+"
             />
-          </div>
-        </div>
-
-        <div className="card-header" style={{ marginTop: '1rem' }}>
-          <h3 className="card-title">College administrator</h3>
-        </div>
-        <div className="grid grid-2" style={{ gap: '1rem', padding: '0 1.5rem 1.5rem' }}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="adminFirstName">First name</label>
-            <input
-              id="adminFirstName"
-              className="form-input"
+          </Field></div></FieldSet>
+          <FieldSet><FieldLegend>College administrator</FieldLegend>
+          <div className="grid gap-5 md:grid-cols-2">
+          <Field><FieldLabel htmlFor="adminFirstName">First name</FieldLabel><Input id="adminFirstName"
               value={form.adminFirstName}
               onChange={onChange('adminFirstName')}
               required
               autoComplete="given-name"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="adminLastName">Last name</label>
-            <input
-              id="adminLastName"
-              className="form-input"
+            /></Field>
+          <Field><FieldLabel htmlFor="adminLastName">Last name</FieldLabel><Input id="adminLastName"
               value={form.adminLastName}
               onChange={onChange('adminLastName')}
               autoComplete="family-name"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="adminEmail">Email</label>
-            <input
-              id="adminEmail"
-              type="email"
-              className="form-input"
+            /></Field>
+          <Field><FieldLabel htmlFor="adminEmail">Email</FieldLabel><Input id="adminEmail" type="email"
               value={form.adminEmail}
               onChange={onChange('adminEmail')}
               required
               autoComplete="email"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="adminPassword">Initial password</label>
-            <input
-              id="adminPassword"
-              type="password"
-              className="form-input"
+            /></Field>
+          <Field><FieldLabel htmlFor="adminPassword">Initial password</FieldLabel><Input id="adminPassword" type="password"
               value={form.adminPassword}
               onChange={onChange('adminPassword')}
               required
@@ -284,25 +197,19 @@ export default function AdminAddCollegePage() {
               minLength={PASSWORD_MIN_LENGTH}
               placeholder={PASSWORD_REQUIREMENTS_HINT}
             />
-            <span className="form-hint">{PASSWORD_REQUIREMENTS_HINT}</span>
-          </div>
-        </div>
-
-        {error ? (
-          <p className="text-sm" style={{ color: 'var(--danger-600)', padding: '0 1.5rem 1rem', margin: 0 }}>
-            {error}
-          </p>
-        ) : null}
-
-        <div style={{ display: 'flex', gap: '0.5rem', padding: '0 1.5rem 1.5rem', flexWrap: 'wrap' }}>
-          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+            <FieldDescription>{PASSWORD_REQUIREMENTS_HINT}</FieldDescription>
+          </Field></div></FieldSet>
+          {error ? <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert> : null}
+        </FieldGroup></CardContent>
+        <CardFooter className="flex-wrap gap-2 border-t">
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Creating…' : 'Create college'}
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={() => router.push('/dashboard/admin/colleges')}>
+          </Button>
+          <Button type="button" variant="outline" onClick={() => router.push('/dashboard/admin/colleges')}>
             Cancel
-          </button>
-        </div>
-      </form>
+          </Button>
+        </CardFooter>
+      </Card></form>
     </div>
   );
 }

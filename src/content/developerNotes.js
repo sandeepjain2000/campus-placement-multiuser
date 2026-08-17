@@ -6,12 +6,20 @@
 import {
   enrichUseCaseFlow,
   groupUseCasesByRole,
+  getUseCaseAutoRunnerCommand,
+  getUseCaseApiRunnerCommand,
   useCaseAutoRunnerCommand,
   useCaseApiRunnerCommand,
   USE_CASE_ROLE_LABELS,
 } from '@/content/useCaseCatalog';
 
-export { USE_CASE_ROLE_LABELS, useCaseAutoRunnerCommand, useCaseApiRunnerCommand };
+export {
+  USE_CASE_ROLE_LABELS,
+  getUseCaseAutoRunnerCommand,
+  getUseCaseApiRunnerCommand,
+  useCaseAutoRunnerCommand,
+  useCaseApiRunnerCommand,
+};
 
 export const DEVELOPER_PAGE_META = {
   title: 'Developer Notes',
@@ -144,13 +152,19 @@ export const GUIDED_PLAYBOOKS = [
 ];
 
 /** npm / bat command for auto + voice guided tour by use-case slug */
-export function useCaseRunnerCommand(slug) {
+/** Shell / bat strings for guided use-case runners (not React hooks — avoid `use*` prefix). */
+export function getUseCaseRunnerCommand(slug) {
   return `npm run test:guided:voice -- ${slug}`;
 }
 
-export function useCaseRunnerBat(slug) {
+export function getUseCaseRunnerBat(slug) {
   return `qa/runners/batch/run_use_case_auto_voice.bat ${slug}`;
 }
+
+/** @deprecated Prefer getUseCaseRunnerCommand */
+export const useCaseRunnerCommand = getUseCaseRunnerCommand;
+/** @deprecated Prefer getUseCaseRunnerBat */
+export const useCaseRunnerBat = getUseCaseRunnerBat;
 
 /** End-to-end use cases — one row each, up to 7 steps (columns). */
 export const USE_CASE_FLOWS = [

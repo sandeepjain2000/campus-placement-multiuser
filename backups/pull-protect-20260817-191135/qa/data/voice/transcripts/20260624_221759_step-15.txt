@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EI-15
+# Stage: step-15
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Applications — Internships tab. Internships tab selected; table shows program applications (not placement drives).

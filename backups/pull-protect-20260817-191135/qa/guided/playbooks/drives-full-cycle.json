@@ -1,0 +1,349 @@
+{
+  "id": "drives-full-cycle",
+  "title": "Placement drive full cycle — Employer → College → Student → Employer",
+  "oneLiner": "End-to-end guided test: partnership setup, employer drive request, college approve, student apply, employer shortlist & select. One GT- marker links every step.",
+  "useStoredMarker": false,
+  "skipPartnershipSetupWhenApproved": true,
+  "sourceCases": [
+    "UC-001",
+    "DRV-E01",
+    "DRV-E04",
+    "DRV-E05",
+    "DRV-C03",
+    "DRV-S04",
+    "DRV-E12",
+    "DRV-E13",
+    "DRV-S10"
+  ],
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Full cycle starts with employer sign-in (automatic).",
+      "action": { "type": "wait", "ms": 400 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer (TechCorp)",
+      "observe": "Employer dashboard loads.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open campus tie-up directory",
+      "observe": "IIT Madras should be Approved (or request tie-up if needed).",
+      "action": { "type": "goto", "path": "/dashboard/employer/select-campus" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Request tie-up with IIT Madras (if not already Approved)",
+      "observe": "Toast confirms request, or row already shows Approved.",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "Indian Institute of Technology",
+        "buttonName": "Request Tie-up",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Log in as college admin (IIT Madras)",
+      "observe": "College hub loads — approve partnership if employer just requested tie-up.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Employer Partnership Requests",
+      "observe": "Pending list shows TechCorp Solutions (if request was sent).",
+      "action": { "type": "goto", "path": "/dashboard/college/employers/requests" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Approve TechCorp partnership request",
+      "observe": "TechCorp row approved or already absent from pending list.",
+      "action": { "type": "clickInRow", "rowText": "TechCorp", "buttonName": "Approve", "skipIfMissing": true }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer again",
+      "observe": "Back on employer hub — ready to request a placement drive.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Navigate to Placement Drives",
+      "observe": "Placement Drives list or empty state.",
+      "action": { "type": "goto", "path": "/dashboard/employer/drives" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Request placement drive form",
+      "observe": "Full-page request form with campus selector and fields.",
+      "action": { "type": "goto", "path": "/dashboard/employer/drives/request" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Select IIT Madras campus",
+      "observe": "Campus dropdown shows Indian Institute of Technology, Madras.",
+      "action": { "type": "select", "nearLabel": "Campus", "optionContains": "Indian Institute" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type drive title (includes session marker GT-…)",
+      "observe": "Title shows {{marker}} SDE Placement Drive — use this marker in later steps.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Drive title",
+        "value": "{{marker}} SDE Placement Drive"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Select drive type — On campus",
+      "observe": "Drive type shows On campus.",
+      "action": { "type": "select", "nearLabel": "Drive type", "value": "on_campus" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Set drive date (future)",
+      "observe": "Drive Date field shows 15 Dec 2026.",
+      "action": { "type": "fillSegmentedDate", "nearLabel": "Drive Date", "value": "2026-12-15" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type venue",
+      "observe": "Venue shows CRC Seminar Hall A.",
+      "action": { "type": "type", "nearLabel": "Venue", "value": "CRC Seminar Hall A" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type notes for placement office",
+      "observe": "Notes include guided test marker.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Notes for placement office",
+        "value": "Guided test {{marker}} — on-campus SDE hiring."
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type openings for the role",
+      "observe": "Openings field shows 10.",
+      "action": { "type": "type", "nearLabel": "Openings", "value": "10" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type skills for the role",
+      "observe": "Skills: Java, DSA, SQL.",
+      "action": { "type": "type", "nearLabel": "Skills (comma-separated)", "value": "Java, DSA, SQL" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type job description",
+      "observe": "Description includes guided test marker.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Job description",
+        "value": "SDE campus role for {{marker}} guided test. Strong CS fundamentals required."
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type minimum CGPA",
+      "observe": "Min CGPA field shows 7.5.",
+      "action": { "type": "type", "nearLabel": "Minimum CGPA", "value": "7.5" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type eligible branches",
+      "observe": "Eligible branches shows All.",
+      "action": { "type": "type", "nearLabel": "Eligible branches", "value": "All" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type batch year (2026 — matches seeded students)",
+      "observe": "Batch year field shows 2026.",
+      "action": { "type": "type", "nearLabel": "Batch year", "value": "2026" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type min CTC (annual INR)",
+      "observe": "Min CTC shows 800000.",
+      "action": { "type": "type", "nearLabel": "Min CTC (annual INR)", "value": "800000" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Type max CTC (annual INR)",
+      "observe": "Max CTC shows 1200000.",
+      "action": { "type": "type", "nearLabel": "Max CTC (annual INR)", "value": "1200000" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Review form before submit",
+      "observe": "All required fields populated.",
+      "action": { "type": "wait", "ms": 500 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Click Submit request",
+      "observe": "Success toast; drive row shows Requested status.",
+      "action": { "type": "click", "role": "button", "name": "Submit request" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Confirm drive in employer list",
+      "observe": "Employer request complete — handoff to College next.",
+      "action": { "type": "wait", "ms": 1000 }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Log in as college admin",
+      "observe": "Approve the drive for campus visibility.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open college Placement Drives",
+      "observe": "New drive shows Awaiting Approval with {{marker}} in title.",
+      "action": { "type": "goto", "path": "/dashboard/college/drives" }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Approve guided drive for campus",
+      "observe": "Row with {{marker}} — click Approve (skipped if already Approved).",
+      "action": {
+        "type": "clickInRow",
+        "rowSelector": "div[id^='drive-']",
+        "rowText": "{{marker}}",
+        "buttonName": "Approve",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Confirm Approved status",
+      "observe": "Status pill shows Approved. Students can now apply.",
+      "action": { "type": "wait", "ms": 600 }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Log in as student (Arjun Verma)",
+      "observe": "Student dashboard — profile must have labelled CVs to apply.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Upload sample CVs from docs/CVs",
+      "observe": "Five labelled .docx files from docs/CVs — enables CV picker when applying.",
+      "action": { "type": "uploadSampleCvs" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open Browse Placement Drives",
+      "observe": "Drive with {{marker}} visible when Approved.",
+      "action": { "type": "goto", "path": "/dashboard/student/drives" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Search for the guided drive by marker",
+      "observe": "Card list filters to {{marker}}.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search company or role",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Click Apply now on the guided drive",
+      "observe": "Apply confirmation modal opens.",
+      "action": {
+        "type": "clickInRow",
+        "rowSelector": "div.card.card-hover",
+        "rowText": "{{marker}}",
+        "buttonName": "Apply now"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Confirm application in modal",
+      "observe": "Success toast; card shows Applied.",
+      "action": { "type": "click", "role": "button", "name": "Confirm application" }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Confirm Applied status",
+      "observe": "Student step done — handoff to Employer.",
+      "action": { "type": "wait", "ms": 800 }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer",
+      "observe": "Review and advance the student application.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Applications — Jobs tab",
+      "observe": "Placement drive applicants table (Jobs tab).",
+      "action": { "type": "goto", "path": "/dashboard/employer/applications?tab=jobs" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Search applicants by guided drive marker",
+      "observe": "Arjun Verma row for GT- drive opening.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search by name, email, college, or opening",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Shortlist the applicant",
+      "observe": "Status Applied → Shortlisted.",
+      "action": { "type": "clickInRow", "rowText": "Arjun", "buttonName": "Shortlist" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Select the shortlisted candidate",
+      "observe": "Status becomes Selected — employer cycle complete.",
+      "action": { "type": "clickInRow", "rowText": "Arjun", "buttonName": "Select" }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Filter list to Selected and confirm pipeline",
+      "observe": "Applicant shows Selected badge.",
+      "action": { "type": "click", "role": "button", "name": "Selected" }
+    },
+    {
+      "phase": "CLOSURE",
+      "label": "Log in as student — verify Selected status",
+      "observe": "My Applications → Drives shows Selected for {{marker}} drive.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "CLOSURE",
+      "label": "Open My Applications — Drives",
+      "observe": "Student sees Selected — placement drive full cycle verified end-to-end.",
+      "action": { "type": "goto", "path": "/dashboard/student/applications/drives" }
+    },
+    {
+      "phase": "CLOSURE",
+      "label": "Download application CVs to qa folder",
+      "observe": "Terminal prints qa/data/downloads/cvs/<timestamp>/. Filenames use student CV labels.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "CLOSURE",
+      "label": "Save employer CV downloads",
+      "observe": "Up to 5 drive-application CVs (GT- marker) saved under qa/data/downloads/cvs/.",
+      "action": {
+        "type": "downloadEmployerCvs",
+        "limit": 5,
+        "filterMarker": true,
+        "tabs": "drives"
+      }
+    }
+  ]
+}

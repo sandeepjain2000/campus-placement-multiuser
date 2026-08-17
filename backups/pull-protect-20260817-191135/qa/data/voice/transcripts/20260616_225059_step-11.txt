@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-11
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Click Post Internship to open the create form. Post New Internship form with campus checkboxes.

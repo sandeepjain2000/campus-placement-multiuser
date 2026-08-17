@@ -9,11 +9,24 @@ import {
   MessageCircle,
   Phone,
   Send,
-  X,
 } from 'lucide-react';
 import { validateEmail } from '@/lib/validators';
 import { PLATFORM_SETTINGS_DEFAULTS } from '@/lib/platformSettingsDefaults';
 import { buildPublicSupportConfig } from '@/lib/supportContact';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const DEFAULT_CONFIG = buildPublicSupportConfig(PLATFORM_SETTINGS_DEFAULTS);
 
@@ -123,104 +136,66 @@ export default function LoginSupportContact({ hideExternalInboxLinks = false } =
 
   const tel = phoneTelHref(config.supportPhone);
 
-  const actionBtnStyle = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.4rem',
-    flex: '1 1 0',
-    minWidth: 0,
-    padding: '0.55rem 0.5rem',
-    fontWeight: 600,
-    fontSize: '0.8125rem',
-    textDecoration: 'none',
-  };
-
   return (
     <>
-      <div
-        className="login-support-contact"
-        style={{
-          marginTop: '1.25rem',
-          padding: '1rem 1.25rem',
-          background: 'var(--bg-primary)',
-          borderRadius: 'var(--radius-xl)',
-          border: '1px solid var(--border-default)',
-          boxShadow: 'var(--shadow-sm)',
-        }}
-      >
-        <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-          Contact support
-        </p>
-        <p style={{ margin: '0.35rem 0 0.75rem', fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+      <Card className="mt-5 gap-4 py-5">
+        <CardHeader className="px-5">
+          <CardTitle>Contact support</CardTitle>
+          <CardDescription>
           Sandbox demo: call, send a typed message to{' '}
-          <strong style={{ fontFamily: 'monospace', fontSize: '0.78rem' }}>{config.notificationInboxEmail}</strong>, or
+          <strong className="font-mono text-xs">{config.notificationInboxEmail}</strong>, or
           use demo chat.
-        </p>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3 px-5">
 
-        <div
-          className="login-support-actions-row"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            gap: '0.5rem',
-            width: '100%',
-          }}
-        >
+        <div className="flex w-full flex-wrap items-center gap-2">
           {config.supportPhone ? (
-            <a
-              href={tel || undefined}
-              className="btn btn-secondary btn-sm"
-              style={actionBtnStyle}
-              title="Call support"
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-fit max-w-full shrink-0 justify-start"
+              render={<a href={tel || undefined} title={`Call ${config.supportPhone}`} />}
+              nativeButton={false}
             >
-              <Phone size={16} aria-hidden style={{ flexShrink: 0 }} />
-              <span className="login-support-action-label login-support-phone-short">Phone</span>
-              <span className="login-support-action-label login-support-phone-full">{config.supportPhone}</span>
-            </a>
+              <Phone data-icon="inline-start" />
+              <span className="truncate">Phone {config.supportPhone}</span>
+            </Button>
           ) : null}
 
-          <button
+          <Button
             type="button"
-            className={`btn btn-sm ${emailOpen ? 'btn-primary' : 'btn-secondary'}`}
+            variant={emailOpen ? 'default' : 'outline'}
+            size="sm"
+            className="w-fit shrink-0"
             onClick={() => setEmailOpen((v) => !v)}
-            style={actionBtnStyle}
             aria-expanded={emailOpen}
             title="Send email to inbox"
           >
-            <Mail size={16} aria-hidden style={{ flexShrink: 0 }} />
-            <span className="login-support-action-label">Email</span>
-            {emailOpen ? <ChevronUp size={14} style={{ flexShrink: 0 }} /> : <ChevronDown size={14} style={{ flexShrink: 0 }} />}
-          </button>
+            <Mail data-icon="inline-start" />
+            Email
+            {emailOpen ? <ChevronUp data-icon="inline-end" /> : <ChevronDown data-icon="inline-end" />}
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="btn btn-secondary btn-sm"
+            variant="outline"
+            size="sm"
+            className="w-fit shrink-0"
             onClick={() => setChatOpen(true)}
-            style={actionBtnStyle}
             title="Demo support chat"
           >
-            <MessageCircle size={16} aria-hidden style={{ flexShrink: 0 }} />
-            <span className="login-support-action-label">Chat</span>
-          </button>
+            <MessageCircle data-icon="inline-start" />
+            Chat
+          </Button>
         </div>
 
         {emailOpen ? (
           <form
             onSubmit={sendSupportEmail}
-            style={{
-              marginTop: '0.75rem',
-              padding: '0.85rem',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-default)',
-              background: 'var(--bg-secondary)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.65rem',
-            }}
+            className="mt-1 flex flex-col gap-3 rounded-lg border bg-muted/30 p-4"
           >
-              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+              <p className="m-0 text-xs leading-relaxed text-muted-foreground">
                 Sends a real email to <strong>{config.notificationInboxEmail}</strong> (same inbox as drive alerts).
                 {hideExternalInboxLinks ? (
                   <> After sending, check that inbox for a subject starting with <strong>[PlacementHub] Login support</strong>.</>
@@ -235,146 +210,87 @@ export default function LoginSupportContact({ hideExternalInboxLinks = false } =
                   </>
                 )}
               </p>
-            <div>
-              <label className="form-label" htmlFor="support-reply-email" style={{ fontSize: '0.75rem' }}>
+            <Field>
+              <FieldLabel htmlFor="support-reply-email" className="text-xs">
                 Your email
-              </label>
-              <input
+              </FieldLabel>
+              <Input
                 id="support-reply-email"
                 type="email"
-                className="form-input"
                 placeholder="you@college.edu"
                 value={replyEmail}
                 onChange={(e) => setReplyEmail(e.target.value)}
                 required
               />
-            </div>
-            <div>
-              <label className="form-label" htmlFor="support-subject" style={{ fontSize: '0.75rem' }}>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="support-subject" className="text-xs">
                 Subject
-              </label>
-              <input
+              </FieldLabel>
+              <Input
                 id="support-subject"
-                className="form-input"
                 placeholder="Cannot sign in"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
               />
-            </div>
-            <div>
-              <label className="form-label" htmlFor="support-message" style={{ fontSize: '0.75rem' }}>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="support-message" className="text-xs">
                 Message
-              </label>
-              <textarea
+              </FieldLabel>
+              <Textarea
                 id="support-message"
-                className="form-input"
                 rows={4}
                 placeholder="Describe your issue…"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
               />
-            </div>
+            </Field>
             {error ? (
-              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--danger-600)' }}>{error}</p>
+              <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>
             ) : null}
             {feedback ? (
-              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--success-700)' }}>{feedback}</p>
+              <Alert><AlertDescription>{feedback}</AlertDescription></Alert>
             ) : null}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <button type="submit" className="btn btn-primary btn-sm" disabled={sending} style={{ display: 'inline-flex', gap: '0.35rem' }}>
-                <Send size={14} aria-hidden />
+            <div className="flex flex-wrap gap-2">
+              <Button type="submit" size="sm" disabled={sending}>
+                <Send data-icon="inline-start" />
                 {sending ? 'Sending…' : 'Send message'}
-              </button>
+              </Button>
               {hideExternalInboxLinks ? null : (
-                <a
-                  href={config.yopmailWebmailUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-ghost btn-sm"
-                  style={{ display: 'inline-flex', gap: '0.35rem' }}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  render={<a href={config.yopmailWebmailUrl} target="_blank" rel="noopener noreferrer" />}
+                  nativeButton={false}
                 >
-                  <ExternalLink size={14} aria-hidden />
+                  <ExternalLink data-icon="inline-start" />
                   Open YOPmail inbox
-                </a>
+                </Button>
               )}
             </div>
           </form>
         ) : null}
-      </div>
+        </CardContent>
+      </Card>
 
-      {chatOpen ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close chat"
-            onClick={() => setChatOpen(false)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 1300,
-              background: 'rgba(15,23,42,0.35)',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          />
-          <aside
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="login-support-chat-title"
-            style={{
-              position: 'fixed',
-              right: 0,
-              bottom: 0,
-              left: 0,
-              maxHeight: 'min(420px, 70vh)',
-              zIndex: 1301,
-              background: 'var(--bg-primary)',
-              borderTop: '1px solid var(--border-default)',
-              boxShadow: '0 -8px 24px rgba(0,0,0,0.12)',
-              display: 'flex',
-              flexDirection: 'column',
-              borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0',
-            }}
-          >
-            <header
-              style={{
-                padding: '0.75rem 1rem',
-                borderBottom: '1px solid var(--border-default)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '0.5rem',
-              }}
-            >
-              <div>
-                <h2 id="login-support-chat-title" style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700 }}>
-                  Demo support chat
-                </h2>
-                <p style={{ margin: '0.2rem 0 0', fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>
-                  Simulated replies — use email form for delivery to YOPmail
-                </p>
-              </div>
-              <button type="button" className="btn btn-ghost btn-icon" onClick={() => setChatOpen(false)} aria-label="Close">
-                <X size={18} />
-              </button>
-            </header>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <Dialog open={chatOpen} onOpenChange={setChatOpen}>
+        <DialogContent className="flex max-h-[70vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+            <DialogHeader className="border-b px-5 py-4">
+              <DialogTitle id="login-support-chat-title">Demo support chat</DialogTitle>
+              <DialogDescription>Simulated replies — use email form for delivery to YOPmail</DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-5 py-4">
               {chatLines.map((line, i) => (
                 <div
                   key={`${line.role}-${i}`}
-                  style={{
-                    alignSelf: line.role === 'user' ? 'flex-end' : 'flex-start',
-                    maxWidth: '88%',
-                    padding: '0.5rem 0.75rem',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: '0.8125rem',
-                    lineHeight: 1.45,
-                    background: line.role === 'user' ? 'var(--primary-600)' : 'var(--bg-secondary)',
-                    color: line.role === 'user' ? '#fff' : 'var(--text-primary)',
-                    border: line.role === 'user' ? 'none' : '1px solid var(--border-default)',
-                  }}
+                  className={
+                    line.role === 'user'
+                      ? 'max-w-[88%] self-end rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground'
+                      : 'max-w-[88%] self-start rounded-lg border bg-muted px-3 py-2 text-sm'
+                  }
                 >
                   {line.text}
                 </div>
@@ -386,51 +302,22 @@ export default function LoginSupportContact({ hideExternalInboxLinks = false } =
                 e.preventDefault();
                 sendChatLine();
               }}
-              style={{ padding: '0.75rem 1rem', borderTop: '1px solid var(--border-default)', display: 'flex', gap: '0.5rem' }}
             >
-              <input
-                className="form-input"
+              <DialogFooter className="flex-row border-t px-5 py-4">
+              <Input
                 placeholder="Type a message…"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 autoComplete="off"
-                style={{ flex: 1 }}
+                className="flex-1"
               />
-              <button type="submit" className="btn btn-primary btn-sm">
+              <Button type="submit" size="sm">
                 Send
-              </button>
+              </Button>
+              </DialogFooter>
             </form>
-          </aside>
-        </>
-      ) : null}
-
-      <style>{`
-        .login-support-action-label {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        .login-support-phone-full {
-          display: none;
-        }
-        @media (min-width: 520px) {
-          .login-support-phone-short {
-            display: none;
-          }
-          .login-support-phone-full {
-            display: inline;
-          }
-        }
-        @media (max-width: 380px) {
-          .login-support-actions-row {
-            flex-wrap: wrap !important;
-          }
-          .login-support-actions-row .btn {
-            flex: 1 1 calc(33.333% - 0.35rem) !important;
-            min-width: 5.5rem !important;
-          }
-        }
-      `}</style>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

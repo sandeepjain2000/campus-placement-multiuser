@@ -1,0 +1,3758 @@
+{
+  "generatedAt": "20260517T124948Z",
+  "caseOffset": 100,
+  "caseLimit": 100,
+  "baseUrl": "https://campus-placement-omega.vercel.app",
+  "execution": "playwright+nvidia_verdict",
+  "model": "meta/llama-3.1-8b-instruct",
+  "totalTokens": 36712,
+  "avgTokensPerCase": 367.1,
+  "logFile": "C:\\Users\\sandeep\\Downloads\\Claudes\\CampusPlacement\\campus-placement\\qa2\\logs\\run_playwright_20260517T124948Z.log",
+  "results": [
+    {
+      "id": "C1-BLOCK-051",
+      "title": "C1-BLOCK-051",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to student dashboard",
+      "usage": {
+        "total_tokens": 393,
+        "total_prompt_tokens": 378,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-051-COMP",
+      "title": "C1-BLOCK-051 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 432,
+        "total_prompt_tokens": 412,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-052",
+      "title": "C1-BLOCK-052",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student denied access to employer dashboard",
+      "usage": {
+        "total_tokens": 399,
+        "total_prompt_tokens": 383,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-052-COMP",
+      "title": "C1-BLOCK-052 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student denied access to employer dashboard",
+      "usage": {
+        "total_tokens": 431,
+        "total_prompt_tokens": 415,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-053",
+      "title": "C1-BLOCK-053",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate dashboard",
+      "usage": {
+        "total_tokens": 396,
+        "total_prompt_tokens": 379,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-053-COMP",
+      "title": "C1-BLOCK-053 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate dashboard",
+      "usage": {
+        "total_tokens": 428,
+        "total_prompt_tokens": 411,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-054",
+      "title": "C1-BLOCK-054",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected from /dashboard/employer/drives to /dashboard/student",
+      "usage": {
+        "total_tokens": 402,
+        "total_prompt_tokens": 379,
+        "total_completion_tokens": 23,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-054-COMP",
+      "title": "C1-BLOCK-054 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "student denied access to /dashboard/employer/drives",
+      "usage": {
+        "total_tokens": 429,
+        "total_prompt_tokens": 409,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-055",
+      "title": "C1-BLOCK-055",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to /dashboard/student",
+      "usage": {
+        "total_tokens": 397,
+        "total_prompt_tokens": 381,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-055-COMP",
+      "title": "C1-BLOCK-055 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to /dashboard/student as expected",
+      "usage": {
+        "total_tokens": 432,
+        "total_prompt_tokens": 414,
+        "total_completion_tokens": 18,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-056",
+      "title": "C1-BLOCK-056",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to /dashboard/student as expected",
+      "usage": {
+        "total_tokens": 398,
+        "total_prompt_tokens": 380,
+        "total_completion_tokens": 18,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-056-COMP",
+      "title": "C1-BLOCK-056 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student denied access to /dashboard/employer/internships",
+      "usage": {
+        "total_tokens": 433,
+        "total_prompt_tokens": 412,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-057",
+      "title": "C1-BLOCK-057",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 400,
+        "total_prompt_tokens": 380,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-057-COMP",
+      "title": "C1-BLOCK-057 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student denied access to employer dashboard",
+      "usage": {
+        "total_tokens": 429,
+        "total_prompt_tokens": 413,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-058",
+      "title": "C1-BLOCK-058",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 399,
+        "total_prompt_tokens": 379,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-058-COMP",
+      "title": "C1-BLOCK-058 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "student redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 429,
+        "total_prompt_tokens": 409,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-059",
+      "title": "C1-BLOCK-059",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 399,
+        "total_prompt_tokens": 379,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-059-COMP",
+      "title": "C1-BLOCK-059 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to /dashboard/student as expected",
+      "usage": {
+        "total_tokens": 431,
+        "total_prompt_tokens": 413,
+        "total_completion_tokens": 18,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-060",
+      "title": "C1-BLOCK-060",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate dashboard",
+      "usage": {
+        "total_tokens": 397,
+        "total_prompt_tokens": 380,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-060-COMP",
+      "title": "C1-BLOCK-060 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to /dashboard/student as expected",
+      "usage": {
+        "total_tokens": 430,
+        "total_prompt_tokens": 412,
+        "total_completion_tokens": 18,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-061",
+      "title": "C1-BLOCK-061",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "student denied access to /dashboard/employer/overview",
+      "usage": {
+        "total_tokens": 399,
+        "total_prompt_tokens": 379,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-061-COMP",
+      "title": "C1-BLOCK-061 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student denied access to /dashboard/employer/overview",
+      "usage": {
+        "total_tokens": 431,
+        "total_prompt_tokens": 411,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-062",
+      "title": "C1-BLOCK-062",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "student redirected to /dashboard/student",
+      "usage": {
+        "total_tokens": 394,
+        "total_prompt_tokens": 378,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-062-COMP",
+      "title": "C1-BLOCK-062 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected from /dashboard/employer/profile as expected",
+      "usage": {
+        "total_tokens": 428,
+        "total_prompt_tokens": 408,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-063",
+      "title": "C1-BLOCK-063",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "student redirected to /dashboard/student",
+      "usage": {
+        "total_tokens": 394,
+        "total_prompt_tokens": 378,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-063-COMP",
+      "title": "C1-BLOCK-063 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "User was redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 432,
+        "total_prompt_tokens": 411,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-064",
+      "title": "C1-BLOCK-064",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to /dashboard/student as expected",
+      "usage": {
+        "total_tokens": 397,
+        "total_prompt_tokens": 379,
+        "total_completion_tokens": 18,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-064-COMP",
+      "title": "C1-BLOCK-064 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student redirected to role-appropriate screen /dashboard/student",
+      "usage": {
+        "total_tokens": 431,
+        "total_prompt_tokens": 411,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-065",
+      "title": "C1-BLOCK-065",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 621,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nBrowse drives\nJobs\nInternships\nProjects\nCalendar\nAlerts\nMy profile\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student successfully redirected from /dashboard/employer/sponsorships to /dashboard/student",
+      "usage": {
+        "total_tokens": 405,
+        "total_prompt_tokens": 380,
+        "total_completion_tokens": 25,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-065-COMP",
+      "title": "C1-BLOCK-065 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json",
+          "outcome": "error",
+          "error": "PermissionDeniedError: Error code: 403 - {'status': 403, 'title': 'Forbidden', 'detail': 'Authorization failed'}"
+        },
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "/dashboard/student",
+          "href": "https://campus-placement-omega.vercel.app/dashboard/student",
+          "title": "PlacementHub \u2014 Campus Placement & Engagement Platform",
+          "textLen": 554,
+          "textSample": "P\nPlacementHub\nConnecting your placement community\nArjun \u2014 Dashboard\nS-57\nII\nArjun Verma\nStudent\nSign out\n\nOpen any destination below. The sidebar on inner pages shows only that category; use Home in the top bar to return here.\n\nOverview\nDashboard\nGetting Started\nMy data export\nPlacements\nBrowse Drives\nBrowse Jobs\nBrowse Internships\nBrowse Projects\nPlacement calendar\nMy Interviews\nMy Offers\nMy Applications\nMy Drives\nMy Jobs\nMy Internships\nMy Projects\nMy Hackathons\nCommunication\nClarifications\nAlerts\nFeedback\nDocuments & Profile\nMy Profile\nDocuments",
+          "headings": [
+            "Arjun \u2014 Dashboard",
+            "Overview",
+            "Placements",
+            "My Applications",
+            "Communication"
+          ],
+          "hasRuntimeError": false,
+          "has404": false,
+          "authBlocked": false
+        },
+        "rule_hint": "PASS",
+        "error": null
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "PASS",
+      "pass_fail": "PASS",
+      "verdict_summary": "Student denied access to /dashboard/employer/sponsorships",
+      "usage": {
+        "total_tokens": 434,
+        "total_prompt_tokens": 413,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-066",
+      "title": "C1-VISIT-066",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login screen",
+      "usage": {
+        "total_tokens": 322,
+        "total_prompt_tokens": 307,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-066-COMP",
+      "title": "C1-VISIT-066 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 360,
+        "total_prompt_tokens": 340,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-067",
+      "title": "C1-VISIT-067",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on target route /dashboard/employer/applications",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-067-COMP",
+      "title": "C1-VISIT-067 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 366,
+        "total_prompt_tokens": 346,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-068",
+      "title": "C1-VISIT-068",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-068-COMP",
+      "title": "C1-VISIT-068 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 365,
+        "total_prompt_tokens": 345,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-069",
+      "title": "C1-VISIT-069",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on target route /dashboard/employer/assessment-uploads",
+      "usage": {
+        "total_tokens": 334,
+        "total_prompt_tokens": 311,
+        "total_completion_tokens": 23,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-069-COMP",
+      "title": "C1-VISIT-069 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target route failed to load due to timeout error on login screen",
+      "usage": {
+        "total_tokens": 368,
+        "total_prompt_tokens": 346,
+        "total_completion_tokens": 22,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-070",
+      "title": "C1-VISIT-070",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 328,
+        "total_prompt_tokens": 308,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-070-COMP",
+      "title": "C1-VISIT-070 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 361,
+        "total_prompt_tokens": 341,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-071",
+      "title": "C1-VISIT-071",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on page while waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 336,
+        "total_prompt_tokens": 313,
+        "total_completion_tokens": 23,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-071-COMP",
+      "title": "C1-VISIT-071 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 369,
+        "total_prompt_tokens": 349,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-072",
+      "title": "C1-VISIT-072",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError while waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-072-COMP",
+      "title": "C1-VISIT-072 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login-email selector",
+      "usage": {
+        "total_tokens": 361,
+        "total_prompt_tokens": 344,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-073",
+      "title": "C1-VISIT-073",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load within 20s timeout",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-073-COMP",
+      "title": "C1-VISIT-073 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible on /dashboard/employer/drives",
+      "usage": {
+        "total_tokens": 372,
+        "total_prompt_tokens": 345,
+        "total_completion_tokens": 27,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-074",
+      "title": "C1-VISIT-074",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to open within 20 seconds",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 311,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-074-COMP",
+      "title": "C1-VISIT-074 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 364,
+        "total_prompt_tokens": 344,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-075",
+      "title": "C1-VISIT-075",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login email selector",
+      "usage": {
+        "total_tokens": 326,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-075-COMP",
+      "title": "C1-VISIT-075 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load within 20s timeout",
+      "usage": {
+        "total_tokens": 367,
+        "total_prompt_tokens": 347,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-076",
+      "title": "C1-VISIT-076",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email",
+      "usage": {
+        "total_tokens": 327,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-076-COMP",
+      "title": "C1-VISIT-076 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 365,
+        "total_prompt_tokens": 345,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-077",
+      "title": "C1-VISIT-077",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load within 20s timeout",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-077-COMP",
+      "title": "C1-VISIT-077 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 364,
+        "total_prompt_tokens": 344,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-078",
+      "title": "C1-VISIT-078",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-078-COMP",
+      "title": "C1-VISIT-078 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 362,
+        "total_prompt_tokens": 342,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-079",
+      "title": "C1-VISIT-079",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load within 20 seconds",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-079-COMP",
+      "title": "C1-VISIT-079 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load due to timeout error",
+      "usage": {
+        "total_tokens": 365,
+        "total_prompt_tokens": 346,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-080",
+      "title": "C1-VISIT-080",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError while waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-080-COMP",
+      "title": "C1-VISIT-080 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json",
+          "outcome": "error",
+          "error": "PermissionDeniedError: Error code: 403 - {'status': 403, 'title': 'Forbidden', 'detail': 'Authorization failed'}"
+        },
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login email field",
+      "usage": {
+        "total_tokens": 360,
+        "total_prompt_tokens": 344,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-081",
+      "title": "C1-VISIT-081",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 328,
+        "total_prompt_tokens": 308,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-081-COMP",
+      "title": "C1-VISIT-081 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email on /dashboard/employer/profile",
+      "usage": {
+        "total_tokens": 367,
+        "total_prompt_tokens": 344,
+        "total_completion_tokens": 23,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-082",
+      "title": "C1-VISIT-082",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on target route /dashboard/employer/projects",
+      "usage": {
+        "total_tokens": 328,
+        "total_prompt_tokens": 308,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-082-COMP",
+      "title": "C1-VISIT-082 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 361,
+        "total_prompt_tokens": 341,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-083",
+      "title": "C1-VISIT-083",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError while waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 309,
+        "total_completion_tokens": 21,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-083-COMP",
+      "title": "C1-VISIT-083 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load due to timeout error on login page",
+      "usage": {
+        "total_tokens": 368,
+        "total_prompt_tokens": 346,
+        "total_completion_tokens": 22,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-084",
+      "title": "C1-VISIT-084",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 330,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-084-COMP",
+      "title": "C1-VISIT-084 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load due to timeout error on waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 373,
+        "total_prompt_tokens": 345,
+        "total_completion_tokens": 28,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-085",
+      "title": "C1-VISIT-085",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on target route /dashboard/feedback",
+      "usage": {
+        "total_tokens": 326,
+        "total_prompt_tokens": 307,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-085-COMP",
+      "title": "C1-VISIT-085 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Target screen failed to load within 20s timeout",
+      "usage": {
+        "total_tokens": 362,
+        "total_prompt_tokens": 342,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-086",
+      "title": "C1-VISIT-086",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key19.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 328,
+        "total_prompt_tokens": 308,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-VISIT-086-COMP",
+      "title": "C1-VISIT-086 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key2.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 361,
+        "total_prompt_tokens": 341,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-087",
+      "title": "C1-BLOCK-087",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key20.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login screen",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 313,
+        "total_completion_tokens": 16,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-087-COMP",
+      "title": "C1-BLOCK-087 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key21.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login screen",
+      "usage": {
+        "total_tokens": 364,
+        "total_prompt_tokens": 349,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-088",
+      "title": "C1-BLOCK-088",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key22.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 333,
+        "total_prompt_tokens": 313,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-088-COMP",
+      "title": "C1-BLOCK-088 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key23.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timed out waiting for login screen",
+      "usage": {
+        "total_tokens": 365,
+        "total_prompt_tokens": 348,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-089",
+      "title": "C1-BLOCK-089",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key24.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 312,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-089-COMP",
+      "title": "C1-BLOCK-089 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key25.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email on /",
+      "usage": {
+        "total_tokens": 367,
+        "total_prompt_tokens": 348,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-090",
+      "title": "C1-BLOCK-090",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key26.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on login screen",
+      "usage": {
+        "total_tokens": 326,
+        "total_prompt_tokens": 311,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-090-COMP",
+      "title": "C1-BLOCK-090 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key27.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login-email selector",
+      "usage": {
+        "total_tokens": 361,
+        "total_prompt_tokens": 344,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-091",
+      "title": "C1-BLOCK-091",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key28.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on login page",
+      "usage": {
+        "total_tokens": 326,
+        "total_prompt_tokens": 311,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-091-COMP",
+      "title": "C1-BLOCK-091 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key29.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Failed to load login page due to timeout error",
+      "usage": {
+        "total_tokens": 367,
+        "total_prompt_tokens": 348,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-092",
+      "title": "C1-BLOCK-092",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key3.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on login screen",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 314,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-092-COMP",
+      "title": "C1-BLOCK-092 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key30.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login-email locator",
+      "usage": {
+        "total_tokens": 366,
+        "total_prompt_tokens": 349,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-093",
+      "title": "C1-BLOCK-093",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key4.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on login screen",
+      "usage": {
+        "total_tokens": 325,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-093-COMP",
+      "title": "C1-BLOCK-093 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key5.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login form to load",
+      "usage": {
+        "total_tokens": 362,
+        "total_prompt_tokens": 345,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-094",
+      "title": "C1-BLOCK-094",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key6.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError on login screen",
+      "usage": {
+        "total_tokens": 325,
+        "total_prompt_tokens": 310,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-094-COMP",
+      "title": "C1-BLOCK-094 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key7.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for #login-email to be visible",
+      "usage": {
+        "total_tokens": 363,
+        "total_prompt_tokens": 343,
+        "total_completion_tokens": 20,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-095",
+      "title": "C1-BLOCK-095",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key8.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login screen",
+      "usage": {
+        "total_tokens": 327,
+        "total_prompt_tokens": 312,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-095-COMP",
+      "title": "C1-BLOCK-095 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key9.json",
+          "outcome": "error",
+          "error": "PermissionDeniedError: Error code: 403 - {'status': 403, 'title': 'Forbidden', 'detail': 'Authorization failed'}"
+        },
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login form to load",
+      "usage": {
+        "total_tokens": 365,
+        "total_prompt_tokens": 348,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-096",
+      "title": "C1-BLOCK-096",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key1.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timed out waiting for login screen",
+      "usage": {
+        "total_tokens": 331,
+        "total_prompt_tokens": 314,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-096-COMP",
+      "title": "C1-BLOCK-096 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key10.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Runtime error on page: TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.",
+      "usage": {
+        "total_tokens": 379,
+        "total_prompt_tokens": 349,
+        "total_completion_tokens": 30,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-097",
+      "title": "C1-BLOCK-097",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key11.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timeout waiting for login screen",
+      "usage": {
+        "total_tokens": 326,
+        "total_prompt_tokens": 311,
+        "total_completion_tokens": 15,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-097-COMP",
+      "title": "C1-BLOCK-097 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key12.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login-email selector",
+      "usage": {
+        "total_tokens": 364,
+        "total_prompt_tokens": 347,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-098",
+      "title": "C1-BLOCK-098",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key13.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError while waiting for login-email selector",
+      "usage": {
+        "total_tokens": 331,
+        "total_prompt_tokens": 313,
+        "total_completion_tokens": 18,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-098-COMP",
+      "title": "C1-BLOCK-098 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key14.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Failed to load login page due to timeout error",
+      "usage": {
+        "total_tokens": 365,
+        "total_prompt_tokens": 346,
+        "total_completion_tokens": 19,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-099",
+      "title": "C1-BLOCK-099",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key15.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login-email selector",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 312,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-099-COMP",
+      "title": "C1-BLOCK-099 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key16.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timed out waiting for login screen",
+      "usage": {
+        "total_tokens": 366,
+        "total_prompt_tokens": 349,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-100",
+      "title": "C1-BLOCK-100",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key17.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "TimeoutError waiting for login-email selector",
+      "usage": {
+        "total_tokens": 329,
+        "total_prompt_tokens": 312,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    },
+    {
+      "id": "C1-BLOCK-100-COMP",
+      "title": "C1-BLOCK-100 \u2014 companion: resilience/UX spot-check",
+      "suite": "A",
+      "status": "completed",
+      "execution": "playwright",
+      "verdict_source": "nvidia",
+      "keyAttempts": [
+        {
+          "key": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+          "outcome": "success"
+        }
+      ],
+      "playwright": {
+        "snapshot": {
+          "pathname": "",
+          "textLen": 0,
+          "hasRuntimeError": true,
+          "textSample": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+        },
+        "rule_hint": "FAIL",
+        "error": "TimeoutError: Page.wait_for_selector: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator(\"#login-email\") to be visible\n"
+      },
+      "nvidiaKeyUsed": "C:\\Users\\sandeep\\Downloads\\Claudes\\code-review-tool\\nvidia_keys\\key18.json",
+      "verdict": "FAIL",
+      "pass_fail": "FAIL",
+      "verdict_summary": "Timed out waiting for login screen",
+      "usage": {
+        "total_tokens": 364,
+        "total_prompt_tokens": 347,
+        "total_completion_tokens": 17,
+        "entry_count": 1
+      }
+    }
+  ]
+}

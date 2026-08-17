@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-33
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open college Applications (monitor pipeline). Campus application list — student row appears after student applies.

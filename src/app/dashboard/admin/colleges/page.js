@@ -9,6 +9,10 @@ import { COMMON_SORT_OPTIONS, STATUS_FILTER_OPTIONS, statusActiveFilterFn } from
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 import { collegePlacementRate } from '@/lib/adminCollegeProfile';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function AdminCollegesPage() {
   const router = useRouter();
@@ -84,25 +88,21 @@ export default function AdminCollegesPage() {
   };
 
   return (
-    <div className="animate-fadeIn">
-      <div className="page-header">
-        <div className="page-header-left">
-          <h1>🏫 Manage Colleges</h1>
-          <p>All registered colleges on the platform</p>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Manage Colleges</h1>
+          <p className="text-muted-foreground mt-1 mb-0 text-sm">All registered colleges on the platform</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap gap-2">
           <ExportCsvSplitButton
             filenameBase="admin_colleges"
             currentCount={displayColleges.length}
             fullCount={colleges.length}
             getRows={getExportRows}
           />
-          <Link className="btn btn-secondary" href="/dashboard/admin/pending-registrations">
-            Onboard colleges & employers
-          </Link>
-          <Link className="btn btn-primary" href="/dashboard/admin/colleges/add">
-            + Add College
-          </Link>
+          <Button variant="outline" render={<Link href="/dashboard/admin/pending-registrations" />}>Onboard colleges & employers</Button>
+          <Button render={<Link href="/dashboard/admin/colleges/add" />}>Add College</Button>
         </div>
       </div>
 
@@ -125,30 +125,28 @@ export default function AdminCollegesPage() {
         />
       ) : null}
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>College</th>
-              <th>City</th>
-              <th>NAAC</th>
-              <th>Students</th>
-              <th>Placed</th>
-              <th>Rate</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 py-0">
+        <CardHeader className="border-b py-4">
+          <CardTitle>College directory</CardTitle>
+          <CardDescription>{displayColleges.length} of {colleges.length} colleges</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {['College','City','NAAC','Students','Placed','Rate','Status','Actions'].map((label) => <TableHead key={label}>{label}</TableHead>)}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {displayColleges.length === 0 && totalCount > 0 ? (
-              <tr>
-                <td colSpan={8} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                   No colleges match your search or filters.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
             {displayColleges.map((c) => (
-              <tr
+              <TableRow
                 key={c.id}
                 className="admin-row-clickable"
                 tabIndex={0}
@@ -162,10 +160,10 @@ export default function AdminCollegesPage() {
                   }
                 }}
               >
-                <td className="font-semibold">
+                <TableCell className="font-semibold">
                   <button
                     type="button"
-                    className="admin-entity-name-btn"
+                    className="text-primary font-semibold hover:underline"
                     onClick={(e) => {
                       e.stopPropagation();
                       openCollege(c.id);
@@ -173,37 +171,32 @@ export default function AdminCollegesPage() {
                   >
                     {c.name}
                   </button>
-                </td>
-                <td>{c.city}</td>
-                <td>
-                  <span className="badge badge-indigo">{c.naac}</span>
-                </td>
-                <td>{c.students}</td>
-                <td>{c.placed}</td>
-                <td className="font-bold">{collegePlacementRate(c.students, c.placed)}%</td>
-                <td>
-                  <span className={`badge badge-dot ${c.active ? 'badge-green' : 'badge-gray'}`}>
-                    {c.active ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td onClick={(e) => e.stopPropagation()}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
+                </TableCell>
+                <TableCell>{c.city}</TableCell>
+                <TableCell><StatusBadge tone="indigo">{c.naac || '—'}</StatusBadge></TableCell>
+                <TableCell>{c.students}</TableCell>
+                <TableCell>{c.placed}</TableCell>
+                <TableCell className="font-bold">{collegePlacementRate(c.students, c.placed)}%</TableCell>
+                <TableCell><StatusBadge tone={c.active ? 'green' : 'gray'} showDot>{c.active ? 'Active' : 'Inactive'}</StatusBadge></TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  <div className="flex flex-wrap items-center gap-1">
                     <StandardTableIconAction action="view" onClick={() => openCollege(c.id)} />
                     <StandardTableIconAction action="edit" onClick={() => openCollege(c.id, 'edit')} />
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {!isLoading && totalCount === 0 ? (
-              <tr>
-                <td colSpan={8} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={8} className="text-muted-foreground h-24 text-center">
                   {listError || 'No colleges found.'}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

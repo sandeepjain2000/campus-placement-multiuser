@@ -1,0 +1,62 @@
+{
+  "id": "data-export-notice",
+  "title": "Personal data export notice",
+  "oneLiner": "Voice-guided tour for use case: Personal data export notice",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in",
+      "observe": "Personal data export from My data export.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open My data export",
+      "observe": "Download CSV; user_data_export notice email sent.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/my-exports"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Run export — manual",
+      "observe": "Browser download plus email log with recipientUserId.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Verify Email logs",
+      "observe": "context user_data_export.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Acting user equals recipient for self-export.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    }
+  ]
+}

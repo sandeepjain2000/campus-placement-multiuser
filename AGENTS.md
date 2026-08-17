@@ -67,6 +67,7 @@ Read both before writing any significant UI code.
 |------|----------|
 | [`docs/README.md`](docs/README.md) | Master doc index |
 | [`docs/product/placementhub-functionality.md`](docs/product/placementhub-functionality.md) | Features & flows |
+| [`docs/test-cases/`](docs/test-cases/) | Excel/CSV test case suites |
 | [`docs/help/`](docs/help/) | In-app help export |
 | [`qa/docs/`](qa/docs/) | Guided runner & manual QA playbooks |
 | [`qa/runners/`](qa/runners/) | Runner scripts (not markdown) |

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-04
+# Stage: step-11
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Search for the guided internship by marker. Table filters to rows matching the GT- session marker in the role/title column.

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: phase-college
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+College administrator role. IIT Madras reviews and approves the posting.

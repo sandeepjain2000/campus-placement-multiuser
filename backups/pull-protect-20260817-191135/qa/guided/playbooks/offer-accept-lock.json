@@ -1,0 +1,107 @@
+{
+  "id": "offer-accept-lock",
+  "title": "Offer → accept → placement lock",
+  "oneLiner": "Voice-guided tour for use case: Offer → accept → placement lock",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Offers (bulk CSV via Offers page if needed)",
+      "observe": "Offer create/upload UI ready",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Offers (bulk CSV via Offers page if needed) (continued)",
+      "observe": "Offer create/upload UI ready",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/offers"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Release offer (UI or CSV) for a student — manual step",
+      "observe": "Offer row created Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Offers",
+      "observe": "Offer visible with amount/status",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Offers (continued)",
+      "observe": "Offer visible with amount/status",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/offers"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Accept or decline the offer — manual step",
+      "observe": "Response saved Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Offers",
+      "observe": "Final status matches student response",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Offers (continued)",
+      "observe": "Final status matches student response",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/offers"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Offers",
+      "observe": "Same final status",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Offers (continued)",
+      "observe": "Same final status",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/offers"
+      }
+    }
+  ]
+}

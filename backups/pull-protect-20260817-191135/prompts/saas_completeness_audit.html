@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlacementHub — SaaS Completeness Audit</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; font-size: 13.5px; background: #f5f7fa; color: #1a1a2e; line-height: 1.55; }
+
+  header { background: #0f172a; color: #fff; padding: 28px 40px 24px; }
+  header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  header p  { font-size: 13px; color: #94a3b8; }
+  .meta { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+  .meta div { background: #1e293b; border-radius: 8px; padding: 10px 20px; text-align: center; min-width: 90px; }
+  .meta div span { display: block; }
+  .meta div .n  { font-size: 24px; font-weight: 700; }
+  .meta div .lh { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .n.high   { color: #f87171; }
+  .n.medium { color: #fbbf24; }
+  .n.low    { color: #34d399; }
+  .n.info   { color: #60a5fa; }
+
+  .stack-info { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .stack-pill { background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 4px 14px; font-size: 11px; color: #94a3b8; }
+  .stack-pill strong { color: #e2e8f0; }
+
+  .golden-rule { background: #1e293b; border-left: 4px solid #6366f1; margin: 0 40px 0; padding: 12px 18px; border-radius: 0 8px 8px 0; margin-top: 20px; font-size: 12px; color: #94a3b8; }
+  .golden-rule strong { color: #e2e8f0; }
+
+  section { max-width: 1380px; margin: 28px auto; padding: 0 24px; }
+  h2 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 8px; }
+  h2 .cat-count { font-size: 11px; font-weight: 600; background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 10px; margin-left: auto; }
+  h2 .prompt-num { font-size: 11px; font-weight: 600; background: #ddd6fe; color: #5b21b6; border-radius: 12px; padding: 2px 10px; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  thead tr { background: #0f172a; color: #fff; }
+  thead th { padding: 11px 14px; text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .1s; }
+  tbody tr:hover { background: #f8fafc; }
+  td { padding: 11px 14px; vertical-align: top; font-size: 13px; }
+
+  .num { font-weight: 700; color: #6366f1; text-align: center; font-size: 13px; }
+  .area-name { font-weight: 700; color: #0f172a; font-size: 12.5px; }
+  .area-sub  { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  .sev { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .sev.High     { background: #fee2e2; color: #b91c1c; }
+  .sev.Medium   { background: #fef3c7; color: #92400e; }
+  .sev.Low      { background: #dcfce7; color: #166534; }
+  .sev.Critical { background: #fce7f3; color: #9d174d; }
+
+  .issue-text { color: #334155; font-size: 12.5px; line-height: 1.5; }
+  .issue-text code { font-family: 'Courier New', monospace; background: #fef2f2; color: #991b1b; border-radius: 3px; padding: 1px 5px; font-size: 11px; }
+
+  .aoa { font-size: 12px; color: #475569; }
+  .aoa code { font-family: 'Courier New', monospace; background: #f1f5f9; color: #334155; border-radius: 3px; padding: 1px 4px; font-size: 11px; }
+
+  .crit-yes { font-weight: 700; color: #b91c1c; font-size: 12px; }
+  .crit-no  { color: #64748b; font-size: 12px; }
+
+  .section-summary { background: #fff; border-radius: 8px; padding: 14px 18px; margin-bottom: 14px; border-left: 4px solid #6366f1; font-size: 13px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .section-summary strong { color: #0f172a; }
+  .section-summary .status-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 6px; }
+  .status-badge.partial { background: #fef3c7; color: #92400e; }
+  .status-badge.missing { background: #fee2e2; color: #b91c1c; }
+  .status-badge.good    { background: #dcfce7; color: #166534; }
+
+  .score-bar { display: flex; align-items: center; background: #fff; border-radius: 10px; padding: 18px 24px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(0,0,0,.07); gap: 24px; flex-wrap: wrap; }
+  .score-item { text-align: center; }
+  .score-item .score-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .score-item .score-val { font-size: 22px; font-weight: 800; }
+  .score-val.pct-high   { color: #34d399; }
+  .score-val.pct-med    { color: #fbbf24; }
+  .score-val.pct-low    { color: #f87171; }
+  .score-val.pct-crit   { color: #f43f5e; }
+  .score-divider { width: 1px; height: 40px; background: #e2e8f0; }
+
+  .progress-wrap { margin-top: 6px; }
+  .progress-bar { background: #e2e8f0; border-radius: 4px; height: 6px; overflow: hidden; width: 80px; display: inline-block; vertical-align: middle; }
+  .progress-fill { height: 100%; border-radius: 4px; }
+  .fill-red   { background: #f87171; }
+  .fill-amber { background: #fbbf24; }
+  .fill-green { background: #34d399; }
+
+  .prio { font-weight: 700; font-size: 12px; }
+  .prio.p0 { color: #b91c1c; }
+  .prio.p1 { color: #92400e; }
+  .prio.p2 { color: #166534; }
+  .prio.p3 { color: #475569; }
+
+  footer { text-align: center; padding: 32px 0 48px; color: #94a3b8; font-size: 12px; }
+  footer strong { color: #64748b; }
+
+  .toc { background: #fff; border-radius: 10px; padding: 18px 24px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.07); display: flex; gap: 8px; flex-wrap: wrap; }
+  .toc a { font-size: 11.5px; color: #6366f1; text-decoration: none; background: #ede9fe; border-radius: 6px; padding: 4px 10px; }
+  .toc a:hover { background: #ddd6fe; }
+
+  .checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .checklist-card { background: #fff; border-radius: 10px; padding: 14px 18px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  .checklist-card h4 { font-size: 12.5px; font-weight: 700; color: #0f172a; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .checklist-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: #334155; margin-bottom: 6px; }
+  .chk { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .chk.yes  { background: #dcfce7; color: #166534; }
+  .chk.no   { background: #fee2e2; color: #b91c1c; }
+  .chk.part { background: #fef3c7; color: #92400e; }
+
+  .completion-pct { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+  .comp-high { background: #dcfce7; color: #166534; }
+  .comp-med  { background: #fef3c7; color: #92400e; }
+  .comp-low  { background: #fee2e2; color: #b91c1c; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PlacementHub — SaaS Product Completeness Audit</h1>
+  <p>Evaluated against SaaS Completeness Audit (Full Set) · 17 Prompts · Product capability gaps only — not UI/aesthetics</p>
+  <div class="meta">
+    <div><span class="n high">21</span><span class="lh">High</span></div>
+    <div><span class="n medium">25</span><span class="lh">Medium</span></div>
+    <div><span class="n low">11</span><span class="lh">Low</span></div>
+    <div><span class="n info">57</span><span class="lh">Total Gaps</span></div>
+    <div><span class="n" style="color:#a78bfa">17</span><span class="lh">Prompts</span></div>
+    <div><span class="n" style="color:#34d399">16</span><span class="lh">Dummy Fields</span></div>
+    <div><span class="n" style="color:#67e8f9">55</span><span class="lh">Pages Audited</span></div>
+  </div>
+  <div class="stack-info">
+    <span class="stack-pill"><strong>Framework:</strong> Next.js · App Router</span>
+    <span class="stack-pill"><strong>DB:</strong> PostgreSQL · Supabase</span>
+    <span class="stack-pill"><strong>Auth:</strong> NextAuth 4</span>
+    <span class="stack-pill"><strong>Data:</strong> SWR · 62 API routes</span>
+    <span class="stack-pill"><strong>Roles:</strong> Student · Employer · College Admin · Super Admin</span>
+    <span class="stack-pill"><strong>Tables:</strong> 30 schema tables · 164 seed rows</span>
+  </div>
+  <div class="golden-rule">
+    <strong>Golden Rule applied:</strong> UI colors, layout, and aesthetics are excluded. Only missing product capabilities that affect real users at scale are reported. See the separate Advanced UI/UX Design Audit for UI findings.
+  </div>
+</header>
+
+<section>
+
+  <!-- ── OVERALL COMPLETENESS SCORES ── -->
+  <h2 style="margin-top: 28px;">Overall SaaS Completeness by Prompt Area</h2>
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-label">Data Tables</div>
+      <div class="score-val pct-med">52%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-amber" style="width:52%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">CRUD</div>
+      <div class="score-val pct-med">58%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-amber" style="width:58%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Filters</div>
+      <div class="score-val pct-low">40%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:40%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Export</div>
+      <div class="score-val pct-med">50%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-amber" style="width:50%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Automation</div>
+      <div class="score-val pct-low">20%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:20%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Multi-Tenancy</div>
+      <div class="score-val pct-high">72%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-green" style="width:72%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Edge Cases</div>
+      <div class="score-val pct-low">35%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:35%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Power User</div>
+      <div class="score-val pct-low">5%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:5%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Messaging</div>
+      <div class="score-val pct-med">55%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-amber" style="width:55%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Onboarding</div>
+      <div class="score-val pct-low">15%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:15%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Search UX</div>
+      <div class="score-val pct-low">30%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:30%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Compliance</div>
+      <div class="score-val pct-low">10%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:10%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Performance UX</div>
+      <div class="score-val pct-med">45%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-amber" style="width:45%"></div></div></div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Session Mgmt</div>
+      <div class="score-val pct-low">20%</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-red" style="width:20%"></div></div></div>
+    </div>
+  </div>
+
+
+  <!-- ── CHECKLIST GRID ── -->
+  <h2>Feature Checklist by Prompt <span class="cat-count">✓ = present · ~ = partial · ✗ = missing</span></h2>
+  <div class="checklist-grid">
+
+    <div class="checklist-card">
+      <h4>P1 — Data Table Completeness <span class="completion-pct comp-med">52%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>Search input (students, jobs, applications)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>Status filters (jobs, applications, internships)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Sorting (no column-header sort on any table)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Pagination (API hard-limits 500–1000 rows; no page controls)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Column toggle (not on any table)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>Export CSV (ExportCsvSplitButton on 8 pages)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Bulk actions (zero bulk operations anywhere)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Default sort state (tables render in DB insertion order)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Empty states (present on some pages, inconsistent)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Data refresh (SWR auto-refresh; no manual refresh button)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P2 — CRUD Completeness <span class="completion-pct comp-med">58%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>Create with defaults (all major entities)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Draft support (jobs only; drives/offers/profiles have none)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Detail views (inline expand only; no dedicated detail pages)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>Update / partial edits (all entities)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Soft delete (no <code>deleted_at</code>; all deletes are permanent)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Undo after delete (not implemented anywhere)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Proper delete warnings (native <code>confirm()</code> used — 3 instances)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P3 — Filters, Sorting &amp; Defaults <span class="completion-pct comp-low">40%</span></h4>
+      <div class="checklist-item"><div class="chk part">~</div>Filter coverage (status filter on 4–5 pages; most pages unfiltered)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Default states (no default filter/sort state defined)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Sorting logic (no column-clickable sort anywhere)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Saved views / filter presets (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Advanced filter (no compound / multi-field filter)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P4 — Export &amp; Reporting <span class="completion-pct comp-med">50%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>CSV export (8 pages use ExportCsvSplitButton)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Filtered export (button exports all rows, ignores active filters)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>Reports page (college/reports with real API data)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>PDF export (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Print view (no <code>@media print</code> CSS anywhere)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Sharing (no shareable report links)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P5 — Automation &amp; Feedback Systems <span class="completion-pct comp-low">20%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>In-app notifications (/api/notifications + alerts page)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Reminders (student/reminders has hardcoded REMINDERS array — not live)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Automation (no status-change triggers or workflow rules)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Status transitions (no state machine; statuses changed manually)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P6 — Multi-Tenancy &amp; Roles <span class="completion-pct comp-high">72%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>RBAC (4 roles: super_admin / college_admin / employer / student)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>Tenant isolation (tenant_id enforced in all API queries)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>Audit log table (schema + seed data present)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Audit log UI (no page to view audit logs)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Sub-role permissions (role-level only; no per-action permission flags)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P7 — Edge Cases &amp; Failures <span class="completion-pct comp-low">35%</span></h4>
+      <div class="checklist-item"><div class="chk part">~</div>No-data empty states (partial — inconsistent across pages)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Large datasets (LIMIT 500–1000 hardcoded; no real pagination)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>API failure handling (PageError on only 7 of 36 SWR pages)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Invalid actions (native <code>confirm()</code> instead of modal; no guard rails)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Retry handling (PageError has retry; only 7 pages use it)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P8 — Power User &amp; Scale <span class="completion-pct comp-low">5%</span></h4>
+      <div class="checklist-item"><div class="chk no">✗</div>Bulk actions (no checkbox + bulk operation on any table)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Keyboard shortcuts (none defined)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Saved views (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Efficiency tools (no quick-add, no command palette)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P9 — Messaging &amp; Feedback <span class="completion-pct comp-med">55%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>Action feedback (ToastProvider — 205 usages across app)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Error specificity (some errors generic; some pass raw API strings)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Destructive warnings (native <code>window.confirm()</code> — 3 instances)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Severity calibration (toast used consistently; confirm() breaks pattern)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Recovery options (no undo after any destructive action)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P10 — Onboarding <span class="completion-pct comp-low">15%</span></h4>
+      <div class="checklist-item"><div class="chk no">✗</div>Guided setup (no first-time onboarding flow for any role)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Empty-state onboarding (basic empty state on student dashboard only)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Feature discovery (no tooltips, contextual help, or walkthroughs)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Progress tracking (no onboarding checklist or profile completion %)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Role-based onboarding (all roles land on generic dashboard)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P11 — Search &amp; Real-Time Feedback <span class="completion-pct comp-low">30%</span></h4>
+      <div class="checklist-item"><div class="chk no">✗</div>Debouncing (debounce util exists in utils.js but NOT used in any search field)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Min character threshold (no minimum chars before filtering)</div>
+      <div class="checklist-item"><div class="chk yes">✓</div>No results handling ("No results" shown in filtered tables)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Typo tolerance (exact string match only; no fuzzy search)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Recent searches (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Keyboard navigation in search dropdown (not applicable / not built)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P13 — Accessibility <span class="completion-pct comp-low">20%</span></h4>
+      <div class="checklist-item"><div class="chk no">✗</div>ARIA labels (only 17 instances across 55 pages)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Keyboard navigation (no focus-visible ring on buttons)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Focus management (modals/dropdowns don't trap/restore focus)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Screen reader announcements (no live regions on feedback)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Skip link (not present)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P14 — Compliance &amp; Retention <span class="completion-pct comp-low">10%</span></h4>
+      <div class="checklist-item"><div class="chk no">✗</div>Data retention policies (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Export personal data (no per-user GDPR data export)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Account deletion flow (not implemented)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Audit logs (table exists; no viewer UI)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Consent / versioning (no terms acceptance tracking)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P15 — Performance Feedback <span class="completion-pct comp-med">45%</span></h4>
+      <div class="checklist-item"><div class="chk yes">✓</div>Skeleton screens (present on most pages)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Progress indicators (loading state on buttons in some forms)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Timeout handling (no request timeout; SWR defaults only)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Background notifications (no background data sync)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Optimistic UI (all mutations wait for server confirmation)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P16 — Progressive Disclosure <span class="completion-pct comp-low">15%</span></h4>
+      <div class="checklist-item"><div class="chk no">✗</div>Simple vs advanced filters (all filters shown at once or none)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Keyboard shortcuts (none defined anywhere)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Bulk operation discoverability (no bulk ops to discover)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Contextual help (no inline help text, tooltips, or docs links)</div>
+      <div class="checklist-item"><div class="chk part">~</div>Feature flags (showNotReady pattern used; not a real flag system)</div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>P17 — Session &amp; Device Management <span class="completion-pct comp-low">20%</span></h4>
+      <div class="checklist-item"><div class="chk part">~</div>Session maxAge (24hr set in auth.js; no warning before expiry)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Concurrent session warnings (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Session timeout alerts (user is silently logged out)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Device tracking (not implemented)</div>
+      <div class="checklist-item"><div class="chk no">✗</div>Cross-device draft save (sessionStorage is device-local only)</div>
+    </div>
+
+  </div>
+
+
+  <!-- ── MAIN ISSUES TABLE ── -->
+  <h2>Full Issue Register <span class="cat-count">42 gaps · ranked by impact</span></h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:4%">#</th>
+        <th style="width:14%">Area</th>
+        <th style="width:32%">Issue</th>
+        <th style="width:8%">Impact</th>
+        <th style="width:28%">Area of Action</th>
+        <th style="width:8%">Critical</th>
+        <th style="width:6%">Prompt</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- CRITICAL / HIGH -->
+      <tr>
+        <td class="num">1</td>
+        <td><div class="area-name">Edge Cases</div><div class="area-sub">API Failure Handling</div></td>
+        <td class="issue-text">29 of 36 SWR-fetching pages have no error state. When the API returns 500 or the network fails, the skeleton renders indefinitely. Users cannot tell if data is loading or broken, and there is no retry path. Only 7 pages import <code>PageError</code>.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Create a shared <code>&lt;PageError onRetry={() =&gt; mutate()} /&gt;</code> pattern and apply it to all remaining 29 SWR pages. Add it to the SWR guard: <code>if (error) return &lt;PageError error={error} onRetry={mutate} /&gt;</code> before the loading check.</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P7</td>
+      </tr>
+
+      <tr>
+        <td class="num">2</td>
+        <td><div class="area-name">Data Tables</div><div class="area-sub">Pagination</div></td>
+        <td class="issue-text">All API routes use hardcoded <code>LIMIT 500</code> or <code>LIMIT 1000</code>. At real scale (college with 5,000 students, employer with 2,000 applications), these queries will time out or return unmanageable payloads. The one pagination UI in employer/requests shows a toast "Pagination is not implemented yet" — confirming this is a known gap.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Add <code>?page=1&amp;pageSize=50</code> query params to API routes. Return <code>{ data, total, page, pageSize }</code>. Build a reusable <code>&lt;Pagination&gt;</code> component. Priority tables: students, applications, jobs, drives.</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P1</td>
+      </tr>
+
+      <tr>
+        <td class="num">3</td>
+        <td><div class="area-name">CRUD</div><div class="area-sub">Soft Delete</div></td>
+        <td class="issue-text">No entity in the schema has a <code>deleted_at</code> or <code>is_deleted</code> column. All deletes are permanent. In a placement platform, deleting a drive, offer, or student profile is legally and operationally irreversible — audit compliance requires recoverable records.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Add <code>deleted_at TIMESTAMPTZ</code> to key tables: <code>placement_drives</code>, <code>offers</code>, <code>jobs</code>, <code>student_profiles</code>. Change DELETE routes to <code>UPDATE … SET deleted_at = NOW()</code>. Add <code>WHERE deleted_at IS NULL</code> to all GET queries.</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P2</td>
+      </tr>
+
+      <tr>
+        <td class="num">4</td>
+        <td><div class="area-name">Automation</div><div class="area-sub">Reminders — Hardcoded</div></td>
+        <td class="issue-text">The <code>student/reminders/page.js</code> exports a hardcoded <code>const REMINDERS = [...]</code> array (TechCorp, Infosys, DataVerse). It is the only remaining page with dummy data. The page header says "Preview inbox — no email is sent from this screen" — but it shows static company names to every student regardless of their actual drives.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Wire to <code>/api/student/drives</code> and filter drives within the next 7 days to generate real reminders. Remove <code>const REMINDERS</code> array. Show actual upcoming drives from the student's college calendar.</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P5</td>
+      </tr>
+
+      <tr>
+        <td class="num">5</td>
+        <td><div class="area-name">Messaging</div><div class="area-sub">Destructive Warnings</div></td>
+        <td class="issue-text">Three destructive actions use native <code>window.confirm()</code>: "Block this employer" (college/employers), "Cancel this booking" (college/infrastructure), "Remove this document" (student/documents). The browser dialog has no context, is unstylable, is blocked by some enterprise browsers, and breaks the app's visual language.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Build a reusable <code>&lt;ConfirmDialog title message confirmLabel onConfirm /&gt;</code> modal. Replace all 3 <code>confirm()</code> calls. The modal can display the entity name, the consequence ("This employer will lose campus access"), and require an explicit "Block" button click.</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P9</td>
+      </tr>
+
+      <tr>
+        <td class="num">6</td>
+        <td><div class="area-name">Power User</div><div class="area-sub">Bulk Actions</div></td>
+        <td class="issue-text">Zero bulk operations exist anywhere in the application. A college admin managing 500 students cannot bulk-update placement status. An employer reviewing 200 applications cannot bulk-shortlist or bulk-reject. This is the single biggest productivity gap for users operating at real scale.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Add checkbox column to key tables (students, applications). Show a bulk action toolbar when ≥1 row is selected. Priority actions: bulk update placement status (students), bulk shortlist / bulk reject (applications), bulk publish (jobs).</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P8</td>
+      </tr>
+
+      <tr>
+        <td class="num">7</td>
+        <td><div class="area-name">Compliance</div><div class="area-sub">GDPR / Data Export</div></td>
+        <td class="issue-text">No mechanism exists for a student to export or delete their personal data. The <code>audit_logs</code> table exists in the schema but there is no UI to view it. For a platform storing PII (names, emails, CGPA, documents), the absence of a "Download my data" and "Delete my account" flow is a compliance risk.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Add a "Privacy" section to <code>student/profile</code>: "Download my data" (generates JSON of all student rows) and "Request account deletion" (sets a deletion_requested flag, sends to admin review). Add an admin UI to view <code>audit_logs</code> by user/tenant.</td>
+        <td class="crit-yes">YES</td>
+        <td class="aoa">P14</td>
+      </tr>
+
+      <tr>
+        <td class="num">8</td>
+        <td><div class="area-name">Data Tables</div><div class="area-sub">Sorting</div></td>
+        <td class="issue-text">No table in the application has clickable column headers for sorting. Data renders in database insertion order. A college admin looking for the highest-CGPA student, or an employer finding the most-recent application, has no way to sort without exporting to CSV first.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Add a sort icon to column headers. Store <code>[sortCol, sortDir]</code> in state. For client-side tables, sort the in-memory array. For server-side tables, append <code>?sortBy=cgpa&amp;sortDir=desc</code> to the API call. Default: <code>created_at DESC</code> for all tables.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P1</td>
+      </tr>
+
+      <tr>
+        <td class="num">9</td>
+        <td><div class="area-name">Search UX</div><div class="area-sub">No Debouncing</div></td>
+        <td class="issue-text">All search fields fire <code>filter()</code> on every keystroke synchronously. The <code>debounce</code> utility function exists in <code>src/lib/utils.js</code> but is not used in any search field. For client-side filtering this causes unnecessary renders on large datasets; for any future server-side search this will cause a request flood.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Wrap all search <code>onChange</code> handlers with the existing <code>debounce(fn, 300)</code> utility. Alternatively, add a <code>useDebounce(value, 300)</code> hook and apply it to the search state variable before filtering. 5-minute fix per page.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P11</td>
+      </tr>
+
+      <tr>
+        <td class="num">10</td>
+        <td><div class="area-name">CRUD</div><div class="area-sub">Native confirm() dialogs</div></td>
+        <td class="issue-text">Three pages use <code>confirm()</code>/<code>window.confirm()</code> for destructive action warnings. These block the browser main thread, cannot be styled, are interceptable by browser extensions, and in some enterprise browser policies are suppressed entirely — meaning the delete executes without any warning.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Replace all 3 instances with a reusable confirmation modal. Pages affected: <code>college/employers</code> (block employer), <code>college/infrastructure</code> (cancel booking), <code>student/documents</code> (remove document).</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P2</td>
+      </tr>
+
+      <tr>
+        <td class="num">11</td>
+        <td><div class="area-name">Accessibility</div><div class="area-sub">ARIA Coverage</div></td>
+        <td class="issue-text">Only 17 <code>aria-label</code> / <code>aria-current</code> instances exist across 55 pages. Interactive elements (table action buttons, modal close buttons, filter dropdowns, calendar day cells) have no accessible names. The notification panel, mobile overlay, and campus selector have no ARIA roles.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="aoa">Minimum: add <code>aria-current="page"</code> to active nav item (1 line). Add <code>aria-label</code> to all icon-only buttons. Add <code>role="dialog" aria-modal="true"</code> to any overlay/panel. Add <code>role="navigation" aria-label="Main"</code> to sidebar nav element.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P13</td>
+      </tr>
+
+      <tr>
+        <td class="num">12</td>
+        <td><div class="area-name">Export</div><div class="area-sub">Filtered Export</div></td>
+        <td class="issue-text">The <code>ExportCsvSplitButton</code> always exports the full dataset. If an employer has filtered applications to "Shortlisted" only (30 of 200), the export downloads all 200. The button's <code>currentCount</code> prop matches <code>fullCount</code> on every usage — the filtered subset is never passed.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Pass the filtered array to <code>getRows</code>. Track <code>filteredCount</code> separately from <code>fullCount</code>. The split button's "Export filtered (30)" vs "Export all (200)" UI already exists — it just needs the correct data piped in.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P4</td>
+      </tr>
+
+      <tr>
+        <td class="num">13</td>
+        <td><div class="area-name">CRUD</div><div class="area-sub">Draft Support</div></td>
+        <td class="issue-text">Only <code>employer/jobs</code> has draft status. Placement drives, offers, clarification batches, and infrastructure bookings have no draft/unpublished state. A college admin creating a complex drive setup cannot save work-in-progress without publishing incomplete data to students.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add a <code>status</code> field to <code>placement_drives</code> with <code>draft | published | closed</code>. Add a "Save Draft" button alongside "Publish". Students see only <code>published</code> drives. Mirrors the existing pattern in employer/jobs.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P2</td>
+      </tr>
+
+      <tr>
+        <td class="num">14</td>
+        <td><div class="area-name">Filters</div><div class="area-sub">Saved Views</div></td>
+        <td class="issue-text">Filter state resets on every page navigation. A college admin who regularly filters students by "Unplaced + CSE branch" must re-apply the same two filters every session. No saved filter presets or URL-serialised filter state exists anywhere.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Serialise active filters into URL search params (<code>?status=unplaced&amp;dept=CSE</code>). On mount, hydrate filter state from URL. This makes views bookmarkable/shareable with zero backend work. Add named saved views as a Phase 2 enhancement.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P3</td>
+      </tr>
+
+      <tr>
+        <td class="num">15</td>
+        <td><div class="area-name">Automation</div><div class="area-sub">Status Transitions</div></td>
+        <td class="issue-text">Application statuses (applied → shortlisted → interview → selected / rejected) are changed manually via API PATCH calls with no validation of valid transitions. Nothing prevents setting an application from "rejected" back to "applied". No notification fires when a status changes.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Define an allowed-transition map in the API: <code>{ applied: ['shortlisted','rejected'], shortlisted: ['interview','rejected'] }</code>. Reject invalid transitions with a 422. On valid transition, insert a row into <code>application_status_log</code> (table already exists in schema) and trigger a notification.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P5</td>
+      </tr>
+
+      <tr>
+        <td class="num">16</td>
+        <td><div class="area-name">Onboarding</div><div class="area-sub">No Guided Setup</div></td>
+        <td class="issue-text">Every role lands on a full dashboard with no first-time guidance. A new employer who has just registered sees the full dashboard but has no college connections approved yet, no jobs posted, and no campus selected — the entire page is empty with no instruction on what to do next.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add a first-time detection flag (<code>onboarding_completed</code> in user table). Show a role-specific checklist card on the overview page: Employer checklist: "1. Complete company profile → 2. Connect to colleges → 3. Post your first job". Dismiss once all steps done.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P10</td>
+      </tr>
+
+      <tr>
+        <td class="num">17</td>
+        <td><div class="area-name">Multi-Tenancy</div><div class="area-sub">Audit Log UI</div></td>
+        <td class="issue-text">The <code>audit_logs</code> table is defined in schema and seeded, but there is no admin UI to view it. Super admins have no way to see who changed what, when. The admin dashboard shows college/employer/user counts but no activity log viewer.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add an <code>/dashboard/admin/audit-logs</code> page. Fetch from a new <code>/api/admin/audit-logs</code> route with filters for user, tenant, action type, and date range. Show: timestamp, user email, action, entity type, entity ID, before/after values.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P6</td>
+      </tr>
+
+      <tr>
+        <td class="num">18</td>
+        <td><div class="area-name">Performance UX</div><div class="area-sub">Optimistic UI</div></td>
+        <td class="issue-text">All mutations (status updates, toggles, approvals) wait for the full server round-trip before updating the UI. Toggling a job from draft to published shows a spinner for the full API call duration. At 200ms+ latency this makes the app feel sluggish for high-frequency operations.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">For status toggles and simple boolean fields, update local state immediately, then call the API. If the API fails, roll back and show an error toast. SWR's <code>mutate(newData, false)</code> supports optimistic updates natively — no new infrastructure needed.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P15</td>
+      </tr>
+
+      <tr>
+        <td class="num">19</td>
+        <td><div class="area-name">Session</div><div class="area-sub">Timeout Alert</div></td>
+        <td class="issue-text">The NextAuth session <code>maxAge</code> is 24 hours. When the session expires mid-work, SWR fetches silently return 401, skeleton screens appear (since the error guard is missing on most pages), and the user has no idea they've been logged out until they try to perform an action.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Use NextAuth's <code>useSession</code> with <code>event: 'session'</code> to detect expiry. Show a persistent warning banner 5 minutes before expiry: "Your session expires in 5 minutes — click to extend." On expiry, redirect to login with a "session expired" query param that shows an explanatory message.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P17</td>
+      </tr>
+
+      <tr>
+        <td class="num">20</td>
+        <td><div class="area-name">Data Tables</div><div class="area-sub">Column Toggle</div></td>
+        <td class="issue-text">Tables with many columns (students: 8+ columns, applications: 9+ columns) have no column visibility toggle. On laptop-width screens, columns overflow or compress to illegibility. Users cannot hide columns irrelevant to their workflow.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add a "Columns" dropdown button to tables with more than 6 columns. Store visible column preferences in <code>localStorage</code> per table key. Persist across sessions. Priority tables: students, applications, employer jobs.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P1</td>
+      </tr>
+
+      <tr>
+        <td class="num">21</td>
+        <td><div class="area-name">Messaging</div><div class="area-sub">Undo After Delete</div></td>
+        <td class="issue-text">No delete or destructive action offers an undo. Once a student document is removed, an employer revoke is confirmed, or a booking is cancelled, the action is permanent. Combined with the absence of soft delete, there is no recovery path at all.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Implement a 5-second undo toast: after a destructive action, show "Document removed. <u>Undo</u>" — if clicked within 5 seconds, call a restore endpoint. This requires soft delete to work. Once soft delete is in place, undo becomes a simple PATCH <code>deleted_at = NULL</code>.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P9</td>
+      </tr>
+
+      <tr>
+        <td class="num">22</td>
+        <td><div class="area-name">CRUD</div><div class="area-sub">Detail Views</div></td>
+        <td class="issue-text">Most entities use inline expand (accordion rows) instead of dedicated detail pages. A student's full profile, a placement drive's complete timeline, or an application's full history cannot be deep-linked, shared via URL, or opened in a new tab.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add detail pages for key entities: <code>/dashboard/college/drives/[id]</code>, <code>/dashboard/employer/applications/[id]</code>. These enable direct linking, browser back/forward history, and reduced page complexity by moving detail content off the list view.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P2</td>
+      </tr>
+
+      <tr>
+        <td class="num">23</td>
+        <td><div class="area-name">Accessibility</div><div class="area-sub">Focus Management</div></td>
+        <td class="issue-text">When forms open (add interview slot, add job posting), focus is not moved to the first field. When forms close, focus is not returned to the trigger button. Keyboard users must Tab through the entire page to reach the newly opened form or re-find their position after closing.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">On form open: call <code>firstInputRef.current?.focus()</code>. On form close: call <code>triggerButtonRef.current?.focus()</code>. For modal-style forms, add <code>focus-trap</code> so Tab cycles only within the open form. This is standard in any WAI-ARIA dialog implementation.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P13</td>
+      </tr>
+
+      <tr>
+        <td class="num">24</td>
+        <td><div class="area-name">Performance UX</div><div class="area-sub">Timeout Handling</div></td>
+        <td class="issue-text">SWR has no configured request timeout. A slow or hung API call will leave the skeleton spinning indefinitely. There is no maximum wait threshold after which the app shows an error and offers retry.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Configure SWR globally with <code>onErrorRetry</code> and a 10-second timeout via <code>AbortController</code> in the fetcher function. After 3 retries with exponential backoff, stop retrying and set an error state. Show the PageError component at that point.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P15</td>
+      </tr>
+
+      <tr>
+        <td class="num">25</td>
+        <td><div class="area-name">Onboarding</div><div class="area-sub">Profile Completion</div></td>
+        <td class="issue-text">Students can exist with no CGPA, no documents, no skills, and no resume — yet they appear in employer search results. There is no profile completion percentage, no prompt to fill missing fields, and no gate preventing applications from incomplete profiles.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add a <code>profileCompletionPct</code> calculation to <code>/api/student/dashboard</code>: score each field (CGPA, skills, resume, branch, year). Show a progress bar on the student overview. Optionally block drive applications below a threshold (e.g. 60% complete).</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P10</td>
+      </tr>
+
+      <tr>
+        <td class="num">26</td>
+        <td><div class="area-name">Compliance</div><div class="area-sub">Account Deletion</div></td>
+        <td class="issue-text">No account deletion or deactivation flow exists for any role. Students who graduate, employers who discontinue, or admins who leave the institution have no self-service offboarding. An admin must directly delete rows from the database.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="aoa">Add a "Deactivate account" option in profile settings for students and employers. Mark the user with <code>status = 'inactive'</code> and <code>deactivated_at</code>. Inactive users cannot log in; their data is retained for audit purposes. Super admins can reactivate or fully purge.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P14</td>
+      </tr>
+
+      <tr>
+        <td class="num">27</td>
+        <td><div class="area-name">Data Tables</div><div class="area-sub">Manual Refresh</div></td>
+        <td class="issue-text">SWR revalidates on window focus but there is no manual refresh button on any data table. A college admin reviewing live application counts during a drive day cannot trigger a refresh without switching tabs or waiting for an auto-revalidation cycle.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add a refresh icon button next to each table header that calls <code>mutate()</code>. Show a spinner on the icon while revalidating. Cost: 3 lines of JSX per page.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P1</td>
+      </tr>
+
+      <tr>
+        <td class="num">28</td>
+        <td><div class="area-name">Export</div><div class="area-sub">PDF / Print</div></td>
+        <td class="issue-text">No PDF export or print-optimised view exists for any report or document. College TPOs routinely need to print placement reports for institutional submissions. <code>@media print</code> CSS is absent from <code>globals.css</code>.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add <code>@media print { .sidebar, .topbar, .btn { display: none; } .main-content { width: 100%; } }</code> to <code>globals.css</code> as a baseline. For the reports page, add a "Print" button that calls <code>window.print()</code>. Full PDF generation (via puppeteer/pdf-lib) is a Phase 2 addition.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P4</td>
+      </tr>
+
+      <tr>
+        <td class="num">29</td>
+        <td><div class="area-name">Filters</div><div class="area-sub">Default Sort State</div></td>
+        <td class="issue-text">All tables render in database insertion order. There is no defined default sort for any list. Students are not sorted by name or CGPA. Applications are not sorted by recency. This makes tables harder to scan at scale.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add <code>ORDER BY created_at DESC</code> to all list API queries as a baseline. Add entity-specific defaults: students <code>ORDER BY last_name ASC</code>, applications <code>ORDER BY applied_at DESC</code>, drives <code>ORDER BY drive_date ASC</code>.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P3</td>
+      </tr>
+
+      <tr>
+        <td class="num">30</td>
+        <td><div class="area-name">Performance UX</div><div class="area-sub">Skeleton Fidelity</div></td>
+        <td class="issue-text">Loading skeletons use generic <code>skeleton-heading</code> and <code>skeleton-card</code> flat rectangles. The actual content (stats cards with icon+value+label+badge, multi-column tables) has a very different shape — causing layout shift when real content replaces the skeleton.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Build skeleton variants matching each component's structure. Stats card skeleton: a 48×48px block (icon), a wide block (value), a narrow block (label). Table skeleton: header row + 5 skeleton rows with correct column widths. Zero CLS target.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P15</td>
+      </tr>
+
+      <tr>
+        <td class="num">31</td>
+        <td><div class="area-name">Search UX</div><div class="area-sub">Min Character Threshold</div></td>
+        <td class="issue-text">Search fields filter on every character including single letters. A student typing "T" in the company search filters to all companies with T anywhere — often returning 90%+ of the list, which is useless and triggers unnecessary work.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add a minimum of 2 characters before filtering: <code>if (query.length &lt; 2) return allItems</code>. Show a hint below the search field: "Type at least 2 characters to search." This is a one-line change per search field.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P11</td>
+      </tr>
+
+      <tr>
+        <td class="num">32</td>
+        <td><div class="area-name">Accessibility</div><div class="area-sub">Skip Link</div></td>
+        <td class="issue-text">No skip-to-main-content link exists. Keyboard-only users must Tab through all 30+ sidebar links on every page load to reach the main content — a WCAG 2.4.1 bypass blocks violation.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add as first element in layout: <code>&lt;a href="#main-content" className="skip-link"&gt;Skip to main content&lt;/a&gt;</code>. CSS: visually hidden by default, appears on focus. Add <code>id="main-content"</code> to the <code>&lt;main&gt;</code> element. 10 lines total.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P13</td>
+      </tr>
+
+      <tr>
+        <td class="num">33</td>
+        <td><div class="area-name">Onboarding</div><div class="area-sub">Empty State Guidance</div></td>
+        <td class="issue-text">Empty states on most pages show a generic icon + "No data yet" message with no action prompt. A new employer seeing an empty jobs list gets no CTA ("Post your first job →"). An empty drives page gives no guidance on how to create one.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Update empty states to include a contextual CTA button that opens the create form. Pattern: icon + title + description + primary button. Example: "No jobs posted yet · Reach thousands of students at partner colleges · [Post a Job]".</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P10</td>
+      </tr>
+
+      <tr>
+        <td class="num">34</td>
+        <td><div class="area-name">Session</div><div class="area-sub">Cross-Device Draft</div></td>
+        <td class="issue-text">Active campus selection (<code>activeCampus</code>) is stored in <code>sessionStorage</code> — device-local and tab-local. An employer switching from laptop to phone loses their campus context. In-progress forms are also not persisted across devices or page refreshes.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Migrate <code>activeCampus</code> from <code>sessionStorage</code> to a React context backed by a user preference API endpoint. Store the active campus ID server-side per user. On next login from any device, restore the last active campus automatically.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P17</td>
+      </tr>
+
+      <tr>
+        <td class="num">35</td>
+        <td><div class="area-name">Export</div><div class="area-sub">Report Sharing</div></td>
+        <td class="issue-text">The college reports page has no mechanism to share a report with a colleague or export to a link. TPOs often need to share placement stats with department heads who don't have a system login.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add a "Share" button on the reports page that generates a time-limited signed URL (e.g. 7-day expiry) serving a read-only report view. The public view requires no login. This is a Phase 2 feature; Phase 1 baseline is the PDF print view (issue #28).</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P4</td>
+      </tr>
+
+      <tr>
+        <td class="num">36</td>
+        <td><div class="area-name">Compliance</div><div class="area-sub">Consent Tracking</div></td>
+        <td class="issue-text">Students register and use the platform with no record of which version of the terms of service they accepted, or when. If terms change, there is no mechanism to re-prompt acceptance or gate access until consent is renewed.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add <code>tos_version_accepted</code> and <code>tos_accepted_at</code> columns to the <code>users</code> table. On login, compare against the current version string (stored in env or config). If outdated, show a full-screen modal requiring acceptance before proceeding.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P14</td>
+      </tr>
+
+      <tr>
+        <td class="num">37</td>
+        <td><div class="area-name">Power User</div><div class="area-sub">Keyboard Shortcuts</div></td>
+        <td class="issue-text">No keyboard shortcuts are defined anywhere in the application. Power users (TPOs managing hundreds of students daily) cannot use keyboard-driven workflows to speed up repetitive tasks like approving employers, updating statuses, or navigating between sections.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Start with global navigation shortcuts: <code>G + S</code> = go to students, <code>G + D</code> = go to drives, <code>G + A</code> = go to applications. Use a <code>useKeyboardShortcuts</code> hook with a global <code>keydown</code> listener. Show shortcut hints in a <code>?</code> help modal.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P8</td>
+      </tr>
+
+      <tr>
+        <td class="num">38</td>
+        <td><div class="area-name">Accessibility</div><div class="area-sub">Live Regions</div></td>
+        <td class="issue-text">Error and success messages rendered into the DOM after user actions (form submission, status updates) are plain <code>&lt;div&gt;</code> elements. Screen readers will not announce them automatically — keyboard users get no confirmation that their action succeeded or failed.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add <code>role="alert"</code> to error messages and <code>role="status"</code> to success/info messages wherever they appear inline. The existing ToastProvider should set these roles automatically based on severity. This is a one-attribute change per feedback element.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P13</td>
+      </tr>
+
+      <tr>
+        <td class="num">39</td>
+        <td><div class="area-name">Automation</div><div class="area-sub">Status Notification</div></td>
+        <td class="issue-text">When an employer shortlists or rejects a student's application, no in-app notification is created for the student. The student must actively check their applications page to discover a status change. This creates missed-deadline and poor-experience scenarios at scale.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">In the employer applications PATCH handler, after updating status, insert a row into <code>notifications</code> for the affected student: "Your application to [Company] has been updated to [Status]." The notification infrastructure already exists — this is a 5-line addition to the API route.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P5</td>
+      </tr>
+
+      <tr>
+        <td class="num">40</td>
+        <td><div class="area-name">Multi-Tenancy</div><div class="area-sub">Sub-Role Permissions</div></td>
+        <td class="issue-text">The college admin role is monolithic. A real institution has TPO faculty, department coordinators, and placement office staff — all with different access levels. Currently any college_admin can do everything: approve employers, manage all students, view all salary data.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add a <code>permissions</code> JSONB column to <code>users</code>. Define permission flags: <code>can_approve_employers</code>, <code>can_view_salaries</code>, <code>can_manage_drives</code>. Check permissions in API routes alongside role check. Default: college_admin gets all permissions. Phase 2: UI to configure per user.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P6</td>
+      </tr>
+
+      <tr>
+        <td class="num">41</td>
+        <td><div class="area-name">Progressive Disclosure</div><div class="area-sub">Contextual Help</div></td>
+        <td class="issue-text">Complex forms (job posting with 12 fields, drive setup with logistics, hiring assessment rounds) have no inline help text, field-level hints, or documentation links. First-time employers filling the job form have no guidance on what "Job Type" vs "Opening Type" means.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">Add <code>hint</code> text below complex fields using the existing <code>.form-hint</code> CSS class already defined in <code>globals.css</code>. For multi-step forms, add a collapsible "?" info panel. No new infrastructure needed — just copy text.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P16</td>
+      </tr>
+
+      <tr>
+        <td class="num">42</td>
+        <td><div class="area-name">Search UX</div><div class="area-sub">Typo Tolerance</div></td>
+        <td class="issue-text">All search is exact string match via JavaScript <code>includes()</code>. Typing "infosys" finds "Infosys" (case-insensitive), but "infisy" or "infossy" returns zero results. In a mobile context where students type company names quickly, misspelling by one character returns nothing.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="aoa">For client-side search, integrate a lightweight fuzzy-match library (e.g. <code>fuse.js</code> — 4KB). Configure with threshold 0.4. Replace <code>.filter(item =&gt; item.name.includes(q))</code> with <code>fuse.search(q)</code>. For server-side search, add PostgreSQL <code>pg_trgm</code> similarity matching.</td>
+        <td class="crit-no">No</td>
+        <td class="aoa">P11</td>
+      </tr>
+
+    </tbody>
+  </table>
+
+
+  <!-- ── PRIORITY ORDER ── -->
+  <h2>Recommended Fix Priority Order</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:6%">Priority</th>
+        <th style="width:30%">Fix</th>
+        <th style="width:10%">Effort</th>
+        <th style="width:10%">Impact</th>
+        <th style="width:44%">Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prio p0">P0</td>
+        <td>Wire student/reminders to real drive data</td>
+        <td>~1 hour</td>
+        <td><span class="sev High">High</span></td>
+        <td>Only remaining hardcoded data in the app. Shows wrong company names to every student.</td>
+      </tr>
+      <tr>
+        <td class="prio p0">P0</td>
+        <td>Add PageError to all 29 remaining SWR pages</td>
+        <td>~2 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>Network failures show infinite skeleton. Affects every user on every bad request.</td>
+      </tr>
+      <tr>
+        <td class="prio p0">P0</td>
+        <td>Replace 3× native confirm() with ConfirmDialog modal</td>
+        <td>~2 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>Destructive actions run silently in corporate browsers that suppress confirm(). Data loss risk.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Add debounce to all search fields</td>
+        <td>30 min</td>
+        <td><span class="sev High">High</span></td>
+        <td>debounce() already exists in utils.js. Zero new code. Prevents render floods at scale.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Implement server-side pagination (students, applications, jobs)</td>
+        <td>1–2 days</td>
+        <td><span class="sev High">High</span></td>
+        <td>LIMIT 500/1000 will fail at real scale. Most impactful API-level change before launch.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Add soft delete (deleted_at) to key tables</td>
+        <td>~4 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>Compliance and safety. Permanent deletes on placement data is an operational and legal risk.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Fix filtered export (pass filtered rows to ExportCsvSplitButton)</td>
+        <td>30 min</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>Export always downloads all rows regardless of active filter. Misleads users. Quick fix.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add column sort to major tables</td>
+        <td>~3 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>Tables are unsortable. High-frequency need for TPOs and employers reviewing data.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add bulk actions to students and applications tables</td>
+        <td>~1 day</td>
+        <td><span class="sev High">High</span></td>
+        <td>Largest productivity gap. Managing 500 students one-by-one is unusable at real scale.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add session expiry warning banner</td>
+        <td>~2 hours</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>Silent 24hr logout causes data loss mid-workflow. Warning gives users a chance to extend.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add audit log viewer page for super admin</td>
+        <td>~3 hours</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>Table + seed data already exist. Just needs a frontend page and API route to expose it.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add application status notifications for students</td>
+        <td>~1 hour</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>5-line addition to existing API route. Notifications infrastructure is already in place.</td>
+      </tr>
+      <tr>
+        <td class="prio p3">P3</td>
+        <td>Add onboarding checklist to employer / college overview</td>
+        <td>~4 hours</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>First-time users have no guidance. Empty dashboards are confusing with no next-step prompt.</td>
+      </tr>
+      <tr>
+        <td class="prio p3">P3</td>
+        <td>Add @media print CSS + Print button on reports</td>
+        <td>~1 hour</td>
+        <td><span class="sev Low">Low</span></td>
+        <td>TPOs need printed reports for institutional submissions. Zero-dependency browser print.</td>
+      </tr>
+      <tr>
+        <td class="prio p3">P3</td>
+        <td>Serialise filter state to URL params (bookmarkable views)</td>
+        <td>~2 hours</td>
+        <td><span class="sev Low">Low</span></td>
+        <td>Filters reset on navigation. URL params solve this with no backend work.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- ── WHAT IS WORKING WELL ── -->
+  <h2>What Is Working Well (SaaS Completeness)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22%">Area</th>
+        <th>Strength Observed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="area-name">Multi-Tenancy (P6)</td>
+        <td class="issue-text">Tenant isolation is enforced on every API route via <code>tenant_id</code> in all queries. RBAC with 4 distinct roles drives sidebar configuration, route protection, and data scoping. The <code>audit_logs</code> table is properly defined and seeded — the strongest multi-tenancy foundation in the codebase.</td>
+      </tr>
+      <tr>
+        <td class="area-name">Export CSV (P4)</td>
+        <td class="issue-text">The <code>ExportCsvSplitButton</code> component is implemented across 8 pages. It supports both "current view" and "full export" patterns. The <code>csvExport</code> utility is centralized. This is a solid foundation that only needs filtered-row support to be complete.</td>
+      </tr>
+      <tr>
+        <td class="area-name">Toast Messaging (P9)</td>
+        <td class="issue-text">The <code>ToastProvider</code> is used 205 times across the application — nearly every action has feedback. Success, error, and info variants are consistently applied. This is the best-implemented capability in the application.</td>
+      </tr>
+      <tr>
+        <td class="area-name">Draft Support — Jobs (P2)</td>
+        <td class="issue-text">Employer jobs implement full draft → published flow: save as draft, publish, and the status is correctly scoped (draft jobs not visible to students). The pattern is complete and should be replicated for placement drives.</td>
+      </tr>
+      <tr>
+        <td class="area-name">API Coverage (P2)</td>
+        <td class="issue-text">62 API routes cover all 55 pages. Zero TODO/FIXME markers in any route. All routes use real PostgreSQL queries with parameterized inputs — no raw string interpolation. This is production-grade API architecture.</td>
+      </tr>
+      <tr>
+        <td class="area-name">Reporting (P4)</td>
+        <td class="issue-text">The <code>college/reports</code> page and <code>/api/college/reports</code> route implement real DB-computed analytics: department-wise placement, salary distribution, top recruiters, year-over-year. This is the strongest data feature in the product.</td>
+      </tr>
+      <tr>
+        <td class="area-name">Skeleton Loading (P15)</td>
+        <td class="issue-text">Skeleton screens are present on the majority of data-loading pages. The <code>skeleton</code> CSS class with shimmer animation is defined globally and used consistently. The foundation is correct; only the fidelity of skeleton shapes needs refinement.</td>
+      </tr>
+      <tr>
+        <td class="area-name">Notifications (P5)</td>
+        <td class="issue-text">The <code>/api/notifications</code> route and <code>/dashboard/alerts</code> page form a working in-app notification system. The infrastructure supports creating notifications from any API route — the gap is only in using it for automated triggers (status changes, application updates).</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+  <!-- ── DUMMY FIELDS AUDIT ── -->
+  <h2 id="dummy-fields">🔍 Dummy Fields Audit — Hardcoded &amp; Placeholder Data in UI <span class="cat-count">16 items</span></h2>
+  <div class="section-summary">
+    <strong>Second-pass deep audit (text grep + binary strings scan).</strong> These are not dummy <em>screens</em> — these are individual field values hardcoded in component state, API responses, or form defaults, causing every user to see the same fake data. Severity is assessed by user-facing impact.
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:5%">#</th>
+        <th style="width:12%">Severity</th>
+        <th style="width:20%">File / Location</th>
+        <th style="width:34%">Dummy Field &amp; Impact</th>
+        <th style="width:29%">Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">api/student/dashboard<br><span class="area-sub">route.js</span></td>
+        <td class="issue-text"><code>profileCompletion: 80</code> hardcoded in API response. Every student sees "80% complete" regardless of actual profile state. Displayed as a progress bar on the student dashboard — functionally meaningless.</td>
+        <td class="aoa">Compute real completeness: count non-null fields across <code>student_profiles</code> ÷ total fields × 100. Cache result in the same API call.</td>
+      </tr>
+      <tr>
+        <td class="num">2</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">college/interviews<br><span class="area-sub">page.js · form defaults</span></td>
+        <td class="issue-text">New interview slot form pre-fills <code>company: 'TCS'</code>, <code>round: 'Round 1 - Technical'</code>, <code>createdBy: 'TPO'</code>. Every college admin creating a slot sees TCS as the default company — a real company name injected as placeholder.</td>
+        <td class="aoa">Use empty strings for all form defaults. Company field should be a dropdown bound to active employers for that college's drives.</td>
+      </tr>
+      <tr>
+        <td class="num">3</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">admin/settings<br><span class="area-sub">page.js · useState init</span></td>
+        <td class="issue-text"><code>useState('PlacementHub')</code>, <code>useState('support@placementhub.com')</code>, <code>useState('Asia/Kolkata')</code>, <code>useState('Local Filesystem')</code> — shown before API response and permanently if the API fails. A super admin sees template values as configured platform settings.</td>
+        <td class="aoa">Initialize all settings state to <code>null</code>. Show skeletons while loading. On API error show an explicit error state — never show template strings as real configured values.</td>
+      </tr>
+      <tr>
+        <td class="num">4</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">college/clarifications<br><span class="area-sub">page.js · line 13</span></td>
+        <td class="issue-text"><code>useState('IIT Madras — Placement Committee')</code> as the default <code>postedBy</code> for every clarification. Any college that posts without editing this field publishes "IIT Madras" as the author — including colleges that are not IIT Madras.</td>
+        <td class="aoa">Populate from session: <code>session?.user?.tenantName + ' — Placement Committee'</code>. Never hardcode a real institution name.</td>
+      </tr>
+      <tr>
+        <td class="num">5</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">employer/jobs<br><span class="area-sub">page.js · lines 47–48</span></td>
+        <td class="issue-text">JD template injects <em>"Location: India — primary hubs Bengaluru / Hyderabad / Pune with hybrid flexibility…"</em> into every job description regardless of employer's actual location. Employers outside Bengaluru/Hyderabad/Pune get a false location injected into their JD.</td>
+        <td class="aoa">Remove the location sentence from the JD template. Render employer location from <code>employer_profiles.headquarters</code> in a dedicated Location field — not embedded in body text.</td>
+      </tr>
+      <tr>
+        <td class="num">6</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">employer/drives<br><span class="area-sub">page.js · line 15</span></td>
+        <td class="issue-text">New drive form defaults <code>venue: 'TBD'</code>. The string "TBD" is stored in the DB and displayed to students in drive listings — every drive created without editing the venue field shows students "TBD" as a confirmed venue.</td>
+        <td class="aoa">Default to empty string and make it a required field. Add a <code>venue_tba: boolean</code> column for genuinely unknown venues — don't store the string "TBD".</td>
+      </tr>
+      <tr>
+        <td class="num">7</td>
+        <td><span class="sev High">High</span></td>
+        <td class="area-name">employer/profile<br><span class="area-sub">page.js · lines 22–34</span></td>
+        <td class="issue-text">All 10 employer fields fall back to <code>'—'</code> or <code>0</code> when null. Header renders as <em>"— • — • Founded —"</em>; rating shows <em>"⭐ 0/5 Rating"</em>; hires shows <em>"🎓 0 Total Hires"</em> — indistinguishable from a genuinely poor or inactive employer.</td>
+        <td class="aoa">Show "Not provided" with edit prompt for null fields. For numeric fields: never render "⭐ 0.0/5" for an unrated employer — show "Not yet rated" instead.</td>
+      </tr>
+      <tr>
+        <td class="num">8</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">student/calendar<br><span class="area-sub">page.js · line 16</span></td>
+        <td class="issue-text"><code>useState(new Date(2026, 8))</code> — calendar always opens on September 2026, not the current month. A student opening the calendar in April 2026 sees September.</td>
+        <td class="aoa">Change to <code>useState(new Date())</code>. One-character fix.</td>
+      </tr>
+      <tr>
+        <td class="num">9</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">student/drives<br><span class="area-sub">page.js · year loop</span></td>
+        <td class="issue-text">Month filter loop: <code>for (let y = 2026; y &lt;= 2027; y++)</code> — no options beyond December 2027. Students in 2028+ cannot filter drives by month.</td>
+        <td class="aoa">Generate dynamically: <code>for (let y = currentYear - 1; y &lt;= currentYear + 2; y++)</code>.</td>
+      </tr>
+      <tr>
+        <td class="num">10</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">college/reports<br><span class="area-sub">page.js · YoY headers</span></td>
+        <td class="issue-text">Year-over-year table has static headers <code>'Year_2024_25'</code>, <code>'Year_2025_26'</code> in both the CSV export and HTML <code>&lt;th&gt;</code>. In 2027 the table still says "2024-25 vs 2025-26".</td>
+        <td class="aoa">Derive from the selected academic year and pass as props to both the CSV exporter and table headers.</td>
+      </tr>
+      <tr>
+        <td class="num">11</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">dashboard/layout.js<br><span class="area-sub">lines 211–215</span></td>
+        <td class="issue-text">Academic year selector defaults to <code>"2025-26"</code> (one year behind current 2026-27) and is not wired to filter any data. Changing it has no visible effect.</td>
+        <td class="aoa">Default to current year from <code>new Date()</code>. Wire to a context or URL param all data pages read, or remove the selector entirely.</td>
+      </tr>
+      <tr>
+        <td class="num">12</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">college/overview<br><span class="area-sub">page.js · lines 118, 152</span></td>
+        <td class="issue-text">Static <em>"Placement Season 2026-27"</em> in header. Always-green ↑ arrow on the placement rate stat card regardless of whether the rate is 0%, negative, or unchanged.</td>
+        <td class="aoa">Compute season from <code>new Date()</code>. Show ↑ green only if delta &gt; 0, ↓ red if &lt; 0, → grey if zero or no prior period data.</td>
+      </tr>
+      <tr>
+        <td class="num">13</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">admin/overview<br><span class="area-sub">page.js · system metrics</span></td>
+        <td class="issue-text">System Health panel shows <em>"Connect monitoring sources before surfacing uptime/session/storage metrics"</em> with badge <em>"No telemetry source configured"</em> — permanent placeholder with no path to configure from the UI.</td>
+        <td class="aoa">Implement basic telemetry via Vercel Analytics / Supabase metrics API, or hide the panel until configured. A forever-placeholder trains admins to ignore it.</td>
+      </tr>
+      <tr>
+        <td class="num">14</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="area-name">college/students<br><span class="area-sub">CGPA display</span></td>
+        <td class="issue-text">Student list renders CGPA as raw decimal. Values <code>0.00</code>, <code>null</code>, and <code>10.00</code> are treated identically — no distinction between "not entered" and "genuinely 0.00 CGPA".</td>
+        <td class="aoa">Treat <code>null</code> CGPA as "Not provided" (em-dash). Only show a numeric value if the student has actually entered one. Add validation: CGPA must be 0.1–10.0.</td>
+      </tr>
+      <tr>
+        <td class="num">15</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="area-name">Global<br><span class="area-sub">Multiple pages</span></td>
+        <td class="issue-text">Inconsistent empty-state tokens: some pages use <code>'N/A'</code>, others <code>'—'</code>, others <code>'Not specified'</code>, others <code>null</code> (renders blank). Users cannot tell if "—" means "not entered" or "not applicable".</td>
+        <td class="aoa">Define a shared <code>display(val, fallback='—')</code> utility. Use "—" for unknown/not-entered, "N/A" only for genuinely inapplicable fields.</td>
+      </tr>
+      <tr>
+        <td class="num">16</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="area-name">Multiple feature buttons<br><span class="area-sub">Toast handlers</span></td>
+        <td class="issue-text">Several action buttons show <em>"Feature not available yet"</em> toast on click. Students and employers see these buttons with no indication they are inactive. Examples: bulk messaging, resume parser, sponsor outreach.</td>
+        <td class="aoa">Either implement the feature or remove the button. If roadmapped, add a tooltip "Coming soon — available Q3 2026" rather than a silent failure toast after the user has clicked.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</section>
+
+<footer>
+  PlacementHub SaaS Completeness Audit · <strong>Evaluated against SaaS Completeness Audit Full Set · 17 Prompts + Dummy Fields Deep Audit</strong> · April 2026
+</footer>
+</body>
+</html>

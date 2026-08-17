@@ -3,7 +3,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
-import { HandHeart, Send, X } from 'lucide-react';
+import { HandHeart, Send } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function EmployerMentorshipRequestsPage() {
   const { addToast } = useToast();
@@ -55,24 +68,14 @@ export default function EmployerMentorshipRequestsPage() {
   };
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-        <span
-          style={{
-            display: 'flex',
-            padding: '0.5rem',
-            background: 'var(--primary-50)',
-            borderRadius: '10px',
-            color: 'var(--primary-600)',
-          }}
-        >
-          <HandHeart size={24} />
-        </span>
+    <div className="animate-fadeIn flex flex-col gap-5 pb-8">
+      <div className="flex items-start gap-3">
+        <div className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg border">
+          <HandHeart aria-hidden />
+        </div>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.35rem' }}>
-            Student mentorship requests
-          </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <h1 className="text-2xl font-semibold tracking-tight">Student Mentorship Requests</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
             Informal mentor opportunities at campuses you partner with. Volunteering is not a hiring
             commitment.
           </p>
@@ -80,125 +83,83 @@ export default function EmployerMentorshipRequestsPage() {
       </div>
 
       {loading ? (
-        <p className="text-secondary">Loading…</p>
+        <Card><CardContent className="text-muted-foreground py-12 text-center">Loading requests…</CardContent></Card>
       ) : items.length === 0 ? (
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+          <p className="text-muted-foreground m-0">
             No open requests at your partnered campuses right now.
           </p>
-          <p style={{ margin: '0.75rem 0 0', fontSize: '0.85rem' }}>
-            <Link href="/dashboard/employer/select-campus">Manage campus partnerships</Link>
-          </p>
-        </div>
+          <Button variant="outline" render={<Link href="/dashboard/employer/select-campus" />}>
+            Manage Campus Partnerships
+          </Button>
+          </CardContent>
+        </Card>
       ) : (
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
+        <div className="grid gap-4">
           {items.map((item) => (
-            <div key={item.id} className="card" style={{ padding: '1rem 1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-                <div>
-                  <strong>{item.title}</strong>
+            <Card key={item.id}>
+              <CardHeader className="flex-row flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <CardTitle className="text-base">{item.title}</CardTitle>
                   {item.student && (
-                    <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    <CardDescription className="mt-1">
                       {item.student.department || 'Student'}
                       {item.student.batchYear ? ` · Batch ${item.student.batchYear}` : ''}
-                    </p>
-                  )}
-                  <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}>{item.summary}</p>
-                  {item.topics && (
-                    <p style={{ margin: '0.35rem 0 0', fontSize: '0.8rem' }}>
-                      <strong>Topics:</strong> {item.topics}
-                    </p>
-                  )}
-                  {item.preferredFormat && (
-                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem' }}>
-                      <strong>Format:</strong> {item.preferredFormat}
-                    </p>
-                  )}
-                  {item.timeHint && (
-                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem' }}>
-                      <strong>Timing:</strong> {item.timeHint}
-                    </p>
+                    </CardDescription>
                   )}
                 </div>
-                <div>
-                  {item.hasVolunteered ? (
-                    <span className="badge badge-green">You volunteered</span>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-sm"
-                      onClick={() => {
-                        setVolunteerItem(item);
-                        setMessage('');
-                      }}
-                    >
-                      Volunteer
-                    </button>
-                  )}
+                {item.hasVolunteered ? <Badge variant="secondary">You Volunteered</Badge> : (
+                  <Button size="sm" onClick={() => { setVolunteerItem(item); setMessage(''); }}>
+                    Volunteer
+                  </Button>
+                )}
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                <p className="text-sm leading-6">{item.summary}</p>
+                <div className="flex flex-wrap gap-2">
+                  {item.topics ? <Badge variant="outline">Topics: {item.topics}</Badge> : null}
+                  {item.preferredFormat ? <Badge variant="outline">Format: {item.preferredFormat}</Badge> : null}
+                  {item.timeHint ? <Badge variant="outline">Timing: {item.timeHint}</Badge> : null}
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
 
-      {volunteerItem && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.45)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 50,
-            padding: '1rem',
-          }}
-          onClick={() => setVolunteerItem(null)}
-        >
-          <div
-            className="card"
-            style={{ maxWidth: 480, width: '100%', padding: '1.25rem' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Volunteer as mentor</h2>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setVolunteerItem(null)}>
-                <X size={16} />
-              </button>
-            </div>
-            <p style={{ fontSize: '0.875rem', marginTop: 0 }}>{volunteerItem.title}</p>
-            <label>
-              <span className="form-label">Short message (optional)</span>
-              <textarea
-                className="form-input"
+      <Dialog open={Boolean(volunteerItem)} onOpenChange={(open) => { if (!open) setVolunteerItem(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Volunteer as Mentor</DialogTitle>
+            <DialogDescription>{volunteerItem?.title}</DialogDescription>
+          </DialogHeader>
+          <Field>
+              <FieldLabel htmlFor="mentor-message">Short message (optional)</FieldLabel>
+              <Textarea
+                id="mentor-message"
+                name="mentor-message"
                 rows={3}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="How you can help, availability, etc."
+                placeholder="Share how you can help and your availability…"
               />
-            </label>
-            <button
-              type="button"
-              className="btn btn-primary"
-              style={{ marginTop: '1rem' }}
-              disabled={saving}
-              onClick={submitVolunteer}
-            >
-              <Send size={14} style={{ marginRight: 6 }} />
+              <FieldDescription>Include relevant experience or preferred times.</FieldDescription>
+          </Field>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setVolunteerItem(null)}>Cancel</Button>
+            <Button disabled={saving} onClick={submitVolunteer}>
+              <Send data-icon="inline-start" aria-hidden />
               Send volunteer offer
-            </button>
-          </div>
-        </div>
-      )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      <p style={{ marginTop: '1.5rem', fontSize: '0.8rem' }}>
+      <div className="text-muted-foreground flex flex-wrap gap-3 text-sm">
         <Link href="/dashboard/employer/campus-guest-needs">Campus guest needs</Link>
-        {' · '}
         <Link href="/dashboard/employer/overview">Overview</Link>
-      </p>
+      </div>
     </div>
   );
 }

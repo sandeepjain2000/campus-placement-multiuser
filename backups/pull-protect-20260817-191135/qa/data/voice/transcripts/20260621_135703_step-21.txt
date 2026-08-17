@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-21
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type eligible branches. Eligible branches shows All.

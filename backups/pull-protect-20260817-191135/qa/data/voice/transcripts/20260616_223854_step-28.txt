@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-28
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open college Internships list. Published listings from partner employers. New postings show Campus = Pending review until approved.

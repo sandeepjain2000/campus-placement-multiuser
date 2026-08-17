@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-05
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Switch to list view. Table rows with Actions column — approve icon is easier to target in list view.

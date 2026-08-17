@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-35
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as student (Arjun Verma). Student dashboard — profile must have a primary CV to apply.

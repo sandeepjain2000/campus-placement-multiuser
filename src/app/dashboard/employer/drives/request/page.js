@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import useSWR from 'swr';
-import { ArrowLeft, Target } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { buildDriveCtcBreakup } from '@/lib/amountInWords';
@@ -16,11 +16,31 @@ import {
   validatePlacementDriveForm,
 } from '@/lib/placementDriveJobFields';
 import { formatCurrency } from '@/lib/utils';
-import { DriveFormSection, driveFormCompactField, driveFormFullRow } from '@/components/employer/DriveFormSection';
-import PlacementDriveJobFormSections from '@/components/employer/PlacementDriveJobFormSections';
+import PlacementDriveJobFormSections, {
+  adminInputClass,
+  adminNativeSelectClass,
+} from '@/components/employer/PlacementDriveJobFormSections';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import EmployerListFormLayout from '@/components/employer/EmployerListFormLayout';
 import { useEmployerPostingCampuses } from '@/hooks/useEmployerPostingCampuses';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
+
+function tabForDriveErrors(errors) {
+  const keys = Object.keys(errors);
+  if (keys.some((key) => ['campusId', 'title', 'driveDate'].includes(key))) return 'drive';
+  if (keys.some((key) => ['jobType', 'vacancies'].includes(key))) return 'role';
+  if (keys.some((key) => ['minCgpa', 'maxBacklogs', 'batchYear', 'minTenthPct', 'minTwelfthPct', 'applicationDeadline'].includes(key))) {
+    return 'eligibility';
+  }
+  if (keys.some((key) => ['salaryMin', 'salaryMax'].includes(key))) return 'compensation';
+  return null;
+}
 
 export default function EmployerRequestDrivePage() {
   const router = useRouter();
@@ -29,6 +49,7 @@ export default function EmployerRequestDrivePage() {
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState(emptyPlacementDriveForm);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [formTab, setFormTab] = useState('drive');
 
   const clearFieldError = useCallback((key) => {
     setFieldErrors((prev) => {
@@ -42,6 +63,8 @@ export default function EmployerRequestDrivePage() {
   const scrollToFirstFieldError = useCallback((errors) => {
     const firstKey = Object.keys(errors).find((k) => k !== '_form');
     if (!firstKey) return;
+    const errorTab = tabForDriveErrors(errors);
+    if (errorTab) setFormTab(errorTab);
     requestAnimationFrame(() => {
       document.getElementById(`drive-field-${firstKey}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
@@ -87,204 +110,153 @@ export default function EmployerRequestDrivePage() {
   }, [campusId, form, addToast, router, scrollToFirstFieldError]);
 
   return (
-    <div className="animate-fadeIn" style={{ paddingBottom: '3rem' }}>
-      <div
-        style={{
-          marginBottom: '1.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <div>
-          <Link
-            href="/dashboard/employer/drives"
-            className="btn btn-ghost btn-sm"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              marginBottom: '0.75rem',
-              paddingLeft: 0,
-            }}
-          >
-            <ArrowLeft size={16} />
-            Back to Placement Drives
-          </Link>
-          <h1
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
-              margin: '0 0 0.35rem',
-              letterSpacing: '-0.02em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <span
-              style={{
-                display: 'flex',
-                padding: '0.35rem',
-                background: 'var(--primary-50)',
-                borderRadius: '8px',
-                color: 'var(--primary-600)',
-              }}
-            >
-              <Target size={22} />
-            </span>
-            Request placement drive
-          </h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
-            Submit a drive request with full role details — no separate job posting required. The placement office will review before students can register.
-          </p>
-        </div>
-      </div>
-
+    <EmployerListFormLayout
+      title="Request placement drive"
+      subtitle="Submit a drive request with full role details. The placement office will review it before students can register."
+      backLabel="Back to Placement Drives"
+      onBack={() => router.push('/dashboard/employer/drives')}
+      footer={
+        approvedCampuses.length > 0 ? (
+          <div className="flex flex-wrap justify-end gap-3">
+            <Button type="button" variant="secondary" disabled={submitting} onClick={() => router.push('/dashboard/employer/drives')}>
+              Cancel
+            </Button>
+            <Button type="submit" form="request-drive-form" disabled={submitting}>
+              {submitting ? 'Saving…' : 'Submit request'}
+            </Button>
+          </div>
+        ) : null
+      }
+    >
       {approvedCampuses.length === 0 ? (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '3rem 1.5rem',
-            borderRadius: 'var(--radius-xl)',
-            border: '1px dashed var(--border-default)',
-            background: 'var(--bg-secondary)',
-          }}
-        >
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            You need at least one approved campus partnership before requesting a drive.
-          </p>
-          <Link href="/dashboard/employer/select-campus" className="btn btn-primary">
-            Find campus partners
-          </Link>
-        </div>
+        <Alert>
+          <AlertCircle />
+          <AlertTitle>Approved campus required</AlertTitle>
+          <AlertDescription className="flex flex-col items-start gap-3">
+            <span>You need at least one approved campus partnership before requesting a drive.</span>
+            <Link href="/dashboard/employer/select-campus" className={buttonVariants()}>
+              Find campus partners
+            </Link>
+          </AlertDescription>
+        </Alert>
       ) : (
-        <form onSubmit={submitDrive} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', width: '100%' }}>
+        <form id="request-drive-form" onSubmit={submitDrive} className="flex w-full flex-col gap-4">
           {fieldErrors._form ? (
-            <div
-              className="card"
-              style={{
-                padding: '0.875rem 1rem',
-                marginBottom: '0.75rem',
-                borderColor: 'var(--danger-200)',
-                background: 'var(--danger-50)',
-                color: 'var(--danger-800)',
-                fontSize: '0.875rem',
-              }}
-              data-drive-field-error
-            >
-              {fieldErrors._form}
-            </div>
+            <Alert variant="destructive" data-drive-field-error>
+              <AlertCircle />
+              <AlertTitle>Could not save drive</AlertTitle>
+              <AlertDescription>{fieldErrors._form}</AlertDescription>
+            </Alert>
           ) : null}
-          <DriveFormSection
-            title="Drive details"
-            description="Campus, schedule, and logistics for this placement drive request."
-            first
-          >
-            <div className="form-group" style={{ marginBottom: 0 }} id="drive-field-campusId">
-              <label className="form-label">Campus <span style={{ color: 'red' }}>*</span></label>
-              <select
-                className={`form-select${fieldErrors.campusId ? ' input-error' : ''}`}
-                value={campusId}
-                onChange={(e) => {
-                  clearFieldError('campusId');
-                  setCampusId(e.target.value);
-                }}
-              >
-                <option value="">— Select a campus —</option>
-                {approvedCampuses.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-              {fieldErrors.campusId ? (
-                <p className="form-error" data-drive-field-error>{fieldErrors.campusId}</p>
-              ) : (
-                <span className="form-hint">Only approved campus partnerships are shown.</span>
-              )}
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }} id="drive-field-title">
-              <label className="form-label">Drive title <span style={{ color: 'red' }}>*</span></label>
-              <input
-                className={`form-input${fieldErrors.title ? ' input-error' : ''}`}
-                value={form.title}
-                onChange={(e) => {
-                  clearFieldError('title');
-                  setForm((p) => ({ ...p, title: e.target.value }));
-                }}
-                placeholder="e.g. SDE — Phase 2"
-              />
-              {fieldErrors.title ? <p className="form-error" data-drive-field-error>{fieldErrors.title}</p> : null}
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Drive type</label>
-              <select
-                className="form-select"
-                value={form.driveType}
-                onChange={(e) => setForm((p) => ({ ...p, driveType: e.target.value }))}
-              >
-                <option value="on_campus">On campus</option>
-                <option value="virtual">Virtual</option>
-                <option value="hybrid">Hybrid</option>
-                <option value="off_campus">Off campus</option>
-              </select>
-            </div>
-            <div className="form-group" style={driveFormCompactField} id="drive-field-driveDate">
-              <label className="form-label">Drive Date <span style={{ color: 'red' }}>*</span></label>
-              <ValidatedDateInput
-                fieldId={FIELD_IDS.EMPLOYER_DRIVE_DATE}
-                value={form.driveDate}
-                onChange={(v) => {
-                  clearFieldError('driveDate');
-                  setForm((p) => ({ ...p, driveDate: v }));
-                }}
-                className={fieldErrors.driveDate ? 'form-input input-error' : 'form-input'}
-              />
-              {fieldErrors.driveDate ? (
-                <p className="form-error" data-drive-field-error>{fieldErrors.driveDate}</p>
-              ) : null}
-            </div>
-            <div className="form-group" style={driveFormFullRow}>
-              <label className="form-label">Venue</label>
-              <input
-                className="form-input"
-                value={form.venue}
-                onChange={(e) => setForm((p) => ({ ...p, venue: e.target.value }))}
-                placeholder="Venue (optional — add when known)"
-              />
-            </div>
-            <div className="form-group" style={driveFormFullRow}>
-              <label className="form-label">Notes for placement office</label>
-              <textarea
-                className="form-textarea"
-                rows={3}
-                value={form.placementNotes}
-                onChange={(e) => setForm((p) => ({ ...p, placementNotes: e.target.value }))}
-                placeholder="Scheduling constraints, contact person, or internal context for the TPO team"
-              />
-              <span className="form-hint">Optional. For the placement office when reviewing your request — not shown to students.</span>
-            </div>
-          </DriveFormSection>
-
           <PlacementDriveJobFormSections
             form={form}
             setForm={setForm}
             errors={fieldErrors}
             onFieldEdit={clearFieldError}
+            activeTab={formTab}
+            onTabChange={setFormTab}
+            driveDetails={
+              <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field className="gap-2" id="drive-field-campusId" data-invalid={fieldErrors.campusId ? true : undefined}>
+                  <FieldLabel htmlFor="drive-campus">
+                    Campus <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <AdminFilterSelect
+                    id="drive-campus"
+                    className={adminNativeSelectClass}
+                    aria-invalid={fieldErrors.campusId ? true : undefined}
+                    value={campusId}
+                    emptyMapsToAll={false}
+                    onValueChange={(id) => {
+                      clearFieldError('campusId');
+                      setCampusId(id);
+                    }}
+                    items={[
+                      { label: '— Select a campus —', value: '' },
+                      ...approvedCampuses.map((c) => ({ label: c.name, value: String(c.id) })),
+                    ]}
+                  />
+                  {fieldErrors.campusId ? (
+                    <FieldError data-drive-field-error>{fieldErrors.campusId}</FieldError>
+                  ) : (
+                    <FieldDescription>Only approved campus partnerships are shown.</FieldDescription>
+                  )}
+                </Field>
+                <Field className="gap-2" id="drive-field-title" data-invalid={fieldErrors.title ? true : undefined}>
+                  <FieldLabel htmlFor="drive-title">
+                    Drive title <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <Input
+                    id="drive-title"
+                    aria-invalid={fieldErrors.title ? true : undefined}
+                    value={form.title}
+                    onChange={(e) => {
+                      clearFieldError('title');
+                      setForm((p) => ({ ...p, title: e.target.value }));
+                    }}
+                    placeholder="e.g. SDE — Phase 2"
+                  />
+                  {fieldErrors.title ? <FieldError data-drive-field-error>{fieldErrors.title}</FieldError> : null}
+                </Field>
+                <Field className="gap-2">
+                  <FieldLabel htmlFor="drive-type">Drive type</FieldLabel>
+                  <AdminFilterSelect
+                    id="drive-type"
+                    className={adminNativeSelectClass}
+                    value={form.driveType}
+                    emptyMapsToAll={false}
+                    onValueChange={(driveType) => setForm((p) => ({ ...p, driveType }))}
+                    items={[
+                      { label: 'On campus', value: 'on_campus' },
+                      { label: 'Virtual', value: 'virtual' },
+                      { label: 'Hybrid', value: 'hybrid' },
+                      { label: 'Off campus', value: 'off_campus' },
+                    ]}
+                  />
+                </Field>
+                <Field className="gap-2" id="drive-field-driveDate" data-invalid={fieldErrors.driveDate ? true : undefined}>
+                  <FieldLabel htmlFor="drive-date">
+                    Drive date <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <ValidatedDateInput
+                    id="drive-date"
+                    fieldId={FIELD_IDS.EMPLOYER_DRIVE_DATE}
+                    value={form.driveDate}
+                    onChange={(v) => {
+                      clearFieldError('driveDate');
+                      setForm((p) => ({ ...p, driveDate: v }));
+                    }}
+                    className={`${adminInputClass}${fieldErrors.driveDate ? ' border-destructive ring-destructive/20' : ''}`}
+                  />
+                  {fieldErrors.driveDate ? <FieldError data-drive-field-error>{fieldErrors.driveDate}</FieldError> : null}
+                </Field>
+                <Field className="gap-2 sm:col-span-2">
+                  <FieldLabel htmlFor="drive-venue">Venue</FieldLabel>
+                  <Input
+                    id="drive-venue"
+                    value={form.venue}
+                    onChange={(e) => setForm((p) => ({ ...p, venue: e.target.value }))}
+                    placeholder="Venue (optional — add when known)"
+                  />
+                </Field>
+                <Field className="gap-2 sm:col-span-2">
+                  <FieldLabel htmlFor="drive-placement-notes">Notes for placement office</FieldLabel>
+                  <Textarea
+                    id="drive-placement-notes"
+                    rows={3}
+                    value={form.placementNotes}
+                    onChange={(e) => setForm((p) => ({ ...p, placementNotes: e.target.value }))}
+                    placeholder="Scheduling constraints, contact person, or internal context for the TPO team"
+                  />
+                  <FieldDescription>
+                    Optional. For the placement office when reviewing your request — not shown to students.
+                  </FieldDescription>
+                </Field>
+              </FieldGroup>
+            }
           />
-
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '1.25rem', borderTop: '1px solid var(--border-default)' }}>
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'Saving…' : 'Submit request'}
-            </button>
-            <Link href="/dashboard/employer/drives" className="btn btn-ghost">
-              Cancel
-            </Link>
-          </div>
         </form>
       )}
-    </div>
+    </EmployerListFormLayout>
   );
 }

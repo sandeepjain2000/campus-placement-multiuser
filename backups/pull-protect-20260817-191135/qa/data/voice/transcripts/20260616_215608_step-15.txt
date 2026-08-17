@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-15
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Set internship end date. End date shows 31 Aug 2026 (~3 months).

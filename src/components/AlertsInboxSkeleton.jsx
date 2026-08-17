@@ -1,32 +1,36 @@
 'use client';
 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
 /**
  * Full-page skeleton for /dashboard/alerts — avoids blank flash on reload.
  */
 export default function AlertsInboxSkeleton() {
   return (
-    <div className="animate-fadeIn alerts-inbox-root" aria-busy="true" aria-label="Loading alerts">
-      <div className="page-header" style={{ marginBottom: '1rem' }}>
-        <div className="skeleton" style={{ width: 220, height: 28, marginBottom: 8 }} />
-        <div className="skeleton" style={{ width: 'min(520px, 100%)', height: 16 }} />
+    <div className="animate-fadeIn alerts-inbox-root flex flex-col gap-4" aria-busy="true" aria-label="Loading alerts">
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-7 w-[220px]" />
+        <Skeleton className="h-4 w-full max-w-[520px]" />
       </div>
-      <div className="card alerts-inbox-card" style={{ minHeight: 420 }}>
-        <div style={{ display: 'flex', minHeight: 380 }}>
-          <div
-            className="alerts-inbox-nav"
-            style={{ width: 200, flexShrink: 0, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: 8 }}
-          >
+      <Card className="alerts-inbox-card min-h-[420px]">
+        <CardHeader className="sr-only">
+          <CardTitle>Alerts Inbox</CardTitle>
+          <CardDescription>Loading alert folders and messages.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex min-h-[380px] p-0">
+          <div className="alerts-inbox-nav flex w-[200px] shrink-0 flex-col gap-2 border-r p-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="skeleton" style={{ height: 36, borderRadius: 8 }} />
+              <Skeleton key={i} className="h-9 w-full" />
             ))}
           </div>
-          <div className="alerts-inbox-list" style={{ flex: 1, padding: '0.75rem' }}>
+          <div className="alerts-inbox-list flex flex-1 flex-col gap-2.5 p-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="skeleton" style={{ height: 72, marginBottom: 10, borderRadius: 8 }} />
+              <Skeleton key={i} className="h-[72px] w-full" />
             ))}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

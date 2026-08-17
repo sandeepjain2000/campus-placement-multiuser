@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-31
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Navigate to Internship Progress Reviews. Selected internship card with guide, supervisor, and feedback form.

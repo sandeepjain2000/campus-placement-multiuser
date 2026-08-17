@@ -3,6 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { ConvBubble, ConvThread } from '@/components/messaging/ConvBubble';
 import MobileHeader from '@/components/mobile/MobileHeader';
 import { MessageSquare, ArrowLeft, Send } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export default function mb_Discussions() {
   const [threads, setThreads] = useState([]);
@@ -62,22 +66,20 @@ export default function mb_Discussions() {
 
   if (activeThread) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <div className="flex min-h-screen flex-col">
         <MobileHeader 
           title={activeThread.company} 
           action={
-            <button className="btn btn-ghost btn-sm" onClick={() => setActiveId(null)} style={{ padding: '0.4rem', color: 'var(--text-secondary)' }}>
-              <ArrowLeft size={18} />
-            </button>
+            <Button variant="ghost" size="icon-sm" onClick={() => setActiveId(null)} aria-label="Back to discussions"><ArrowLeft /></Button>
           } 
         />
         
-        <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-default)' }}>
-          <h3 style={{ margin: '0 0 0.25rem', fontSize: '1rem' }}>{activeThread.topic}</h3>
-          <div className="text-xs text-secondary">Last active: {activeThread.lastActivity}</div>
+        <div className="bg-muted/40 border-border border-b p-4">
+          <h3 className="m-0 text-base font-semibold">{activeThread.topic}</h3>
+          <div className="text-muted-foreground mt-1 text-xs">Last active: {activeThread.lastActivity}</div>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 1rem 5rem 1rem' }}>
+        <div className="flex-1 overflow-y-auto px-4 pt-4 pb-24">
           <ConvThread>
             {(activeThread.replies || []).map((r, idx) => (
               <ConvBubble
@@ -93,19 +95,16 @@ export default function mb_Discussions() {
         </div>
 
         {/* Input area fixed at bottom */}
-        <div style={{ position: 'fixed', bottom: '60px', left: 0, right: 0, background: 'var(--bg-elevated)', borderTop: '1px solid var(--border-default)', padding: '0.75rem 1rem', zIndex: 10 }}>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <input 
-              className="form-input" 
+        <div className="bg-background border-border fixed right-0 bottom-[60px] left-0 border-t p-3">
+          <div className="flex gap-2">
+            <Input
+              aria-label="Reply"
               placeholder="Reply..." 
               value={reply} 
               onChange={(e) => setReply(e.target.value)} 
-              style={{ flex: 1, borderRadius: '999px', background: 'var(--surface-2)' }} 
               onKeyDown={(e) => { if(e.key === 'Enter') addReply(); }}
             />
-            <button className="btn btn-primary" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={addReply}>
-              <Send size={16} />
-            </button>
+            <Button size="icon" onClick={addReply} aria-label="Send reply"><Send /></Button>
           </div>
         </div>
       </div>
@@ -115,49 +114,36 @@ export default function mb_Discussions() {
   return (
     <>
       <MobileHeader title="Discussions" />
-      <div className="animate-fadeIn" style={{ padding: '1rem 1rem 5rem 1rem' }}>
+      <div className="animate-fadeIn flex flex-col gap-4 px-4 pt-4 pb-20">
         
-        <div style={{ position: 'relative', marginBottom: '1rem' }}>
-          <input className="form-input" placeholder="Search discussions..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: '100%', borderRadius: '999px', paddingLeft: '1rem' }} />
-        </div>
+        <Input aria-label="Search discussions" placeholder="Search discussions..." value={search} onChange={(e) => setSearch(e.target.value)} />
 
         {isLoading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 80, borderRadius: '12px' }} />)}
+          <div className="flex flex-col gap-2">
+            {[1, 2, 3].map(i => <div key={i} className="skeleton h-20 rounded-xl" />)}
           </div>
         ) : visibleThreads.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem 1rem', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
-            <MessageSquare size={32} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>No discussions found</div>
-          </div>
+          <Card className="border-dashed"><CardContent className="text-muted-foreground flex flex-col items-center gap-3 py-12 text-center"><MessageSquare className="size-8 opacity-40" /><div className="font-medium">No discussions found</div></CardContent></Card>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className="flex flex-col gap-2">
             {visibleThreads.map((t) => (
-              <button
+              <Card
                 key={t.id}
-                type="button"
-                className="card"
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  border: '1px solid var(--border-default)',
-                  textAlign: 'left',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
-                  background: 'var(--surface)'
-                }}
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer gap-2 px-4 py-4"
                 onClick={() => setActiveId(t.id)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveId(t.id); }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <span className="badge badge-indigo" style={{ fontSize: '0.7rem' }}>{t.company}</span>
-                  <span className="badge badge-gray" style={{ fontSize: '0.7rem' }}>{(t.replies || []).length} msg</span>
+                <div className="flex items-start justify-between">
+                  <Badge>{t.company}</Badge>
+                  <Badge variant="secondary">{(t.replies || []).length} msg</Badge>
                 </div>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: 1.3 }}>
+                <div className="text-sm font-semibold leading-5">
                   {t.topic}
                 </div>
-                <div className="text-xs text-tertiary">{t.lastActivity}</div>
-              </button>
+                <div className="text-muted-foreground text-xs">{t.lastActivity}</div>
+              </Card>
             ))}
           </div>
         )}

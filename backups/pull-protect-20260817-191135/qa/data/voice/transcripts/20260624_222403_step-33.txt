@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-33
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+College reviews internship progress review (read-only). Internship Outcomes → Internship Progress Reviews. Table shows student and employer submissions; Export CSV available.

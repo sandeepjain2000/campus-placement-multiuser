@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EI-16
+# Stage: step-18
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Select the shortlisted candidate. Status becomes Selected. Select / Reject buttons appear only when shortlisted.

@@ -1,0 +1,397 @@
+{
+  "category": "C-7",
+  "categoryTitle": "Email notifications and user preference control",
+  "description": "Validate transaction-triggered emails, mailbox delivery verification, and user-level control over email categories.",
+  "testCases": [
+    {
+      "testCaseId": "C7-EMAIL-001",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Employer creates placement drive request triggers email",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/drives",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "college_admin",
+      "expectedRecipientEmail": "admin@iitm.edu",
+      "expectedEmailType": "Drive request notification",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-002",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "College admin approves drive triggers email",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/college/drives",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "employer",
+      "expectedRecipientEmail": "hr@techcorp.com",
+      "expectedEmailType": "Drive approval update",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-003",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Student applies to internship/drive triggers email",
+      "actorRole": "student",
+      "actorRoute": "/dashboard/student/drives",
+      "actorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "employer",
+      "expectedRecipientEmail": "hr@techcorp.com",
+      "expectedEmailType": "New application alert",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-004",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Employer shortlists candidate triggers email",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/applications",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "student",
+      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedEmailType": "Shortlist status update",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-005",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Employer schedules interview triggers email",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/interviews",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "student",
+      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedEmailType": "Interview schedule notification",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-006",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Employer releases offer triggers email",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/offers",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "student",
+      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedEmailType": "Offer release email",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-007",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Student accepts/rejects offer triggers email",
+      "actorRole": "student",
+      "actorRoute": "/dashboard/student/offers",
+      "actorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "employer",
+      "expectedRecipientEmail": "hr@techcorp.com",
+      "expectedEmailType": "Offer response update",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-008",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "Employer sends campus partnership request triggers email",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/employer/select-campus",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "college_admin",
+      "expectedRecipientEmail": "admin@iitm.edu",
+      "expectedEmailType": "Partnership request notification",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-EMAIL-009",
+      "category": "C-7",
+      "type": "transaction_email",
+      "title": "College publishes clarification triggers email",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/college/clarifications",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "expectedRecipientRole": "student",
+      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedEmailType": "Clarification broadcast",
+      "mailVerificationMethod": [
+        "Use working mailbox credentials from JSON config.",
+        "Capture baseline unread count / latest timestamp.",
+        "Execute transaction in app.",
+        "Check inbox for new email within SLA (e.g., 0-5 min).",
+        "Validate subject/body include transaction reference (name/id/status)."
+      ],
+      "expectedResult": [
+        "Email is delivered to intended recipient mailbox.",
+        "Content corresponds to executed transaction.",
+        "No duplicate or wrong-recipient email is sent."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C7-PREF-001",
+      "category": "C-7",
+      "type": "email_preference_control",
+      "title": "User can view email notification preferences",
+      "actorRole": "student",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "mailVerificationMethod": [
+        "Open notification/email preference controls.",
+        "Toggle target category ON/OFF and save.",
+        "Trigger mapped transaction.",
+        "Verify email delivered/suppressed as configured."
+      ],
+      "expectedResult": [
+        "Preference control exists and persists.",
+        "Email behavior follows selected preference."
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C7-PREF-002",
+      "category": "C-7",
+      "type": "email_preference_control",
+      "title": "User can disable a notification category",
+      "actorRole": "employer",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "mailVerificationMethod": [
+        "Open notification/email preference controls.",
+        "Toggle target category ON/OFF and save.",
+        "Trigger mapped transaction.",
+        "Verify email delivered/suppressed as configured."
+      ],
+      "expectedResult": [
+        "Preference control exists and persists.",
+        "Email behavior follows selected preference."
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C7-PREF-003",
+      "category": "C-7",
+      "type": "email_preference_control",
+      "title": "Disabled category suppresses future email",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "mailVerificationMethod": [
+        "Open notification/email preference controls.",
+        "Toggle target category ON/OFF and save.",
+        "Trigger mapped transaction.",
+        "Verify email delivered/suppressed as configured."
+      ],
+      "expectedResult": [
+        "Preference control exists and persists.",
+        "Email behavior follows selected preference."
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C7-PREF-004",
+      "category": "C-7",
+      "type": "email_preference_control",
+      "title": "User can re-enable email category",
+      "actorRole": "college_admin",
+      "actorRoute": "/dashboard/alerts",
+      "actorAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "mailVerificationMethod": [
+        "Open notification/email preference controls.",
+        "Toggle target category ON/OFF and save.",
+        "Trigger mapped transaction.",
+        "Verify email delivered/suppressed as configured."
+      ],
+      "expectedResult": [
+        "Preference control exists and persists.",
+        "Email behavior follows selected preference."
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C7-PREF-005",
+      "category": "C-7",
+      "type": "email_preference_control",
+      "title": "Preference isolation across users/roles",
+      "actorRole": "super_admin",
+      "actorRoute": "/dashboard/admin/settings",
+      "actorAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "mailVerificationMethod": [
+        "Open notification/email preference controls.",
+        "Toggle target category ON/OFF and save.",
+        "Trigger mapped transaction.",
+        "Verify email delivered/suppressed as configured."
+      ],
+      "expectedResult": [
+        "Preference control exists and persists.",
+        "Email behavior follows selected preference."
+      ],
+      "priority": "high"
+    },
+    {
+      "testCaseId": "C7-AUDIT-001",
+      "category": "C-7",
+      "type": "coverage_matrix",
+      "title": "Email trigger coverage for all transactions and state changes",
+      "actorRole": "all_roles",
+      "actorRoute": "all transactional routes",
+      "actorAccount": {
+        "email": "role-wise demo",
+        "password": "Admin@123"
+      },
+      "mailVerificationMethod": [
+        "Create transaction inventory from business flows.",
+        "Mark each flow as Email Expected / Not Expected by design.",
+        "Run trigger test for each Email Expected flow.",
+        "Publish gap list for missing or incorrect emails."
+      ],
+      "expectedResult": [
+        "Complete email trigger coverage exists.",
+        "Any missing email trigger is explicitly logged as defect/gap."
+      ],
+      "priority": "critical"
+    }
+  ]
+}

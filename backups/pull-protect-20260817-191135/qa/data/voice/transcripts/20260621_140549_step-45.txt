@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CLOSURE
+# Stage: step-45
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open My Applications — Drives. Student sees Selected — placement drive full cycle verified end-to-end.

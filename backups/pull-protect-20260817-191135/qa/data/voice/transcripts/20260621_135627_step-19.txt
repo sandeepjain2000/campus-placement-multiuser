@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-19
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type job description. Description includes guided test marker.

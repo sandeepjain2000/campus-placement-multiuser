@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-34
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Search for the guided drive by marker. Card list filters to GT-2026-06-210819.

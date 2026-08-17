@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-34
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Internship Progress Reviews. Rows appear after at least one side submits feedback.

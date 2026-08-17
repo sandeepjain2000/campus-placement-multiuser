@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-08
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+College opens Hiring Assessment. Read-only mirror of employer submitted results.

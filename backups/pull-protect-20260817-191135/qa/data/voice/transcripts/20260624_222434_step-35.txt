@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-35
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Verify guide card shows company supervisor. On Internship guides, the same intern card shows campus guide you assigned and employer supervisor read-only.

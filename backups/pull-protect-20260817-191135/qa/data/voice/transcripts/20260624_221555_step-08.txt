@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-08
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open college Applications (monitor pipeline). Campus-wide application list. Student rows may appear after the student applies in the next phase.

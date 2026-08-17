@@ -3,6 +3,7 @@
 import { AlertTriangle } from 'lucide-react';
 import { findPlacementImportedClashesFromItems } from '@/lib/calendarClashDetection';
 import { useMemo } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 /**
  * Warn when placement drives overlap imported / blocking academic events.
@@ -16,27 +17,17 @@ export default function CollegeCalendarClashBanner({ items }) {
   const total = clashes.length;
 
   return (
-    <div
-      className="card"
-      role="status"
-      style={{
-        marginBottom: '1rem',
-        padding: '0.875rem 1rem',
-        borderColor: 'var(--warning-300)',
-        background: 'var(--warning-50)',
-      }}
-    >
-      <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'flex-start' }}>
-        <AlertTriangle size={18} style={{ color: 'var(--warning-700)', flexShrink: 0, marginTop: 2 }} />
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 700, color: 'var(--warning-900)', fontSize: '0.9rem' }}>
-            {total} placement clash{total === 1 ? '' : 'es'} with calendar events
-            {importedClashes.length ? ` (${importedClashes.length} imported)` : ''}
-          </div>
-          <p className="text-sm" style={{ margin: '0.35rem 0 0.5rem', color: 'var(--warning-900)' }}>
+    <Alert className="mb-4" role="status">
+      <AlertTriangle aria-hidden />
+      <AlertTitle>
+        {total} placement clash{total === 1 ? '' : 'es'} with calendar events
+        {importedClashes.length ? ` (${importedClashes.length} imported)` : ''}
+      </AlertTitle>
+      <AlertDescription>
+          <p>
             Drives that fall on exams, holidays, or other blocked imported dates should be rescheduled or confirmed intentionally.
           </p>
-          <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.85rem', color: 'var(--warning-900)' }}>
+          <ul className="mt-2 list-disc pl-5">
             {shown.map((c) => (
               <li key={`${c.driveId}-${c.eventId}-${c.driveDate}`}>
                 <strong>{c.driveTitle}</strong> ({c.driveDate}) clashes with{' '}
@@ -47,8 +38,7 @@ export default function CollegeCalendarClashBanner({ items }) {
             ))}
             {total > shown.length ? <li>…and {total - shown.length} more</li> : null}
           </ul>
-        </div>
-      </div>
-    </div>
+      </AlertDescription>
+    </Alert>
   );
 }

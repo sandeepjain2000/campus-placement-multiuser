@@ -21,6 +21,9 @@ import {
 } from '@/lib/collegeAcademicYearContext';
 import { usePlacementCommitteeReadOnly } from '@/lib/placementCommittee';
 import StudentCvVerificationBadge from '@/components/college/StudentCvVerificationBadge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 export default function CollegeStudentsMobile() {
   const router = useRouter();
@@ -145,20 +148,16 @@ export default function CollegeStudentsMobile() {
   return (
     <>
       <MobileHeader title="Students" />
-      <div className="animate-fadeIn" style={{ padding: '1rem', paddingBottom: '5rem' }}>
-        <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
+      <div className="animate-fadeIn flex flex-col gap-4 p-4 pb-20">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
             {filtered.length} of {students.length} enrolled
           </p>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="flex gap-2">
             {!readOnly ? (
-              <Link
-                href="/dashboard/college/students/add"
-                className="btn btn-primary btn-sm"
-                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-              >
-                <UserPlus size={14} /> Add
-              </Link>
+              <Button size="sm" render={<Link href="/dashboard/college/students/add" />}>
+                <UserPlus data-icon="inline-start" /> Add
+              </Button>
             ) : null}
           </div>
         </div>
@@ -206,24 +205,15 @@ export default function CollegeStudentsMobile() {
 
       {!isLoading && (
         <>
-          <div className="mobile-cards">
+          <div className="flex flex-col gap-3">
             {filtered.map((s) => {
               return (
-                <div
-                  key={s.id}
-                  style={{
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '12px',
-                    padding: '1rem',
-                    background: 'var(--bg-elevated)',
-                    marginBottom: '0.75rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                <Card key={s.id} size="sm">
+                  <CardHeader className="flex-row items-start gap-3">
                     <StudentListAvatar photo={s.photo} name={s.name} size={40} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <Link href={`/dashboard/college/students/${s.id}`} className="student-name-link" style={{ fontSize: '1rem' }}>{s.name}</Link>
-                      <div style={{ marginTop: '0.2rem' }}>
+                    <div className="min-w-0 flex-1">
+                      <Link href={`/dashboard/college/students/${s.id}`} className="font-medium text-foreground hover:underline">{s.name}</Link>
+                      <div className="mt-1">
                         <StudentSystemIdBatchCell
                           systemId={s.systemId}
                           roll={s.roll}
@@ -232,7 +222,7 @@ export default function CollegeStudentsMobile() {
                           compact
                         />
                       </div>
-                      <div style={{ marginTop: '0.35rem' }}>
+                      <div className="mt-1">
                         <StudentDegreeSpecializationCell
                           degree={s.degreePursued}
                           specialization={s.specialization}
@@ -240,61 +230,64 @@ export default function CollegeStudentsMobile() {
                         />
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.15rem', flexShrink: 0 }}>
-                      <button
+                    <div className="flex shrink-0 gap-1">
+                      <Button
                         type="button"
-                        className="btn btn-ghost btn-sm btn-icon"
+                        variant="ghost"
+                        size="icon-sm"
                         aria-label={`Quick view ${s.name}`}
                         title="Quick view"
                         onClick={() => setQuickViewStudent(s)}
                       >
-                        <Eye size={18} aria-hidden />
-                      </button>
+                        <Eye aria-hidden />
+                      </Button>
                       {!readOnly ? (
                         <>
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm btn-icon"
+                            variant="ghost"
+                            size="icon-sm"
                             aria-label={`Edit ${s.name}`}
                             title="Edit"
                             onClick={() => router.push(`/dashboard/college/students/${s.id}/edit`)}
                           >
-                            <Pencil size={18} aria-hidden />
-                          </button>
-                          <button
+                            <Pencil aria-hidden />
+                          </Button>
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm btn-icon"
+                            variant="destructive"
+                            size="icon-sm"
                             aria-label={`Archive ${s.name}`}
                             title="Archive"
                             onClick={() => archiveStudent(s)}
-                            style={{ color: 'var(--danger-600)' }}
                           >
-                            <Trash2 size={18} aria-hidden />
-                          </button>
+                            <Trash2 aria-hidden />
+                          </Button>
                         </>
                       ) : null}
                     </div>
+                  </CardHeader>
+                  <CardContent className="flex flex-col gap-3">
+                  <div>
+                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">CGPA</div>
+                    <div className="font-semibold">{s.cgpa ?? '—'}</div>
                   </div>
-                  
-                  <div style={{ marginBottom: '0.75rem' }}>
-                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>CGPA</div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: s.cgpa >= 8 ? 'var(--success-600)' : s.cgpa >= 6 ? 'var(--text-primary)' : 'var(--warning-600)' }}>{s.cgpa ?? '—'}</div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    <span className={`badge badge-${getStatusColor(s.jobStatus)} badge-dot`} style={{ fontSize: '0.75rem' }}>Job: {formatStatus(s.jobStatus)}</span>
+                  <div className="flex flex-wrap gap-2">
+                    <StatusBadge tone={getStatusColor(s.jobStatus)} showDot>Job: {formatStatus(s.jobStatus) || '—'}</StatusBadge>
                     {s.verified
-                      ? <span className="badge badge-green" style={{ fontSize: '0.75rem' }}><CheckCircle2 size={12} style={{ marginRight: 4 }} /> Profile</span>
-                      : <span className="badge badge-amber" style={{ fontSize: '0.75rem' }}>Profile pending</span>}
+                      ? <StatusBadge tone="green"><CheckCircle2 aria-hidden /> Profile</StatusBadge>
+                      : <StatusBadge tone="amber">Profile pending</StatusBadge>}
                     {requireCvVerification ? <StudentCvVerificationBadge status={s.cvStatus} compact /> : null}
                   </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })}
             {!isLoading && filtered.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)', borderRadius: '12px' }}>
-                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>No students found</div>
-                <div style={{ fontSize: '0.85rem' }}>Try adjusting filters</div>
-              </div>
+              <Card size="sm"><CardContent className="py-10 text-center text-muted-foreground">
+                <div className="mb-1 font-medium text-foreground">No students found</div>
+                <div className="text-sm">Try adjusting filters</div>
+              </CardContent></Card>
             )}
           </div>
         </>

@@ -1,19 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { CheckCircle2, ExternalLink, X } from 'lucide-react';
+import { CheckCircle2, ExternalLink } from 'lucide-react';
 import { formatStatus, getStatusColor } from '@/lib/utils';
 import StudentListAvatar from '@/components/student/StudentListAvatar';
 import StudentDegreeSpecializationCell from './StudentDegreeSpecializationCell';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 function Field({ label, value, children }) {
   return (
-    <div style={{ background: 'var(--bg-secondary)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
-      <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.35rem' }}>
-        {label}
-      </div>
+    <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</div>
       {children || (
-        <div style={{ fontWeight: 700, color: 'var(--text-primary)', overflowWrap: 'anywhere' }}>{value || '—'}</div>
+        <div className="break-words font-medium text-foreground">{value || '—'}</div>
       )}
     </div>
   );
@@ -26,67 +35,20 @@ export default function StudentQuickViewModal({ student, onClose, onVerify, read
     (student.communicationEmail && String(student.communicationEmail).trim()) || student.email;
 
   return (
-    <div
-      className="modal-overlay"
-      role="presentation"
-      style={{ overflowY: 'auto', alignItems: 'flex-start' }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        className="modal modal-lg"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="student-quick-view-title"
-        style={{ borderRadius: 'var(--radius-xl)', margin: '2rem auto', maxWidth: 'min(720px, calc(100vw - 2rem))' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div
-          className="surface-dark"
-          style={{
-            padding: '1.25rem 1.5rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            gap: '1rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
+    <Dialog open={Boolean(student)} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-w-3xl">
+        <DialogHeader className="pr-10">
+          <div className="flex min-w-0 items-center gap-4">
             <StudentListAvatar photo={student.photo} name={student.name} size={48} />
-            <div style={{ minWidth: 0 }}>
-              <h2 id="student-quick-view-title" style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>
-                {student.name}
-              </h2>
-              <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', marginTop: '0.2rem', fontFamily: 'var(--font-mono, monospace)' }}>
+            <div className="min-w-0">
+              <DialogTitle id="student-quick-view-title" className="truncate text-xl">{student.name}</DialogTitle>
+              <DialogDescription className="mt-1 font-mono">
                 {student.systemId || student.roll}
-              </div>
+              </DialogDescription>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            style={{
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.22)',
-              color: 'white',
-              borderRadius: '50%',
-              width: 36,
-              height: 36,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              flexShrink: 0,
-            }}
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        <div className="modal-body" style={{ padding: '1.5rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1rem' }}>
+        </DialogHeader>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="System ID" value={student.systemId} />
             <Field label="Roll No." value={student.roll} />
             <Field label="Login email" value={student.email} />
@@ -104,76 +66,49 @@ export default function StudentQuickViewModal({ student, onClose, onVerify, read
             <Field label="Academic Year" value={student.academicYear} />
             <Field label="Gender" value={student.gender} />
             <Field label="Diversity Category" value={student.diversityCategory} />
-            <div style={{ gridColumn: '1 / -1' }}>
+            <div className="sm:col-span-2">
               <Field label="Skills">
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div className="flex flex-wrap gap-2">
                   {(student.skills || []).length ? (
                     student.skills.map((sk) => (
-                      <span key={sk} className="badge badge-indigo" style={{ fontSize: '0.8rem' }}>
-                        {sk}
-                      </span>
+                      <Badge key={sk} variant="secondary">{sk}</Badge>
                     ))
                   ) : (
-                    <span style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>No skills listed.</span>
+                    <span className="text-sm text-muted-foreground">No skills listed.</span>
                   )}
                 </div>
               </Field>
             </div>
             <Field label="Job Status">
-              <span className={`badge badge-${getStatusColor(student.jobStatus)} badge-dot`}>
-                {formatStatus(student.jobStatus)}
-              </span>
+              <StatusBadge tone={getStatusColor(student.jobStatus)} showDot>{formatStatus(student.jobStatus) || '—'}</StatusBadge>
             </Field>
             <Field label="Internship Status">
-              <span className={`badge badge-${getStatusColor(student.internshipStatus)} badge-dot`}>
-                {formatStatus(student.internshipStatus)}
-              </span>
+              <StatusBadge tone={getStatusColor(student.internshipStatus)} showDot>{formatStatus(student.internshipStatus) || '—'}</StatusBadge>
             </Field>
-          </div>
         </div>
-
-        <div
-          className="modal-footer"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            justifyContent: 'flex-end',
-            padding: '1.1rem 1.5rem',
-            borderTop: '1px solid var(--border-default)',
-            background: 'var(--bg-secondary)',
-          }}
-        >
+        <DialogFooter className="flex-wrap border-t pt-4">
           {onVerify ? (
             student.verified ? (
-              <button type="button" className="btn btn-ghost" onClick={() => onVerify(student.id, false)}>
+              <Button type="button" variant="ghost" onClick={() => onVerify(student.id, false)}>
                 Clear Verification
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 type="button"
-                className="btn btn-primary"
                 onClick={() => onVerify(student.id, true)}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
               >
-                <CheckCircle2 size={16} /> Mark Verified
-              </button>
+                <CheckCircle2 data-icon="inline-start" /> Mark Verified
+              </Button>
             )
           ) : null}
-          <Link
-            href={`/dashboard/college/students/${student.id}`}
-            className="btn btn-secondary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
-            onClick={onClose}
-          >
-            Open full profile
-            <ExternalLink size={14} aria-hidden />
-          </Link>
-          <button type="button" className="btn btn-ghost" onClick={onClose}>
+          <Button variant="outline" render={<Link href={`/dashboard/college/students/${student.id}`} onClick={onClose} />}>
+            Open full profile <ExternalLink data-icon="inline-end" aria-hidden />
+          </Button>
+          <Button type="button" variant="ghost" onClick={onClose}>
             Close
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

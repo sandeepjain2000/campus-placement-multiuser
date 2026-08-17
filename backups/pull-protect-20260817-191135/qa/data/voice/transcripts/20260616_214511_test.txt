@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: TEST
+# Stage: test
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Campus placement voice test.

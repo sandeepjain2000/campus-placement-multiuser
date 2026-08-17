@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-23
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Internship guides. Cards list selected and in-progress interns on your campus.

@@ -8,7 +8,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
-OUT = Path(__file__).resolve().parents[1] / "docs" / "PlacementHub-Test-Cases.xlsx"
+OUT = Path(__file__).resolve().parents[1] / "docs" / "test-cases" / "PlacementHub-Test-Cases.xlsx"
 
 HEADERS = [
     "TC ID",

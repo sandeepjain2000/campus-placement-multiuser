@@ -14,19 +14,19 @@ export function stipendLabel(min, max) {
 
 export function getJobTypeMeta(jobType) {
   if (jobType === 'hackathon') {
-    return { label: 'Hackathon', badge: 'badge-amber' };
+    return { label: 'Hackathon', badge: 'badge-amber', tone: 'amber' };
   }
   if (jobType === 'short_project') {
-    return { label: 'Short project', badge: 'badge-amber' };
+    return { label: 'Short project', badge: 'badge-amber', tone: 'amber' };
   }
-  return { label: 'Internship', badge: 'badge-indigo' };
+  return { label: 'Internship', badge: 'badge-indigo', tone: 'indigo' };
 }
 
 export function getCollegeStatusMeta(status) {
   const s = String(status || 'pending').toLowerCase();
-  if (s === 'approved') return { label: 'Approved', badge: 'badge-success' };
-  if (s === 'rejected') return { label: 'Rejected', badge: 'badge-danger' };
-  return { label: 'Pending review', badge: 'badge-warning' };
+  if (s === 'approved') return { label: 'Approved', badge: 'badge-success', tone: 'green' };
+  if (s === 'rejected') return { label: 'Rejected', badge: 'badge-danger', tone: 'red' };
+  return { label: 'Pending review', badge: 'badge-warning', tone: 'amber' };
 }
 
 export function computeInternshipStats(list) {

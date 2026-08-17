@@ -1,8 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { Download } from 'lucide-react';
 import { rowsToCsv, downloadCsv } from '@/lib/csvExport';
 import { useToast } from '@/components/ToastProvider';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const PREPARE_MS = 400;
 
@@ -33,23 +37,6 @@ export default function ExportCollegeCalendarButton({
   const { addToast } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const wrapRef = useRef(null);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onDoc = (e) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) setMenuOpen(false);
-    };
-    const onKey = (e) => {
-      if (e.key === 'Escape') setMenuOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDoc);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [menuOpen]);
 
   const exportCsv = useCallback(
     async (scope) => {
@@ -113,79 +100,34 @@ export default function ExportCollegeCalendarButton({
     [addToast, month, year],
   );
 
-  const sizeClass = size === 'sm' ? 'btn-sm' : '';
-
   return (
-    <div className={`export-csv-wrap export-csv-split ${className}`} ref={wrapRef}>
-      <div className="export-csv-split-inner">
-        <button
-          type="button"
-          className={`btn export-csv-primary ${sizeClass}`}
-          disabled={busy}
-          aria-haspopup="menu"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((o) => !o)}
-          title="Export calendar as CSV or ICS"
-        >
-          {busy ? (
-            <span className="export-csv-preparing">Exporting…</span>
-          ) : (
-            <>
-              <span className="export-csv-icon" aria-hidden>
-                ⬇
-              </span>
-              Export
-              <span className="export-csv-chevron" aria-hidden>
-                ▾
-              </span>
-            </>
-          )}
-        </button>
-      </div>
-
-      {menuOpen && !busy ? (
-        <div className="export-csv-menu export-csv-menu-split" role="menu">
-          <p className="export-csv-hint" role="note">
-            Choose format
-          </p>
-          <button
-            type="button"
-            role="menuitem"
-            className="export-csv-menu-item"
-            onClick={() => void exportCsv('current')}
-          >
-            <span className="export-csv-menu-label">CSV — this month</span>
-            <span className="export-csv-menu-meta font-mono">{currentCount}</span>
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            className="export-csv-menu-item"
-            onClick={() => void exportCsv('full')}
-          >
-            <span className="export-csv-menu-label">CSV — full calendar</span>
-            <span className="export-csv-menu-meta font-mono">{fullCount}</span>
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            className="export-csv-menu-item"
-            onClick={() => void exportIcs('month')}
-          >
-            <span className="export-csv-menu-label">ICS — this month</span>
-            <span className="export-csv-menu-meta">.ics</span>
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            className="export-csv-menu-item"
-            onClick={() => void exportIcs('full')}
-          >
-            <span className="export-csv-menu-label">ICS — full calendar</span>
-            <span className="export-csv-menu-meta">.ics</span>
-          </button>
-        </div>
-      ) : null}
-    </div>
+    <>
+      <Button className={className} size={size === 'sm' ? 'sm' : 'default'} variant="outline" disabled={busy} onClick={() => setMenuOpen(true)}>
+        <Download data-icon="inline-start" />
+        {busy ? 'Exporting…' : 'Export'}
+      </Button>
+      <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Export placement calendar</DialogTitle>
+            <DialogDescription>Choose a file format and date scope.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button variant="outline" className="h-auto justify-between py-3" onClick={() => void exportCsv('current')}>
+              CSV — this month <StatusBadge tone="gray">{currentCount}</StatusBadge>
+            </Button>
+            <Button variant="outline" className="h-auto justify-between py-3" onClick={() => void exportCsv('full')}>
+              CSV — full calendar <StatusBadge tone="gray">{fullCount}</StatusBadge>
+            </Button>
+            <Button variant="outline" className="h-auto justify-between py-3" onClick={() => void exportIcs('month')}>
+              ICS — this month <StatusBadge tone="blue">.ics</StatusBadge>
+            </Button>
+            <Button variant="outline" className="h-auto justify-between py-3" onClick={() => void exportIcs('full')}>
+              ICS — full calendar <StatusBadge tone="blue">.ics</StatusBadge>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

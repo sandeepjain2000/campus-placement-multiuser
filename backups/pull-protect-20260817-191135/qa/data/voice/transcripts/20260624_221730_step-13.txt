@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: SI-04
+# Stage: step-13
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Confirm application status on list. Same row shows Applied (not Open). Note student name for employer step.

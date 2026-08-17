@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-03
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Search for the guided internship by marker. Table filters to GT-2026-06-241640 in the title column.

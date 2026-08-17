@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-29
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Search for the guided internship by marker. Table filters to GT-2026-06-161648 in the title column.

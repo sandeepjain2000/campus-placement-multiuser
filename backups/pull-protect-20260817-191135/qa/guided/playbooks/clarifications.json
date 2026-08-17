@@ -1,0 +1,62 @@
+{
+  "id": "clarifications",
+  "title": "Clarifications (official Q&A)",
+  "oneLiner": "Voice-guided tour for use case: Clarifications (official Q&A)",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Clarifications",
+      "observe": "Create/publish clarification UI",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Clarifications (continued)",
+      "observe": "Create/publish clarification UI",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/clarifications"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Publish a clarification — manual step",
+      "observe": "Entry visible on college list Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Clarifications",
+      "observe": "Same clarification visible to student",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Clarifications (continued)",
+      "observe": "Same clarification visible to student",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/clarifications"
+      }
+    }
+  ]
+}

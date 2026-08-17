@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-08
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as employer again. Back on employer hub — ready to request a placement drive.

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-29
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Submit employer internship progress review — manual. Optional star rating plus feedback text of at least ten characters.

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-35
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Click Apply now on the guided drive. Apply confirmation modal opens.

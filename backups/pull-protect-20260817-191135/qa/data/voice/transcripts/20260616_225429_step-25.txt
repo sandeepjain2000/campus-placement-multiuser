@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-25
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Click Publish Internship. Success toast; new row in list with GT- title; status Published.

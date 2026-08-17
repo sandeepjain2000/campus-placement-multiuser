@@ -6,6 +6,17 @@ import { Trophy, School, CreditCard, Building2, Landmark, X, Eye, Lock, CheckCir
 import { useToast } from '@/components/ToastProvider';
 import PageLoading from '@/components/PageLoading';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 
 /** Demo-only checkout — values are illustrative (Stripes-123 is not a real processor). */
 const DEMO_CHECKOUT = {
@@ -282,21 +293,10 @@ export default function EmployerSponsorshipsPage() {
     });
   };
 
-  const modalBackdrop = {
-    position: 'fixed',
-    inset: 0,
-    zIndex: 200,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '1rem',
-    background: 'rgba(15, 23, 42, 0.55)',
-  };
-
   return (
     <div className="animate-fadeIn" style={{ paddingBottom: '2rem' }}>
-      <div className="page-header">
-        <div className="page-header-left">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Trophy size={24} className="text-primary" aria-hidden />
             Sponsorships
@@ -306,146 +306,136 @@ export default function EmployerSponsorshipsPage() {
             by cheque, or bank transfer.
           </p>
         </div>
-        <Link href="/dashboard/employer/overview" className="btn btn-secondary btn-sm">
+        <Button variant="outline" size="sm" render={<Link href="/dashboard/employer/overview" />}>
           Overview
-        </Link>
+        </Button>
       </div>
 
-      <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <School size={16} className="text-secondary" aria-hidden />
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              College
-            </span>
-            <select
-              className="form-select"
-              style={{ minWidth: 200 }}
+      <Card className="mb-4"><CardContent className="py-4">
+        <FieldGroup className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1.4fr_auto] xl:items-end">
+          <Field>
+            <FieldLabel htmlFor="sponsorship-college-filter"><School aria-hidden /> College</FieldLabel>
+            <AdminFilterSelect
+              id="sponsorship-college-filter"
+              className="h-9 w-full"
               value={collegeFilter}
-              onChange={(e) => setCollegeFilter(e.target.value)}
-            >
-              <option value="">All colleges</option>
-              {collegeOptions.map(([id, name]) => (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              Category
-            </span>
-            <select
-              className="form-select"
-              style={{ minWidth: 180 }}
+              onValueChange={setCollegeFilter}
+              items={[
+                { label: 'All colleges', value: 'all' },
+                ...collegeOptions.map(([id, name]) => ({ label: name, value: String(id) })),
+              ]}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="sponsorship-category-filter">Category</FieldLabel>
+            <AdminFilterSelect
+              id="sponsorship-category-filter"
+              className="h-9 w-full"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="">All categories</option>
-              {categoryOptions.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              Payment
-            </span>
-            <select
-              className="form-select"
-              style={{ minWidth: 160 }}
+              onValueChange={setCategoryFilter}
+              items={[
+                { label: 'All categories', value: 'all' },
+                ...categoryOptions.map((cat) => ({ label: cat, value: cat })),
+              ]}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="sponsorship-payment-filter">Payment</FieldLabel>
+            <AdminFilterSelect
+              id="sponsorship-payment-filter"
+              className="h-9 w-full"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">All tiers</option>
-              <option value="available">Not paid yet</option>
-              <option value="complete">Already paid</option>
-            </select>
-          </label>
-          <label className="text-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 200px' }}>
-            <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
-              Search
-            </span>
-            <input
-              className="form-input"
+              onValueChange={setStatusFilter}
+              items={[
+                { label: 'All tiers', value: 'all' },
+                { label: 'Not paid yet', value: 'available' },
+                { label: 'Already paid', value: 'complete' },
+              ]}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="sponsorship-search">Search</FieldLabel>
+            <Input
+              id="sponsorship-search"
+              type="search"
               placeholder="College, tier, category…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-          </label>
-          <span className="text-xs text-secondary" style={{ marginLeft: 'auto' }}>
+          </Field>
+          <span className="text-muted-foreground pb-2 text-xs xl:text-right">
             {loading ? 'Loading…' : `Showing ${filteredRows.length} of ${allRows.length}`}
           </span>
-        </div>
-      </div>
+        </FieldGroup>
+      </CardContent></Card>
 
       {loading ? (
         <PageLoading message="Loading sponsorship opportunities…" inline>
-          <div className="table-container" aria-hidden="true">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>College</th>
-                  <th>Category</th>
-                  <th>Tier</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th style={{ width: 1 }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          <Card className="gap-0 overflow-hidden py-0" aria-hidden="true">
+            <CardContent className="p-0">
+              <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>College</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Tier</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-px">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {[1, 2, 3, 4].map((i) => (
-                  <tr key={i}>
-                    <td colSpan={6}>
-                      <div className="skeleton" style={{ height: 44, borderRadius: 6 }} />
-                    </td>
-                  </tr>
+                  <TableRow key={i}>
+                    <TableCell colSpan={6}>
+                      <div className="skeleton h-11 rounded-md" />
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </PageLoading>
       ) : (
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>College</th>
-              <th>Category</th>
-              <th>Tier</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th style={{ width: 1 }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="gap-0 overflow-hidden py-0">
+        <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>College</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Tier</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="w-px">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filteredRows.map((row) => (
-              <tr key={row.opportunityId}>
-                <td>
+              <TableRow key={row.opportunityId}>
+                <TableCell>
                   <div className="font-semibold">{row.collegeName}</div>
-                  <div className="text-xs text-secondary">{row.collegeLocation}</div>
-                </td>
-                <td className="text-sm">{row.category}</td>
-                <td>
+                  <div className="text-muted-foreground text-xs">{row.collegeLocation}</div>
+                </TableCell>
+                <TableCell>{row.category}</TableCell>
+                <TableCell>
                   <div className="font-medium">{row.tierName}</div>
                   {row.label ? (
-                    <div style={{ marginTop: 4 }}>
-                      <span className="badge badge-primary">{row.label}</span>
+                    <div className="mt-1">
+                      <Badge variant="secondary">{row.label}</Badge>
                     </div>
                   ) : null}
-                </td>
-                <td className="font-semibold">{row.price}</td>
-                <td>
+                </TableCell>
+                <TableCell className="font-semibold">{row.price}</TableCell>
+                <TableCell>
                   {row.canPayAnother ? (
-                    <span className="badge badge-green">Available</span>
+                    <StatusBadge tone="amber" showDot>Available</StatusBadge>
                   ) : (
-                    <span className="badge badge-gray">Paid</span>
+                    <StatusBadge tone="green" showDot>Paid</StatusBadge>
                   )}
-                </td>
-                <td style={{ whiteSpace: 'nowrap' }}>
+                </TableCell>
+                <TableCell>
                   <StandardTableIconAction
                     action="view"
                     variant="ghost"
@@ -460,66 +450,33 @@ export default function EmployerSponsorshipsPage() {
                     onClick={() => openPay(row)}
                     tooltip={row.canPayAnother ? 'Record sponsorship payment' : 'Already paid for this tier'}
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {allRows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                   No active sponsorship opportunities right now.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
             {allRows.length > 0 && filteredRows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center text-secondary">
+              <TableRow>
+                <TableCell colSpan={6} className="text-muted-foreground h-24 text-center">
                   No tiers match your filters. Try clearing search or filters.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
       )}
 
-      {detailsRow ? (
-        <div
-          style={modalBackdrop}
-          role="presentation"
-          onClick={() => setDetailsRow(null)}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="sponsor-details-title"
-            className="card"
-            style={{
-              maxWidth: 480,
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              padding: '1.25rem',
-              position: 'relative',
-              border: '1px solid var(--border-default)',
-              boxShadow: 'var(--shadow-lg)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              aria-label="Close"
-              style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
-              onClick={() => setDetailsRow(null)}
-            >
-              <X size={18} />
-            </button>
-            <p className="text-sm text-secondary" style={{ margin: 0 }}>
-              {detailsRow.collegeName}
-            </p>
-            <h2 id="sponsor-details-title" style={{ fontSize: '1.1rem', margin: '0.35rem 0' }}>
-              {detailsRow.tierName}
-            </h2>
+      <Dialog open={Boolean(detailsRow)} onOpenChange={(open) => !open && setDetailsRow(null)}>
+        <DialogContent className="sm:max-w-lg">
+          {detailsRow ? <>
+            <DialogHeader><DialogTitle>{detailsRow.tierName}</DialogTitle><DialogDescription>{detailsRow.collegeName}</DialogDescription></DialogHeader>
             <p className="text-sm text-secondary" style={{ marginBottom: '1rem' }}>
               {detailsRow.category} · {detailsRow.price}
             </p>
@@ -536,102 +493,69 @@ export default function EmployerSponsorshipsPage() {
                 </li>
               ))}
             </ul>
-            <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setDetailsRow(null)}>
+            <DialogFooter>
+              <Button type="button" variant="outline" size="sm" onClick={() => setDetailsRow(null)}>
                 Close
-              </button>
+              </Button>
               {detailsRow.canPayAnother ? (
-                <button
+                <Button
                   type="button"
-                  className="btn btn-primary btn-sm"
+                  size="sm"
                   onClick={() => {
                     setDetailsRow(null);
                     openPay(detailsRow);
                   }}
                 >
                   Sponsor
-                </button>
+                </Button>
               ) : null}
-            </div>
-          </div>
-        </div>
-      ) : null}
+            </DialogFooter>
+          </> : null}
+        </DialogContent>
+      </Dialog>
 
-      {sponsorModal && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="sponsor-modal-title"
-          style={modalBackdrop}
-          onClick={(e) => e.target === e.currentTarget && !submitting && closeModal()}
-        >
-          <div
-            className="card"
-            style={{
-              maxWidth: 520,
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              padding: '1.5rem',
-              position: 'relative',
-              border: '1px solid var(--border-default)',
-              boxShadow: 'var(--shadow-lg)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
+      <Dialog open={Boolean(sponsorModal)} onOpenChange={(open) => !open && !submitting && closeModal()}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl" showCloseButton={false}>
+          {sponsorModal ? <>
+            <Button
               type="button"
-              className="btn btn-ghost btn-icon"
+              variant="ghost"
+              size="icon"
               onClick={closeModal}
               disabled={submitting}
               aria-label="Close"
               style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
             >
               <X size={20} aria-hidden="true" />
-            </button>
-            <span className="badge badge-gray" style={{ marginBottom: '0.75rem', display: 'inline-block' }}>
-              Checkout
-            </span>
-            <h2 id="sponsor-modal-title" style={{ margin: '0 0 0.25rem', fontSize: '1.25rem', fontWeight: 800 }}>
-              Complete sponsorship
-            </h2>
-            <p style={{ margin: '0 0 1rem', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            </Button>
+            <DialogHeader><Badge variant="secondary" className="w-fit">Checkout</Badge><DialogTitle>Complete sponsorship</DialogTitle><DialogDescription>
               {sponsorModal.tierName} · {sponsorModal.category} · {sponsorModal.collegeName} ·{' '}
               <strong>{sponsorModal.price}</strong> (full tier amount)
-            </p>
+            </DialogDescription></DialogHeader>
 
-            <div
-              style={{
-                marginBottom: '1rem',
-                padding: '0.85rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-default)',
-                background: 'var(--bg-secondary)',
-              }}
-            >
-              <p className="text-sm font-semibold" style={{ margin: '0 0 0.35rem' }}>
-                Legal &amp; tax details (for college receipts)
-              </p>
-              <p className="text-xs text-secondary" style={{ margin: '0 0 0.75rem', lineHeight: 1.45 }}>
-                Shown on donation/sponsorship acknowledgment emails from the institution. PAN format AAAAA9999A; GSTIN 15
-                characters. All optional, but recommended for formal records.
-              </p>
-              <div className="form-group" style={{ marginBottom: '0.65rem' }}>
-                <label className="form-label text-xs">Legal name</label>
-                <input
-                  className="form-input form-input-sm"
+            <FieldGroup className="mb-4 gap-4 rounded-lg border bg-muted/30 p-4">
+              <div>
+                <h3 className="text-sm font-semibold">Legal &amp; tax details</h3>
+                <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                  Used on college receipts. PAN format AAAAA9999A; GSTIN 15 characters. All fields are optional.
+                </p>
+              </div>
+              <Field>
+                <FieldLabel htmlFor="sponsorship-legal-name">Legal name</FieldLabel>
+                <Input
+                  id="sponsorship-legal-name"
                   value={sponsorBilling.legalName}
                   onChange={(e) => setSponsorBilling((b) => ({ ...b, legalName: e.target.value }))}
                   placeholder="Registered name as on invoice / bank"
                   disabled={submitting}
                   autoComplete="organization"
                 />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label text-xs">PAN</label>
-                  <input
-                    className="form-input form-input-sm"
+              </Field>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor="sponsorship-pan">PAN</FieldLabel>
+                  <Input
+                    id="sponsorship-pan"
                     value={sponsorBilling.pan}
                     onChange={(e) => setSponsorBilling((b) => ({ ...b, pan: e.target.value.toUpperCase() }))}
                     placeholder="e.g. ABCDE1234F"
@@ -639,11 +563,11 @@ export default function EmployerSponsorshipsPage() {
                     disabled={submitting}
                     autoComplete="off"
                   />
-                </div>
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label text-xs">GSTIN</label>
-                  <input
-                    className="form-input form-input-sm"
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="sponsorship-gstin">GSTIN</FieldLabel>
+                  <Input
+                    id="sponsorship-gstin"
                     value={sponsorBilling.gst}
                     onChange={(e) => setSponsorBilling((b) => ({ ...b, gst: e.target.value.toUpperCase() }))}
                     placeholder="15-character GSTIN"
@@ -651,30 +575,22 @@ export default function EmployerSponsorshipsPage() {
                     disabled={submitting}
                     autoComplete="off"
                   />
-                </div>
+                </Field>
               </div>
-            </div>
+            </FieldGroup>
 
-            <div
-              role="tablist"
-              aria-label="Payment method"
-              style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '1rem' }}
-            >
+            <Tabs value={payTab} onValueChange={setPayTab} className="mb-4"><TabsList aria-label="Payment method">
               {PAY_TABS.map(({ id, label, icon: Icon }) => (
-                <button
+                <TabsTrigger
                   key={id}
                   type="button"
-                  role="tab"
-                  aria-selected={payTab === id}
-                  className={payTab === id ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'}
-                  onClick={() => setPayTab(id)}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                  value={id}
                   disabled={submitting}
                 >
                   <Icon size={16} aria-hidden="true" /> {label}
-                </button>
+                </TabsTrigger>
               ))}
-            </div>
+            </TabsList></Tabs>
 
             {payTab === 'online' && (
               <div
@@ -719,65 +635,65 @@ export default function EmployerSponsorshipsPage() {
                           marginBottom: '0.65rem',
                         }}
                       >
-                        <div className="form-group" style={{ gridColumn: '1 / -1', marginBottom: 0 }}>
-                          <label className="form-label">Card number</label>
-                          <input className="form-input" readOnly value={DEMO_CHECKOUT.cardNumber} />
-                        </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label">Expires</label>
-                          <input className="form-input" readOnly value={DEMO_CHECKOUT.expiry} />
-                        </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label">CVC</label>
-                          <input className="form-input" readOnly value={DEMO_CHECKOUT.cvc} />
-                        </div>
-                        <div className="form-group" style={{ gridColumn: '1 / -1', marginBottom: 0 }}>
-                          <label className="form-label">Name on card</label>
-                          <input className="form-input" readOnly value={DEMO_CHECKOUT.nameOnCard} />
-                        </div>
+                        <Field className="col-span-full">
+                          <FieldLabel>Card number</FieldLabel>
+                          <Input readOnly value={DEMO_CHECKOUT.cardNumber} />
+                        </Field>
+                        <Field>
+                          <FieldLabel>Expires</FieldLabel>
+                          <Input readOnly value={DEMO_CHECKOUT.expiry} />
+                        </Field>
+                        <Field>
+                          <FieldLabel>CVC</FieldLabel>
+                          <Input readOnly value={DEMO_CHECKOUT.cvc} />
+                        </Field>
+                        <Field className="col-span-full">
+                          <FieldLabel>Name on card</FieldLabel>
+                          <Input readOnly value={DEMO_CHECKOUT.nameOnCard} />
+                        </Field>
                       </div>
                       <p className="text-xs font-medium text-secondary" style={{ margin: '0.75rem 0 0.35rem' }}>
                         Billing address
                       </p>
                       <div style={{ display: 'grid', gap: '0.65rem' }}>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label">Address line 1</label>
-                          <input className="form-input" readOnly value={DEMO_CHECKOUT.line1} />
-                        </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label">Address line 2</label>
-                          <input className="form-input" readOnly value={DEMO_CHECKOUT.line2} />
+                        <Field>
+                          <FieldLabel>Address line 1</FieldLabel>
+                          <Input readOnly value={DEMO_CHECKOUT.line1} />
+                        </Field>
+                        <Field>
+                          <FieldLabel>Address line 2</FieldLabel>
+                          <Input readOnly value={DEMO_CHECKOUT.line2} />
+                        </Field>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
+                          <Field>
+                            <FieldLabel>City</FieldLabel>
+                            <Input readOnly value={DEMO_CHECKOUT.city} />
+                          </Field>
+                          <Field>
+                            <FieldLabel>State</FieldLabel>
+                            <Input readOnly value={DEMO_CHECKOUT.state} />
+                          </Field>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label">City</label>
-                            <input className="form-input" readOnly value={DEMO_CHECKOUT.city} />
-                          </div>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label">State</label>
-                            <input className="form-input" readOnly value={DEMO_CHECKOUT.state} />
-                          </div>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label">Postal code</label>
-                            <input className="form-input" readOnly value={DEMO_CHECKOUT.postal} />
-                          </div>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label className="form-label">Country</label>
-                            <input className="form-input" readOnly value={DEMO_CHECKOUT.country} />
-                          </div>
+                          <Field>
+                            <FieldLabel>Postal code</FieldLabel>
+                            <Input readOnly value={DEMO_CHECKOUT.postal} />
+                          </Field>
+                          <Field>
+                            <FieldLabel>Country</FieldLabel>
+                            <Input readOnly value={DEMO_CHECKOUT.country} />
+                          </Field>
                         </div>
                       </div>
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-primary"
+                        className="mt-4 w-full"
                         style={{ width: '100%', marginTop: '1rem' }}
                         disabled={submitting}
                         onClick={() => runDemoStripeAuthorize()}
                       >
                         Sponsor — ₹{new Intl.NumberFormat('en-IN').format(sponsorModal.priceInr || 0)} (authorize on Stripes-123)
-                      </button>
+                      </Button>
                     </>
                   )}
 
@@ -827,15 +743,14 @@ export default function EmployerSponsorshipsPage() {
                         Reference: STRP-DEMO-{String(sponsorModal.opportunityId || '').slice(0, 8) || 'XXXXXXXX'} ·
                         Auth OK (sandbox)
                       </p>
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-primary"
-                        style={{ width: '100%', marginTop: '1.25rem' }}
+                        className="mt-5 w-full"
                         disabled={submitting}
                         onClick={() => void submitPayment('online')}
                       >
                         {submitting ? 'Recording on campus ledger…' : 'Record payment & notify college'}
-                      </button>
+                      </Button>
                       <p className="text-xs text-tertiary" style={{ margin: '0.65rem 0 0' }}>
                         This final step saves the sponsorship payment to your account (same as before).
                       </p>
@@ -846,32 +761,16 @@ export default function EmployerSponsorshipsPage() {
             )}
 
             {payTab === 'cheque' && (
-              <div
-                className="wireframe-banner"
-                style={{
-                  display: 'block',
-                  background: 'var(--bg-secondary)',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--border-default)',
-                }}
-              >
-                <strong>Mail a cheque</strong>
-                <p style={{ margin: '0.75rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+              <Alert>
+                <AlertTitle>Mail a cheque</AlertTitle>
+                <AlertDescription className="flex flex-col gap-4">
+                <p>
                   Make cheque payable to{' '}
                   <strong>{remittanceForModal.chequePayableTo || sponsorModal.collegeName}</strong>. Mention{' '}
                   <strong>{sponsorModal.tierName}</strong> on the memo / reverse.
                 </p>
                 <address
-                  style={{
-                    marginTop: '1rem',
-                    fontSize: '0.875rem',
-                    fontStyle: 'normal',
-                    lineHeight: 1.6,
-                    padding: '1rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px dashed var(--border-default)',
-                    background: 'var(--bg-primary)',
-                  }}
+                  className="bg-background rounded-md border p-4 text-sm not-italic leading-relaxed"
                 >
                   Sponsorship Cell — Finance &amp; Accounts
                   <br />
@@ -879,42 +778,27 @@ export default function EmployerSponsorshipsPage() {
                   <br />
                   {remittanceForModal.branch ? `Ref: ${remittanceForModal.branch}` : 'See college contact for mailing address'}
                 </address>
-                <div style={{ marginTop: '1rem' }}>
-                  <button type="button" className="btn btn-primary" disabled={submitting} onClick={() => submitPayment('cheque')}>
+                <div>
+                  <Button type="button" disabled={submitting} onClick={() => submitPayment('cheque')}>
                     {submitting ? 'Saving…' : 'Confirm cheque has been mailed'}
-                  </button>
-                  <p className="text-xs text-tertiary" style={{ marginTop: '0.5rem' }}>
+                  </Button>
+                  <p className="text-muted-foreground mt-2 text-xs">
                     The college team will see this confirmation on their sponsorship dashboard.
                   </p>
                 </div>
-              </div>
+                </AlertDescription>
+              </Alert>
             )}
 
             {payTab === 'bank' && (
-              <div
-                className="wireframe-banner"
-                style={{
-                  display: 'block',
-                  background: 'var(--bg-secondary)',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--border-default)',
-                }}
-              >
-                <strong>Bank transfer (NEFT / RTGS / IMPS)</strong>
-                <p style={{ margin: '0.75rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+              <Alert>
+                <AlertTitle>Bank transfer (NEFT / RTGS / IMPS)</AlertTitle>
+                <AlertDescription className="flex flex-col gap-4">
+                <p>
                   Use the details below. Reference: your company name + {sponsorModal.tierName}.
                 </p>
                 <dl
-                  style={{
-                    margin: '1rem 0 0',
-                    display: 'grid',
-                    gap: '0.5rem',
-                    fontSize: '0.875rem',
-                    padding: '1rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px dashed var(--border-default)',
-                    background: 'var(--bg-primary)',
-                  }}
+                  className="bg-background grid gap-2 rounded-md border p-4 text-sm"
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                     <dt className="text-secondary">Account name</dt>
@@ -939,36 +823,37 @@ export default function EmployerSponsorshipsPage() {
                     <dd style={{ margin: 0 }}>{remittanceForModal.branch || 'Not configured'}</dd>
                   </div>
                 </dl>
-                <div className="form-group" style={{ marginTop: '1rem' }}>
-                  <label className="form-label">Transfer receipt screenshot (optional)</label>
-                  <input type="file" className="form-input" accept="image/*" onChange={onProofFile} disabled={submitting} />
-                </div>
-                <div style={{ marginTop: '1rem' }}>
-                  <button
+                <Field className="mt-4">
+                  <FieldLabel>Transfer receipt screenshot (optional)</FieldLabel>
+                  <FieldDescription>Upload an image under 350 KB.</FieldDescription>
+                  <Input type="file" accept="image/*" onChange={onProofFile} disabled={submitting} />
+                </Field>
+                <div>
+                  <Button
                     type="button"
-                    className="btn btn-primary"
                     disabled={submitting || !remittanceForModal.accountNumber}
                     onClick={() => submitPayment('bank_transfer')}
                   >
                     {submitting ? 'Saving…' : 'I have completed the bank transfer'}
-                  </button>
+                  </Button>
                   {!remittanceForModal.accountNumber && (
-                    <p className="text-xs text-tertiary" style={{ marginTop: '0.5rem' }}>
+                    <p className="text-muted-foreground mt-2 text-xs">
                       College has not published bank details yet.
                     </p>
                   )}
                 </div>
-              </div>
+                </AlertDescription>
+              </Alert>
             )}
 
-            <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-              <button type="button" className="btn btn-secondary" onClick={closeModal} disabled={submitting}>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={closeModal} disabled={submitting}>
                 Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              </Button>
+            </DialogFooter>
+          </> : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

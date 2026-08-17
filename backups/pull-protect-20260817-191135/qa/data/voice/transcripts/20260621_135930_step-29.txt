@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-29
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open college Placement Drives. New drive shows Awaiting Approval with GT-2026-06-210819 in title.

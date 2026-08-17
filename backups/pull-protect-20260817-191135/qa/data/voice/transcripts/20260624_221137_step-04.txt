@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-04
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Assessment Update Online. Inline editable hiring_result rows per application.

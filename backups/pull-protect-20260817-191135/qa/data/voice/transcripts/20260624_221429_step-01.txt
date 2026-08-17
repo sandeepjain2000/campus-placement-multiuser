@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-01
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Log in as college admin. College hub loads. You are verifying the employer's published internship is visible to campus.

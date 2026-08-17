@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
 
 export default function MarketingPageShell({ children, maxWidth = '960px' }) {
   return (
@@ -24,20 +25,19 @@ export default function MarketingPageShell({ children, maxWidth = '960px' }) {
         >
           <Link
             href="/"
-            className="btn btn-ghost btn-sm"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+            className={buttonVariants({ variant: 'ghost', size: 'sm' })}
           >
-            <ArrowLeft size={16} aria-hidden />
+            <ArrowLeft data-icon="inline-start" aria-hidden />
             Home
           </Link>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <Link href="/features" className="btn btn-ghost btn-sm">
+            <Link href="/features" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>
               Features
             </Link>
-            <Link href="/register" className="btn btn-secondary btn-sm">
+            <Link href="/register" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
               Register
             </Link>
-            <Link href="/login" className="btn btn-primary btn-sm">
+            <Link href="/login" className={buttonVariants({ size: 'sm' })}>
               Sign in
             </Link>
           </div>

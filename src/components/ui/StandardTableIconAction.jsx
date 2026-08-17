@@ -28,6 +28,8 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { shouldShowFilterCount } from '@/lib/filterBadgeLabel';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const META = {
   view: { label: 'View', Icon: Eye },
@@ -58,18 +60,16 @@ const META = {
   pocs: { label: 'Manage points of contact', Icon: Users },
 };
 
+function mapVariant(variant) {
+  if (variant === 'danger') return 'outline';
+  if (variant === 'primary') return 'default';
+  if (variant === 'ghost') return 'ghost';
+  if (variant === 'success') return 'secondary';
+  return 'outline';
+}
+
 /**
- * @param {object} props
- * @param {keyof typeof META} props.action
- * @param {() => void} [props.onClick]
- * @param {boolean} [props.disabled]
- * @param {'secondary'|'danger'|'primary'|'ghost'|'success'} [props.variant]
- * @param {boolean} [props.showLabel] — when false, icon-only (title + aria-label still the canonical verb).
- * @param {string} [props.className]
- * @param {import('react').CSSProperties} [props.style]
- * @param {string} [props.tooltip] — overrides title and aria-label (e.g. "Coming soon" on disabled actions).
- * @param {number|string} [props.badge] — optional count badge (hidden when 0).
- * @param {boolean} [props.loading] — show spinner instead of icon.
+ * Icon (or icon+label) table action — AdminCN Button, same verbs as before.
  */
 export function StandardTableIconAction({
   action,
@@ -88,62 +88,40 @@ export function StandardTableIconAction({
   const { label, Icon } = def;
   const tip = tooltip ?? label;
   const aria = tooltip ? `${label} — ${tooltip}` : label;
-  const variantClass =
-    variant === 'danger'
-      ? 'btn-danger'
-      : variant === 'primary'
-        ? 'btn-primary'
-        : variant === 'success'
-          ? 'btn-success'
-          : variant === 'ghost'
-            ? 'btn-ghost'
-            : 'btn-secondary';
-  const layout = showLabel ? 'btn-sm' : 'btn-icon btn-sm';
   const showBadge = shouldShowFilterCount(badge);
   const iconOnly = !showLabel;
 
   return (
-    <button
+    <Button
       type="button"
-      className={`btn ${variantClass} ${layout} ${showBadge && iconOnly ? 'table-icon-action--badged' : ''} ${className}`.trim()}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: showLabel ? '0.35rem' : undefined,
-        position: 'relative',
-        flexShrink: 0,
-        ...style,
-      }}
+      size={iconOnly ? 'icon-sm' : 'sm'}
+      variant={mapVariant(variant)}
+      className={cn(
+        variant === 'danger' && 'border-destructive/30 text-destructive hover:bg-destructive/10',
+        showBadge && iconOnly && 'relative',
+        className
+      )}
+      style={style}
       onClick={onClick ?? (() => {})}
       disabled={disabled || loading}
       title={tip}
       aria-label={showBadge && iconOnly ? `${aria} (${Math.trunc(Number(badge))} documents)` : aria}
     >
-      {loading ? (
-        <Loader2 size={16} strokeWidth={2} className="animate-spin" aria-hidden />
-      ) : (
-        <Icon size={16} strokeWidth={2.25} aria-hidden />
-      )}
+      {loading ? <Loader2 className="animate-spin" aria-hidden /> : <Icon aria-hidden />}
       {showLabel ? <span>{label}</span> : null}
       {showBadge && iconOnly ? (
-        <span className="table-icon-action__badge" aria-hidden>
-          {Math.trunc(Number(badge))}
-        </span>
-      ) : null}
-      {showBadge && !iconOnly ? (
         <span
-          className="badge badge-gray"
-          style={{
-            fontSize: '0.65rem',
-            padding: '0.05rem 0.3rem',
-            marginLeft: '0.1rem',
-            lineHeight: 1.2,
-          }}
+          className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full text-[0.6rem] font-bold"
+          aria-hidden
         >
           {Math.trunc(Number(badge))}
         </span>
       ) : null}
-    </button>
+      {showBadge && !iconOnly ? (
+        <span className="bg-muted text-muted-foreground ml-1 rounded px-1 text-[0.65rem] leading-tight">
+          {Math.trunc(Number(badge))}
+        </span>
+      ) : null}
+    </Button>
   );
 }

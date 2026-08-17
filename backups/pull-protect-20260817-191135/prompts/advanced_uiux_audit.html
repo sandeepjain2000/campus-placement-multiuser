@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlacementHub — Advanced UI/UX Design Audit (2025+)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; font-size: 13.5px; background: #f5f7fa; color: #1a1a2e; line-height: 1.55; }
+
+  header { background: #0f172a; color: #fff; padding: 28px 40px 24px; }
+  header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  header p  { font-size: 13px; color: #94a3b8; }
+  .meta { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+  .meta div { background: #1e293b; border-radius: 8px; padding: 10px 20px; text-align: center; min-width: 90px; }
+  .meta div span { display: block; }
+  .meta div .n  { font-size: 24px; font-weight: 700; }
+  .meta div .lh { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .n.high   { color: #f87171; }
+  .n.medium { color: #fbbf24; }
+  .n.low    { color: #34d399; }
+  .n.info   { color: #60a5fa; }
+
+  .stack-info { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .stack-pill { background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 4px 14px; font-size: 11px; color: #94a3b8; }
+  .stack-pill strong { color: #e2e8f0; }
+
+  section { max-width: 1380px; margin: 28px auto; padding: 0 24px; }
+  h2 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 8px; }
+  h2 .cat-count { font-size: 11px; font-weight: 600; background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 10px; margin-left: auto; }
+  h2 .cat-label { font-size: 11px; font-weight: 600; background: #ddd6fe; color: #5b21b6; border-radius: 12px; padding: 2px 10px; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  thead tr { background: #0f172a; color: #fff; }
+  thead th { padding: 11px 14px; text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .1s; }
+  tbody tr:hover { background: #f8fafc; }
+  td { padding: 11px 14px; vertical-align: top; font-size: 13px; }
+
+  .cat { font-weight: 600; color: #475569; white-space: nowrap; font-size: 12px; }
+
+  .sev { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .sev.High   { background: #fee2e2; color: #b91c1c; }
+  .sev.Medium { background: #fef3c7; color: #92400e; }
+  .sev.Low    { background: #dcfce7; color: #166534; }
+  .sev.Fixed  { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+
+  .loc { font-size: 11.5px; color: #64748b; }
+  .loc code { font-family: 'Courier New', monospace; background: #f1f5f9; color: #334155; border-radius: 3px; padding: 1px 5px; font-size: 11px; }
+
+  .issue-text { color: #334155; }
+  .issue-text code { font-family: 'Courier New', monospace; background: #fef2f2; color: #991b1b; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
+
+  .fix-text { color: #1e293b; }
+  .fix-text code { font-family: 'Courier New', monospace; background: #f0fdf4; color: #15803d; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
+  .fix-text strong { color: #0f172a; }
+
+  .section-summary { background: #fff; border-radius: 8px; padding: 14px 18px; margin-bottom: 14px; border-left: 4px solid #6366f1; font-size: 13px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .section-summary strong { color: #0f172a; }
+
+  .score-bar { display: flex; align-items: center; background: #fff; border-radius: 10px; padding: 18px 24px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(0,0,0,.07); gap: 28px; flex-wrap: wrap; }
+  .score-item { text-align: center; }
+  .score-item .score-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .score-item .score-val { font-size: 26px; font-weight: 800; }
+  .score-val.grade-a  { color: #34d399; }
+  .score-val.grade-b  { color: #60a5fa; }
+  .score-val.grade-c  { color: #fbbf24; }
+  .score-val.grade-d  { color: #f97316; }
+  .score-val.grade-f  { color: #f87171; }
+  .score-divider { width: 1px; height: 40px; background: #e2e8f0; }
+
+  footer { text-align: center; padding: 32px 0 48px; color: #94a3b8; font-size: 12px; }
+  footer strong { color: #64748b; }
+
+  .prio { font-weight: 700; font-size: 12px; }
+  .prio.p0 { color: #b91c1c; }
+  .prio.p1 { color: #92400e; }
+  .prio.p2 { color: #166534; }
+  .prio.p3 { color: #475569; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PlacementHub — Advanced UI/UX Design Audit (2025+)</h1>
+  <p>Evaluated against Advanced UI/UX &amp; Visual Design Audit Prompt (2025+) · 7 Categories · 40+ sub-criteria · Production-standard benchmark</p>
+  <div class="meta">
+    <div><span class="n high">11</span><span class="lh">High</span></div>
+    <div><span class="n medium">15</span><span class="lh">Medium</span></div>
+    <div><span class="n low">8</span><span class="lh">Low</span></div>
+    <div><span class="n info">34</span><span class="lh">Open Issues</span></div>
+    <div><span class="n" style="color:#34d399">2</span><span class="lh">Resolved ✓</span></div>
+    <div><span class="n" style="color:#a78bfa">7</span><span class="lh">Categories</span></div>
+    <div><span class="n" style="color:#67e8f9">55</span><span class="lh">Pages Audited</span></div>
+  </div>
+  <div class="stack-info">
+    <span class="stack-pill"><strong>Framework:</strong> Next.js · App Router</span>
+    <span class="stack-pill"><strong>Styling:</strong> CSS Custom Properties · globals.css</span>
+    <span class="stack-pill"><strong>Data:</strong> SWR · 62 API routes · PostgreSQL</span>
+    <span class="stack-pill"><strong>Auth:</strong> NextAuth 4 · 24hr session</span>
+    <span class="stack-pill"><strong>Icons:</strong> Lucide React (partial) + Emoji (legacy)</span>
+    <span class="stack-pill"><strong>Roles:</strong> Student · Employer · College Admin · Super Admin</span>
+  </div>
+</header>
+
+<section>
+
+  <!-- SCORES -->
+  <h2 style="margin-top: 28px;">Grade by Category</h2>
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-label">Basic Functionality</div>
+      <div class="score-val grade-d">D</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Interaction</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Navigation</div>
+      <div class="score-val grade-c">C−</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Accessibility+</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Analytics</div>
+      <div class="score-val grade-f">F</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Security UX</div>
+      <div class="score-val grade-d">D</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Visual Systems</div>
+      <div class="score-val grade-c">C+</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Micro-Behavior</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Cognitive UX</div>
+      <div class="score-val grade-c">C+</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Edge / State</div>
+      <div class="score-val grade-d">D+</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Trust &amp; Feel</div>
+      <div class="score-val grade-b">B−</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Scalability</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Overall</div>
+      <div class="score-val grade-c">C−</div>
+    </div>
+  </div>
+
+
+  <!-- CATEGORY 1 -->
+  <h2>1 · Basic Functionality <span class="cat-label">Category 1</span><span class="cat-count">5 issues</span></h2>
+  <div class="section-summary">
+    The application handles the happy path well but has <strong>zero resilience infrastructure</strong> for real-world conditions. There is no offline indicator, no idle state, no concurrent-action guard, and no intelligent clipboard handling. SWR's <code>revalidateOnFocus</code> is enabled on ~8 of 36 data pages — the remaining 28 serve stale data silently after background tab use.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Offline Indicator</td>
+        <td class="loc">Global<br><code>layout.js</code></td>
+        <td class="issue-text">No offline/online state detection anywhere. When a user on a college campus with spotty WiFi loses connection, SWR silently fails, skeletons persist, and the user has no indication the problem is network-related vs a server error.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Add a <code>useOnlineStatus</code> hook using <code>navigator.onLine</code> and <code>window.addEventListener('online'/'offline')</code>. Show a fixed bottom banner: <em>"You're offline — changes won't save until reconnected."</em> On reconnect, call <code>mutate()</code> on all active SWR keys and dismiss the banner.</td>
+      </tr>
+      <tr>
+        <td class="cat">Background Tab Staleness</td>
+        <td class="loc">28 SWR pages<br>(non-employer pages)</td>
+        <td class="issue-text"><code>revalidateOnFocus: true</code> is set on only employer-role pages (applications, drives, jobs, internships). The remaining 28 SWR pages (college dashboard, student dashboard, reports, clarifications, etc.) use default SWR settings — they do not refresh when the user returns to the tab after 5+ minutes.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Set <code>revalidateOnFocus: true</code> globally via SWR's <code>&lt;SWRConfig value={{ revalidateOnFocus: true, revalidateOnReconnect: true }}&gt;</code> in the root layout. Remove per-page overrides. Apply <code>refreshInterval: 120000</code> (2 min) on high-frequency pages: applications, notifications, drives.</td>
+      </tr>
+      <tr>
+        <td class="cat">Idle Session State</td>
+        <td class="loc">Global<br>All authenticated pages</td>
+        <td class="issue-text">After 5+ minutes of inactivity, the UI shows no visual change. The 24hr session continues silently. There is no auto-save notice, no dim overlay, and no proactive warning that the session will eventually expire. A TPO who leaves a partially-filled drive form for 30 minutes returns to a session that is now closer to expiry with no indication.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add an idle detector using <code>mousemove</code> / <code>keydown</code> / <code>touchstart</code> events with a 20-minute threshold. After idle, show a subtle toast: <em>"Still there? Your session is active."</em> This doubles as a session health signal. For forms with unsaved data, show a more prominent "You have unsaved changes" banner.</td>
+      </tr>
+      <tr>
+        <td class="cat">Concurrent Action Blocking</td>
+        <td class="loc">All mutation buttons<br>Forms across app</td>
+        <td class="issue-text">Submit buttons are disabled while <code>submitting</code> state is true, but there is no protection against race conditions from rapid sequential clicks before the state updates. On mobile with tap-bounce, a user can fire two create-job or create-drive requests in under 100ms — creating duplicate records in the database.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add a <code>useRef</code>-based in-flight guard that cannot be bypassed by React re-render timing: <code>const pending = useRef(false); if (pending.current) return; pending.current = true; try { await submitFn(); } finally { pending.current = false; }</code>. This prevents the race condition even before the <code>submitting</code> state prop propagates.</td>
+      </tr>
+      <tr>
+        <td class="cat">Clipboard Handling</td>
+        <td class="loc">Login · Register · Forms<br>Email/phone inputs</td>
+        <td class="issue-text">Email fields do not auto-trim pasted whitespace. Pasting <code>" sandeep@college.edu "</code> (with leading/trailing spaces) passes silently through the UI, hits the API, fails with a non-obvious error, and the user cannot see the spaces in the input field. This is the most common cause of "login not working" support tickets.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add an <code>onPaste</code> handler to all email inputs: <code>onPaste=&#123;(e) =&gt; &#123; e.preventDefault(); const text = e.clipboardData.getData('text').trim(); setEmail(text); &#125;&#125;</code>. Alternatively, add <code>.trim()</code> in the <code>onChange</code> handler. Apply to registration, login, and all admin user-creation forms.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- CATEGORY 2 -->
+  <h2>2 · Interaction <span class="cat-label">Category 2</span><span class="cat-count">5 issues</span></h2>
+  <div class="section-summary">
+    The button press scale (<code>transform: scale(0.97)</code>) and card hover lift (<code>translateY(-2px)</code>) are genuinely polished micro-interactions. The failure is in <strong>feedback latency tiers</strong> — every action (toggle, status update, bulk approve) waits for full network round-trip before any visual change. Interaction memory is almost entirely absent: no view preference, no form state, and no scroll position is remembered.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Feedback Latency Tiers</td>
+        <td class="loc">All mutation flows<br>Status toggles, form submits</td>
+        <td class="issue-text">Every action uses a single feedback tier: wait for server confirmation, then update. No action uses <strong>instant</strong> visual feedback (toggle flips immediately) or <strong>predicted</strong> state (skeleton replaces content while waiting). Users experience 200–800ms of ambiguity on every click. At scale on a shared campus network, this will routinely exceed 1 second.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Introduce three tiers: (1) <strong>Instant</strong>: pure UI state — toggle switches, tab changes, expand/collapse flip immediately. (2) <strong>Predicted</strong>: SWR optimistic update with rollback on failure — job publish, application status change. (3) <strong>Confirmed</strong>: form creates that require ID from server. Tier assignment based on reversibility of the action.</td>
+      </tr>
+      <tr>
+        <td class="cat">Interaction Memory</td>
+        <td class="loc">Tables with view toggle<br>college/drives, employer/jobs</td>
+        <td class="issue-text">College drives and employer interviews have a list/calendar view toggle (<code>setView('list' | 'calendar')</code>). This preference resets to <code>'list'</code> on every page load. A user who prefers the calendar view must switch it every single visit. No interaction preference (view mode, expanded sections, panel width) persists across sessions.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Persist view preference to <code>localStorage</code> with a page-scoped key: <code>localStorage.setItem('drives.view', view)</code>. On mount: <code>const [view, setView] = useState(() =&gt; localStorage.getItem('drives.view') || 'list')</code>. Apply to: drives (list/calendar), interviews (list/calendar), reports (chart/table). Extend to collapsed sidebar sections.</td>
+      </tr>
+      <tr>
+        <td class="cat">Disabled State Clarity</td>
+        <td class="loc">All disabled buttons<br>Forms, action menus</td>
+        <td class="issue-text">Most disabled buttons have no explanation. The "Save Draft" button is disabled while the form is empty, but hovering gives no tooltip. The "Publish" button in college infrastructure is not shown (hidden entirely) when the user lacks permissions — instead of being visible but disabled with an explanation.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">For disabled buttons: always show, never hide. Add <code>title="Reason why disabled"</code> as a minimum — e.g., <code>title="Add at least one campus to enable publishing"</code>. For permission-blocked actions: show <code>disabled</code> with <code>title="You need admin permissions to do this"</code>. One instance of this done correctly already exists on college/employers "No website on file" — replicate the pattern.</td>
+      </tr>
+      <tr>
+        <td class="cat">Escape Key Handling</td>
+        <td class="loc">Notification panel, forms<br><code>layout.js</code>, inline forms</td>
+        <td class="issue-text">The notification dropdown and all inline forms (add interview, add job, add event) have no Escape key handler. Once open, the only way to close them is clicking a specific button or target area. On keyboard navigation, the user is trapped without Escape.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Add a <code>useEffect</code> that listens for <code>keydown</code> with <code>key === 'Escape'</code> whenever a panel or form is open: close the panel and return focus to the trigger button. This is a single reusable hook: <code>useEscapeKey(isOpen, onClose)</code>. Apply to: notification panel, mobile sidebar, all inline create forms.</td>
+      </tr>
+      <tr>
+        <td class="cat">Hover Intent Delay</td>
+        <td class="loc">Action button menus<br>Sidebar items with sub-items</td>
+        <td class="issue-text">Dropdown menus and action panels open immediately on <code>mouseEnter</code> with no delay. On desktop, users moving the cursor across the page will accidentally trigger dropdowns. There is no 100–150ms hover intent delay to distinguish intentional hover from cursor travel.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Add a <code>useHoverIntent</code> hook that uses <code>setTimeout</code> to delay showing the dropdown by 120ms after <code>mouseEnter</code>. Cancel the timer on <code>mouseLeave</code>. This prevents accidental triggers while making intentional hover feel instant. Apply to all dropdown triggers and sidebar nested groups.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- CATEGORY 3 -->
+  <h2>3 · Navigation <span class="cat-label">Category 3</span><span class="cat-count">4 issues</span></h2>
+  <div class="section-summary">
+    The sidebar correctly highlights the active route via <code>pathname === item.href</code>. Beyond that, navigation UX is thin: filter state is lost on every back-navigation, scroll position is never preserved, modals have no Escape key or close affordance, and anchor links have no arrival feedback.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Context Persistence</td>
+        <td class="loc">All filtered tables<br>students, applications, jobs</td>
+        <td class="issue-text">Navigating away from a filtered table (e.g., applications filtered to "Shortlisted + CSE") and pressing browser Back resets all filters to default. The user must reapply filters every time. There is no visual indicator that the list was previously filtered.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Serialise filter state into URL query params: <code>?status=shortlisted&amp;dept=CSE</code>. Next.js Router's <code>useSearchParams</code> / <code>useRouter.replace</code> can update URL without page reload. On mount, hydrate filter state from URL. Browser Back then restores the correct filter set automatically.</td>
+      </tr>
+      <tr>
+        <td class="cat">Scroll Position Memory</td>
+        <td class="loc">All list pages<br>drives, students, jobs</td>
+        <td class="issue-text">Scrolling to position 800px in the students table, clicking a student action, then pressing Back returns the user to the top of the list. With 200+ students, the user must re-scroll to find their position. This is a high-friction pattern for TPOs who process students one-by-one.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Use Next.js's <code>scroll: false</code> option on programmatic navigation: <code>router.push(href, { scroll: false })</code>. For full-page navigations that reload data, store scroll position in <code>sessionStorage</code> before navigating and restore it after data loads: <code>window.scrollTo(0, savedPosition)</code>.</td>
+      </tr>
+      <tr>
+        <td class="cat">Modal Navigation Trap</td>
+        <td class="loc">Inline forms (create job, add event)<br>Notification panel</td>
+        <td class="issue-text">Inline forms and the notification dropdown open without trapping focus or clearly indicating that background content is inaccessible. Users navigating by Tab can exit the open panel and interact with background page elements while the panel is still open — creating a disorienting split context.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">For panels that overlay content, add a transparent click-outside dismissal backdrop. For modal-style forms, implement focus trapping: tab cycles only within the open form. Add a visible × close button. These are low-effort: <code>onKeyDown</code> + <code>tabIndex</code> management in a <code>useFocusTrap</code> hook.</td>
+      </tr>
+      <tr>
+        <td class="cat">Anchor Link Feedback</td>
+        <td class="loc">Reports page tabs<br>Multi-section forms</td>
+        <td class="issue-text">The college reports page uses tab navigation to switch between sections. When switching tabs, there is no scroll-to-section behaviour, no highlight animation on the newly active content, and no <code>scroll-padding-top</code> set to account for the sticky topbar — so anchors scroll behind the topbar on direct link.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Add <code>scroll-padding-top: var(--topbar-height)</code> to the <code>html</code> element in <code>globals.css</code>. On tab switch, briefly apply a highlight class to the incoming section: <code>animate-highlight { animation: highlight 0.8s ease-out; }</code> where the animation fades from a light background color to transparent.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- CATEGORY 4 -->
+  <h2>4 · Accessibility — Beyond WCAG Basics <span class="cat-label">Category 4</span><span class="cat-count">5 issues</span></h2>
+  <div class="section-summary">
+    <strong>2 of 5 advanced accessibility criteria are now implemented</strong> — category grade lifted from F to C. <span style="color:#065f46;font-weight:700;">✓ Reduced-motion support</span> is live in <code>globals.css</code> (<code>@media (prefers-reduced-motion: reduce)</code> covers all animations). <span style="color:#065f46;font-weight:700;">✓ Focus ring visibility</span> is implemented for buttons, inputs, selects, table rows, and export controls via <code>:focus-visible</code> rules. Remaining open gaps: dynamic content focus management, screen reader announcement granularity (aria-live), and alternative bypass landmarks.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr style="background:#f0fdf4;">
+        <td class="cat" style="color:#065f46;">Reduced Motion <span style="font-size:10px;font-weight:700;color:#065f46;">✓ FIXED</span></td>
+        <td class="loc">globals.css<br>All animated elements</td>
+        <td class="issue-text" style="color:#065f46;"><strong>Resolved.</strong> <code>@media (prefers-reduced-motion: reduce)</code> block added to <code>globals.css</code>. Covers all hover transforms, skeleton shimmer, entrance animations (<code>animate-fadeIn</code>, <code>animate-slideUp</code>), and card lift effects. Users with vestibular disorders no longer receive unwanted motion. WCAG 2.3.3 compliance achieved.</td>
+        <td><span class="sev Fixed">Fixed</span></td>
+        <td class="fix-text" style="color:#065f46;">Implemented — single <code>@media (prefers-reduced-motion: reduce)</code> block in globals.css sets <code>animation-duration: 0.01ms</code> and <code>transition-duration: 0.01ms</code> on all elements. Skeleton shimmer gracefully degrades to static background.</td>
+      </tr>
+      <tr>
+        <td class="cat">Dynamic Content Focus</td>
+        <td class="loc">Inline forms (add job, add event)<br>Search results, load more</td>
+        <td class="issue-text">When inline create forms open (the job creation form on employer/jobs, the event form on college/calendar), focus is not moved to the first field. Keyboard users must Tab through the entire page to reach the newly injected form content. When the form closes, focus is not returned to the trigger button.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">On form open: <code>useEffect(() =&gt; &#123; if (showForm) firstFieldRef.current?.focus(); &#125;, [showForm])</code>. On form close: <code>triggerButtonRef.current?.focus()</code>. For dynamically loaded content (load more, search results), move focus to the first new item: <code>firstNewItemRef.current?.focus()</code> after the DOM update settles.</td>
+      </tr>
+      <tr>
+        <td class="cat">Announcement Granularity</td>
+        <td class="loc">ToastProvider, error states<br>Global feedback system</td>
+        <td class="issue-text">All screen reader announcements use the same priority level — or none at all. Success toasts, error alerts, and status updates are all regular <code>div</code> elements with no <code>aria-live</code> attribute. Screen readers are silent on all feedback. For a multi-role system where errors (application rejected, offer deadline missed) are time-sensitive, silent feedback is a critical accessibility failure.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Use two live region priorities: <code>role="alert" aria-live="assertive"</code> for errors, timeouts, and destructive confirmations (interrupts screen reader immediately). <code>role="status" aria-live="polite"</code> for success messages and info updates (waits for current speech to finish). Update <code>ToastProvider</code> to set the correct role based on <code>type: 'error' | 'success' | 'info'</code>.</td>
+      </tr>
+      <tr style="background:#f0fdf4;">
+        <td class="cat" style="color:#065f46;">Focus Ring Visibility <span style="font-size:10px;font-weight:700;color:#065f46;">✓ FIXED</span></td>
+        <td class="loc">globals.css<br><code>.btn</code>, <code>.form-input</code>, all interactive</td>
+        <td class="issue-text" style="color:#065f46;"><strong>Resolved.</strong> <code>:focus-visible</code> rules added to <code>globals.css</code> for: <code>.btn</code>, <code>.form-input</code>, <code>.form-select</code>, <code>.form-textarea</code>, <code>.student-row-clickable</code>, <code>.export-csv-primary</code>, <code>.export-csv-trigger</code>, <code>.export-csv-chevron-btn</code>, and <code>.export-csv-menu-item</code>. Keyboard users now get a visible 2px solid outline on all interactive elements.</td>
+        <td><span class="sev Fixed">Fixed</span></td>
+        <td class="fix-text" style="color:#065f46;">Implemented — <code>.btn:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }</code> and equivalent rules for inputs, selects, table rows, and export controls. WCAG 2.4.7 Non-text Contrast requirement met.</td>
+      </tr>
+      <tr>
+        <td class="cat">Alternative Bypasses</td>
+        <td class="loc">Root layout<br>All pages</td>
+        <td class="issue-text">There is no skip-to-main-content link (covered in SaaS audit), but also no way to skip repetitive table pagination controls, long filter bars, or the calendar grid's 31 day cells. A screen reader user navigating the college calendar must Tab through every cell to reach the "Add Event" button at the bottom.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add landmark roles: <code>role="main"</code> on the content area, <code>role="navigation"</code> on the sidebar. Add region landmarks for tables: <code>role="region" aria-label="Students table"</code>. Screen reader users can then jump between landmarks. For the calendar, add a visible "Jump to actions" link before the grid that skips to the action buttons.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- CATEGORY 5 -->
+  <h2>5 · Analytics <span class="cat-label">Category 5</span><span class="cat-count">3 issues</span></h2>
+  <div class="section-summary">
+    <strong>Zero analytics tracking exists in the application.</strong> No page views, no event tracking, no session replay, no frustration signal capture. For a SaaS platform with 4 roles and 55 pages, the product team has no visibility into which features are used, where users drop off, or what causes frustration. This is a complete blind spot.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">No Event Tracking</td>
+        <td class="loc">Global<br>All pages</td>
+        <td class="issue-text">No analytics library is integrated (no Google Analytics, Plausible, PostHog, Mixpanel, or equivalent). There is no tracking of page views, button clicks, form submissions, or feature adoption. The product team cannot answer: "How many employers post more than one job?" or "Which page has the highest exit rate?"</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Integrate a privacy-respecting analytics tool — Plausible or PostHog (both GDPR-compliant, self-hostable). Add page-view tracking via Next.js Router events. Add key event tracking for: job posted, drive created, application submitted, offer accepted. Use a centralized <code>track(event, props)</code> utility so the analytics provider can be swapped.</td>
+      </tr>
+      <tr>
+        <td class="cat">No Session Replay</td>
+        <td class="loc">Global<br>All pages</td>
+        <td class="issue-text">No session replay tool (Hotjar, FullStory, LogRocket, PostHog Session Replay) is integrated. Without session replay, reproducing user-reported bugs requires guesswork. PII-sensitive fields (passwords, CGPA, salary) would need to be masked in replay config — but since no replay is configured, this is not yet a risk.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">If integrating PostHog for analytics (above), enable Session Replay with automatic PII masking: <code>mask_all_text: false</code> but add <code>data-ph-no-capture</code> to salary, CGPA, password, and email fields. This gives bug reproduction capability without exposing sensitive data in recordings.</td>
+      </tr>
+      <tr>
+        <td class="cat">No Frustration Signals</td>
+        <td class="loc">Global<br>Forms, tables, actions</td>
+        <td class="issue-text">No tracking of frustration signals: dead clicks (clicking non-interactive elements), rage clicks (5+ rapid clicks), excessive form field edits (editing the same field 3+ times), or form abandonment. These signals identify UX friction that users don't report verbally.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">PostHog and Hotjar both capture rage clicks automatically. For dead clicks, add a <code>click</code> event listener that checks if the click target has a registered handler — log events where it doesn't. For form abandonment, track <code>beforeunload</code> events when <code>formDirty === true</code> to identify forms users fill partially then leave.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- CATEGORY 6 -->
+  <h2>6 · Security UX <span class="cat-label">Category 6</span><span class="cat-count">4 issues</span></h2>
+  <div class="section-summary">
+    The two highest-severity security UX issues (password field <code>type="text"</code> and raw <code>result.error</code> surfacing) were documented in the prior audit. This audit finds two additional gaps: password requirements are shown only on validation failure (post-submit), not proactively — and no sensitive action requires re-authentication.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Password Policy Display</td>
+        <td class="loc">Register Page<br><code>register/page.js</code></td>
+        <td class="issue-text">Password requirements ("must be at least 8 characters with uppercase, lowercase, and number") are defined in <code>validators.js</code> but shown only when validation fails after submission. A new user types a weak password, clicks submit, fails, reads the requirements for the first time, then types a new password. This is friction-first UX — requirements should be visible before the user starts typing.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Show password requirements below the password field by default as a checklist: <code>✓ 8+ characters · ✓ Uppercase · ✓ Lowercase · ✓ Number</code>. Each criterion turns green as the user types and satisfies it. This is a live validation pattern — use <code>onChange</code> to test each rule individually and update the UI. Remove the post-submit error for password strength once this is in place.</td>
+      </tr>
+      <tr>
+        <td class="cat">Session Expiry UX</td>
+        <td class="loc">Global<br>All authenticated pages</td>
+        <td class="issue-text">When the 24-hour session expires, API calls return 401. Since most pages lack error handling for failed SWR fetches, the skeleton renders indefinitely. No countdown warning is shown before expiry. A college admin filling a 15-field drive creation form for 25 minutes will lose all their work to a silent session expiry with no warning.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Use NextAuth's <code>useSession</code> to compute time-to-expiry. Show a fixed banner at 10 minutes remaining: <em>"Session expires in 10 minutes — <u>Extend session</u>"</em>. On API 401 response in the SWR fetcher, redirect to login with <code>?reason=session_expired</code> — show an explanatory message on the login page. Auto-save form state to <code>sessionStorage</code> before redirect; restore it on login return.</td>
+      </tr>
+      <tr>
+        <td class="cat">Sensitive Action Re-auth</td>
+        <td class="loc">Admin pages<br>Delete employer, bulk operations</td>
+        <td class="issue-text">High-consequence actions (revoking employer campus access, bulk-deleting students, changing admin permissions) require no re-authentication. Once logged in, any college admin can perform any admin action without additional identity verification. On a shared computer (college lab), this is a significant risk.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">For irreversible admin actions, add a re-authentication step: prompt for password before executing — the same pattern used by GitHub/Google for account deletion. Use a modal: <em>"This action is irreversible. Enter your password to confirm."</em> Verify server-side by calling a dedicated <code>/api/auth/verify-password</code> endpoint.</td>
+      </tr>
+      <tr>
+        <td class="cat">Mixed Trust Signals</td>
+        <td class="loc">EntityLogo component<br><code>EntityLogo.js</code> · Clearbit fetch</td>
+        <td class="issue-text">The <code>EntityLogo</code> component fetches company logos from Clearbit's public API (<code>https://logo.clearbit.com/{domain}</code>). This loads third-party image content in the browser without user consent or visibility. No visual indicator distinguishes Clearbit-loaded logos from internally hosted assets. If Clearbit serves a redirect to a malicious URL, the browser will follow it silently.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Add <code>referrerPolicy="no-referrer"</code> to the Clearbit <code>&lt;img&gt;</code> element to prevent leaking the app URL to the third party. Configure Next.js <code>next.config.js</code> to allowlist <code>logo.clearbit.com</code> in <code>images.remotePatterns</code> — this routes the request through Next.js Image optimization, adding a server-side proxy that prevents direct browser-to-Clearbit contact.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- CATEGORY 7 -->
+  <h2>7.1 · Visual &amp; UI Systems <span class="cat-label">Category 7</span><span class="cat-count">4 issues</span></h2>
+  <div class="section-summary">
+    The CSS custom property architecture in <code>globals.css</code> is comprehensive — semantic color layers, spacing scale, radius scale, shadow elevation, and transition tokens are all defined. The gap is at the <strong>usage layer</strong>: 23–32 inline <code>style={{}}</code> objects per page bypass the token system, and the emoji icon set is the single largest "template tell" preventing enterprise-grade visual quality.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Design Debt Density</td>
+        <td class="loc">Dashboard overview pages<br>student, employer, college</td>
+        <td class="issue-text">Random sample of three overview pages finds 23–32 inline <code>style={{}}</code> objects per file. Inline styles cannot be overridden by theme switches or media queries without <code>!important</code>, are invisible to linters, duplicate values across files, and represent the largest single source of design inconsistency. Total estimated inline styles across 55 pages: 1,200–1,500 individual style declarations.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Define a rule: inline styles only for <strong>dynamic computed values</strong> (e.g., progress bar width from data). Static spacing, colors, and font sizes become CSS utility classes. Add to globals.css: <code>.mt-6, .mb-4, .gap-3, .text-sm, .font-semibold, .text-secondary</code>. A migration script can identify static inline styles: <code>grep -r "style={{ [a-zA-Z]" src/ | grep -v "width.*%" | wc -l</code>.</td>
+      </tr>
+      <tr>
+        <td class="cat">Emoji Icon System</td>
+        <td class="loc">Sidebar, stats cards, page headers<br><code>layout.js</code>, dashboard pages</td>
+        <td class="issue-text">The sidebar uses 30+ emoji as navigation icons. Stats cards use emoji at <code>font-size: 1.5rem</code>. Emoji render at inconsistent sizes across OSes (Windows vs macOS vs Android), do not respect CSS <code>color</code> inheritance (cannot be tinted for active/dark mode states), and are announced verbatim by screen readers. This is the dominant "template" signal in the UI that prevents enterprise-grade perception.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Lucide React is already partially in use (PageError, forms). Extend to sidebar and stats cards. Replace all sidebar emoji in <code>menuConfig</code> with Lucide icon components: <code>icon: &lt;LayoutDashboard size={18} aria-hidden="true" /&gt;</code>. For stats cards, use <code>FileText</code>, <code>CheckCircle</code>, <code>Calendar</code>, <code>Gift</code>. Lucide icons inherit <code>currentColor</code> — dark mode, active state, and hover tinting work automatically.</td>
+      </tr>
+      <tr>
+        <td class="cat">Spatial Density Mixing</td>
+        <td class="loc">College students page<br>Employer jobs page with form open</td>
+        <td class="issue-text">When the inline create form opens on employer/jobs, the compact data-table density (12 columns, tight rows) and the relaxed form density (large inputs, generous padding) are rendered simultaneously in the same viewport. The density contrast is jarring and creates an unbalanced visual weight distribution — the form feels like it belongs to a different product.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">When the create form opens, slide the table into a collapsed/reduced view (show only 3 key columns, reduce row height by 30%). Alternatively, use a side panel pattern: the form slides in from the right, narrowing the table to 60% width. This maintains context (user can see the existing list) while separating the density contexts. The single <code>modal-overlay</code> in drives shows this is already achievable.</td>
+      </tr>
+      <tr>
+        <td class="cat">Typography Rhythm</td>
+        <td class="loc">All dashboard pages<br>Non-scale font sizes</td>
+        <td class="issue-text">Non-scale font sizes (<code>0.9375rem</code>, <code>0.8125rem</code>, <code>0.6875rem</code>, <code>0.68rem</code>) appear across multiple pages. These do not align to any mathematical scale (neither 1.125 Major Second nor 1.25 Major Third). The inconsistency causes subtle vertical rhythm breaks — adjacent text blocks have mismatched line spacing that creates an unpolished finish on close inspection.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Enforce a 5-step scale: <code>0.75rem (xs) · 0.875rem (sm) · 1rem (base) · 1.125rem (lg) · 1.25rem (xl)</code>. Add these as CSS utility classes. Audit all inline font-sizes: any value outside this scale is replaced with the nearest step. The sub-10px value <code>0.6rem</code> in the topbar is eliminated — replace the text-based chevron with an SVG icon.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h2>7.2 · Interaction &amp; Micro-Behavior (Deep) <span class="cat-label">Category 7</span><span class="cat-count">3 issues</span></h2>
+  <div class="section-summary">
+    The <code>scale(0.97)</code> button press and <code>translateY(-2px)</code> card hover are genuine polish details. The loading state hierarchy is incomplete — only skeleton and button-level spinners exist; no blocking overlay for multi-step async flows. The notification panel has no Escape/outside-click dismissal (addressed in section 2 but confirmed here as a micro-behavior gap too).
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Loading State Hierarchy</td>
+        <td class="loc">Multi-step forms<br>File upload (student/documents)</td>
+        <td class="issue-text">Only two loading states exist: skeleton (full-page) and spinner-in-button (inline). No blocking overlay exists for flows where the user must not interact during processing — e.g., file upload to S3 (student documents), bulk status updates (once implemented), or multi-step API chains. The drives page has one <code>modal-overlay</code> class defined — but it is not used for loading states.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Add a third loading tier: <code>&lt;FullPageOverlay /&gt;</code> — a semi-transparent backdrop with a centered spinner and message like "Uploading document..." or "Saving changes...". Use it for: file uploads (documents), any operation taking &gt;1 second. The existing <code>modal-overlay</code> CSS class is the right foundation — wrap it in a component with a <code>message</code> prop.</td>
+      </tr>
+      <tr>
+        <td class="cat">Keyboard Interaction Cues</td>
+        <td class="loc">All interactive elements<br>globals.css</td>
+        <td class="issue-text">No keyboard shortcut hints are displayed anywhere in the UI. Even simple shortcuts (Tab to navigate, Enter to submit, Escape to close) are not surfaced as affordances. Power users have no discovery path for any keyboard behaviour that does exist. There is no <code>?</code> shortcut panel or tooltip hint pattern.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add <code>title</code> attributes to key actions with their keyboard equivalent: <code>title="Submit (Enter)"</code> on primary form buttons, <code>title="Close (Esc)"</code> on panel close buttons. Add a <code>?</code> floating button that opens a keyboard shortcuts reference modal. Long-term: show shortcut hints inside tooltips: <code>[G then S] Students</code>.</td>
+      </tr>
+      <tr>
+        <td class="cat">Micro-copy Timing</td>
+        <td class="loc">Form fields<br>All helper texts</td>
+        <td class="issue-text">Helper text and field hints appear immediately on mount alongside labels — not on focus/interaction. Critical guidance (e.g., "CTC range must overlap minimum wage — format: ₹500,000") is shown to all users at all times, creating visual clutter for experienced users. Supplementary info should appear at different speeds than critical warnings.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Show field-level hints only when the field is focused: <code>const [focused, setFocused] = useState(false)</code>. For critical validation feedback, show immediately on blur (&lt;200ms). For supplementary tips ("You can add multiple branches separated by comma"), show on a 500ms delay after focus — so fast typists never see them, but pausing users do.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h2>7.3 · Cognitive &amp; Behavioral UX <span class="cat-label">Category 7</span><span class="cat-count">3 issues</span></h2>
+  <div class="section-summary">
+    The primary action hierarchy is generally clear — primary buttons are visually dominant, secondary actions use ghost variants. The main cognitive UX gap is the <strong>employer/jobs page with the form open</strong>: 13+ active form inputs, 4 filter tabs, 3 campus checkboxes, and the existing jobs table are all visible simultaneously — exceeding the 7–9 interactive element threshold for a single viewport.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Cognitive Load</td>
+        <td class="loc">Employer Jobs — form open<br><code>employer/jobs/page.js</code></td>
+        <td class="issue-text">When the create-job form is open alongside the jobs list, the viewport contains: 1 page header button, 1 form close button, 13 form inputs/selects, 2 submit buttons (Draft/Publish), 4 filter tabs, and the existing jobs table with action buttons per row. This is 20+ interactive elements in simultaneous view — 2–3× the cognitive load threshold. First-time employers are overwhelmed.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Move job creation to a dedicated <code>/dashboard/employer/jobs/new</code> page, or use a full-width slide-over panel that replaces the table view entirely when open. Collapse the 12-field form into 2 steps: Step 1 — basics (title, type, salary, vacancies), Step 2 — targeting (campuses, CGPA, deadline). This reduces per-view interactive element count to under 8.</td>
+      </tr>
+      <tr>
+        <td class="cat">Progressive Disclosure</td>
+        <td class="loc">All filter toolbars<br>Employer jobs, college students</td>
+        <td class="issue-text">All filter options are shown simultaneously with no distinction between "common" and "advanced" filters. The college students page shows status filter, department filter, and search at the same level with equal visual weight. Power users need all of them; new users are confused by options they don't yet understand.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Show only 1–2 primary filters by default (status + search). Add an "More filters" button that expands to reveal advanced filters (department, CGPA range, placement status, year). Use smooth CSS height animation for the expansion. Remember expanded state in <code>localStorage</code> so power users don't need to expand every time.</td>
+      </tr>
+      <tr>
+        <td class="cat">Empty/Zero/Null Distinction</td>
+        <td class="loc">All pages with data tables<br>students, drives, applications</td>
+        <td class="issue-text">All three empty states use the same <code>.empty-state</code> component with no variation: "No data yet" for a new college with no students (empty), "No results" for a search that matches nothing (zero), and the same pattern for API errors returning no data (null). The user cannot tell whether to take action (add a student) or change their filter (clear search) or contact support (data error).</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Distinguish three patterns: <strong>Empty</strong> (new account, no records) — show icon + encouraging message + primary CTA ("Add your first student"). <strong>Zero</strong> (search/filter returned nothing) — show "No results for [query]" + "Clear filters" button. <strong>Null</strong> (data error or unexpected absence) — show warning icon + "Contact support" link. Each gets a distinct icon and tone.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h2>7.4 · Edge Cases &amp; State Design <span class="cat-label">Category 7</span><span class="cat-count">2 issues</span></h2>
+  <div class="section-summary">
+    Partial data and system failure specificity are the two gaps here. The EntityLogo component handles missing images elegantly (layered fallback: URL → Clearbit → gradient+initials). The failure is in API error messages — all errors say "Failed to load data" regardless of type — and in permission-based UI variation, which uses complete hiding rather than the more informative disabled-with-explanation pattern.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Failure Specificity</td>
+        <td class="loc">PageError component<br><code>components/PageError.js</code></td>
+        <td class="issue-text">The <code>PageError</code> component shows "Failed to load data" with the raw <code>error.message</code> or "There was an unexpected issue retrieving this information." It does not differentiate: network timeout (user's connection issue), server 500 (backend bug), 401 (session expired), 403 (permission denied), or 404 (entity deleted). Each case needs a different response from the user.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">In the SWR fetcher, attach an HTTP status code to the error: <code>const err = new Error(json.message); err.status = res.status; throw err</code>. In <code>PageError</code>, switch on <code>error.status</code>: 401 → "Session expired — <u>Sign in again</u>"; 403 → "You don't have permission to view this"; 404 → "This page no longer exists"; 0/network → "Check your connection + Retry"; 500 → "Something went wrong on our end + Contact support".</td>
+      </tr>
+      <tr>
+        <td class="cat">First-Time vs Returning</td>
+        <td class="loc">All dashboards<br>All 4 role dashboards</td>
+        <td class="issue-text">No distinction is made between a first-time user (no data, needs guidance) and a returning power user (has data, needs efficiency). A new student sees the same empty dashboard layout as an experienced student with 10 applications — just with empty cards. A new employer with no jobs posted sees the same interface as one with 50 active postings. The UI does not adapt.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add a computed <code>isNewUser</code> flag to the dashboard API response: <code>true</code> if the user has been registered less than 7 days and has fewer than 3 actions. For new users, show the onboarding checklist card (from SaaS audit, issue #16) instead of the standard stats grid. For returning users, show the stats grid. No UI-level logic beyond a conditional card render.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h2>7.5 · Trust, Perception &amp; Product Feel <span class="cat-label">Category 7</span><span class="cat-count">2 issues</span></h2>
+  <div class="section-summary">
+    This is the strongest category. The card system, shadow elevation, gradient stats cards, EntityLogo layered fallback, and dark mode implementation all signal a genuinely polished product. No dark patterns were found anywhere in the codebase. The primary gap is an <strong>absence of delight moments</strong> and an overuse of <code>native confirm()</code> breaking the friction-vs-reassurance balance for destructive actions.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Friction/Reassurance Balance</td>
+        <td class="loc">Destructive actions<br>3 pages using confirm()</td>
+        <td class="issue-text">Routine actions (submit form, publish job) have appropriate one-click friction. Destructive actions (block employer, cancel booking, delete document) incorrectly use <code>window.confirm()</code> — a browser-native dialog with no context, no entity name, and no consequence description. The friction level is wrong: too abrupt for employer revocation, which affects an entire institution, and too harsh for document removal, which should be an undo.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">A <code>ConfirmDialog</code> component already exists in <code>/components/ConfirmDialog.js</code> but is not used for any of the 3 confirm() instances. Wire it up: for employer block, show entity name + consequence; for booking cancel, show a lighter warning + undo option; for document delete, implement soft-delete + undo toast instead of a warning dialog entirely.</td>
+      </tr>
+      <tr>
+        <td class="cat">Delight Moments</td>
+        <td class="loc">Key success flows<br>Offer accepted, first application</td>
+        <td class="issue-text">No delight moments exist. When a student submits their first application, a major milestone, the feedback is a standard success toast. When an offer is accepted — one of the most emotionally significant events in a placement platform — the UI shows no celebration. The EntityLogo gradient is the only designed-in "pleasant surprise"; it doesn't count as a delight moment.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Add targeted micro-celebrations: (1) First application submitted → confetti burst for 2 seconds using a CSS keyframe animation (no library needed). (2) Offer accepted → full-screen momentary overlay with a congratulations message + the company logo. (3) All placement drives completed → college dashboard shows a summary celebration card. These moments are remembered and shared — high brand impact, low implementation cost.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h2>7.6 · Scalability &amp; System Thinking <span class="cat-label">Category 7</span><span class="cat-count">3 issues</span></h2>
+  <div class="section-summary">
+    The CSS grid system uses <code>minmax()</code> flexibly in several places — a solid foundation. The button and badge component systems are well-defined and consistent across pages. The primary scalability risks are the <strong>inline style density</strong> (1,200+ inline declarations estimated, documented in 7.1), the <strong>absence of design system documentation</strong>, and several <strong>fixed-pixel grid columns</strong> that will break with dynamic content.
+  </div>
+  <table>
+    <thead><tr><th style="width:14%">Sub-Criterion</th><th style="width:22%">Screen / File</th><th style="width:30%">Issue</th><th style="width:8%">Severity</th><th style="width:26%">Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Fixed Grid Columns</td>
+        <td class="loc">globals.css<br>Table grid layouts</td>
+        <td class="issue-text">Several grid layouts use fixed pixel column widths: <code>grid-template-columns: 140px 1fr 150px</code>, <code>160px 1fr 200px</code>. These will break when: (a) translated to a language with longer strings, (b) a new column is added by a developer, or (c) the viewport is narrower than expected. At least 4 such fixed-column definitions exist in <code>globals.css</code>.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Replace fixed-pixel columns with <code>minmax()</code>: <code>grid-template-columns: minmax(120px, 160px) 1fr minmax(130px, 200px)</code>. This gives a minimum floor (prevents collapse) and a maximum ceiling (prevents overflow) while allowing intermediate flexibility. For label-value grids, use <code>auto 1fr</code> which is both flexible and label-length-adaptive.</td>
+      </tr>
+      <tr>
+        <td class="cat">No Design System Docs</td>
+        <td class="loc">globals.css<br>Component library</td>
+        <td class="issue-text">The CSS custom property system in <code>globals.css</code> is the implicit design system, but it has no documentation. A new developer joining the team has no reference for: which tokens to use for which contexts, which spacing step to use for card padding vs section margins, which shadow elevation to apply to modals vs cards, or which badge variant to use for which status. This creates drift over time.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Create a <code>/design-system</code> route (accessible in development only) that renders all tokens: color palette, spacing scale, shadow elevations, border radii, typography scale, button variants, badge variants, and empty state patterns. This is a one-page living reference — no Storybook required. A junior developer can see all available components and tokens in one place.</td>
+      </tr>
+      <tr>
+        <td class="cat">Long Content Resilience</td>
+        <td class="loc">Student name display<br>Company name display, job titles</td>
+        <td class="issue-text">Company names (employer profile, job cards, drive cards) and student names are not protected against overflow. A company named "International Business Machines Corporation" or a student named "Thiruvananthapuram Krishnamurthy Subramanian" will overflow card boundaries or force text wrapping that breaks card layout. No <code>text-overflow: ellipsis</code> or <code>max-width</code> is defined for these fields in the card system.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Add to the card system CSS: <code>.card-entity-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }</code>. For multi-line contexts (descriptions), use <code>display: -webkit-box; -webkit-line-clamp: 2; overflow: hidden</code>. Apply to: company name in drive cards, job title in job cards, student name in applications table. Add <code>title={fullName}</code> so the full value is accessible on hover.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- PRIORITY TABLE -->
+  <h2>Recommended Fix Priority Order</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:6%">Priority</th>
+        <th style="width:30%">Fix</th>
+        <th style="width:10%">Effort</th>
+        <th style="width:10%">Severity</th>
+        <th style="width:44%">Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prio p0">P0</td>
+        <td>Add <code>prefers-reduced-motion</code> block to globals.css</td>
+        <td>6 lines CSS</td>
+        <td><span class="sev High">High</span></td>
+        <td>WCAG AAA · Legal risk in EU/US enterprise · 6 lines fixes every animated element in the app simultaneously.</td>
+      </tr>
+      <tr>
+        <td class="prio p0">P0</td>
+        <td>Add <code>:focus-visible</code> ring to all buttons and inputs</td>
+        <td>4 lines CSS</td>
+        <td><span class="sev High">High</span></td>
+        <td>Keyboard navigation is broken without it. WCAG 2.4.7. 4 lines of CSS covers every button and input app-wide.</td>
+      </tr>
+      <tr>
+        <td class="prio p0">P0</td>
+        <td>Wire the existing <code>ConfirmDialog</code> component to replace all 3 native <code>confirm()</code> calls</td>
+        <td>~1 hour</td>
+        <td><span class="sev High">High</span></td>
+        <td><code>ConfirmDialog.js</code> already exists and is unused. Zero new code — just connect it to the 3 pages using <code>window.confirm()</code>.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Add Escape key handler to notification panel and all inline forms</td>
+        <td>~30 min</td>
+        <td><span class="sev High">High</span></td>
+        <td>Fundamental keyboard UX. Reusable <code>useEscapeKey</code> hook covers all surfaces at once.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Replace emoji sidebar icons with Lucide SVG icons</td>
+        <td>2–3 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>Single largest visual "template tell." Fixes accessibility, dark mode tinting, and OS rendering consistency simultaneously.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Add <code>revalidateOnFocus: true</code> globally via SWRConfig</td>
+        <td>5 min</td>
+        <td><span class="sev High">High</span></td>
+        <td>One-line global fix. Prevents stale data on 28 pages that currently don't refresh after background tab use.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Add analytics (Plausible or PostHog)</td>
+        <td>~2 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>Zero product visibility without it. Critical for any data-driven roadmap decision post-launch.</td>
+      </tr>
+      <tr>
+        <td class="prio p1">P1</td>
+        <td>Add live announcement roles (<code>role="alert"</code> / <code>role="status"</code>) to ToastProvider</td>
+        <td>~30 min</td>
+        <td><span class="sev High">High</span></td>
+        <td>Screen readers are completely silent on all app feedback. 1 attribute change to ToastProvider covers 205 usage sites.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Distinguish Empty / Zero / Null states across all tables</td>
+        <td>~3 hours</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>Users cannot tell whether to add data, clear a filter, or contact support. Different states need different guidance.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add session expiry warning banner (10-min countdown)</td>
+        <td>~2 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>TPOs lose unsaved form work to silent session expiry. High-frustration failure mode in real use.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Persist view preference (list/calendar) to localStorage</td>
+        <td>~30 min per page</td>
+        <td><span class="sev High">High</span></td>
+        <td>Users re-select their preferred view on every visit. Pattern is identical on drives and interviews pages.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add password requirements live validation on register page</td>
+        <td>~1 hour</td>
+        <td><span class="sev High">High</span></td>
+        <td>Requirements are only shown on failed submission. This is the most common source of registration frustration.</td>
+      </tr>
+      <tr>
+        <td class="prio p2">P2</td>
+        <td>Add PageError failure specificity (HTTP status-based messages)</td>
+        <td>~2 hours</td>
+        <td><span class="sev High">High</span></td>
+        <td>401 errors show "Something went wrong" instead of "Sign in again." Different errors need different user actions.</td>
+      </tr>
+      <tr>
+        <td class="prio p3">P3</td>
+        <td>Add offline indicator banner</td>
+        <td>~1 hour</td>
+        <td><span class="sev High">High</span></td>
+        <td>Campus WiFi is notoriously patchy. Users need to know immediately when they lose connectivity.</td>
+      </tr>
+      <tr>
+        <td class="prio p3">P3</td>
+        <td>Add email paste auto-trim on all email inputs</td>
+        <td>~30 min</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>Top cause of "login not working" tickets. One-line fix per email input.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- STRENGTHS -->
+  <h2>What Is Working Well</h2>
+  <table>
+    <thead><tr><th style="width:22%">Area</th><th>Strength Observed</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="cat">Dark Mode Implementation</td>
+        <td class="fix-text">Dark mode is user-controlled (not system-only), persisted to <code>localStorage</code>, and applied via a CSS attribute selector on <code>&lt;html data-theme="dark"&gt;</code>. The token system fully inverts — background, text, border, shadow, and badge colors all have explicit dark overrides. This is implemented better than most production SaaS applications.</td>
+      </tr>
+      <tr>
+        <td class="cat">EntityLogo Fallback Chain</td>
+        <td class="fix-text">The layered fallback (explicit URL → Clearbit API → deterministic gradient + initials) is elegant. The <code>imgLoaded</code> state pattern (gradient always rendered underneath, image shown on <code>onLoad</code>) prevents any broken-image state entirely. The gradient is seeded from the entity name, so the same company always gets the same color — a subtle but meaningful consistency.</td>
+      </tr>
+      <tr>
+        <td class="cat">Button Micro-interactions</td>
+        <td class="fix-text">The button system has genuine tactile quality: <code>transform: scale(0.97)</code> on active state creates a press feel, <code>translateY(-2px)</code> on card hover creates lift, and gradient backgrounds with inner-highlight (<code>inset 0 1px 0 rgba(255,255,255,0.1)</code>) add depth. These details are correct and well-implemented.</td>
+      </tr>
+      <tr>
+        <td class="cat">No Dark Patterns</td>
+        <td class="fix-text">A full audit found zero dark patterns: no hidden auto-renewals, no obscured cancellation paths, no fake scarcity signals, no confirm-shaming language, and no manipulative UI. The application is honest and straightforward in its UX — a meaningful baseline for trust.</td>
+      </tr>
+      <tr>
+        <td class="cat">Token Architecture</td>
+        <td class="fix-text">The CSS custom property system in <code>globals.css</code> is comprehensive: semantic color layers, a complete 5-step spacing scale, border radius scale, shadow elevation set (5 levels), and transition tokens. The naming is semantic (<code>--text-secondary</code> not <code>--gray-400</code>). The foundation is correct — the failure is at the usage layer (inline styles bypassing it).</td>
+      </tr>
+      <tr>
+        <td class="cat">Grid Flexibility</td>
+        <td class="fix-text">The CSS grid system uses <code>minmax()</code> in key layouts (sidebar width, card grids, responsive breakpoints). The card grid collapses from 3-column to 2-column to 1-column at defined breakpoints. The layout is adaptive in most contexts — the fixed-pixel columns noted above are exceptions, not the rule.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</section>
+
+<footer>
+  PlacementHub Advanced UI/UX Design Audit · <strong>Evaluated against Advanced UI/UX &amp; Visual Design Audit Prompt (2025+) · 7 Categories</strong> · April 2026
+</footer>
+</body>
+</html>

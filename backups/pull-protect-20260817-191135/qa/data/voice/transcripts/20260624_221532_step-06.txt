@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-06
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Approve guided internship for campus. Row with GT-2026-06-241640 — click Approve for campus (green check icon; skipped if already Approved).

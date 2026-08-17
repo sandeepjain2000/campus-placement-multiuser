@@ -2,6 +2,13 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { GraduationCap, Save } from 'lucide-react';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 const PROFILE_OPTIONS = [
   {
@@ -97,37 +104,36 @@ export default function AcademicTaxonomySettingsPanel() {
   };
 
   if (loading) {
-    return <div className="card" style={{ padding: '1.5rem' }}>Loading academic taxonomy…</div>;
+    return <Card><CardContent className="text-muted-foreground">Loading academic taxonomy…</CardContent></Card>;
   }
 
   return (
-    <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-        <div>
-          <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.125rem' }}>
-            <GraduationCap size={20} aria-hidden />
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <GraduationCap aria-hidden />
             Academic taxonomy defaults
-          </h2>
-          <p className="text-sm text-secondary" style={{ margin: '0.35rem 0 0', lineHeight: 1.55, maxWidth: '42rem' }}>
+          </CardTitle>
+          <CardDescription>
             Four platform masters — degrees, disciplines, specializations, and placement eligibility groups — power
             consistent student programs and recruiter filters. Engineering colleges can use platform defaults to avoid
             re-entering branch lists.
-          </p>
-        </div>
-        <button type="button" className="btn btn-primary btn-sm" disabled={saving} onClick={onSave}>
-          <Save size={15} aria-hidden />
+          </CardDescription>
+        <Button className="col-start-2 row-span-2 row-start-1" type="button" size="sm" disabled={saving} onClick={onSave}>
+          <Save data-icon="inline-start" aria-hidden />
           {saving ? 'Saving…' : 'Save taxonomy defaults'}
-        </button>
-      </div>
+        </Button>
+      </CardHeader>
 
-      <div className="grid grid-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Institution profile</label>
-          <select
-            className="form-select"
+      <CardContent>
+      <FieldGroup>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field>
+          <FieldLabel>Institution profile</FieldLabel>
+          <AdminFilterSelect
+            className="w-full"
             value={settings.institutionProfile}
-            onChange={(e) => {
-              const institutionProfile = e.target.value;
+            onValueChange={(institutionProfile) => {
               setSettings((prev) => ({
                 ...prev,
                 institutionProfile,
@@ -137,83 +143,81 @@ export default function AcademicTaxonomySettingsPanel() {
                 defaultProgramCode: institutionProfile === 'engineering' ? 'btech_cse' : prev.defaultProgramCode,
               }));
             }}
-          >
-            {PROFILE_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-          <p className="text-xs text-tertiary" style={{ margin: '0.35rem 0 0' }}>
+            emptyMapsToAll={false}
+            items={PROFILE_OPTIONS.map((o) => ({ label: o.label, value: o.value }))}
+          />
+          <FieldDescription>
             {PROFILE_OPTIONS.find((o) => o.value === settings.institutionProfile)?.hint}
-          </p>
-        </div>
+          </FieldDescription>
+        </Field>
 
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Default academic program (add student)</label>
-          <select
-            className="form-select"
+        <Field>
+          <FieldLabel>Default academic program (add student)</FieldLabel>
+          <AdminFilterSelect
+            className="w-full"
             value={settings.defaultProgramCode || ''}
-            onChange={(e) => setSettings((prev) => ({ ...prev, defaultProgramCode: e.target.value || null }))}
-          >
-            <option value="">None</option>
-            {programOptions.map((p) => (
-              <option key={p.code} value={p.code}>{p.label}</option>
-            ))}
-          </select>
-        </div>
+            onValueChange={(v) => setSettings((prev) => ({ ...prev, defaultProgramCode: v || null }))}
+            items={[
+              { label: 'None', value: 'all' },
+              ...programOptions.map((p) => ({ label: p.label, value: p.code })),
+            ]}
+          />
+        </Field>
       </div>
 
-      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <input
-          type="checkbox"
+      <Field orientation="horizontal"><FieldLabel className="flex items-center gap-2">
+        <Checkbox
           checked={Boolean(settings.usePlatformDefaults)}
-          onChange={(e) => setSettings((prev) => ({ ...prev, usePlatformDefaults: e.target.checked }))}
+          onCheckedChange={(v) => setSettings((prev) => ({ ...prev, usePlatformDefaults: !!v }))}
         />
         Use engineering platform defaults for program pickers
-      </label>
+      </FieldLabel></Field>
 
-      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-        <input
-          type="checkbox"
+      <Field orientation="horizontal"><FieldLabel className="flex items-center gap-2">
+        <Checkbox
           checked={Boolean(settings.restrictProgramsToDefaults)}
-          onChange={(e) => setSettings((prev) => ({ ...prev, restrictProgramsToDefaults: e.target.checked }))}
+          onCheckedChange={(v) => setSettings((prev) => ({ ...prev, restrictProgramsToDefaults: !!v }))}
         />
         Limit student program dropdown to engineering-default programs only
-      </label>
+      </FieldLabel></Field>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <div className="form-label" style={{ marginBottom: '0.5rem' }}>Default placement eligibility groups</div>
-        <p className="text-xs text-secondary" style={{ margin: '0 0 0.5rem' }}>
+      <Field>
+        <FieldLabel>Default placement eligibility groups</FieldLabel>
+        <FieldDescription>
           Recruiters can target umbrella groups (e.g. Computer Science) instead of dozens of branch variants like CSE, CSE (AI), IT.
-        </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        </FieldDescription>
+        <div className="flex flex-wrap gap-2">
           {groupOptions.map((g) => {
             const active = (settings.defaultEligibilityGroupCodes || []).includes(g.code);
             return (
-              <button
+              <Button
                 key={g.code}
                 type="button"
-                className={`btn btn-sm ${active ? 'btn-primary' : 'btn-secondary'}`}
+                size="sm"
+                variant={active ? 'default' : 'outline'}
                 onClick={() => toggleGroup(g.code)}
               >
                 {g.label}
-              </button>
+              </Button>
             );
           })}
         </div>
-      </div>
+      </Field>
 
       {tree ? (
-        <p className="text-xs text-tertiary" style={{ margin: 0 }}>
-          Loaded {tree.degrees?.length || 0} degrees · {tree.disciplines?.length || 0} disciplines ·{' '}
-          {tree.academicPrograms?.length || 0} academic programs · {tree.eligibilityGroups?.length || 0} eligibility groups
-        </p>
+        <div className="flex flex-wrap gap-2">
+          <StatusBadge tone="gray">{tree.degrees?.length || 0} degrees</StatusBadge>
+          <StatusBadge tone="gray">{tree.disciplines?.length || 0} disciplines</StatusBadge>
+          <StatusBadge tone="gray">{tree.academicPrograms?.length || 0} programs</StatusBadge>
+          <StatusBadge tone="gray">{tree.eligibilityGroups?.length || 0} eligibility groups</StatusBadge>
+        </div>
       ) : null}
 
       {message ? (
-        <p className="text-sm" style={{ margin: '0.75rem 0 0', color: message.includes('fail') || message.includes('Failed') ? 'var(--danger-600)' : 'var(--success-700)' }}>
-          {message}
-        </p>
+        <Alert variant={message.includes('fail') || message.includes('Failed') ? 'destructive' : 'default'}><AlertDescription>{message}</AlertDescription></Alert>
       ) : null}
-    </div>
+      </FieldGroup>
+      </CardContent>
+    </Card>
   );
 }

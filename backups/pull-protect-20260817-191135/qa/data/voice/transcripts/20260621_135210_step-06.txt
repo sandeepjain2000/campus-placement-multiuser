@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: COLLEGE
+# Stage: step-06
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Employer Partnership Requests. Pending list shows TechCorp Solutions (if request was sent).

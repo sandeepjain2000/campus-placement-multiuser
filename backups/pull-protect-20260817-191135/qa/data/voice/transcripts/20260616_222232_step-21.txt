@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-21
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type batch year (2026 — matches seeded students). Batch year field shows 2026.

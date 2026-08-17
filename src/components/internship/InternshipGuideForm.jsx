@@ -1,6 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const EMPTY = {
   guideName: '',
@@ -11,36 +15,33 @@ const EMPTY = {
 };
 
 export default function InternshipGuideForm({ initialGuide, saving, onSubmit, onClear, readOnly = false }) {
-  const [form, setForm] = useState(EMPTY);
-
-  useEffect(() => {
-    setForm({
-      guideName: initialGuide?.guideName || '',
-      guideEmail: initialGuide?.guideEmail || '',
-      guidePhone: initialGuide?.guidePhone || '',
-      guideDepartment: initialGuide?.guideDepartment || '',
-      guideNotes: initialGuide?.guideNotes || '',
-    });
-  }, [initialGuide]);
+  const [form, setForm] = useState(() => ({
+    ...EMPTY,
+    guideName: initialGuide?.guideName || '',
+    guideEmail: initialGuide?.guideEmail || '',
+    guidePhone: initialGuide?.guidePhone || '',
+    guideDepartment: initialGuide?.guideDepartment || '',
+    guideNotes: initialGuide?.guideNotes || '',
+  }));
 
   if (readOnly) {
     if (!initialGuide?.guideName) {
       return <p className="text-sm text-secondary" style={{ margin: 0 }}>No campus guide assigned yet.</p>;
     }
     return (
-      <div className="text-sm" style={{ lineHeight: 1.55 }}>
-        <div style={{ fontWeight: 600 }}>{initialGuide.guideName}</div>
+      <div className="flex flex-col gap-1 text-sm leading-relaxed">
+        <div className="font-medium">{initialGuide.guideName}</div>
         {initialGuide.guideDepartment ? (
-          <div className="text-secondary">{initialGuide.guideDepartment}</div>
+          <div className="text-muted-foreground">{initialGuide.guideDepartment}</div>
         ) : null}
         {initialGuide.guideEmail ? (
           <div>
             <a href={`mailto:${initialGuide.guideEmail}`}>{initialGuide.guideEmail}</a>
           </div>
         ) : null}
-        {initialGuide.guidePhone ? <div className="text-secondary">{initialGuide.guidePhone}</div> : null}
+        {initialGuide.guidePhone ? <div className="text-muted-foreground">{initialGuide.guidePhone}</div> : null}
         {initialGuide.guideNotes ? (
-          <p className="text-secondary" style={{ margin: '0.5rem 0 0', whiteSpace: 'pre-wrap' }}>
+          <p className="text-muted-foreground mt-2 mb-0 whitespace-pre-wrap">
             {initialGuide.guideNotes}
           </p>
         ) : null}
@@ -56,71 +57,71 @@ export default function InternshipGuideForm({ initialGuide, saving, onSubmit, on
         e.preventDefault();
         onSubmit(form);
       }}
-      style={{ display: 'grid', gap: '0.65rem' }}
+      className="flex flex-col gap-5"
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.65rem' }}>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Guide name *</label>
-          <input
-            className="form-input"
+      <FieldGroup className="grid gap-4 sm:grid-cols-2">
+        <Field>
+          <FieldLabel htmlFor="internship-guide-name">Guide name *</FieldLabel>
+          <Input
+            id="internship-guide-name"
             value={form.guideName}
             onChange={(e) => setField('guideName', e.target.value)}
             placeholder="Dr. Priya Sharma"
             required
             disabled={saving}
           />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Department</label>
-          <input
-            className="form-input"
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="internship-guide-department">Department</FieldLabel>
+          <Input
+            id="internship-guide-department"
             value={form.guideDepartment}
             onChange={(e) => setField('guideDepartment', e.target.value)}
             placeholder="CSE — Internship coordinator"
             disabled={saving}
           />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Email</label>
-          <input
-            className="form-input"
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="internship-guide-email">Email</FieldLabel>
+          <Input
+            id="internship-guide-email"
             type="email"
             value={form.guideEmail}
             onChange={(e) => setField('guideEmail', e.target.value)}
             placeholder="guide@college.edu"
             disabled={saving}
           />
-        </div>
-        <div className="form-group" style={{ margin: 0 }}>
-          <label className="form-label">Phone</label>
-          <input
-            className="form-input"
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="internship-guide-phone">Phone</FieldLabel>
+          <Input
+            id="internship-guide-phone"
             value={form.guidePhone}
             onChange={(e) => setField('guidePhone', e.target.value)}
             placeholder="+91 …"
             disabled={saving}
           />
-        </div>
-      </div>
-      <div className="form-group" style={{ margin: 0 }}>
-        <label className="form-label">Notes for student</label>
-        <textarea
-          className="form-input"
+        </Field>
+      </FieldGroup>
+      <Field>
+        <FieldLabel htmlFor="internship-guide-notes">Notes for student</FieldLabel>
+        <Textarea
+          id="internship-guide-notes"
           rows={3}
           value={form.guideNotes}
           onChange={(e) => setField('guideNotes', e.target.value)}
           placeholder="Check-in fortnightly. Share weekly log with your guide."
           disabled={saving}
         />
-      </div>
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>
+      </Field>
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" size="sm" disabled={saving}>
           {saving ? 'Saving…' : initialGuide ? 'Update guide' : 'Assign guide'}
-        </button>
+        </Button>
         {initialGuide && onClear ? (
-          <button type="button" className="btn btn-secondary btn-sm" disabled={saving} onClick={onClear}>
+          <Button type="button" variant="outline" size="sm" disabled={saving} onClick={onClear}>
             Remove guide
-          </button>
+          </Button>
         ) : null}
       </div>
     </form>

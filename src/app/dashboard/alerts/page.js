@@ -6,6 +6,10 @@ import { RotateCcw, Star, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
 import { getInitials, timeAgo } from '@/lib/utils';
 import AlertsInboxSkeleton from '@/components/AlertsInboxSkeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -186,72 +190,53 @@ export default function AlertsEmailPage() {
 
   if (error) {
     return (
-      <div className="animate-fadeIn" style={{ padding: '2rem', color: 'var(--danger-600)' }}>
-        <p>{error.message || 'Could not load inbox alerts.'}</p>
-      </div>
+      <Alert variant="destructive" className="m-6"><AlertDescription>{error.message || 'Could not load inbox alerts.'}</AlertDescription></Alert>
     );
   }
 
   return (
-    <div className="animate-fadeIn alerts-inbox-root">
-      <div className="page-header" style={{ marginBottom: '1rem', flexShrink: 0 }}>
-        <div className="page-header-left">
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span aria-hidden="true" style={{ fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", emoji' }}>📨</span> 
-            Inbox & Alerts
-          </h1>
-          <p>
+    <div className="animate-fadeIn alerts-inbox-root flex flex-col gap-6 p-6">
+      <header className="flex shrink-0 flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="text-sm font-medium text-muted-foreground">Notifications</p><h1 className="text-3xl font-bold tracking-tight">Inbox &amp; alerts</h1>
+          <p className="mt-1 max-w-4xl text-sm text-muted-foreground">
             {mailbox === 'inbox' &&
               'System notifications and event alerts from your PlacementHub inbox. In demo environments, each alert is also copied to placementhub@yopmail.com for QA. Use the star button on each row to save important alerts.'}
             {mailbox === 'starred' && 'Alerts you marked with a star for quick access.'}
             {mailbox === 'trash' &&
               'Alerts in Trash are removed from your inbox. Restore or delete them permanently.'}
-          </p>
-        </div>
-        <div className="page-header-actions" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          </p></div>
+        <div className="flex flex-wrap gap-2">
           {mailbox === 'trash' && emails.length > 0 ? (
-            <button type="button" className="btn btn-secondary" onClick={emptyTrash}>
+            <Button type="button" variant="destructive" onClick={emptyTrash}>
               Empty trash
-            </button>
+            </Button>
           ) : null}
-
         </div>
-      </div>
+      </header>
 
-      <div className="card alerts-inbox-card">
+      <Card className="alerts-inbox-card">
         <div className="alerts-inbox-nav">
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost"
-            style={{
-              justifyContent: 'flex-start',
-              background: mailbox === 'inbox' ? 'var(--primary-100)' : undefined,
-              color: mailbox === 'inbox' ? 'var(--primary-700)' : 'var(--text-secondary)',
-              fontWeight: mailbox === 'inbox' ? 600 : 400,
-            }}
+            variant={mailbox === 'inbox' ? 'secondary' : 'ghost'}
+            className="justify-start"
             onClick={() => {
               setMailbox('inbox');
               setOpenEmailId(null);
             }}
           >
             📥 Inbox{' '}
-            <span
-              className="badge badge-accent"
-              style={{ marginLeft: 'auto' }}
+            <Badge
+              className="ml-auto"
               aria-label={`${Number(data?.unreadCount || 0)} unread`}
             >
               {Number(data?.unreadCount || 0)}
-            </span>
-          </button>
-          <button
+            </Badge>
+          </Button>
+          <Button
             type="button"
-            className="btn btn-ghost"
-            style={{
-              justifyContent: 'flex-start',
-              background: mailbox === 'starred' ? 'var(--primary-100)' : undefined,
-              color: mailbox === 'starred' ? 'var(--primary-700)' : 'var(--text-secondary)',
-              fontWeight: mailbox === 'starred' ? 600 : 400,
-            }}
+            variant={mailbox === 'starred' ? 'secondary' : 'ghost'}
+            className="justify-start"
             onClick={() => {
               setMailbox('starred');
               setOpenEmailId(null);
@@ -264,31 +249,26 @@ export default function AlertsEmailPage() {
               fill={mailbox === 'starred' ? 'currentColor' : 'none'}
             />
             Starred
-            <span
-              className="badge badge-gray"
-              style={{ marginLeft: '0.35rem' }}
+            <Badge
+              variant="secondary"
+              className="ml-1"
               aria-label={`${Number(data?.starredCount || 0)} starred`}
             >
               {Number(data?.starredCount || 0)}
-            </span>
-          </button>
+            </Badge>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost"
-            style={{
-              justifyContent: 'flex-start',
-              background: mailbox === 'trash' ? 'var(--primary-100)' : undefined,
-              color: mailbox === 'trash' ? 'var(--primary-700)' : 'var(--text-secondary)',
-              fontWeight: mailbox === 'trash' ? 600 : 400,
-            }}
+            variant={mailbox === 'trash' ? 'secondary' : 'ghost'}
+            className="justify-start"
             onClick={() => {
               setMailbox('trash');
               setOpenEmailId(null);
             }}
           >
             🗑️ Trash
-          </button>
+          </Button>
         </div>
 
         <div className="alerts-inbox-list">
@@ -352,9 +332,10 @@ export default function AlertsEmailPage() {
                 </div>
                 <div className="alerts-inbox-row-actions">
                   {mailbox !== 'trash' ? (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-ghost btn-icon btn-sm"
+                      variant="ghost"
+                      size="icon-sm"
                       aria-label="Move to trash"
                       title="Move to trash"
                       onClick={(e) => {
@@ -363,12 +344,13 @@ export default function AlertsEmailPage() {
                       }}
                     >
                       <Trash2 size={18} strokeWidth={2} aria-hidden />
-                    </button>
+                    </Button>
                   ) : (
                     <>
-                      <button
+                      <Button
                         type="button"
-                        className="btn btn-ghost btn-icon btn-sm"
+                        variant="ghost"
+                        size="icon-sm"
                         aria-label="Restore to inbox"
                         title="Restore to inbox"
                         onClick={(e) => {
@@ -377,10 +359,11 @@ export default function AlertsEmailPage() {
                         }}
                       >
                         <RotateCcw size={18} strokeWidth={2} aria-hidden />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
-                        className="btn btn-ghost btn-sm"
+                        variant="destructive"
+                        size="icon-sm"
                         aria-label="Delete permanently"
                         title="Delete permanently"
                         onClick={(e) => {
@@ -389,7 +372,7 @@ export default function AlertsEmailPage() {
                         }}
                       >
                         <Trash2 size={18} strokeWidth={2} aria-hidden />
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>
@@ -415,17 +398,17 @@ export default function AlertsEmailPage() {
                   <span className="text-sm" style={{ flex: '1 1 12rem', color: 'var(--danger-800, #991b1b)' }}>
                     Move this alert to Trash?
                   </span>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={cancelMoveToTrash}>
+                  <Button type="button" variant="outline" size="sm" onClick={cancelMoveToTrash}>
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="btn btn-primary btn-sm"
-                    style={{ background: 'var(--danger-600, #dc2626)', borderColor: 'transparent' }}
+                    variant="destructive"
+                    size="sm"
                     onClick={() => void moveToTrash(email.id)}
                   >
                     Move to trash
-                  </button>
+                  </Button>
                 </div>
               ) : null}
 
@@ -436,9 +419,10 @@ export default function AlertsEmailPage() {
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                       {mailbox !== 'trash' ? (
                         <>
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm"
+                            variant="ghost"
+                            size="sm"
                             onClick={() => toggleStar(email.id, email.starred)}
                           >
                             <Star
@@ -448,7 +432,7 @@ export default function AlertsEmailPage() {
                               style={{ marginRight: '0.35rem', verticalAlign: 'text-bottom' }}
                             />
                             {email.starred ? 'Unstar' : 'Star'}
-                          </button>
+                          </Button>
                           {confirmTrashId === email.id ? (
                             <div
                               role="alert"
@@ -467,46 +451,49 @@ export default function AlertsEmailPage() {
                               <span className="text-sm" style={{ flex: '1 1 12rem', color: 'var(--danger-800, #991b1b)' }}>
                                 Move this alert to Trash?
                               </span>
-                              <button
+                              <Button
                                 type="button"
-                                className="btn btn-secondary btn-sm"
+                                variant="outline"
+                                size="sm"
                                 onClick={cancelMoveToTrash}
                               >
                                 Cancel
-                              </button>
-                              <button
+                              </Button>
+                              <Button
                                 type="button"
-                                className="btn btn-primary btn-sm"
-                                style={{ background: 'var(--danger-600, #dc2626)', borderColor: 'transparent' }}
+                                variant="destructive"
+                                size="sm"
                                 onClick={() => void moveToTrash(email.id)}
                               >
                                 Move to trash
-                              </button>
+                              </Button>
                             </div>
                           ) : (
-                            <button
+                            <Button
                               type="button"
-                              className="btn btn-secondary btn-sm"
+                              variant="destructive"
+                              size="sm"
                               onClick={() => requestMoveToTrash(email.id)}
                             >
                               Move to trash
-                            </button>
+                            </Button>
                           )}
                         </>
                       ) : (
                         <>
-                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => restoreFromTrash(email.id)}>
+                          <Button type="button" variant="outline" size="sm" onClick={() => restoreFromTrash(email.id)}>
                             Restore to inbox
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             type="button"
-                            className="btn btn-ghost btn-sm"
+                            variant="destructive"
+                            size="sm"
                             onClick={() => {
                               if (window.confirm('Permanently delete this alert?')) deleteForever(email.id);
                             }}
                           >
                             Delete permanently
-                          </button>
+                          </Button>
                         </>
                       )}
                     </div>
@@ -550,7 +537,7 @@ export default function AlertsEmailPage() {
           )}
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

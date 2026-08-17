@@ -7,6 +7,7 @@ import DevScreenTag from '@/components/DevScreenTag';
 import DemoDataTester from '@/components/demo/DemoDataTester';
 import ThemeToggleButton from '@/components/ThemeToggleButton';
 import UseCasesTable from '@/components/developer/UseCasesTable';
+import { Button } from '@/components/ui/button';
 import {
   DEVELOPER_PAGE_META,
   DEVELOPER_PAGE_TOC,
@@ -53,10 +54,10 @@ function CopyBlock({ text }) {
   return (
     <div className="dev-notes-code-wrap">
       <code className="dev-notes-code">{text}</code>
-      <button type="button" className="btn btn-ghost btn-sm dev-notes-copy" onClick={onCopy} aria-label="Copy command">
+      <Button type="button" variant="ghost" size="sm" className="dev-notes-copy" onClick={onCopy} aria-label="Copy command">
         {copied ? <Check size={14} /> : <Copy size={14} />}
         {copied ? 'Copied' : 'Copy'}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -115,18 +116,19 @@ export default function DeveloperPage() {
             <ArrowLeft size={16} aria-hidden /> Landing
           </Link>
           <div className="dev-notes-header-actions">
-            <button
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
+              variant="ghost"
+              size="sm"
               onClick={onLockDeveloperNotes}
               title="Lock Developer Notes"
             >
               <LogOut size={14} aria-hidden /> Lock
-            </button>
+            </Button>
             <ThemeToggleButton />
-            <a href="#demo-apis" className="btn btn-secondary btn-sm">
+            <Button render={<a href="#demo-apis" />} variant="secondary" size="sm">
               Demo APIs
-            </a>
+            </Button>
           </div>
         </div>
       </header>
@@ -239,15 +241,15 @@ export default function DeveloperPage() {
             intro="Five end-to-end flows across employer, college, and student roles. Each row lists the voice runner commands (npm + .bat) — not the Guided playbooks table above."
           />
           <p style={{ margin: '1.25rem 0 0', display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
-            <Link href={USE_CASES_BY_ROLE_NOTES.href} className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+            <Button render={<Link href={USE_CASES_BY_ROLE_NOTES.href} />} variant="secondary">
               {USE_CASES_BY_ROLE_NOTES.label}
-            </Link>
-            <Link href={USE_CASES_MORE_NOTES.href} className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+            </Button>
+            <Button render={<Link href={USE_CASES_MORE_NOTES.href} />} variant="secondary">
               {USE_CASES_MORE_NOTES.label}
-            </Link>
-            <Link href={USE_CASES_USER_TESTING_NOTES.href} className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+            </Button>
+            <Button render={<Link href={USE_CASES_USER_TESTING_NOTES.href} />} variant="secondary">
               {USE_CASES_USER_TESTING_NOTES.label}
-            </Link>
+            </Button>
           </p>
           <p className="dev-notes-muted" style={{ margin: '1rem 0 0', fontSize: '0.875rem' }}>
             Headless runner: <code className="dev-notes-inline-code">npm run qa:uc -- &lt;slug&gt;</code>
@@ -634,9 +636,9 @@ export default function DeveloperPage() {
             application paths, campus tie-ups, assessment chain).
           </p>
           <p style={{ margin: '0 0 1rem' }}>
-            <Link href={DATABASE_SCHEMA_NOTES.href} className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+            <Button render={<Link href={DATABASE_SCHEMA_NOTES.href} />} variant="secondary">
               Open database schema
-            </Link>
+            </Button>
           </p>
           <p className="dev-notes-muted" style={{ margin: 0, fontSize: '0.875rem' }}>
             Repo: <code className="dev-notes-inline-code">{DATABASE_SCHEMA_NOTES.repoPath}</code> · Refresh:{' '}
@@ -1236,11 +1238,11 @@ export default function DeveloperPage() {
           margin-right: 0.35rem;
           color: var(--info-500);
         }
-        .dev-notes-section-body a:not(.btn) {
+        .dev-notes-section-body a:not([data-slot='button']) {
           color: var(--text-link);
           font-weight: 600;
         }
-        .dev-notes-section-body a:not(.btn):hover {
+        .dev-notes-section-body a:not([data-slot='button']):hover {
           text-decoration: underline;
         }
       `}</style>

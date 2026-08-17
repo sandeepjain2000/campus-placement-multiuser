@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-13
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type internship title (includes session marker GT-…). Title shows GT-2026-06-161719 Summer Data Intern — use this marker in later steps.

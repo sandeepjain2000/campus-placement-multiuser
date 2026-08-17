@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: CI-01
+# Stage: step-04
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Filter campus status to Pending review. Only listings awaiting college approval remain visible.

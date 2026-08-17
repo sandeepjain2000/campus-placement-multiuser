@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-28
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Internship Progress Reviews. Table of selected interns; Add or Edit opens employer feedback form. Student feedback shows read-only when present.

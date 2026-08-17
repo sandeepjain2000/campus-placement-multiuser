@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: TEST
+# Stage: test
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Employer publishes the internship. College approves. Student applies.

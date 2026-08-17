@@ -1,0 +1,10 @@
+{
+  "description": "QA/agent testing only — not product content. Sample .docx CVs for guided upload scripts (labels max 20 characters).",
+  "items": [
+    { "file": "Research-CV-Example-Free-Download.docx", "label": "Research CV" },
+    { "file": "Academic-CV-Example.docx", "label": "Academic CV" },
+    { "file": "grad-school-cv-example-free-download.docx", "label": "Grad school CV" },
+    { "file": "high-school-cv-example-template-free-download.docx", "label": "High school CV" },
+    { "file": "internship-cv-example-free-download.docx", "label": "Internship CV" }
+  ]
+}

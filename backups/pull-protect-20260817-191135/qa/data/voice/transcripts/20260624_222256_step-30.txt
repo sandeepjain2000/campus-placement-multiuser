@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-30
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Student opens Internship Progress Reviews. Campus guide and company supervisor blocks appear when assigned. Submit student feedback on the same page.

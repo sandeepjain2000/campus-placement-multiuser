@@ -1,0 +1,41 @@
+{
+  "voice": {
+    "enabled": true,
+    "engine": "edge_tts",
+    "voice_id": "en-IN-NeerjaNeural",
+    "rate": "-5%",
+    "volume": "+0%",
+    "play_audio": true,
+    "always_write_transcript": true,
+    "transcript_dir": "qa/data/voice/transcripts",
+    "audio_dir": "qa/data/voice/audio",
+    "manifest_file": "qa/data/voice/voice_manifest.jsonl",
+    "_engine_options": {
+      "edge_tts": "Free Microsoft neural voices (default). List: edge-tts --list-voices",
+      "openai": "Set engine to openai, voice_id to nova|alloy|echo|fable|onyx|shimmer, OPENAI_API_KEY in env",
+      "sonexlabs": "Pāṇini TTS API — any text, not just phone calls. Sign up at sonexlabs.com (10k chars free)",
+      "transcript_only": "Skip audio; write .txt for ElevenLabs / Murf / SonexLabs re-record"
+    },
+    "_voice_presets_edge": {
+      "indian_english_female": "en-IN-NeerjaNeural",
+      "indian_english_male": "en-IN-PrabhatNeural",
+      "us_english_female": "en-US-AriaNeural",
+      "us_english_male": "en-US-GuyNeural",
+      "hindi_female": "hi-IN-SwaraNeural"
+    }
+  },
+  "phase_intros": {
+    "SETUP": "Setup phase. The browser opens the landing page or sign-in screen.",
+    "EMPLOYER": "Employer role. Tech Corporation HR performs employer-side steps.",
+    "COLLEGE": "College administrator role. IIT Madras performs campus-side steps.",
+    "STUDENT": "Student role. Arjun Verma performs student-side steps.",
+    "SUPER_ADMIN": "Super administrator role. Platform settings, email logs, and governance.",
+    "CLOSURE": "Closure. The workflow is complete."
+  },
+  "auto_run": {
+    "pause_after_step_sec": 2,
+    "pause_between_roles_sec": 6,
+    "pause_before_action_sec": 1.5,
+    "blocking_audio": true
+  }
+}

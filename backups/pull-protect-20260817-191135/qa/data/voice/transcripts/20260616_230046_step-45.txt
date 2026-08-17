@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-45
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Filter list to Selected and confirm pipeline. Applicant shows Selected badge. Full E2E cycle complete.

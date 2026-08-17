@@ -1,8 +1,20 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Mail, Send, X } from 'lucide-react';
+import { Mail, Send } from 'lucide-react';
 import { useToast } from '@/components/ToastProvider';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   buildAdminPlacementListingEmailBody,
   buildAdminPlacementListingEmailSubject,
@@ -91,131 +103,100 @@ export default function AdminPlacementListingEmailComposeModal({
   const hasRecipients = Boolean(normalizeEmailRecipients(to));
 
   return (
-    <div className="modal-overlay modal-overlay-solid" role="presentation" onClick={onClose}>
-      <div
-        className="modal modal-lg"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="admin-listing-email-compose-title"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <h2 id="admin-listing-email-compose-title" className="modal-title">
+    <Dialog open onOpenChange={(open) => !open && onClose?.()}>
+      <DialogContent className="max-h-[92vh] overflow-hidden sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>
             Email {list.length === 1 ? 'this listing' : `${list.length} listings`}
-          </h2>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
+          </DialogTitle>
+          <DialogDescription>Compose a message and send it from PlacementHub or your email app.</DialogDescription>
+        </DialogHeader>
 
-        <div
-          className="modal-body"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            maxHeight: 'min(62vh, 560px)',
-            overflowY: 'auto',
-          }}
-        >
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" htmlFor="admin-listing-email-to">
+        <FieldGroup className="max-h-[62vh] overflow-y-auto pr-1">
+          <Field>
+            <FieldLabel htmlFor="admin-listing-email-to">
               To
-            </label>
-            <input
+            </FieldLabel>
+            <Input
               id="admin-listing-email-to"
-              className="form-input"
               type="text"
               value={to}
               onChange={(e) => setTo(e.target.value)}
               placeholder="you@example.com, colleague@example.com"
               autoComplete="email"
             />
-            <p className="text-xs text-secondary" style={{ margin: '0.35rem 0 0' }}>
+            <FieldDescription>
               Defaults to your account email. Separate multiple recipients with commas.
-            </p>
-          </div>
+            </FieldDescription>
+          </Field>
 
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" htmlFor="admin-listing-email-subject">
+          <Field>
+            <FieldLabel htmlFor="admin-listing-email-subject">
               Subject
-            </label>
-            <input
+            </FieldLabel>
+            <Input
               id="admin-listing-email-subject"
-              className="form-input"
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             />
-          </div>
+          </Field>
 
           {singlePosting ? (
-            <div
-              style={{
-                padding: '0.75rem 0.85rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-default)',
-                background: 'var(--bg-secondary)',
-                fontSize: '0.8125rem',
-              }}
-            >
-              <div style={{ fontWeight: 600, marginBottom: '0.35rem' }}>Public links included in message</div>
-              <div style={{ wordBreak: 'break-all', lineHeight: 1.5 }}>
+            <div className="bg-muted rounded-lg border p-3 text-xs">
+              <div className="mb-1 font-semibold">Public links included in message</div>
+              <div className="break-all leading-relaxed">
                 <div>
-                  <span className="text-secondary">Public job post: </span>
+                  <span className="text-muted-foreground">Public job post: </span>
                   {publicJobPostUrl(list[0].id, origin)}
                 </div>
                 <div>
-                  <span className="text-secondary">Post questions: </span>
+                  <span className="text-muted-foreground">Post questions: </span>
                   {publicJobQuestionsUrl(list[0].id, origin)}
                 </div>
               </div>
             </div>
           ) : null}
 
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label" htmlFor="admin-listing-email-body">
+          <Field>
+            <FieldLabel htmlFor="admin-listing-email-body">
               Message
-            </label>
-            <textarea
+            </FieldLabel>
+            <Textarea
               id="admin-listing-email-body"
-              className="form-input"
               rows={12}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              style={{ fontFamily: 'inherit', lineHeight: 1.5 }}
+              className="min-h-52 leading-relaxed"
             />
-          </div>
-        </div>
+          </Field>
+        </FieldGroup>
 
-        <div className="modal-footer" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <button type="button" className="btn btn-secondary" onClick={onClose} disabled={sending}>
+        <DialogFooter className="flex-wrap sm:justify-between">
+          <Button type="button" variant="outline" onClick={onClose} disabled={sending}>
             Cancel
-          </button>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginLeft: 'auto' }}>
-            <button
+          </Button>
+          <div className="ml-auto flex flex-wrap gap-2">
+            <Button
               type="button"
-              className="btn btn-secondary"
+              variant="outline"
               disabled={!hasRecipients || sending}
               onClick={openMailClient}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
             >
-              <Mail size={16} aria-hidden />
+              <Mail data-icon="inline-start" aria-hidden />
               Open in email app
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn btn-primary"
               disabled={!hasRecipients || sending}
               onClick={() => void sendFromSystem()}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
             >
-              <Send size={16} aria-hidden />
+              <Send data-icon="inline-start" aria-hidden />
               {sending ? 'Sending…' : 'Send email'}
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

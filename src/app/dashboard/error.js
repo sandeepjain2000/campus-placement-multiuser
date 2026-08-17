@@ -2,6 +2,10 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { CircleAlert } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { reportClientError } from '@/lib/clientErrorReport';
 
 export default function DashboardError({ error, reset }) {
@@ -20,34 +24,32 @@ export default function DashboardError({ error, reset }) {
         padding: '2rem 1rem',
       }}
     >
-      <div style={{ maxWidth: 420, textAlign: 'center' }}>
-        <h1 style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-          Something went wrong
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
+      <Card className="w-full max-w-[420px]">
+        <CardHeader className="items-center text-center">
+          <CircleAlert className="text-destructive size-8" aria-hidden />
+          <CardTitle>Something went wrong</CardTitle>
+          <p className="text-muted-foreground text-sm">
           This dashboard page hit an unexpected error. You can retry or return to your home screen.
-        </p>
-        {process.env.NODE_ENV !== 'production' && error?.message ? (
-          <p
-            style={{
-              color: 'var(--danger-700)',
-              fontSize: '0.8rem',
-              marginBottom: '1rem',
-              wordBreak: 'break-word',
-            }}
-          >
-            {error.message}
           </p>
+        </CardHeader>
+        <CardContent>
+        {process.env.NODE_ENV !== 'production' && error?.message ? (
+          <Alert variant="destructive">
+            <CircleAlert aria-hidden />
+            <AlertTitle>Development error</AlertTitle>
+            <AlertDescription className="break-words">{error.message}</AlertDescription>
+          </Alert>
         ) : null}
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button type="button" className="btn btn-primary" onClick={() => reset()}>
+        </CardContent>
+        <CardFooter className="flex-wrap justify-center gap-3">
+          <Button type="button" onClick={() => reset()}>
             Try again
-          </button>
-          <Link href="/dashboard" className="btn btn-secondary">
+          </Button>
+          <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>
             Dashboard home
           </Link>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

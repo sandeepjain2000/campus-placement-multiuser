@@ -2,8 +2,8 @@
 
 import { useCallback, useState, useMemo } from 'react';
 import useSWR from 'swr';
-import { RotateCcw, CheckCircle, Clock, XCircle, Search, Mail, Send, FileText } from 'lucide-react';
-import { formatDate, formatCurrency, formatStatus, getStatusColor } from '@/lib/utils';
+import { RotateCcw, CheckCircle, Clock, XCircle, Mail, Send, FileText } from 'lucide-react';
+import { formatDate, formatCurrency, formatStatus } from '@/lib/utils';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { useToast } from '@/components/ToastProvider';
@@ -12,16 +12,24 @@ import ValidatedDateInput from '@/components/form/ValidatedDateInput';
 import { FIELD_IDS } from '@/lib/inputConstraints';
 import { validateEmployerOfferPayload } from '@/lib/apiInputValidation';
 import EmployerListFormLayout from '@/components/employer/EmployerListFormLayout';
+import AdminFilterSelect from '@/components/AdminFilterSelect';
 import BulkOfferGeneratePanel from '@/components/employer/BulkOfferGeneratePanel';
 import OfferEventTypeTabs from '@/components/employer/OfferEventTypeTabs';
-import AppPageHeader from '@/components/layout/AppPageHeader';
-import AppStatCard from '@/components/layout/AppStatCard';
-import AppContentCard from '@/components/layout/AppContentCard';
+import PageLoading from '@/components/PageLoading';
 import {
   classifyOfferEventType,
   countOfferEventTypes,
   templateMatchesEventTab,
 } from '@/lib/offerEventType';
+import { Button } from '@/components/ui/button';
+import DataTableToolbar from '@/components/DataTableToolbar';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const emptyOfferForm = {
   studentId: '',
@@ -40,6 +48,73 @@ const fetcher = async (url) => {
   if (!res.ok) throw new Error(data.error || 'Failed to load offers');
   return data;
 };
+
+function OfferFields({ value, onChange, students, drives, editing = false }) {
+  const set = (key, nextValue) => onChange((previous) => ({ ...previous, [key]: nextValue }));
+
+  return (
+    <FieldGroup className="grid gap-5 md:grid-cols-2">
+      {!editing ? (
+        <Field>
+          <FieldLabel htmlFor="offer-student">Student</FieldLabel>
+          <AdminFilterSelect
+            id="offer-student"
+            className="w-full"
+            value={value.studentId}
+            onValueChange={(studentId) => set('studentId', studentId)}
+            items={[
+              { label: 'Select student…', value: 'all' },
+              ...students.map((student) => ({
+                label: `${student.name}${student.collegeName ? ` — ${student.collegeName}` : ''}`,
+                value: student.id,
+              })),
+            ]}
+          />
+        </Field>
+      ) : null}
+      <Field>
+        <FieldLabel htmlFor="offer-drive">Drive (optional)</FieldLabel>
+        <AdminFilterSelect
+          id="offer-drive"
+          className="w-full"
+          value={value.driveId}
+          onValueChange={(driveId) => set('driveId', driveId)}
+          items={[
+            { label: 'Not linked', value: 'all' },
+            ...drives.map((drive) => ({
+              label: `${drive.title}${drive.drive_date ? ` (${formatDate(drive.drive_date)})` : ''}`,
+              value: drive.id,
+            })),
+          ]}
+        />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="offer-job-title">Job title</FieldLabel>
+        <Input id="offer-job-title" name="jobTitle" value={value.jobTitle} onChange={(event) => set('jobTitle', event.target.value)} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="offer-salary">Salary (INR annual)</FieldLabel>
+        <ValidatedNumberInput id="offer-salary" fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={value.salary} onChange={(nextValue) => set('salary', nextValue)} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="offer-location">Location</FieldLabel>
+        <Input id="offer-location" name="location" value={value.location} onChange={(event) => set('location', event.target.value)} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="offer-joining-date">Joining date</FieldLabel>
+        <ValidatedDateInput id="offer-joining-date" fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} context={{ deadline: value.deadlineAt }} value={value.joiningDate} onChange={(nextValue) => set('joiningDate', nextValue)} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="offer-deadline">Response deadline</FieldLabel>
+        <ValidatedDateInput id="offer-deadline" fieldId={FIELD_IDS.EMPLOYER_OFFER_DEADLINE} value={value.deadlineAt} onChange={(nextValue) => set('deadlineAt', nextValue)} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="offer-letter-url">Offer letter URL (optional)</FieldLabel>
+        <Input id="offer-letter-url" name="offerLetterUrl" type="url" placeholder="https://example.com/offer-letter…" value={value.offerLetterUrl} onChange={(event) => set('offerLetterUrl', event.target.value)} />
+      </Field>
+    </FieldGroup>
+  );
+}
 
 export default function EmployerOffersPage() {
   const { addToast } = useToast();
@@ -62,13 +137,17 @@ export default function EmployerOffersPage() {
     location: '',
     joiningDate: '',
     deadlineAt: '',
+    offerLetterUrl: '',
   });
 
-  const offers = Array.isArray(data?.offers) ? data.offers : [];
+  const offers = useMemo(() => (Array.isArray(data?.offers) ? data.offers : []), [data?.offers]);
   const students = Array.isArray(optionsData?.students) ? optionsData.students : [];
   const drives = Array.isArray(optionsData?.drives) ? optionsData.drives : [];
   const internships = Array.isArray(optionsData?.internships) ? optionsData.internships : [];
-  const templates = Array.isArray(templatesData?.templates) ? templatesData.templates : [];
+  const templates = useMemo(
+    () => (Array.isArray(templatesData?.templates) ? templatesData.templates : []),
+    [templatesData?.templates],
+  );
 
   const eventCounts = useMemo(
     () => countOfferEventTypes(offers, classifyOfferEventType),
@@ -288,27 +367,22 @@ export default function EmployerOffersPage() {
 
   if (isLoading) {
     return (
-      <div className="app-page-shell">
-        <div className="skeleton skeleton-card" style={{ height: 120 }} />
-        <div className="app-stat-grid">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="skeleton skeleton-card" style={{ height: 104 }} />
-          ))}
-        </div>
-        <div className="skeleton skeleton-card" style={{ height: 320 }} />
+      <div className="flex flex-col gap-4">
+        <PageLoading message="Loading offers…" inline />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="app-page-shell">
-        <AppContentCard title="Could not load offers">
-          <p style={{ margin: 0, color: 'var(--danger-600)' }}>{error.message || 'Could not load offers.'}</p>
-          <p className="text-sm text-secondary" style={{ margin: '0.5rem 0 0' }}>
+      <div className="flex flex-col gap-4">
+        <Alert variant="destructive">
+          <AlertTitle>Could not load offers</AlertTitle>
+          <AlertDescription>
+            {error.message || 'Could not load offers.'}{' '}
             Confirm you are signed in as an employer, then reload or contact support if this continues.
-          </p>
-        </AppContentCard>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
@@ -331,60 +405,17 @@ export default function EmployerOffersPage() {
         subtitle="Creates a pending offer the student can accept or decline on My Offers."
         onBack={closeCreateForm}
         footer={
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-            <button type="button" className="btn btn-secondary" disabled={submitting} onClick={closeCreateForm}>
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="secondary" disabled={submitting} onClick={closeCreateForm}>
               Cancel
-            </button>
-            <button type="button" className="btn btn-primary" onClick={submitCreateOffer} disabled={submitting}>
+            </Button>
+            <Button type="button" onClick={submitCreateOffer} disabled={submitting}>
               {submitting ? 'Creating…' : 'Create Offer'}
-            </button>
+            </Button>
           </div>
         }
       >
-        <div className="grid grid-2">
-          <div className="form-group">
-            <label className="form-label">Student</label>
-            <select className="form-select" value={form.studentId} onChange={(e) => setForm((p) => ({ ...p, studentId: e.target.value }))}>
-              <option value="">Select student</option>
-              {students.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}{s.collegeName ? ` — ${s.collegeName}` : ''}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Drive (optional)</label>
-            <select className="form-select" value={form.driveId} onChange={(e) => setForm((p) => ({ ...p, driveId: e.target.value }))}>
-              <option value="">Not linked</option>
-              {drives.map((d) => (
-                <option key={d.id} value={d.id}>{d.title} {d.drive_date ? `(${formatDate(d.drive_date)})` : ''}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Job title</label>
-            <input className="form-input" value={form.jobTitle} onChange={(e) => setForm((p) => ({ ...p, jobTitle: e.target.value }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Salary (INR annual)</label>
-            <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={form.salary} onChange={(v) => setForm((p) => ({ ...p, salary: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Location</label>
-            <input className="form-input" value={form.location} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Joining date</label>
-            <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} context={{ deadline: form.deadlineAt }} value={form.joiningDate} onChange={(v) => setForm((p) => ({ ...p, joiningDate: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Response deadline</label>
-            <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_DEADLINE} value={form.deadlineAt} onChange={(v) => setForm((p) => ({ ...p, deadlineAt: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Offer letter URL (optional)</label>
-            <input className="form-input" placeholder="https://..." value={form.offerLetterUrl} onChange={(e) => setForm((p) => ({ ...p, offerLetterUrl: e.target.value }))} />
-          </div>
-        </div>
+        <OfferFields value={form} onChange={setForm} students={students} drives={drives} />
       </EmployerListFormLayout>
     );
   }
@@ -396,51 +427,17 @@ export default function EmployerOffersPage() {
         subtitle="Updates terms for this row. Use Reopen to pending on the list to roll back status."
         onBack={closeEditForm}
         footer={
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button type="button" className="btn btn-primary" onClick={submitEditOffer} disabled={submitting}>
+          <div className="flex gap-2">
+            <Button type="button" onClick={submitEditOffer} disabled={submitting}>
               {submitting ? 'Saving…' : 'Save changes'}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={closeEditForm} disabled={submitting}>
+            </Button>
+            <Button type="button" variant="secondary" onClick={closeEditForm} disabled={submitting}>
               Cancel
-            </button>
+            </Button>
           </div>
         }
       >
-        <div className="grid grid-2">
-          <div className="form-group">
-            <label className="form-label">Drive (optional)</label>
-            <select className="form-select" value={editForm.driveId} onChange={(e) => setEditForm((p) => ({ ...p, driveId: e.target.value }))}>
-              <option value="">Not linked</option>
-              {drives.map((d) => (
-                <option key={d.id} value={d.id}>{d.title} {d.drive_date ? `(${formatDate(d.drive_date)})` : ''}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Job title</label>
-            <input className="form-input" value={editForm.jobTitle} onChange={(e) => setEditForm((p) => ({ ...p, jobTitle: e.target.value }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Salary (INR annual)</label>
-            <ValidatedNumberInput fieldId={FIELD_IDS.EMPLOYER_OFFER_SALARY} value={editForm.salary} onChange={(v) => setEditForm((p) => ({ ...p, salary: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Location</label>
-            <input className="form-input" value={editForm.location} onChange={(e) => setEditForm((p) => ({ ...p, location: e.target.value }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Joining date</label>
-            <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_JOINING} context={{ deadline: editForm.deadlineAt }} value={editForm.joiningDate} onChange={(v) => setEditForm((p) => ({ ...p, joiningDate: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Response deadline</label>
-            <ValidatedDateInput fieldId={FIELD_IDS.EMPLOYER_OFFER_DEADLINE} value={editForm.deadlineAt} onChange={(v) => setEditForm((p) => ({ ...p, deadlineAt: v }))} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Offer letter URL (optional)</label>
-            <input className="form-input" placeholder="https://..." value={editForm.offerLetterUrl} onChange={(e) => setEditForm((p) => ({ ...p, offerLetterUrl: e.target.value }))} />
-          </div>
-        </div>
+        <OfferFields value={editForm} onChange={setEditForm} students={students} drives={drives} editing />
       </EmployerListFormLayout>
     );
   }
@@ -449,12 +446,15 @@ export default function EmployerOffersPage() {
     eventTab === 'internship' ? 'Internship' : eventTab === 'alumni_jobs' ? 'Alumni jobs' : 'Drive';
 
   return (
-    <div className="app-page-shell animate-fadeIn">
-      <AppPageHeader
-        title="Offers"
-        description="Issue formal offer letters after selection. Bulk-generate from drive or internship selections, or create a single offer for special cases."
-        actions={
-          <>
+    <div className="animate-fadeIn flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Offers</h1>
+          <p className="text-muted-foreground mt-1 mb-0 max-w-3xl text-sm">
+            Issue formal offer letters after selection. Bulk-generate from drive or internship selections, or create a single offer for special cases.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
             <ExportCsvSplitButton
               filenameBase="placement_offers"
               currentCount={filteredOffers.length}
@@ -469,21 +469,24 @@ export default function EmployerOffersPage() {
                 setEditId(null);
               }}
             />
-          </>
-        }
-      />
+        </div>
+      </div>
 
-      <div className="app-stat-grid">
-        <AppStatCard
-          label={`${tabLabel} offers`}
-          value={tabOffers.length}
-          hint="In this tab"
-          icon={Send}
-          tone="indigo"
-        />
-        <AppStatCard label="Accepted" value={acceptedCount} icon={CheckCircle} tone="green" />
-        <AppStatCard label="Pending response" value={pendingCount} icon={Clock} tone="amber" />
-        <AppStatCard label="Declined / rejected" value={declinedCount} icon={XCircle} tone="rose" />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: `${tabLabel} offers`, value: tabOffers.length, icon: Send },
+          { label: 'Accepted', value: acceptedCount, icon: CheckCircle },
+          { label: 'Pending response', value: pendingCount, icon: Clock },
+          { label: 'Declined / rejected', value: declinedCount, icon: XCircle },
+        ].map(({ label, value, icon: Icon }) => (
+          <Card key={label}>
+            <CardHeader className="flex-row items-center justify-between pb-2">
+              <CardDescription>{label}</CardDescription>
+              <Icon className="text-muted-foreground size-5" aria-hidden />
+            </CardHeader>
+            <CardContent><div className="text-3xl font-semibold tabular-nums">{value}</div></CardContent>
+          </Card>
+        ))}
       </div>
 
       <OfferEventTypeTabs activeTab={eventTab} onTabChange={setEventTab} counts={eventCounts} />
@@ -500,109 +503,115 @@ export default function EmployerOffersPage() {
             templates={internshipTemplates}
             onGenerated={mutate}
           />
-          <AppContentCard
-            title="PPO (full-time after internship)"
-            description={
-              <>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">PPO (Full-Time After Internship)</CardTitle>
+              <CardDescription>
                 Pre-Placement Offers are separate from internship selection offers. Confirm PPO on or after internship
                 start, then generate from{' '}
-                <a href="/dashboard/employer/internship-ppo" className="link-inline" style={{ fontWeight: 600 }}>
+                <a href="/dashboard/employer/internship-ppo" className="text-primary font-semibold hover:underline">
                   Internship PPO
                 </a>
                 .
-              </>
-            }
-          />
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </>
       ) : null}
 
       {eventTab === 'alumni_jobs' ? (
-        <AppContentCard
-          title="Alumni job offers"
-          description="One-off offers for alumni job selections — use Create offer without linking a placement drive."
-        />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Alumni Job Offers</CardTitle>
+            <CardDescription>One-off offers for alumni job selections — use Create Offer without linking a placement drive.</CardDescription>
+          </CardHeader>
+        </Card>
       ) : null}
 
-      <details className="app-help-disclosure">
-        <summary>How offers work on PlacementHub</summary>
-        <div className="app-help-disclosure__body">
-          <p>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">How Offers Work on PlacementHub</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          <p className="m-0">
             <strong>Bulk generate</strong> creates pending offers for selected students who do not have one yet. Students
             accept or decline on <strong>My Offers</strong>.
           </p>
-          <p>
+          <p className="m-0">
             <strong>Resend email</strong> if a student did not receive the letter. Each row is one student — five students
             with the same package means five rows.
           </p>
-        </div>
-      </details>
+        </CardContent>
+      </Card>
 
-      <AppContentCard title="Offer register" description={`${tabLabel} offers issued to students.`} padding={false}>
-        <div style={{ padding: '1.25rem 1.5rem 0' }}>
-          <div className="app-table-toolbar">
-            <div className="app-table-toolbar__search">
-              <Search size={15} className="app-table-toolbar__search-icon" aria-hidden />
-              <input
-                className="form-input"
-                placeholder="Search student, college, role..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <select className="form-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ maxWidth: 180 }}>
-              <option value="">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="accepted">Accepted</option>
-              <option value="declined">Declined</option>
-              <option value="rejected">Rejected</option>
-              <option value="revoked">Revoked</option>
-              <option value="expired">Expired</option>
-            </select>
-            <select className="form-select" value={sortOption} onChange={(e) => setSortOption(e.target.value)} style={{ maxWidth: 180 }}>
-              <option value="date_desc">Newest first</option>
-              <option value="date_asc">Oldest first</option>
-              <option value="salary_desc">Highest salary</option>
-              <option value="name_asc">Name (A–Z)</option>
-            </select>
-            <span className="app-table-toolbar__meta">
-              {filteredOffers.length} of {tabOffers.length} shown
-            </span>
+      <Card className="gap-0 overflow-hidden py-0">
+        <CardHeader className="border-border gap-3 border-b px-4 py-3">
+          <div>
+            <CardTitle className="text-base">Offer Register</CardTitle>
+            <CardDescription>{tabLabel} offers issued to students.</CardDescription>
           </div>
-        </div>
-
-        <div style={{ padding: '0 1.5rem 1.5rem' }}>
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Role</th>
-                  <th>Salary</th>
-                  <th>Location</th>
-                  <th>Deadline</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+          <DataTableToolbar
+            search={search}
+            onSearchChange={setSearch}
+            searchPlaceholder="Search student, college, or role…"
+            filter={statusFilter}
+            onFilterChange={setStatusFilter}
+            filterLabel="Status"
+            filterOptions={[
+              { value: '', label: 'All statuses' },
+              ...['pending', 'accepted', 'declined', 'rejected', 'revoked', 'expired'].map((status) => ({
+                value: status,
+                label: formatStatus(status),
+              })),
+            ]}
+            sort={sortOption}
+            onSortChange={setSortOption}
+            sortOptions={[
+              { value: 'date_desc', label: 'Newest first' },
+              { value: 'date_asc', label: 'Oldest first' },
+              { value: 'salary_desc', label: 'Highest salary' },
+              { value: 'name_asc', label: 'Name (A–Z)' },
+            ]}
+            filteredCount={filteredOffers.length}
+            totalCount={tabOffers.length}
+            hasActiveFilters={Boolean(search || statusFilter || sortOption !== 'date_desc')}
+            onClear={() => {
+              setSearch('');
+              setStatusFilter('');
+              setSortOption('date_desc');
+            }}
+          />
+        </CardHeader>
+        <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Salary</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Deadline</TableHead>
+                  <TableHead className="min-w-[6.5rem]">Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filteredOffers.length > 0 ? (
                   filteredOffers.map((offer) => (
-                    <tr key={offer.id}>
-                      <td>
-                        <div className="app-table-primary">{offer.student_name || '—'}</div>
-                        <div className="app-table-secondary">{offer.college_name || '—'}</div>
-                      </td>
-                      <td>{offer.job_title || '—'}</td>
-                      <td className="font-bold">{formatCurrency(Number(offer.salary) || 0)}</td>
-                      <td>{offer.location || '—'}</td>
-                      <td className="text-sm">{offer.deadline_at ? formatDate(offer.deadline_at) : '—'}</td>
-                      <td>
-                        <span className={`badge badge-${getStatusColor(offer.status)} badge-dot`}>
-                          {formatStatus(offer.status || 'unknown')}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
+                    <TableRow key={offer.id}>
+                      <TableCell>
+                        <div className="font-semibold">{offer.student_name || '—'}</div>
+                        <div className="text-muted-foreground text-xs">{offer.college_name || '—'}</div>
+                      </TableCell>
+                      <TableCell>{offer.job_title || '—'}</TableCell>
+                      <TableCell className="font-bold">{formatCurrency(Number(offer.salary) || 0)}</TableCell>
+                      <TableCell>{offer.location || '—'}</TableCell>
+                      <TableCell className="text-sm">{offer.deadline_at ? formatDate(offer.deadline_at) : '—'}</TableCell>
+                      <TableCell className="min-w-[6.5rem]">
+                        <StatusBadge status={offer.status || 'pending'} showDot>{formatStatus(offer.status) || 'Pending'}</StatusBadge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap items-center gap-1">
                           <StandardTableIconAction
                             action="view"
                             showLabel={false}
@@ -612,27 +621,29 @@ export default function EmployerOffersPage() {
                           />
                           <StandardTableIconAction action="edit" showLabel={false} onClick={() => openEdit(offer)} />
                           {['accepted', 'rejected', 'revoked', 'expired'].includes(offer.status) && (
-                            <button
+                            <Button
                               type="button"
-                              className="btn btn-secondary btn-icon btn-sm"
+                              variant="ghost"
+                              size="icon-sm"
                               title="Restore pending offer"
                               aria-label="Restore pending offer"
                               onClick={() => reopenOffer(offer.id)}
                             >
                               <RotateCcw size={16} strokeWidth={2} aria-hidden />
-                            </button>
+                            </Button>
                           )}
                           {offer.status === 'pending' && (
                             <>
-                              <button
+                              <Button
                                 type="button"
-                                className="btn btn-secondary btn-icon btn-sm"
+                                variant="ghost"
+                                size="icon-sm"
                                 title="Resend offer email"
                                 aria-label="Resend offer email"
                                 onClick={() => resendOfferEmail(offer.id)}
                               >
                                 <Mail size={16} strokeWidth={2} aria-hidden />
-                              </button>
+                              </Button>
                               <StandardTableIconAction
                                 action="archive"
                                 variant="danger"
@@ -648,19 +659,19 @@ export default function EmployerOffersPage() {
                             onClick={() => deleteOffer(offer.id)}
                           />
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))
                 ) : null}
                 {tabOffers.length === 0 && (
-                  <tr>
-                    <td colSpan="7" style={{ padding: '3rem 1rem' }}>
-                      <div className="empty-state-container" style={{ textAlign: 'center', maxWidth: '420px', margin: '0 auto' }}>
-                        <FileText size={32} strokeWidth={1.5} style={{ color: 'var(--text-tertiary)', marginBottom: '0.75rem' }} />
-                        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                  <TableRow>
+                    <TableCell colSpan={7} className="px-4 py-12">
+                      <div className="mx-auto flex max-w-md flex-col items-center gap-2 text-center">
+                        <FileText className="text-muted-foreground size-8" strokeWidth={1.5} aria-hidden />
+                        <h3 className="m-0 text-base font-semibold">
                           No {eventTab === 'internship' ? 'internship' : eventTab === 'alumni_jobs' ? 'alumni job' : 'drive'} offers yet
                         </h3>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: 0, lineHeight: 1.5 }}>
+                        <p className="text-muted-foreground m-0 text-sm leading-relaxed">
                           {eventTab === 'drive'
                             ? 'Mark students selected on a drive, create a Drive template, then use Generate offers above — or Create offer for one student.'
                             : eventTab === 'internship'
@@ -668,25 +679,19 @@ export default function EmployerOffersPage() {
                               : 'Use Create offer for alumni selections that are not tied to a campus placement drive.'}
                         </p>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </AppContentCard>
+              </TableBody>
+            </Table>
+        </CardContent>
+      </Card>
 
       {viewRow ? (
-        <AppContentCard
-          title="Offer detail"
-          actions={
-            <button type="button" className="btn btn-secondary btn-sm" onClick={() => setViewRow(null)}>
-              Close
-            </button>
-          }
-        >
-          <div className="text-sm" style={{ lineHeight: 1.7 }}>
+        <Dialog open onOpenChange={(open) => { if (!open) setViewRow(null); }}>
+          <DialogContent>
+          <DialogHeader><DialogTitle>Offer detail</DialogTitle><DialogDescription>Full student offer record.</DialogDescription></DialogHeader>
+          <div className="flex flex-col gap-2 text-sm leading-relaxed">
             <div><strong>Student:</strong> {viewRow.student_name}</div>
             <div><strong>College:</strong> {viewRow.college_name || '—'}</div>
             <div><strong>Role:</strong> {viewRow.job_title || '—'}</div>
@@ -694,7 +699,7 @@ export default function EmployerOffersPage() {
             <div><strong>Location:</strong> {viewRow.location || '—'}</div>
             <div><strong>Joining:</strong> {viewRow.joining_date ? formatDate(viewRow.joining_date) : '—'}</div>
             <div><strong>Deadline:</strong> {viewRow.deadline_at ? formatDate(viewRow.deadline_at) : '—'}</div>
-            <div><strong>Status:</strong> {formatStatus(viewRow.status)}</div>
+            <div className="flex items-center gap-2"><strong>Status:</strong> <StatusBadge status={viewRow.status || 'pending'} showDot>{formatStatus(viewRow.status) || 'Pending'}</StatusBadge></div>
             {viewRow.offer_letter_url ? (
               <div>
                 <strong>Offer letter:</strong>{' '}
@@ -704,7 +709,9 @@ export default function EmployerOffersPage() {
               </div>
             ) : null}
           </div>
-        </AppContentCard>
+          <DialogFooter><Button type="button" variant="secondary" onClick={() => setViewRow(null)}>Close</Button></DialogFooter>
+          </DialogContent>
+        </Dialog>
       ) : null}
     </div>
   );

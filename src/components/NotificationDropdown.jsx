@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { Bell } from 'lucide-react';
 import { getNotificationIconTitle } from '@/lib/appVersion';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 const fetcher = (url) => fetch(url).then((r) => {
   if (!r.ok) throw new Error('Failed to load');
@@ -113,28 +115,30 @@ export default function NotificationDropdown() {
           animation: notifFadeIn 0.4s ease backwards;
         }
       `}</style>
-      <button
-        className="btn btn-ghost btn-icon notification-bell"
+      <Button
+        variant="ghost"
+        size="icon"
+        className="notification-bell"
         onClick={() => setOpen((v) => !v)}
         type="button"
         title={title}
         aria-label={title}
       >
-        <Bell size={18} aria-hidden="true" />
+        <Bell aria-hidden="true" />
         {unreadCount > 0 ? (
           <span className="notification-badge" aria-label={`${unreadCount} unread`}>
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         ) : null}
-      </button>
+      </Button>
 
       {open && (
-        <div className="notification-panel">
+        <Card className="notification-panel gap-0 py-0">
           <div className="notification-panel-header">
             <h4 style={{ fontSize: '0.9375rem', fontWeight: 700 }}>Notifications</h4>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={markAllRead} disabled={!unreadCount}>
+            <Button type="button" variant="ghost" size="sm" onClick={markAllRead} disabled={!unreadCount}>
               Mark all read
-            </button>
+            </Button>
           </div>
           <div className="notification-list">
             {isLoading && (
@@ -189,11 +193,11 @@ export default function NotificationDropdown() {
             ))}
           </div>
           <div style={{ padding: '0.65rem 1rem', borderTop: '1px solid var(--border-default)' }}>
-            <Link href="/dashboard/alerts" className="btn btn-ghost btn-sm" style={{ width: '100%' }} onClick={() => setOpen(false)}>
+            <Button render={<Link href="/dashboard/alerts" />} variant="ghost" size="sm" className="w-full" onClick={() => setOpen(false)}>
               Open alerts inbox
-            </Link>
+            </Button>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

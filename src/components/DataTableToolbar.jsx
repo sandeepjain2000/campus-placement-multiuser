@@ -1,9 +1,14 @@
 'use client';
 
 import { Search, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 /**
- * Shared search + filter + sort bar for data-table screens.
+ * Shared search + filter + sort bar for AdminCN table/list screens.
+ * Selects: AdminCN `@/components/ui/select` (filters-datatable / user-table-toolbar) — not native <select>.
  */
 export default function DataTableToolbar({
   search = '',
@@ -22,112 +27,108 @@ export default function DataTableToolbar({
   hasActiveFilters = false,
   onClear,
   children,
+  className,
   style,
 }) {
-  const showCount =
-    typeof filteredCount === 'number' && typeof totalCount === 'number';
+  const showCount = typeof filteredCount === 'number' && typeof totalCount === 'number';
+  const filterItems = filterOptions.map((opt) => ({
+    label: opt.label,
+    value: String(opt.value),
+  }));
+  const sortItems = sortOptions.map((opt) => ({
+    label: opt.label,
+    value: String(opt.value),
+  }));
 
   return (
     <div
-      className={`card data-table-toolbar${hasActiveFilters ? ' is-filtered' : ''}`}
-      style={{
-        padding: '1.25rem',
-        marginBottom: '1.5rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.75rem',
-        border: '1px solid var(--border-default)',
-        ...style,
-      }}
+      className={cn(
+        'bg-card text-card-foreground ring-foreground/10 flex flex-col gap-3 rounded-xl p-4 text-sm shadow-xs ring-1',
+        hasActiveFilters && 'ring-primary/25',
+        className
+      )}
+      style={style}
     >
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      {/* AdminCN toolbars use gap-4 between controls (user-table-toolbar); gap-2 label→select */}
+      <div className="flex flex-wrap items-center gap-4">
         {onSearchChange ? (
-          <div style={{ position: 'relative', flex: '1 1 220px', minWidth: 200 }}>
-            <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: '1rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-tertiary)',
-                pointerEvents: 'none',
-              }}
-            />
-            <input
-              className="form-input"
+          <div className="relative min-w-[200px] flex-1 basis-[220px]">
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+            <Input
+              className="pl-9"
               placeholder={searchPlaceholder}
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              style={{ paddingLeft: '2.5rem' }}
               aria-label="Search table"
             />
           </div>
         ) : null}
 
-        {filterOptions.length > 0 && onFilterChange ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span className="text-sm text-secondary" style={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
-              {filterLabel}:
-            </span>
-            <select
-              className="form-select"
-              value={filter}
-              onChange={(e) => onFilterChange(e.target.value)}
-              style={{ width: 'auto', minWidth: 140, padding: '0.55rem 2rem 0.55rem 0.75rem', fontSize: '0.9rem' }}
+        {filterItems.length > 0 && onFilterChange ? (
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="text-muted-foreground text-sm font-medium whitespace-nowrap">{filterLabel}:</span>
+            <Select
+              items={filterItems}
+              value={filter ? String(filter) : filterItems[0]?.value}
+              onValueChange={(value) => {
+                if (value != null) onFilterChange(value);
+              }}
             >
-              {filterOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="min-w-[140px]" aria-label={filterLabel}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="p-1">
+                {filterItems.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         ) : null}
 
-        {sortOptions.length > 0 && onSortChange ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span className="text-sm text-secondary" style={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
-              {sortLabel}:
-            </span>
-            <select
-              className="form-select"
-              value={sort}
-              onChange={(e) => onSortChange(e.target.value)}
-              style={{ width: 'auto', minWidth: 160, padding: '0.55rem 2rem 0.55rem 0.75rem', fontSize: '0.9rem' }}
+        {sortItems.length > 0 && onSortChange ? (
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="text-muted-foreground text-sm font-medium whitespace-nowrap">{sortLabel}:</span>
+            <Select
+              items={sortItems}
+              value={sort ? String(sort) : sortItems[0]?.value}
+              onValueChange={(value) => {
+                if (value != null) onSortChange(value);
+              }}
             >
-              {sortOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="min-w-[160px]" aria-label={sortLabel}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="p-1">
+                {sortItems.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         ) : null}
 
         {children}
 
         {hasActiveFilters && onClear ? (
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost btn-sm"
+            variant="ghost"
+            size="sm"
             onClick={onClear}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: 'var(--danger-600)' }}
+            className="text-destructive shrink-0 hover:text-destructive"
           >
-            <X size={14} /> Clear
-          </button>
+            <X data-icon="inline-start" />
+            Clear
+          </Button>
         ) : null}
 
         {showCount ? (
-          <span
-            style={{
-              marginLeft: 'auto',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              color: 'var(--text-secondary)',
-              whiteSpace: 'nowrap',
-            }}
-          >
+          <span className="text-muted-foreground ms-auto shrink-0 text-sm font-semibold whitespace-nowrap">
             {filteredCount} of {totalCount}
           </span>
         ) : null}

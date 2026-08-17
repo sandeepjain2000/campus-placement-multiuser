@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-10
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Scan internship list and status filter. Note draft / published / closed postings.

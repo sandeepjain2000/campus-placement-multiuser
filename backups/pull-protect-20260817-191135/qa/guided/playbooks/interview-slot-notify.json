@@ -1,0 +1,80 @@
+{
+  "id": "interview-slot-notify",
+  "title": "Employer interview slot notify",
+  "oneLiner": "Voice-guided tour for use case: Employer interview slot notify",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in",
+      "observe": "Campus partnership must be approved for target college.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Interview Scheduling",
+      "observe": "Link slot to job, internship, or drive opening.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/interviews"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Notify applicants — manual",
+      "observe": "employer_interview_slot emails to eligible students.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens My Interviews",
+      "observe": "Scheduled slot with date, mode, venue.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to My Interviews",
+      "observe": "Alert and interview row match employer notification.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/interviews"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Email logs — employer_interview_slot",
+      "observe": "Filter by context or student login email.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Sent rows with recipient audit fields.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: STUDENT
+# Stage: step-33
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Open Browse Placement Drives. Drive with GT-2026-06-210819 visible when Approved.

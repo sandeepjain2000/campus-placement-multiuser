@@ -1,0 +1,6 @@
+# Guided playbook narration
+# Role: EMPLOYER
+# Stage: step-17
+# Use with ElevenLabs, Murf, Play.ht, or similar.
+
+Type stipend maximum (INR/month). Stipend max field shows 35000.

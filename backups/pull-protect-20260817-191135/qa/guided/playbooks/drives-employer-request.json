@@ -1,0 +1,219 @@
+{
+  "id": "drives-employer-request",
+  "title": "Employer — request placement drive (DRV-E04 + DRV-E05 + DRV-C03)",
+  "oneLiner": "Automated tester entry: request a drive at an approved campus, then college approves it for students.",
+  "useStoredMarker": false,
+  "skipPartnershipSetupWhenApproved": true,
+  "sourceCases": ["UC-001", "DRV-E01", "DRV-E04", "DRV-E05", "DRV-C03"],
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Next step signs in as employer automatically.",
+      "action": { "type": "wait", "ms": 400 }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Log in as employer",
+      "observe": "Employer dashboard loads.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open campus tie-up directory",
+      "observe": "Colleges list with Approved / Pending badges.",
+      "action": { "type": "goto", "path": "/dashboard/employer/select-campus" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Request tie-up with IIT Madras (if not already Approved)",
+      "observe": "Toast confirms request, or row already shows Approved.",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "Indian Institute of Technology",
+        "buttonName": "Request Tie-up",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Log in as college admin",
+      "observe": "College dashboard loads.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open Employer Partnership Requests",
+      "observe": "Pending list shows TechCorp Solutions if a request was sent.",
+      "action": { "type": "goto", "path": "/dashboard/college/employers/requests" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Approve TechCorp partnership request",
+      "observe": "TechCorp row approved or already absent from pending list.",
+      "action": { "type": "clickInRow", "rowText": "TechCorp", "buttonName": "Approve", "skipIfMissing": true }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Log in as employer again",
+      "observe": "Employer hub loads — ready to request a drive.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "DRV-E01",
+      "label": "Navigate to Placement Drives",
+      "observe": "Placement Drives list or empty state visible.",
+      "action": { "type": "goto", "path": "/dashboard/employer/drives" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Open Request placement drive form",
+      "observe": "Full-page request form with campus selector and drive fields.",
+      "action": { "type": "goto", "path": "/dashboard/employer/drives/request" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Select IIT Madras campus",
+      "observe": "Campus dropdown shows Indian Institute of Technology, Madras.",
+      "action": { "type": "select", "nearLabel": "Campus", "optionContains": "Indian Institute" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type drive title (includes session marker GT-…)",
+      "observe": "Title field shows {{marker}} SDE Placement Drive.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Drive title",
+        "value": "{{marker}} SDE Placement Drive"
+      }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Select drive type — On campus",
+      "observe": "Drive type shows On campus.",
+      "action": { "type": "select", "nearLabel": "Drive type", "value": "on_campus" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Set drive date (future)",
+      "observe": "Drive Date field shows 15 Dec 2026.",
+      "action": { "type": "fillSegmentedDate", "nearLabel": "Drive Date", "value": "2026-12-15" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type venue",
+      "observe": "Venue shows CRC Seminar Hall A.",
+      "action": { "type": "type", "nearLabel": "Venue", "value": "CRC Seminar Hall A" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type notes for placement office",
+      "observe": "Notes include guided test marker.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Notes for placement office",
+        "value": "Guided test {{marker}} — on-campus SDE hiring."
+      }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type openings for the role",
+      "observe": "Openings field shows 10.",
+      "action": { "type": "type", "nearLabel": "Openings", "value": "10" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type skills for the role",
+      "observe": "Skills: Java, DSA, SQL.",
+      "action": { "type": "type", "nearLabel": "Skills (comma-separated)", "value": "Java, DSA, SQL" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type job description",
+      "observe": "Description includes guided test marker.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Job description",
+        "value": "SDE campus role for {{marker}} guided test. Strong CS fundamentals required."
+      }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type minimum CGPA",
+      "observe": "Min CGPA field shows 7.5.",
+      "action": { "type": "type", "nearLabel": "Minimum CGPA", "value": "7.5" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type eligible branches",
+      "observe": "Eligible branches shows All.",
+      "action": { "type": "type", "nearLabel": "Eligible branches", "value": "All" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type batch year (2026 — matches seeded students)",
+      "observe": "Batch year field shows 2026.",
+      "action": { "type": "type", "nearLabel": "Batch year", "value": "2026" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type min CTC (annual INR)",
+      "observe": "Min CTC shows 800000.",
+      "action": { "type": "type", "nearLabel": "Min CTC (annual INR)", "value": "800000" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Type max CTC (annual INR)",
+      "observe": "Max CTC shows 1200000.",
+      "action": { "type": "type", "nearLabel": "Max CTC (annual INR)", "value": "1200000" }
+    },
+    {
+      "phase": "DRV-E04",
+      "label": "Review form before submit",
+      "observe": "Campus, title, date, and venue populated.",
+      "action": { "type": "wait", "ms": 500 }
+    },
+    {
+      "phase": "DRV-E05",
+      "label": "Click Submit request",
+      "observe": "Success toast; returns to drives list; new row with Requested / Awaiting approval status.",
+      "action": { "type": "click", "role": "button", "name": "Submit request" }
+    },
+    {
+      "phase": "DRV-E05",
+      "label": "Confirm drive appears in employer list",
+      "observe": "Table/list shows {{marker}} in title column. College must approve before students apply.",
+      "action": { "type": "wait", "ms": 1000 }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Log in as college admin",
+      "observe": "College hub loads — approve the drive request.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Open college Placement Drives",
+      "observe": "Drive row shows Awaiting Approval for {{marker}}.",
+      "action": { "type": "goto", "path": "/dashboard/college/drives" }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Approve guided drive for campus",
+      "observe": "Row with {{marker}} — click Approve (skipped if already Approved).",
+      "action": {
+        "type": "clickInRow",
+        "rowSelector": "div[id^='drive-']",
+        "rowText": "{{marker}}",
+        "buttonName": "Approve",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Confirm drive status is Approved",
+      "observe": "Status pill shows Approved. Students can now browse and apply.",
+      "action": { "type": "wait", "ms": 800 }
+    }
+  ]
+}
