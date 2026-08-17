@@ -95,17 +95,7 @@ function UnlockForm() {
           <Link href="/" className={buttonVariants({ variant: 'ghost' })}>Back to landing</Link>
         </CardFooter>
         </form>
-      </Card>
-      <style jsx global>{`
-        .dev-notes-unlock-page {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2rem 1.25rem;
-          background: var(--bg-primary);
-        }
-      `}</style>
+      </Card>
     </div>
   );
 }

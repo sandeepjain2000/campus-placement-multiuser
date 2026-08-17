@@ -101,29 +101,7 @@ export default function UseCasesByRolePage() {
         {Object.keys(USE_CASE_CATALOG_BY_ROLE).map((role) => (
           <RoleSection key={role} role={role} cases={USE_CASE_CATALOG_BY_ROLE[role]} />
         ))}
-      </main>
-
-      <style jsx global>{`
-        .dev-notes-page { min-height: 100vh; background: var(--bg-primary); color: var(--text-primary); }
-        .dev-notes-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid var(--border-default); background: var(--bg-primary); }
-        .dev-notes-header-inner { max-width: 72rem; margin: 0 auto; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; }
-        .dev-notes-back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); text-decoration: none; }
-        .dev-notes-back:hover { color: var(--primary-600); }
-        .dev-notes-main { max-width: 72rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-        .dev-notes-hero { margin-bottom: 2rem; }
-        .dev-notes-hero-icon { width: 3rem; height: 3rem; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; color: var(--primary-600); margin-bottom: 1rem; }
-        .dev-notes-hero h1 { font-size: 1.75rem; font-weight: 800; margin: 0 0 0.25rem; }
-        .dev-notes-lead { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); margin: 0 0 0.75rem; }
-        .dev-notes-meta { font-size: 0.8125rem; color: var(--text-tertiary); margin: 0; }
-        .dev-notes-section { margin-bottom: 2.5rem; }
-        .dev-notes-table-wrap { overflow-x: auto; border: 1px solid var(--border-default); border-radius: var(--radius-lg); }
-        .dev-notes-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-        .dev-notes-table th, .dev-notes-table td { padding: 0.65rem 0.85rem; text-align: left; border-bottom: 1px solid var(--border-default); vertical-align: top; }
-        .dev-notes-table th { background: var(--bg-secondary); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); }
-        .dev-notes-table tr:last-child td { border-bottom: none; }
-        .dev-notes-muted { color: var(--text-secondary); }
-        .dev-notes-inline-code { font-family: ui-monospace, monospace; font-size: 0.8125rem; background: var(--bg-secondary); padding: 0.1rem 0.35rem; border-radius: 4px; }
-      `}</style>
+      </main>
     </div>
   );
 }
