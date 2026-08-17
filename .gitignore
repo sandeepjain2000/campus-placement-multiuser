@@ -77,6 +77,18 @@ next-env.d.ts
 playwright-report/
 test-results/
 
+# QA dumps / local scratch (do not push)
+qa/data/eslint-report.json
+qa/data/smoke-ui-sanity-raw.txt
+scripts/_schema_dump.txt
+scripts/_tmp_*
+_tmp_*
+*.bak
+*.bak-*
+*.bak-ruined
+.cursor/
+tmp-screenshots/
+
 # Scratch / utility scripts (local only)
 # fix_emojis.js
 # test-db.js

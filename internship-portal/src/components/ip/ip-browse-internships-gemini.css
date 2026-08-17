@@ -1,0 +1,637 @@
+/**
+ * Browse internships — placementhub_browse_internships.html (content only).
+ * Unlayered so it beats globals / shadcn defaults.
+ */
+.ip-browse {
+  --ip-accent: #5825e6;
+  --ip-indigo: #4f46e5;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  color: #0f172a;
+}
+
+.ip-browse .ip-br-top {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ip-browse .ip-br-top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.ip-browse .ip-br-top h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.ip-browse .ip-br-top p {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* Segmented List | Cards */
+.ip-browse .ip-br-seg {
+  display: inline-flex;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: #f1f5f9;
+  padding: 0.25rem;
+  color: #64748b;
+  align-self: flex-start;
+}
+
+.ip-browse .ip-br-seg button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  white-space: nowrap;
+  border: none;
+  border-radius: 0.375rem;
+  background: transparent;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #64748b;
+  cursor: pointer;
+  height: 100%;
+}
+
+.ip-browse .ip-br-seg button:hover {
+  color: #0f172a;
+  background: rgba(226, 232, 240, 0.5);
+}
+
+.ip-browse .ip-br-seg button[aria-pressed='true'] {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.ip-browse .ip-br-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+}
+
+.ip-browse .ip-br-filters {
+  padding: 1rem;
+}
+
+.ip-browse .ip-br-filters__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ip-browse .ip-br-field {
+  position: relative;
+  min-width: 140px;
+}
+
+.ip-browse .ip-br-field--grow {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+
+.ip-browse .ip-br-field--sm {
+  width: 140px;
+  flex: 0 0 auto;
+}
+
+.ip-browse .ip-br-field--xs {
+  width: 130px;
+  flex: 0 0 auto;
+}
+
+.ip-browse .ip-br-field__icon {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  align-items: center;
+  padding-left: 0.75rem;
+  pointer-events: none;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ip-browse .ip-br-input,
+.ip-browse .ip-br-select {
+  display: flex;
+  height: 2.25rem;
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  outline: none;
+  font-family: inherit;
+  appearance: none;
+}
+
+.ip-browse .ip-br-field:has(.ip-br-field__icon) .ip-br-input {
+  padding-left: 2.25rem;
+}
+
+.ip-browse .ip-br-input:focus,
+.ip-browse .ip-br-select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+.ip-browse .ip-br-select {
+  width: 140px;
+  flex: 0 0 auto;
+}
+
+.ip-browse .ip-br-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+  padding-left: 0.5rem;
+  border-left: 1px solid #e2e8f0;
+}
+
+@media (max-width: 640px) {
+  .ip-browse .ip-br-actions {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.ip-browse .ip-br-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ip-browse .ip-br-check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #4f46e5;
+}
+
+.ip-browse .ip-br-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 2.25rem;
+  padding: 0 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: #4f46e5;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.ip-browse .ip-br-btn:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.ip-browse .ip-br-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ip-browse .ip-br-btn--outline {
+  background: #fff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+}
+
+.ip-browse .ip-br-btn--outline:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.ip-browse .ip-br-btn--sm {
+  height: 2rem;
+  padding: 0 0.75rem;
+  font-size: 0.75rem;
+}
+
+.ip-browse .ip-br-btn--icon {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  background: #fff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+}
+
+.ip-browse .ip-br-btn--icon:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.ip-browse .ip-br-btn--icon.is-saved {
+  color: #b45309;
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.ip-browse .ip-br-btn--ghost {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.ip-browse .ip-br-btn--ghost.is-saved {
+  color: #d97706;
+}
+
+.ip-browse .ip-br-results__head {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ip-browse .ip-br-results__head h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ip-browse .ip-br-results__head span {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.ip-browse .ip-br-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ip-browse table.ip-br-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.ip-browse .ip-br-table thead {
+  font-size: 0.75rem;
+  color: #64748b;
+  background: rgba(248, 250, 252, 0.8);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ip-browse .ip-br-table th,
+.ip-browse .ip-br-table td {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.ip-browse .ip-br-table tbody tr:hover {
+  background: rgba(248, 250, 252, 0.8);
+}
+
+.ip-browse .ip-br-table tbody tr.is-saved {
+  background: rgba(255, 251, 235, 0.55);
+}
+
+.ip-browse .ip-br-table tbody tr.is-saved:hover {
+  background: rgba(254, 243, 199, 0.7);
+}
+
+.ip-browse .ip-br-table tbody tr.is-saved td:first-child {
+  box-shadow: inset 3px 0 0 #f59e0b;
+}
+
+.ip-browse .ip-br-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ip-browse .ip-br-title-btn {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ip-browse .ip-br-title-btn:hover {
+  color: #4f46e5;
+}
+
+.ip-browse .ip-br-title-btn h3 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+
+.ip-browse .ip-br-saved-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid #fcd34d;
+  background: #fffbeb;
+  color: #b45309;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ip-browse .ip-br-num {
+  color: #94a3b8;
+}
+
+.ip-browse .ip-br-title {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ip-browse .ip-br-muted {
+  color: #475569;
+}
+
+.ip-browse .ip-br-stipend {
+  font-weight: 500;
+  color: #334155;
+}
+
+.ip-browse .ip-br-match {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 6.5rem;
+}
+
+.ip-browse .ip-br-match__pct {
+  font-size: 0.75rem;
+  font-weight: 700;
+  tabular-nums: true;
+  font-variant-numeric: tabular-nums;
+}
+
+.ip-browse .ip-br-match__pct.is-high {
+  color: #059669;
+}
+
+.ip-browse .ip-br-match__pct.is-mid {
+  color: #d97706;
+}
+
+.ip-browse .ip-br-match__pct.is-na {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.ip-browse .ip-br-match__bar {
+  width: 4rem;
+  height: 0.375rem;
+  background: #f1f5f9;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.ip-browse .ip-br-match__fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.ip-browse .ip-br-match__fill.is-high {
+  background: #10b981;
+}
+
+.ip-browse .ip-br-match__fill.is-mid {
+  background: #f59e0b;
+}
+
+.ip-browse .ip-br-actions-cell {
+  text-align: right;
+}
+
+.ip-browse .ip-br-actions-cell .ip-br-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Softer validation chip (keep Dialog via ValidationScoreButton) */
+.ip-browse .ip-br-valid button {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0.25rem 0.625rem !important;
+  border-radius: 0.375rem !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  color: #334155 !important;
+  font-size: 0.6875rem !important;
+  font-weight: 500 !important;
+  gap: 0.375rem;
+}
+
+.ip-browse .ip-br-valid button:hover {
+  background: #f8fafc !important;
+}
+
+.ip-browse .ip-br-empty {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.ip-browse .ip-br-cards {
+  padding: 1.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .ip-browse .ip-br-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .ip-browse .ip-br-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ip-browse .ip-br-job-card {
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.ip-browse .ip-br-job-card:hover {
+  border-color: #a5b4fc;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.ip-browse .ip-br-job-card.is-saved {
+  border: 2px solid #fcd34d;
+  background: rgba(255, 251, 235, 0.45);
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.12);
+}
+
+.ip-browse .ip-br-job-card.is-saved:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.18);
+}
+
+.ip-browse .ip-br-job-card__saved-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: -1.25rem -1.25rem 0.875rem;
+  padding: 0.4rem 0.875rem;
+  background: rgba(254, 243, 199, 0.95);
+  border-bottom: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ip-browse .ip-br-job-card__saved-banner span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ip-browse .ip-br-job-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ip-browse .ip-br-job-card__top h3 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ip-browse .ip-br-job-card:hover .ip-br-job-card__top h3 {
+  color: #4f46e5;
+}
+
+.ip-browse .ip-br-job-card__top p {
+  margin: 0.125rem 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.ip-browse .ip-br-job-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.ip-browse .ip-br-job-card__meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ip-browse .ip-br-job-card__foot {
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ip-browse .ip-br-pager {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: rgba(248, 250, 252, 0.5);
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.ip-browse .ip-br-pager__btns {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ip-browse .ip-br-pager__btns span {
+  font-weight: 500;
+  color: #334155;
+  padding: 0 0.5rem;
+  font-variant-numeric: tabular-nums;
+}

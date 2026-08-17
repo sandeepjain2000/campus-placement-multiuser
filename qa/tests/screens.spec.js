@@ -255,56 +255,56 @@ test.describe('TC_COL – College Admin screens open', () => {
     await page.goto('/dashboard/college/rules');
     await assertPageOpened(page, /\/dashboard\/college\/rules/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_009 – /dashboard/college/academic-years opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/academic-years');
     await assertPageOpened(page, /\/dashboard\/college\/academic-years/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_010 – /dashboard/college/infrastructure opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/infrastructure');
     await assertPageOpened(page, /\/dashboard\/college\/infrastructure/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_011 – /dashboard/college/settings opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/settings');
     await assertPageOpened(page, /\/dashboard\/college\/settings/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_012 – /dashboard/college/hiring-assessment opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/hiring-assessment');
     await assertPageOpened(page, /\/dashboard\/college\/hiring-assessment/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_013 – /dashboard/college/interviews opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/interviews');
     await assertPageOpened(page, /\/dashboard\/college\/interviews/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_014 – /dashboard/college/reports opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/reports');
     await assertPageOpened(page, /\/dashboard\/college\/reports/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_COL_015 – /dashboard/college/audit-reports opens (not blank)', async ({ page }) => {
     await page.goto('/dashboard/college/audit-reports');
     await assertPageOpened(page, /\/dashboard\/college\/audit-reports/);
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('#main-content h1, #main-content h2').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#main-content h1, #main-content h2, #main-content .card-title, #main-content [data-slot="card-title"]').first()).toBeVisible({ timeout: 15_000 });
   });
 
 });
