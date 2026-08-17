@@ -26,11 +26,6 @@ export async function POST(request) {
   const { session, error } = await requireSession(['candidate']);
   if (error) return error;
 
-  const profileGate = await query(`SELECT profile_complete FROM ip_users WHERE id = $1`, [session.user.id]);
-  if (!profileGate.rows[0]?.profile_complete) {
-    return jsonError('Complete your profile before applying', 403);
-  }
-
   let body;
   try {
     body = await request.json();
@@ -44,10 +39,22 @@ export async function POST(request) {
   if (!cand.rows[0]) return jsonError('Candidate profile missing', 404);
 
   const internship = await query(
-    `SELECT id, employer_id, title, eligibility FROM ip_internships WHERE id = $1 AND status = 'published'`,
+    `SELECT id, employer_id, title, eligibility, questions FROM ip_internships WHERE id = $1 AND status = 'published'`,
     [internshipId],
   );
   if (!internship.rows[0]) return jsonError('Internship not found or not published', 404);
+
+  const screening = Array.isArray(internship.rows[0].questions) ? internship.rows[0].questions : [];
+  if (screening.length) {
+    const answers = body.answers && typeof body.answers === 'object' ? body.answers : {};
+    const missing = screening.some((q, idx) => {
+      const key = q?.id || `q${idx}`;
+      return !String(answers[key] ?? '').trim();
+    });
+    if (missing) {
+      return jsonError('Please answer all screening questions before applying.', 400);
+    }
+  }
 
   const dupe = await query(
     `SELECT id FROM ip_applications WHERE internship_id = $1 AND candidate_id = $2`,
@@ -56,8 +63,8 @@ export async function POST(request) {
   if (dupe.rows[0]) return jsonError('You already applied to this internship', 409);
 
   /**
-   * Candidate points = application currency only (no convert-to-apps).
-   * Each apply spends POINTS_PER_APPLICATION. Employers convert points → posting credits separately.
+   * Candidate points = application currency only.
+   * Each apply spends POINTS_PER_APPLICATION.
    */
   const userRow = await query(`SELECT points FROM ip_users WHERE id = $1`, [session.user.id]);
   const points = Number(userRow.rows[0]?.points || 0);
@@ -109,6 +116,7 @@ export async function POST(request) {
       title: 'New applicant',
       body: `New application for ${internship.rows[0].title}`,
       link: `/employer/internships/${internshipId}`,
+      category: 'application',
     });
     try {
       await sendMail({
@@ -121,6 +129,14 @@ export async function POST(request) {
       console.warn('[applications] employer email', e.message);
     }
   }
+
+  await notifyUser({
+    userId: session.user.id,
+    title: 'Application submitted',
+    body: `You applied to ${internship.rows[0].title}`,
+    link: '/candidate/applications',
+    category: 'application',
+  });
 
   const bal = await query(`SELECT points FROM ip_users WHERE id = $1`, [session.user.id]);
   return jsonOk(

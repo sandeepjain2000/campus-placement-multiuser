@@ -1,14 +1,57 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { Home, LogOut, Menu, PanelLeft, PanelLeftClose, ChevronRight } from 'lucide-react';
+import {
+  Activity,
+  Award,
+  Bell,
+  Briefcase,
+  ClipboardList,
+  FileText,
+  FolderCheck,
+  Home,
+  LayoutDashboard,
+  Lightbulb,
+  LogOut,
+  Mail,
+  Menu,
+  PanelLeft,
+  PanelLeftClose,
+  ChevronRight,
+  Search,
+  Settings,
+  Share2,
+  ShieldCheck,
+  User,
+  UserPlus,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn, getInitials } from '@/lib/utils';
 import ProfileReminderBanner from '@/components/ip/ProfileReminderBanner';
+
+const NAV_ICONS = {
+  'layout-dashboard': LayoutDashboard,
+  'file-text': FileText,
+  'shield-check': ShieldCheck,
+  'user-plus': UserPlus,
+  'folder-check': FolderCheck,
+  briefcase: Briefcase,
+  'share-2': Share2,
+  activity: Activity,
+  'clipboard-list': ClipboardList,
+  mail: Mail,
+  lightbulb: Lightbulb,
+  settings: Settings,
+  user: User,
+  search: Search,
+  award: Award,
+  bell: Bell,
+};
 
 const ROLE_HOME = {
   candidate: '/candidate',
@@ -39,6 +82,7 @@ export default function PortalShell({
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [navBadges, setNavBadges] = useState({});
   const homePath = ROLE_HOME[role] || '/';
 
   useEffect(() => {
@@ -48,6 +92,14 @@ export default function PortalShell({
       /* ignore */
     }
   }, []);
+
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/ip/nav-badges')
+      .then((r) => r.json())
+      .then((d) => setNavBadges(d.badges || {}))
+      .catch(() => {});
+  }, [status, pathname]);
 
   useEffect(() => {
     try {
@@ -124,11 +176,20 @@ export default function PortalShell({
             )}
             onClick={() => setMobileOpen(false)}
           >
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-xs">
-              IP
+            <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-xs ring-1 ring-black/5">
+              <Image
+                src="/logo-icon.png"
+                alt=""
+                width={32}
+                height={32}
+                className="size-full object-cover"
+                priority
+              />
             </div>
             <div className={cn('min-w-0 flex-1', sidebarCollapsed && 'md:hidden')}>
-              <div className="truncate text-sm font-semibold">Internship Portal</div>
+              <div className="truncate text-sm font-semibold tracking-tight">
+                Placement<span className="text-indigo-600">Hub</span>
+              </div>
               <div className="truncate text-xs text-sidebar-foreground/60">{ROLE_SUBTITLE[role] || title}</div>
             </div>
           </Link>
@@ -178,6 +239,9 @@ export default function PortalShell({
             .filter((item) => item.href !== homePath)
             .map((item) => {
               const active = isActive(item.href);
+              const badge = navBadges[item.href];
+              const badgeHot = badge === 'Hot';
+              const IconCmp = item.icon ? NAV_ICONS[item.icon] : null;
               return (
                 <Link
                   key={item.href}
@@ -185,23 +249,43 @@ export default function PortalShell({
                   className={cn(
                     'flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium text-sidebar-foreground outline-none transition-colors',
                     'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring',
-                    active && 'bg-primary/10 text-sidebar-accent-foreground',
+                    active && 'bg-primary/10 font-semibold text-sidebar-accent-foreground',
                     sidebarCollapsed && 'md:justify-center md:px-0',
                   )}
                   onClick={() => setMobileOpen(false)}
                   aria-current={active ? 'page' : undefined}
                   title={item.label}
                 >
-                  <span
-                    className={cn(
-                      'size-1.5 shrink-0 rounded-full',
-                      active ? 'bg-primary' : 'bg-sidebar-foreground/30',
-                      sidebarCollapsed && 'md:size-2',
-                    )}
-                  />
+                  {IconCmp ? (
+                    <span className="flex size-5 shrink-0 items-center justify-center">
+                      <IconCmp aria-hidden="true" className="size-4" />
+                    </span>
+                  ) : (
+                    <span
+                      className={cn(
+                        'size-1.5 shrink-0 rounded-full',
+                        active ? 'bg-primary' : 'bg-sidebar-foreground/30',
+                        sidebarCollapsed && 'md:size-2',
+                      )}
+                    />
+                  )}
                   <span className={cn('min-w-0 flex-1 truncate text-left', sidebarCollapsed && 'md:hidden')}>
                     {item.label}
                   </span>
+                  {badge && !sidebarCollapsed ? (
+                    <span
+                      className={cn(
+                        'shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold',
+                        badgeHot
+                          ? 'bg-amber-100 text-amber-800'
+                          : /notif/i.test(item.label)
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground',
+                      )}
+                    >
+                      {badge}
+                    </span>
+                  ) : null}
                 </Link>
               );
             })}
@@ -209,11 +293,20 @@ export default function PortalShell({
 
         <Separator />
         <div className="shrink-0 p-2">
-          <div
+          <Link
+            href={
+              role === 'employer'
+                ? '/employer/profile'
+                : role === 'candidate'
+                  ? '/candidate/profile'
+                  : '/account'
+            }
             className={cn(
-              'flex min-w-0 items-center gap-2 rounded-md p-2',
+              'flex min-w-0 items-center gap-2 rounded-md p-2 outline-none transition-colors',
+              'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring',
               sidebarCollapsed && 'md:justify-center md:px-0',
             )}
+            title="Open profile"
           >
             <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-semibold text-primary">
               {getInitials(displayName)}
@@ -226,7 +319,7 @@ export default function PortalShell({
               aria-hidden="true"
               className={cn('size-4 shrink-0 text-sidebar-foreground/50', sidebarCollapsed && 'md:hidden')}
             />
-          </div>
+          </Link>
         </div>
       </aside>
 

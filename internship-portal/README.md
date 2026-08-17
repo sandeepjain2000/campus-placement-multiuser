@@ -21,16 +21,18 @@ npm run dev
 
 Open http://localhost:3000
 
-Demo SuperAdmin (seeded via `/api/ip/bootstrap`): `superadmin@internship.local` / `Admin@123`
+Demo SuperAdmin (ensured via `/api/ip/bootstrap`): `placementhubsupport@gmail.com` / `Admin@123`
 
-## Mail / QA YOPmail (same idea as Placement Hub)
+Local `@internship.local` demo candidate/employer seeds are **not** recreated by bootstrap.
+
+## Mail / QA inbox (same idea as Placement Hub)
 
 | Env | Effect |
 |---|---|
-| `OUTBOUND_EMAIL_OVERRIDE=internship-portal-test@yopmail.com` | **All** outbound mail (candidate + employer password emails, etc.) is redirected to this inbox via ZeptoMail/SMTP — mirrors CPMU `OUTBOUND_EMAIL_OVERRIDE`. |
-| `IP_MAIL_TEST_FALLBACK` (default `internship-portal-test@yopmail.com`) | Used **only** when override is off and delivery to the user’s real address fails. Set `0` / `off` to disable. |
+| `OUTBOUND_EMAIL_OVERRIDE=support.placementhub@placementhub.online` | **All** outbound mail (candidate + employer temp-password emails, etc.) is redirected to this Zoho inbox via ZeptoMail/SMTP — mirrors CPMU `OUTBOUND_EMAIL_OVERRIDE`. |
+| `IP_MAIL_TEST_FALLBACK` (default `support.placementhub@placementhub.online`) | Used **only** when override is off and delivery to the user’s real address fails. Set `0` / `off` to disable. |
 
-QA inbox: [https://yopmail.com](https://yopmail.com) → `internship-portal-test`
+QA / ops inbox: Zoho Mail → `support.placementhub@placementhub.online` (Placement Hub support mailbox).
 
 ## Wireframe reference
 

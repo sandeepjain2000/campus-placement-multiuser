@@ -8,6 +8,12 @@ import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+/**
+ * Login / register captcha.
+ * Only the latest /api/auth/captcha response may update token+question — avoids
+ * Strict Mode / double-fetch races where the UI shows Q2 but token is still Q1
+ * (first submit fails; refresh+retry works).
+ */
 export default function LoginCaptchaField({
   token,
   answer,
@@ -15,7 +21,7 @@ export default function LoginCaptchaField({
   onAnswerChange,
   disabled = false,
   inputId = 'login-captcha',
-  /** When true, verifies with the server on blur / Enter (registration step 1). */
+  /** When true, verifies with the server on blur / Enter (registration). */
   verifyEarly = false,
   onVerifiedChange,
 }) {
@@ -25,13 +31,25 @@ export default function LoginCaptchaField({
   const [verifyState, setVerifyState] = useState('idle');
   const [verifyMessage, setVerifyMessage] = useState('');
   const verifyingRef = useRef(false);
+  const loadSeqRef = useRef(0);
+  const abortRef = useRef(null);
+  const onTokenChangeRef = useRef(onTokenChange);
+  const onAnswerChangeRef = useRef(onAnswerChange);
+  const onVerifiedChangeRef = useRef(onVerifiedChange);
 
-  const setVerified = useCallback(
-    (ok) => {
-      onVerifiedChange?.(ok);
-    },
-    [onVerifiedChange],
-  );
+  useEffect(() => {
+    onTokenChangeRef.current = onTokenChange;
+  }, [onTokenChange]);
+  useEffect(() => {
+    onAnswerChangeRef.current = onAnswerChange;
+  }, [onAnswerChange]);
+  useEffect(() => {
+    onVerifiedChangeRef.current = onVerifiedChange;
+  }, [onVerifiedChange]);
+
+  const setVerified = useCallback((ok) => {
+    onVerifiedChangeRef.current?.(ok);
+  }, []);
 
   const resetVerification = useCallback(() => {
     setVerifyState('idle');
@@ -63,36 +81,53 @@ export default function LoginCaptchaField({
   }, [verifyEarly, token, answer, resetVerification, setVerified]);
 
   const loadChallenge = useCallback(async () => {
+    const seq = ++loadSeqRef.current;
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+
     setLoading(true);
     resetVerification();
     try {
-      const res = await fetch('/api/auth/captcha', { cache: 'no-store' });
+      const res = await fetch('/api/auth/captcha', { cache: 'no-store', signal: ac.signal });
       const data = await res.json().catch(() => ({}));
+      if (seq !== loadSeqRef.current) return;
+
       if (!res.ok) {
         setQuestion('Verification unavailable — refresh the page');
         setDummyHint('');
-        onTokenChange('');
+        onTokenChangeRef.current('');
         return;
       }
       setQuestion(data.question || 'Answer the question below');
-      setDummyHint(data.dummyAnswer != null ? `Dev test: answer is always ${data.dummyAnswer}.` : '');
-      onTokenChange(data.token || '');
-      if (data.dummyAnswer != null) {
-        onAnswerChange(String(data.dummyAnswer));
+      // Never surface CAPTCHA shortcuts in the UI.
+      setDummyHint('');
+      onTokenChangeRef.current(data.token || '');
+      if (process.env.NODE_ENV === 'development' && data.dummyAnswer != null) {
+        onAnswerChangeRef.current(String(data.dummyAnswer));
       } else {
-        onAnswerChange('');
+        onAnswerChangeRef.current('');
       }
-    } catch {
+    } catch (err) {
+      if (err?.name === 'AbortError') return;
+      if (seq !== loadSeqRef.current) return;
       setQuestion('Verification unavailable — refresh the page');
-      onTokenChange('');
+      onTokenChangeRef.current('');
     } finally {
-      setLoading(false);
+      if (seq === loadSeqRef.current) setLoading(false);
     }
-  }, [onAnswerChange, onTokenChange, resetVerification]);
+  }, [resetVerification]);
 
+  // Mount once (plus remount when parent bumps key=). Do NOT depend on loadChallenge
+  // identity — that used to re-fetch and race with an in-flight token.
   useEffect(() => {
-    loadChallenge();
-  }, [loadChallenge]);
+    void loadChallenge();
+    return () => {
+      loadSeqRef.current += 1;
+      abortRef.current?.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only load
+  }, []);
 
   useEffect(() => {
     if (!verifyEarly) return;
@@ -109,7 +144,7 @@ export default function LoginCaptchaField({
       className={cn(
         'bg-muted/40 gap-2 rounded-lg border p-3.5',
         verifyState === 'valid' && 'border-green-600/30',
-        verifyState === 'invalid' && 'border-destructive/40'
+        verifyState === 'invalid' && 'border-destructive/40',
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -121,7 +156,7 @@ export default function LoginCaptchaField({
           type="button"
           variant="ghost"
           size="icon-sm"
-          onClick={loadChallenge}
+          onClick={() => void loadChallenge()}
           disabled={disabled || loading}
           aria-label="New verification question"
           title="New question"
@@ -159,7 +194,7 @@ export default function LoginCaptchaField({
             'm-0 flex items-start gap-1.5 text-sm leading-relaxed',
             verifyState === 'valid' && 'text-green-700 dark:text-green-400',
             verifyState === 'invalid' && 'text-destructive',
-            verifyState !== 'valid' && verifyState !== 'invalid' && 'text-muted-foreground'
+            verifyState !== 'valid' && verifyState !== 'invalid' && 'text-muted-foreground',
           )}
           role="status"
         >

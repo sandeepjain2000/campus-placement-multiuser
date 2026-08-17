@@ -40,6 +40,7 @@ export async function POST(request) {
     title: 'Internship marked complete',
     body: `${row.title} was marked completed. You can rate the employer and share your endorsement.`,
     link: '/candidate/offers',
+    category: 'application',
   });
 
   try {

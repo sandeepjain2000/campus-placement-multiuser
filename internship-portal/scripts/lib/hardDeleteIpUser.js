@@ -19,8 +19,10 @@ const COUNT_QUERIES = {
   points_ledger: `SELECT count(*)::int AS n FROM ip_points_ledger WHERE user_id = $1`,
   password_resets: `SELECT count(*)::int AS n FROM ip_password_resets WHERE user_id = $1`,
   login_events: `SELECT count(*)::int AS n FROM ip_login_events WHERE user_id = $1`,
+  auth_sessions: `SELECT count(*)::int AS n FROM ip_auth_sessions WHERE user_id = $1`,
   viral_shares: `SELECT count(*)::int AS n FROM ip_viral_shares WHERE user_id = $1`,
   feature_idea_votes: `SELECT count(*)::int AS n FROM ip_feature_idea_votes WHERE user_id = $1`,
+  feature_idea_comments: `SELECT count(*)::int AS n FROM ip_feature_idea_comments WHERE author_user_id = $1`,
   referrals_as_referrer: `SELECT count(*)::int AS n FROM ip_referrals WHERE referrer_user_id = $1`,
   referrals_as_referred: `SELECT count(*)::int AS n FROM ip_referrals WHERE referred_user_id = $1`,
 };
@@ -274,7 +276,13 @@ async function hardDeleteIpUser(client, opts = {}) {
     await run(`points_ledger`, `DELETE FROM ip_points_ledger WHERE user_id = $1`, [userId]);
     await run(`password_resets`, `DELETE FROM ip_password_resets WHERE user_id = $1`, [userId]);
     await run(`login_events`, `DELETE FROM ip_login_events WHERE user_id = $1`, [userId]);
+    await run(`auth_sessions`, `DELETE FROM ip_auth_sessions WHERE user_id = $1`, [userId]);
     await run(`feature_idea_votes`, `DELETE FROM ip_feature_idea_votes WHERE user_id = $1`, [userId]);
+    await run(
+      'feature_idea_comments',
+      `DELETE FROM ip_feature_idea_comments WHERE author_user_id = $1`,
+      [userId],
+    );
     await run(
       'feature_ideas_null_author',
       `UPDATE ip_feature_ideas SET author_user_id = NULL WHERE author_user_id = $1`,

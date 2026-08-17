@@ -4,6 +4,15 @@ import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { jsonError, jsonOk } from '@/lib/apiAuth';
 
+function passwordMeetsRules(pw) {
+  return (
+    pw.length >= 8 &&
+    /[A-Z]/.test(pw) &&
+    /[0-9]/.test(pw) &&
+    /[^A-Za-z0-9]/.test(pw)
+  );
+}
+
 export async function POST(request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return jsonError('Sign in required', 401);
@@ -18,6 +27,11 @@ export async function POST(request) {
   const currentPassword = String(body.currentPassword || '');
   const newPassword = String(body.newPassword || '');
   if (newPassword.length < 8) return jsonError('New password must be at least 8 characters');
+  if (!passwordMeetsRules(newPassword)) {
+    return jsonError(
+      'New password must include at least 1 uppercase letter, 1 number, and 1 special character',
+    );
+  }
 
   const result = await query(`SELECT id, password_hash FROM ip_users WHERE id = $1 LIMIT 1`, [session.user.id]);
   const user = result.rows[0];

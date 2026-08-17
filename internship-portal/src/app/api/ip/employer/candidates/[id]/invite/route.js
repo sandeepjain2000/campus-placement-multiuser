@@ -29,6 +29,7 @@ export async function POST(request, { params }) {
     title: `${emp.rows[0].company_name} invited you to apply`,
     body: internship.rows[0].title,
     link: `/candidate/internships/${internshipId}`,
+    category: 'application',
   });
 
   const threadId = newId('ip_thread');

@@ -2,7 +2,7 @@
 
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,7 +12,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AuthShell from '@/components/ip/AuthShell';
-import { verifyCaptchaAnswer } from '@/lib/captchaClient';
+import { readCaptchaField, verifyCaptchaAnswer } from '@/lib/captchaClient';
 
 export default function SuperAdminLoginPage() {
   const { data: session, status } = useSession();
@@ -22,7 +22,7 @@ export default function SuperAdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
-  const [captchaKey, setCaptchaKey] = useState(0);
+  const captchaFieldRef = useRef(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -41,30 +41,25 @@ export default function SuperAdminLoginPage() {
     setError('');
     setLoading(true);
     try {
-      if (!captchaToken) {
+      const challenge = readCaptchaField(captchaFieldRef, captchaToken, captchaAnswer);
+      if (!challenge.token) {
         setError('Verification is still loading. Wait a moment, then try again.');
         return;
       }
-      const check = await verifyCaptchaAnswer(captchaToken, captchaAnswer);
+      const check = await verifyCaptchaAnswer(challenge.token, challenge.answer);
       if (!check.ok) {
         setError(check.error || 'Incorrect verification answer. Refresh the question and try again.');
-        setCaptchaAnswer('');
-        setCaptchaKey((k) => k + 1);
         return;
       }
       const res = await signIn('credentials', {
         redirect: false,
         email,
         password,
-        captchaToken: check.gate || captchaToken,
-        captchaAnswer: check.gate ? '1' : captchaAnswer,
+        captchaToken: check.gate || challenge.token,
+        captchaAnswer: check.gate ? '1' : challenge.answer,
       });
       if (res?.error) {
         setError(res.error);
-        if (String(res.error).toLowerCase().includes('captcha') || String(res.error).toLowerCase().includes('verification')) {
-          setCaptchaAnswer('');
-          setCaptchaKey((k) => k + 1);
-        }
         return;
       }
       const sess = await fetch('/api/auth/session').then((r) => r.json());
@@ -127,7 +122,7 @@ export default function SuperAdminLoginPage() {
               </InputGroup>
             </Field>
             <LoginCaptchaField
-              key={captchaKey}
+              ref={captchaFieldRef}
               token={captchaToken}
               answer={captchaAnswer}
               onTokenChange={setCaptchaToken}

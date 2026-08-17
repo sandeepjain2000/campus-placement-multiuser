@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { requireSession, jsonError, jsonOk } from '@/lib/apiAuth';
+import { chargePublishPoints } from '@/lib/chargePublishPoints';
 
 const EDITABLE_FIELDS = [
   'title', 'description', 'location', 'work_mode', 'stipend_inr', 'duration_months', 'start_date',
@@ -64,16 +65,13 @@ export async function PUT(request, { params }) {
     sets.push(`questions = $${values.length}::jsonb`);
   }
   if (sets.length) {
-    // Consume a free post credit when moving into published from a non-published state
+    // Debit points when moving into published from a non-published state
     if (normalized.status === 'published' && existing.status !== 'published') {
-      const credits = await query(`SELECT free_post_credits FROM ip_users WHERE id = $1`, [session.user.id]);
-      if (Number(credits.rows[0]?.free_post_credits || 0) < 1) {
-        return jsonError('No free posting credits left. Convert points before publishing.', 403);
-      }
-      await query(
-        `UPDATE ip_users SET free_post_credits = GREATEST(free_post_credits - 1, 0), updated_at = now() WHERE id = $1`,
-        [session.user.id],
-      );
+      const spendErr = await chargePublishPoints(session.user.id, {
+        action: 'republish',
+        internshipId: id,
+      });
+      if (spendErr) return jsonError(spendErr, 403);
     }
     await query(`UPDATE ip_internships SET ${sets.join(', ')}, updated_at = now() WHERE id = $1`, values);
   }

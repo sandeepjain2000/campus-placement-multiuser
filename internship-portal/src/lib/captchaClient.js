@@ -1,3 +1,15 @@
+/** Read token + typed answer from LoginCaptchaField (avoids stale React state / autofill). */
+export function readCaptchaField(fieldRef, fallbackToken = '', fallbackAnswer = '') {
+  const fromField = fieldRef?.current?.getChallenge?.();
+  if (fromField?.token) return fromField;
+  return {
+    token: String(fallbackToken || ''),
+    answer: String(fallbackAnswer ?? '')
+      .replace(/[^\d-]/g, '')
+      .trim(),
+  };
+}
+
 /**
  * Client-side helper to verify captcha before login/register continues.
  * @returns {Promise<{ ok: boolean, error?: string, code?: string, gate?: string }>}

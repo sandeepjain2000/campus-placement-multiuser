@@ -23,7 +23,7 @@ export async function GET(request) {
       where.push(`p.status = $${params.length}`);
     }
     const result = await query(
-      `SELECT p.*, i.title, e.company_name
+      `SELECT p.*, i.title, e.company_name, e.work_email, e.website
        FROM ip_linkedin_promotions p
        JOIN ip_internships i ON i.id = p.internship_id
        JOIN ip_employers e ON e.id = p.employer_id

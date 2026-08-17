@@ -7,23 +7,36 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import PageHeader from '@/components/ip/PageHeader';
+import IpTablePagination from '@/components/ip/IpTablePagination';
+import { useClientPagination } from '@/hooks/useClientPagination';
+import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
+
+const PAGE_SIZE = 10;
 
 const STATUS_OPTIONS = ['applied', 'shortlisted', 'interviewing', 'rejected', 'hired', 'completed'];
 const STATUS_VARIANT = {
   applied: 'outline', shortlisted: 'default', interviewing: 'default', hired: 'default',
   rejected: 'destructive', offered: 'default', completed: 'default',
 };
+const STATUS_ACTIONS = {
+  applied: 'restore',
+  shortlisted: 'shortlist',
+  interviewing: 'review',
+  rejected: 'reject',
+  hired: 'select',
+};
 
 export default function ApplicantsPipelinePage() {
   const { id } = useParams();
   const [internship, setInternship] = useState(null);
   const [applicants, setApplicants] = useState([]);
+  const { page, setPage, totalPages, total, pageItems, serialOffset } = useClientPagination(applicants, PAGE_SIZE);
   const [offerFor, setOfferFor] = useState(null);
   const [offerForm, setOfferForm] = useState({ roleTitle: '', stipendInr: '', startDate: '', validUntil: '', letterUrl: '', message: '' });
   const [q, setQ] = useState('');
@@ -101,13 +114,15 @@ export default function ApplicantsPipelinePage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[3rem]">#</TableHead>
                 <TableHead>Candidate</TableHead><TableHead>College</TableHead><TableHead>Match</TableHead>
                 <TableHead>Answers</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {applicants.map((a) => (
+              {pageItems.map((a, idx) => (
                 <TableRow key={a.id}>
+                  <TableCell className="text-muted-foreground">{serialOffset + idx + 1}</TableCell>
                   <TableCell className="font-medium">
                     {a.name}
                     <div className="text-xs text-muted-foreground">{a.skills?.join(', ')}</div>
@@ -125,13 +140,18 @@ export default function ApplicantsPipelinePage() {
                   <TableCell><Badge variant={STATUS_VARIANT[a.status] || 'outline'}>{a.status}</Badge></TableCell>
                   <TableCell className="space-x-1 whitespace-nowrap">
                     {STATUS_OPTIONS.filter((s) => s !== a.status && s !== 'completed').map((s) => (
-                      <Button key={s} size="sm" variant="outline" onClick={() => setStatus(a.id, s)}>{s}</Button>
+                      <StandardTableIconAction
+                        key={s}
+                        action={STATUS_ACTIONS[s] || 'edit'}
+                        tooltip={`Move to ${s}`}
+                        onClick={() => setStatus(a.id, s)}
+                      />
                     ))}
                     {a.status === 'hired' || a.status === 'offered' ? (
-                      <Button size="sm" variant="secondary" onClick={() => markComplete(a.id)}>Mark complete</Button>
+                      <StandardTableIconAction action="complete" onClick={() => markComplete(a.id)} />
                     ) : null}
+                    <StandardTableIconAction action="offer" onClick={() => openOffer(a)} />
                     <Dialog open={offerFor?.id === a.id} onOpenChange={(open) => !open && setOfferFor(null)}>
-                      <DialogTrigger render={<Button size="sm" onClick={() => openOffer(a)}>Offer</Button>} />
                       <DialogContent>
                         <DialogHeader><DialogTitle>Send offer to {a.name}</DialogTitle></DialogHeader>
                         <div className="space-y-3">
@@ -150,9 +170,10 @@ export default function ApplicantsPipelinePage() {
                   </TableCell>
                 </TableRow>
               ))}
-              {!applicants.length ? <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">No applicants yet.</TableCell></TableRow> : null}
+              {!applicants.length ? <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground">No applicants yet.</TableCell></TableRow> : null}
             </TableBody>
           </Table>
+          <IpTablePagination page={page} totalPages={totalPages} total={total} pageSize={PAGE_SIZE} onPageChange={setPage} />
         </CardContent>
       </Card>
     </div>

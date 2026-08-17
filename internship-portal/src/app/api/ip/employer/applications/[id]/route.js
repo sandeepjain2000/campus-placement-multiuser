@@ -33,6 +33,7 @@ export async function PATCH(request, { params }) {
     title: `Application ${status}`,
     body: row.title,
     link: '/candidate/applications',
+    category: 'application',
   });
   return jsonOk({ ok: true });
 }

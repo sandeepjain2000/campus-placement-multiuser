@@ -38,6 +38,7 @@ export async function PATCH(request, { params }) {
     title: `Offer ${status}`,
     body: `${row.title}`,
     link: '/employer/offers',
+    category: 'application',
   });
 
   try {

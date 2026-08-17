@@ -5,8 +5,8 @@ import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const docs = path.join(root, 'public', 'seed-docs');
-const cvs = path.join(root, 'public', 'seed-cvs');
+const docs = path.join(root, 'public', 'sample-docs');
+const cvs = path.join(root, 'public', 'sample-cvs');
 fs.mkdirSync(docs, { recursive: true });
 fs.mkdirSync(cvs, { recursive: true });
 
@@ -65,4 +65,4 @@ fs.writeFileSync(path.join(cvs, 'cv-demo.docx'), buf);
 fs.writeFileSync(path.join(cvs, 'cv-aisha.docx'), buf);
 fs.unlinkSync(zip);
 fs.rmSync(tmp, { recursive: true, force: true });
-console.log('seed-docs:', fs.readdirSync(docs).join(', '));
+console.log('sample-docs:', fs.readdirSync(docs).join(', '));

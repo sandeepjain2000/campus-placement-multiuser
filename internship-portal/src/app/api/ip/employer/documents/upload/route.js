@@ -4,6 +4,7 @@ import { query } from '@/lib/db';
 import { newId } from '@/lib/ids';
 import { describeStorageError, isS3Configured, uploadIpBuffer } from '@/lib/s3';
 import { validateUploadBuffer, validateUploadMeta } from '@/lib/ipFileUpload';
+import { ensureIpDocumentAuditSchema } from '@/lib/ensureIpDocumentAuditSchema';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -11,6 +12,7 @@ export const runtime = 'nodejs';
 export async function POST(request) {
   const { session, error } = await requireSession(['employer']);
   if (error) return error;
+  await ensureIpDocumentAuditSchema();
 
   if (!isS3Configured()) {
     return NextResponse.json(
@@ -52,9 +54,9 @@ export async function POST(request) {
 
     const id = newId('ip_doc');
     await query(
-      `INSERT INTO ip_employer_documents (id, employer_id, doc_type, file_name, url)
-       VALUES ($1,$2,$3,$4,$5)`,
-      [id, emp.rows[0].id, docType, file.name || null, uploaded.fileUrl],
+      `INSERT INTO ip_employer_documents (id, employer_id, doc_type, file_name, url, file_size)
+       VALUES ($1,$2,$3,$4,$5,$6)`,
+      [id, emp.rows[0].id, docType, file.name || null, uploaded.fileUrl, Number(file.size) || null],
     );
 
     return NextResponse.json({

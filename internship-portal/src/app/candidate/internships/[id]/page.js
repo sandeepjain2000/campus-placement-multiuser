@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import PageHeader from '@/components/ip/PageHeader';
+import ValidationScoreButton from '@/components/ip/ValidationScoreButton';
 import { POINTS_PER_APPLICATION } from '@/lib/pointsEconomy';
 
 export default function InternshipDetailPage() {
@@ -21,7 +22,8 @@ export default function InternshipDetailPage() {
   const [applying, setApplying] = useState(false);
   const [answers, setAnswers] = useState({});
   const [saved, setSaved] = useState(false);
-  const [wallet, setWallet] = useState({ points: null, freeCredits: null });
+  const [wallet, setWallet] = useState({ points: null });
+  const [profileComplete, setProfileComplete] = useState(true);
 
   useEffect(() => {
     fetch(`/api/ip/candidate/internships/${id}`).then((r) => r.json()).then((d) => {
@@ -37,8 +39,8 @@ export default function InternshipDetailPage() {
     fetch('/api/ip/candidate/profile').then((r) => r.json()).then((d) => {
       setWallet({
         points: d.profile?.points ?? null,
-        freeCredits: d.profile?.application_allowance ?? null,
       });
+      setProfileComplete(Boolean(d.profile?.profile_complete));
     }).catch(() => {});
   }, [id]);
 
@@ -51,10 +53,21 @@ export default function InternshipDetailPage() {
     setSaved(!saved);
   }
 
+  const questions = Array.isArray(internship?.questions) ? internship.questions : [];
+
   async function apply() {
     setApplying(true);
     setError('');
     try {
+      if (questions.length) {
+        const missing = questions.some((q, idx) => {
+          const key = q.id || `q${idx}`;
+          return !String(answers[key] || '').trim();
+        });
+        if (missing) {
+          throw new Error('Please answer all screening questions before applying.');
+        }
+      }
       const res = await fetch('/api/ip/candidate/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,7 +76,7 @@ export default function InternshipDetailPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       if (typeof data.pointsRemaining === 'number') {
-        setWallet({ points: data.pointsRemaining, freeCredits: null });
+        setWallet({ points: data.pointsRemaining });
       }
       setMessage(`Applied successfully! Spent ${data.payment?.cost ?? POINTS_PER_APPLICATION} points.`);
       setTimeout(() => router.push('/candidate/applications'), 1000);
@@ -76,8 +89,6 @@ export default function InternshipDetailPage() {
 
   if (!internship) return <div className="p-8 text-muted-foreground">Loading…</div>;
 
-  const questions = Array.isArray(internship.questions) ? internship.questions : [];
-
   return (
     <div className="space-y-4">
       <Card>
@@ -86,6 +97,13 @@ export default function InternshipDetailPage() {
             <div>
               <CardTitle className="text-xl">{internship.title}</CardTitle>
               <CardDescription>{internship.company_name} · {internship.location || internship.work_mode}</CardDescription>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <ValidationScoreButton
+                  score={internship.validation_score}
+                  label={internship.validation_label}
+                  breakdown={internship.validation_breakdown}
+                />
+              </div>
             </div>
             <Button size="sm" variant="outline" onClick={toggleSave}>{saved ? 'Saved' : 'Save'}</Button>
           </div>
@@ -93,6 +111,18 @@ export default function InternshipDetailPage() {
         <CardContent className="space-y-4">
           {error ? <Alert variant="destructive"><AlertTitle>Could not apply</AlertTitle><AlertDescription>{error}</AlertDescription></Alert> : null}
           {message ? <Alert><AlertDescription>{message}</AlertDescription></Alert> : null}
+          {!profileComplete ? (
+            <Alert>
+              <AlertTitle>Fill your profile</AlertTitle>
+              <AlertDescription>
+                You can still apply. Completing your{' '}
+                <Link href="/candidate/profile" className="underline font-medium">
+                  profile
+                </Link>{' '}
+                helps employers and improves your match score.
+              </AlertDescription>
+            </Alert>
+          ) : null}
           <div className="flex gap-2 flex-wrap">
             <Badge variant="outline">
               {internship.stipend_type === 'incentive'
@@ -154,8 +184,8 @@ export default function InternshipDetailPage() {
           <Alert>
             <AlertTitle>Application cost</AlertTitle>
             <AlertDescription>
-              Each apply spends {POINTS_PER_APPLICATION} points directly (you have {wallet.points ?? '—'}).
-              No convert step — earn points via referrals and sharing.
+              Each apply costs {POINTS_PER_APPLICATION} points
+              {wallet.points != null ? ` (you have ${wallet.points})` : ''}.
             </AlertDescription>
           </Alert>
 

@@ -49,7 +49,7 @@ export function isDummyCaptchaEnabled() {
 }
 
 /**
- * @returns {{ question: string, token: string, dummyAnswer?: number }}
+ * @returns {{ question: string, token: string }}
  */
 export function createLoginCaptcha() {
   const a = isDummyCaptchaEnabled() ? DUMMY_CAPTCHA_A : Math.floor(Math.random() * 9) + 1;
@@ -57,14 +57,10 @@ export function createLoginCaptcha() {
   const exp = Date.now() + TTL_MS;
   const body = Buffer.from(JSON.stringify({ a, b, exp })).toString('base64url');
   const sig = signBody(body);
-  const result = {
+  return {
     question: `What is ${a} + ${b}?`,
     token: `${body}${SEP}${sig}`,
   };
-  if (isDummyCaptchaEnabled() && process.env.NODE_ENV === 'development') {
-    result.dummyAnswer = DUMMY_CAPTCHA_ANSWER;
-  }
-  return result;
 }
 
 /**

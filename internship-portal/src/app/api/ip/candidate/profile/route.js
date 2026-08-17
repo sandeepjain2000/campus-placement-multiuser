@@ -1,14 +1,18 @@
 import { query } from '@/lib/db';
 import { requireSession, jsonError, jsonOk } from '@/lib/apiAuth';
+import { ensureIpCandidateProfileSchema } from '@/lib/ensureIpCandidateProfileSchema';
 
 const EDITABLE_FIELDS = [
-  'name', 'phone', 'profile_picture_url', 'show_profile_picture', 'college', 'degree', 'specialization',
+  'name', 'first_name', 'middle_name', 'last_name', 'phone', 'phone_country_code',
+  'whatsapp_number', 'telegram_handle', 'profile_picture_url', 'show_profile_picture', 'college', 'degree', 'specialization',
   'study_status', 'graduation_year', 'cgpa', 'city', 'state', 'skills', 'resume_url', 'linkedin_url',
-  'github_url', 'portfolio_url', 'preferred_work_mode', 'preferred_locations', 'availability_date',
+  'github_url', 'portfolio_url', 'personal_website', 'preferred_work_mode', 'preferred_locations', 'availability_date',
   'searchable', 'show_completed_internships', 'whatsapp_opt_in', 'telegram_opt_in',
   'has_wired_broadband', 'has_dedicated_laptop', 'preferred_hours_start', 'preferred_hours_end',
-  'ongoing_commitment', 'ongoing_commitment_note',
+  'ongoing_commitment', 'ongoing_commitment_note', 'ongoing_commitment_choice',
 ];
+
+const COMMITMENT_CHOICES = new Set(['', 'none', 'other_internship', 'offline_classes', 'part_time_work', 'other']);
 
 const REQUIRED_FOR_COMPLETE = ['name', 'phone', 'college', 'degree', 'city', 'resume_url'];
 
@@ -22,6 +26,7 @@ function normalizeOptionalBool(value) {
 export async function GET() {
   const { session, error } = await requireSession(['candidate']);
   if (error) return error;
+  await ensureIpCandidateProfileSchema();
   const result = await query(
     `SELECT c.*, u.email as account_email, u.points, u.application_allowance, u.referral_code, u.profile_complete
      FROM ip_candidates c JOIN ip_users u ON u.id = c.user_id
@@ -29,12 +34,25 @@ export async function GET() {
     [session.user.id],
   );
   if (!result.rows[0]) return jsonError('Profile not found', 404);
-  return jsonOk({ profile: result.rows[0] });
+  const profile = result.rows[0];
+  if (!profile.first_name && profile.name) {
+    const parts = String(profile.name).trim().split(/\s+/);
+    profile.first_name = parts.shift() || '';
+    profile.last_name = parts.pop() || '';
+    profile.middle_name = parts.join(' ');
+  }
+  profile.phone_country_code ||= '+91';
+  if (!profile.ongoing_commitment_choice) {
+    if (profile.ongoing_commitment === true) profile.ongoing_commitment_choice = 'other_internship';
+    else if (profile.ongoing_commitment === false) profile.ongoing_commitment_choice = 'none';
+  }
+  return jsonOk({ profile });
 }
 
 export async function PUT(request) {
   const { session, error } = await requireSession(['candidate']);
   if (error) return error;
+  await ensureIpCandidateProfileSchema();
   let body;
   try {
     body = await request.json();
@@ -53,8 +71,26 @@ export async function PUT(request) {
     let value = body[field];
     if (optionalBools.has(field)) value = normalizeOptionalBool(value);
     if (field === 'show_profile_picture') value = value !== false && value !== 'false';
+    if (field === 'ongoing_commitment_choice') {
+      value = COMMITMENT_CHOICES.has(value) ? value : '';
+      value = value === '' ? null : value;
+    }
     params.push(value);
     sets.push(`${field} = $${params.length}`);
+  }
+  if (body.ongoing_commitment_choice !== undefined && body.ongoing_commitment === undefined) {
+    const choice = body.ongoing_commitment_choice;
+    const legacyBool = choice === 'none' ? false : choice ? true : null;
+    params.push(legacyBool);
+    sets.push(`ongoing_commitment = $${params.length}`);
+  }
+  if (body.first_name !== undefined || body.middle_name !== undefined || body.last_name !== undefined) {
+    const composed = [body.first_name, body.middle_name, body.last_name]
+      .map((part) => String(part || '').trim())
+      .filter(Boolean)
+      .join(' ');
+    params.push(composed);
+    sets.push(`name = $${params.length}`);
   }
   if (sets.length) {
     await query(`UPDATE ip_candidates SET ${sets.join(', ')}, updated_at = now() WHERE user_id = $1`, params);

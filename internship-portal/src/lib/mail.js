@@ -2,7 +2,7 @@
  * ZeptoMail primary with SMTP backup (Placement Hub pattern, simplified).
  *
  * Recipient resolution (mirrors campus-placement-multiuser mailer):
- * 1. OUTBOUND_EMAIL_OVERRIDE — when set, ALL outbound mail goes there (QA / YOPmail)
+ * 1. OUTBOUND_EMAIL_OVERRIDE — when set, ALL outbound mail goes there (QA inbox / Zoho)
  * 2. Else send to the intended address; on failure, optional IP_MAIL_TEST_FALLBACK
  */
 import nodemailer from 'nodemailer';
@@ -10,7 +10,8 @@ import { getZeptoFrom, isZeptoConfigured, sendViaZeptoMail } from '@/lib/zeptoma
 
 export { isZeptoConfigured };
 
-const DEFAULT_YOPMAIL_FALLBACK = 'internship-portal-test@yopmail.com';
+/** Default QA inbox when override/fallback env is unset (Zoho Placement Hub support). */
+const DEFAULT_QA_MAIL_FALLBACK = 'support.placementhub@placementhub.online';
 
 function smtpTransport() {
   const user = process.env.SMTP_USER;
@@ -30,11 +31,11 @@ function smtpFrom() {
   return process.env.EMAIL_FROM || process.env.SMTP_USER || null;
 }
 
-/** YOPmail (or other) — failure-only fallback when primary intended send fails. */
+/** Failure-only fallback when primary intended send fails (and override is unset). */
 export function getMailTestFallback() {
   const raw = process.env.IP_MAIL_TEST_FALLBACK;
   if (raw === '0' || raw === 'off' || raw === 'false') return null;
-  const value = String(raw || DEFAULT_YOPMAIL_FALLBACK).trim().toLowerCase();
+  const value = String(raw || DEFAULT_QA_MAIL_FALLBACK).trim().toLowerCase();
   return value.includes('@') ? value : null;
 }
 

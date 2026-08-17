@@ -18,13 +18,25 @@ export default function NewInternshipPage() {
     startDate: '', endDate: '', skills: '', degree: '', minCgpa: '',
     workHoursStart: '', workHoursEnd: '', engagementType: '', weeklyHours: '',
     stipendType: '', incentiveBasis: '',
-    screeningQ1: '', screeningQ2: '', screeningQ3: '',
   });
+  const [screeningQuestions, setScreeningQuestions] = useState([]);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
   function set(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
+  }
+
+  function addScreeningQuestion() {
+    setScreeningQuestions((qs) => [...qs, '']);
+  }
+
+  function updateScreeningQuestion(idx, value) {
+    setScreeningQuestions((qs) => qs.map((q, i) => (i === idx ? value : q)));
+  }
+
+  function removeScreeningQuestion(idx) {
+    setScreeningQuestions((qs) => qs.filter((_, i) => i !== idx));
   }
 
   async function submit(e, status) {
@@ -46,7 +58,7 @@ export default function NewInternshipPage() {
             degree: form.degree || undefined,
             minCgpa: form.minCgpa || undefined,
           },
-          questions: [form.screeningQ1, form.screeningQ2, form.screeningQ3]
+          questions: screeningQuestions
             .map((prompt, idx) => ({ id: `q${idx + 1}`, prompt: String(prompt || '').trim(), type: 'text' }))
             .filter((q) => q.prompt),
         }),
@@ -161,10 +173,27 @@ export default function NewInternshipPage() {
               </TabsContent>
 
               <TabsContent value="screening" className="grid gap-4">
-                <p className="text-sm text-muted-foreground">Optional screening questions shown on apply (answers visible on applicants).</p>
-                <Field><FieldLabel>Question 1</FieldLabel><Input value={form.screeningQ1} onChange={(e) => set('screeningQ1', e.target.value)} placeholder="e.g. Why this internship?" /></Field>
-                <Field><FieldLabel>Question 2</FieldLabel><Input value={form.screeningQ2} onChange={(e) => set('screeningQ2', e.target.value)} /></Field>
-                <Field><FieldLabel>Question 3</FieldLabel><Input value={form.screeningQ3} onChange={(e) => set('screeningQ3', e.target.value)} /></Field>
+                <p className="text-sm text-muted-foreground">
+                  Optional. Zero questions is fine. If you add any, candidates must answer all to apply.
+                </p>
+                {screeningQuestions.map((q, idx) => (
+                  <Field key={`sq-${idx}`}>
+                    <div className="mb-1 flex items-center justify-between gap-2">
+                      <FieldLabel>Question {idx + 1}</FieldLabel>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removeScreeningQuestion(idx)}>
+                        Remove
+                      </Button>
+                    </div>
+                    <Input
+                      value={q}
+                      onChange={(e) => updateScreeningQuestion(idx, e.target.value)}
+                      placeholder="e.g. Why this internship?"
+                    />
+                  </Field>
+                ))}
+                <Button type="button" variant="outline" onClick={addScreeningQuestion}>
+                  Add screening question
+                </Button>
               </TabsContent>
             </Tabs>
 

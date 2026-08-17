@@ -1,14 +1,28 @@
 import { query } from '@/lib/db';
 import { requireSession, jsonError, jsonOk } from '@/lib/apiAuth';
+import { ensureIpNotificationCategorySchema } from '@/lib/ensureIpNotificationCategorySchema';
 
-export async function GET() {
+export async function GET(request) {
   const { session, error } = await requireSession(['candidate', 'employer', 'superadmin']);
   if (error) return error;
+  await ensureIpNotificationCategorySchema();
+  const withMeta = new URL(request.url).searchParams.get('meta') === '1';
   const result = await query(
-    `SELECT * FROM ip_notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 100`,
+    `SELECT * FROM ip_notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 200`,
     [session.user.id],
   );
-  return jsonOk({ items: result.rows });
+  const items = result.rows;
+  if (!withMeta) return jsonOk({ items });
+
+  const unread = items.filter((n) => !n.read_at).length;
+  return jsonOk({
+    items,
+    meta: {
+      total: items.length,
+      unresolved: unread,
+      resolved: items.length - unread,
+    },
+  });
 }
 
 export async function PATCH(request) {
@@ -21,12 +35,25 @@ export async function PATCH(request) {
     return jsonError('Invalid JSON');
   }
   if (body.markAllRead) {
-    await query(`UPDATE ip_notifications SET read_at = now() WHERE user_id = $1 AND read_at IS NULL`, [session.user.id]);
+    await query(`UPDATE ip_notifications SET read_at = now() WHERE user_id = $1 AND read_at IS NULL`, [
+      session.user.id,
+    ]);
     return jsonOk({ ok: true });
   }
-  if (body.id) {
-    await query(`UPDATE ip_notifications SET read_at = now() WHERE id = $1 AND user_id = $2`, [body.id, session.user.id]);
-    return jsonOk({ ok: true });
-  }
-  return jsonError('id or markAllRead is required');
+
+  const ids = Array.isArray(body.ids)
+    ? body.ids.map(String).filter(Boolean)
+    : body.id
+      ? [String(body.id)]
+      : [];
+  if (!ids.length) return jsonError('id, ids, or markAllRead is required');
+
+  const result = await query(
+    `UPDATE ip_notifications
+     SET read_at = now()
+     WHERE user_id = $1 AND id = ANY($2::text[]) AND read_at IS NULL
+     RETURNING id`,
+    [session.user.id, ids],
+  );
+  return jsonOk({ ok: true, processed: result.rows.length });
 }

@@ -26,6 +26,20 @@ import {
   ClipboardCheck,
   CreditCard,
   RotateCcw,
+  Pause,
+  Rocket,
+  TrendingUp,
+  MessageSquare,
+  FileSignature,
+  CheckCheck,
+  Flag,
+  ShieldCheck,
+  XOctagon,
+  Bookmark,
+  Share2,
+  MessageCircle,
+  Search,
+  UserPlus,
 } from 'lucide-react';
 import { shouldShowFilterCount } from '@/lib/filterBadgeLabel';
 import { Button } from '@/components/ui/button';
@@ -58,6 +72,20 @@ const META = {
   confirm: { label: 'Send confirmation email', Icon: Send },
   restore: { label: 'Restore tie-up', Icon: RotateCcw },
   pocs: { label: 'Manage points of contact', Icon: Users },
+  pause: { label: 'Pause', Icon: Pause },
+  publish: { label: 'Publish', Icon: Rocket },
+  promote: { label: 'Promote + verify', Icon: TrendingUp },
+  message: { label: 'Message', Icon: MessageSquare },
+  offer: { label: 'Offer', Icon: FileSignature },
+  complete: { label: 'Mark complete', Icon: CheckCheck },
+  flag: { label: 'Flag', Icon: Flag },
+  verify: { label: 'Verify', Icon: ShieldCheck },
+  fail: { label: 'Fail', Icon: XOctagon },
+  save: { label: 'Save', Icon: Bookmark },
+  linkedin: { label: 'Share on LinkedIn', Icon: Share2 },
+  whatsapp: { label: 'Share on WhatsApp', Icon: MessageCircle },
+  search: { label: 'Search', Icon: Search },
+  invite: { label: 'Invite to apply', Icon: UserPlus },
 };
 
 function mapVariant(variant) {

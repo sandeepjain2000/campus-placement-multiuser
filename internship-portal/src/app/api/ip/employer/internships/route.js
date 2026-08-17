@@ -1,6 +1,8 @@
 import { query } from '@/lib/db';
 import { requireSession, jsonError, jsonOk } from '@/lib/apiAuth';
 import { newId } from '@/lib/ids';
+import { chargePublishPoints } from '@/lib/chargePublishPoints';
+import { POINTS_PER_POST } from '@/lib/pointsEconomy';
 
 export async function GET() {
   const { session, error } = await requireSession(['employer']);
@@ -41,9 +43,9 @@ export async function POST(request) {
 
   const publishing = body.status !== 'draft';
   if (publishing) {
-    const credits = await query(`SELECT free_post_credits FROM ip_users WHERE id = $1`, [session.user.id]);
-    if (Number(credits.rows[0]?.free_post_credits || 0) < 1) {
-      return jsonError('No free posting credits left. Convert points on Refer & earn, or save as draft.', 403);
+    const spendErr = await chargePublishPoints(session.user.id, { action: 'create_publish' });
+    if (spendErr) {
+      return jsonError(`${spendErr} Or save as draft.`, 403);
     }
   }
 
@@ -74,12 +76,5 @@ export async function POST(request) {
     ],
   );
 
-  if (publishing) {
-    await query(
-      `UPDATE ip_users SET free_post_credits = GREATEST(free_post_credits - 1, 0), updated_at = now() WHERE id = $1`,
-      [session.user.id],
-    );
-  }
-
-  return jsonOk({ ok: true, id }, 201);
+  return jsonOk({ ok: true, id, pointsCharged: publishing ? POINTS_PER_POST : 0 }, 201);
 }

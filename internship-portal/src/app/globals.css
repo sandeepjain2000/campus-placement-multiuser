@@ -2,10 +2,9 @@
    Campus Placement SaaS — Design System
    Premium dark/light mode with glassmorphism
    ============================================ */
+/* Google Fonts load via <link> in layout.js (avoids CSS @import order warning). */
 
 @import '../styles/shadcn.css';
-
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 /* ============================================
    CSS Custom Properties (Design Tokens)

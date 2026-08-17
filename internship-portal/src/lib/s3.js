@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 
 export function isS3Configured() {
@@ -75,9 +75,15 @@ export async function uploadIpBuffer({ keyPrefix, fileName, contentType, body })
   );
 
   return {
-    fileUrl: buildS3ObjectPublicUrl(bucket, region, key),
+    fileUrl: `/api/ip/files?key=${encodeURIComponent(key)}`,
     key,
     bucket,
     contentType: resolvedType,
   };
+}
+
+export async function getIpObject(key) {
+  if (!isS3Configured()) throw new Error('S3 is not configured (missing AWS env vars).');
+  if (!String(key).startsWith('internship-portal/')) throw new Error('Invalid file key');
+  return getClient().send(new GetObjectCommand({ Bucket: process.env.S3_BUCKET_NAME, Key: key }));
 }

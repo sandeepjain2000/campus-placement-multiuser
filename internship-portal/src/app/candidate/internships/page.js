@@ -1,41 +1,76 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { LayoutGrid, List } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { useRouter } from 'next/navigation';
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import PageHeader from '@/components/ip/PageHeader';
-import { cn } from '@/lib/utils';
+  Bookmark,
+  Eye,
+  LayoutGrid,
+  List,
+  MapPin,
+  Search,
+  Shield,
+} from 'lucide-react';
+import ValidationScoreButton from '@/components/ip/ValidationScoreButton';
+import { useClientPagination } from '@/hooks/useClientPagination';
+import '@/components/ip/ip-browse-internships-gemini.css';
+
+const PAGE_SIZE = 10;
 
 const WORK_MODES = [
-  { value: 'all', label: 'All work modes' },
+  { value: 'all', label: 'All modes' },
   { value: 'Remote', label: 'Remote' },
   { value: 'Hybrid', label: 'Hybrid' },
   { value: 'Onsite', label: 'Onsite' },
   { value: 'On-site', label: 'On-site' },
 ];
 
+function stipendLabel(i) {
+  if (i.stipend_inr) return `₹${i.stipend_inr}/mo`;
+  if (i.stipend_type === 'incentive') return 'Incentive';
+  return 'Unpaid';
+}
+
+function MatchCell({ score }) {
+  if (score == null) {
+    return (
+      <div className="ip-br-match">
+        <span className="ip-br-match__pct is-na">—</span>
+        <div className="ip-br-match__bar" aria-hidden>
+          <div className="ip-br-match__fill is-mid" style={{ width: '0%' }} />
+        </div>
+      </div>
+    );
+  }
+  const high = score >= 90;
+  return (
+    <div className="ip-br-match">
+      <span className={`ip-br-match__pct ${high ? 'is-high' : 'is-mid'}`}>{score}%</span>
+      <div className="ip-br-match__bar" aria-hidden>
+        <div
+          className={`ip-br-match__fill ${high ? 'is-high' : 'is-mid'}`}
+          style={{ width: `${Math.max(0, Math.min(100, score))}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function BrowseInternshipsPage() {
+  const router = useRouter();
   const [items, setItems] = useState([]);
   const [q, setQ] = useState('');
   const [minStipend, setMinStipend] = useState('');
   const [workMode, setWorkMode] = useState('all');
   const [minMatch, setMinMatch] = useState('');
+  const [minValidation, setMinValidation] = useState('');
   const [savedOnly, setSavedOnly] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('list'); // list default
+  const [view, setView] = useState('list');
+  const { page, setPage, totalPages, total, pageItems, serialOffset } = useClientPagination(
+    items,
+    PAGE_SIZE
+  );
 
   async function load() {
     setLoading(true);
@@ -44,6 +79,7 @@ export default function BrowseInternshipsPage() {
     if (minStipend) params.set('minStipend', minStipend);
     if (workMode && workMode !== 'all') params.set('workMode', workMode);
     if (minMatch) params.set('minMatch', minMatch);
+    if (minValidation) params.set('minValidation', minValidation);
     if (savedOnly) params.set('savedOnly', '1');
     const res = await fetch(`/api/ip/candidate/internships?${params.toString()}`);
     const data = await res.json();
@@ -64,177 +100,306 @@ export default function BrowseInternshipsPage() {
     await load();
   }
 
+  const from = total ? (page - 1) * PAGE_SIZE + 1 : 0;
+  const to = Math.min(page * PAGE_SIZE, total);
+
   return (
-    <div className="space-y-4">
-      <PageHeader
-        title="Browse internships"
-        description="Filter by stipend, work mode, and match score. Eligibility never blocks applying."
-        actions={
-          <div className="flex gap-1 rounded-md border p-0.5">
-            <Button
-              type="button"
-              size="sm"
-              variant={view === 'list' ? 'default' : 'ghost'}
-              onClick={() => setView('list')}
-              aria-pressed={view === 'list'}
-            >
-              <List data-icon="inline-start" className="size-4" />
-              List
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={view === 'cards' ? 'default' : 'ghost'}
-              onClick={() => setView('cards')}
-              aria-pressed={view === 'cards'}
-            >
-              <LayoutGrid data-icon="inline-start" className="size-4" />
-              Cards
-            </Button>
+    <div className="ip-browse">
+      <div className="ip-br-top">
+        <div>
+          <h1>Browse internships</h1>
+          <p>Filter by stipend, work mode, match, and Validation Score.</p>
+        </div>
+        <div className="ip-br-seg" role="group" aria-label="View mode">
+          <button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>
+            <List className="size-4" />
+            List
+          </button>
+          <button type="button" aria-pressed={view === 'cards'} onClick={() => setView('cards')}>
+            <LayoutGrid className="size-4" />
+            Cards
+          </button>
+        </div>
+      </div>
+
+      <div className="ip-br-card ip-br-filters">
+        <div className="ip-br-filters__row">
+          <div className="ip-br-field ip-br-field--grow">
+            <span className="ip-br-field__icon" aria-hidden>
+              <Search className="size-4" />
+            </span>
+            <input
+              className="ip-br-input"
+              placeholder="Search title or company"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') load();
+              }}
+            />
           </div>
-        }
-      />
 
-      <Card>
-        <CardContent className="flex flex-wrap items-end gap-2 pt-4">
-          <Input
-            placeholder="Search title or company"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            className="max-w-xs"
-          />
-          <Input
-            placeholder="Min stipend (INR)"
-            type="number"
-            value={minStipend}
-            onChange={(e) => setMinStipend(e.target.value)}
-            className="max-w-[160px]"
-          />
-          <Select value={workMode} onValueChange={setWorkMode}>
-            <SelectTrigger className="min-w-[160px]" aria-label="Work mode">
-              <SelectValue placeholder="Work mode" />
-            </SelectTrigger>
-            <SelectContent>
-              {WORK_MODES.map((m) => (
-                <SelectItem key={m.value} value={m.value}>
-                  {m.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            placeholder="Min match %"
-            type="number"
-            value={minMatch}
-            onChange={(e) => setMinMatch(e.target.value)}
-            className="max-w-[120px]"
-          />
-          <label className="flex items-center gap-2 px-2 text-sm">
-            <Checkbox checked={savedOnly} onCheckedChange={(v) => setSavedOnly(Boolean(v))} />
-            Saved only
-          </label>
-          <Button onClick={load} disabled={loading}>
-            {loading ? 'Loading…' : 'Search'}
-          </Button>
-        </CardContent>
-      </Card>
+          <div className="ip-br-field ip-br-field--sm">
+            <span className="ip-br-field__icon" aria-hidden>
+              ₹
+            </span>
+            <input
+              className="ip-br-input"
+              placeholder="Min stipend"
+              type="number"
+              value={minStipend}
+              onChange={(e) => setMinStipend(e.target.value)}
+            />
+          </div>
 
-      {view === 'list' ? (
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">Results</CardTitle>
-            <CardDescription>{items.length} internship(s)</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Mode</TableHead>
-                  <TableHead>Stipend</TableHead>
-                  <TableHead className="min-w-[6.5rem]">Match</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.map((i) => (
-                  <TableRow key={i.id}>
-                    <TableCell className="font-medium">{i.title}</TableCell>
-                    <TableCell>{i.company_name}</TableCell>
-                    <TableCell>{i.work_mode || i.location || '—'}</TableCell>
-                    <TableCell>
-                      {i.stipend_inr
-                        ? `₹${i.stipend_inr}/mo`
-                        : i.stipend_type === 'incentive'
-                          ? 'Incentive'
-                          : 'Unpaid'}
-                    </TableCell>
-                    <TableCell className="min-w-[6.5rem]">
-                      <Badge variant="outline" className="min-w-fit overflow-visible">
-                        {i.match_score != null ? `${i.match_score}%` : '—'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="space-x-1 whitespace-nowrap">
-                      <Button size="sm" variant="ghost" onClick={() => toggleSave(i.id, i.saved)}>
-                        {i.saved ? 'Unsave' : 'Save'}
-                      </Button>
-                      <Button render={<Link href={`/candidate/internships/${i.id}`} />} size="sm">
-                        View &amp; apply
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+          <select
+            className="ip-br-select"
+            value={workMode}
+            onChange={(e) => setWorkMode(e.target.value)}
+            aria-label="Work mode"
+          >
+            {WORK_MODES.map((m) => (
+              <option key={m.value} value={m.value}>
+                {m.label}
+              </option>
+            ))}
+          </select>
+
+          <div className="ip-br-field ip-br-field--xs">
+            <input
+              className="ip-br-input"
+              placeholder="Min match %"
+              type="number"
+              value={minMatch}
+              onChange={(e) => setMinMatch(e.target.value)}
+            />
+          </div>
+
+          <div className="ip-br-field ip-br-field--sm">
+            <span className="ip-br-field__icon" aria-hidden>
+              <Shield className="size-4" />
+            </span>
+            <input
+              className="ip-br-input"
+              placeholder="Min validation"
+              type="number"
+              value={minValidation}
+              onChange={(e) => setMinValidation(e.target.value)}
+              title="Minimum Validation Score /100"
+            />
+          </div>
+
+          <div className="ip-br-actions">
+            <label className="ip-br-check">
+              <input
+                type="checkbox"
+                checked={savedOnly}
+                onChange={(e) => setSavedOnly(e.target.checked)}
+              />
+              Saved only
+            </label>
+            <button type="button" className="ip-br-btn" onClick={load} disabled={loading}>
+              {loading ? 'Loading…' : 'Search'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="ip-br-card">
+        <div className="ip-br-results__head">
+          <h2>Results</h2>
+          <span>
+            {items.length} internship(s)
+          </span>
+        </div>
+
+        {view === 'list' ? (
+          <div className="ip-br-table-wrap">
+            <table className="ip-br-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Company</th>
+                  <th>Mode</th>
+                  <th>Stipend</th>
+                  <th>Match</th>
+                  <th>Validation</th>
+                  <th className="ip-br-actions-cell">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageItems.map((i, idx) => (
+                  <tr key={i.id} className={i.saved ? 'is-saved' : undefined}>
+                    <td className="ip-br-num">{serialOffset + idx + 1}</td>
+                    <td className="ip-br-title">
+                      <button
+                        type="button"
+                        className="ip-br-title-btn"
+                        onClick={() => router.push(`/candidate/internships/${i.id}`)}
+                      >
+                        {i.saved ? (
+                          <span className="ip-br-saved-chip" title="Saved">
+                            <Bookmark className="size-3.5" fill="currentColor" />
+                            Saved
+                          </span>
+                        ) : null}
+                        <span>{i.title}</span>
+                      </button>
+                    </td>
+                    <td className="ip-br-muted">{i.company_name}</td>
+                    <td className="ip-br-muted">{i.work_mode || i.location || '—'}</td>
+                    <td className="ip-br-stipend">{stipendLabel(i)}</td>
+                    <td>
+                      <MatchCell score={i.match_score} />
+                    </td>
+                    <td>
+                      <div className="ip-br-valid">
+                        <ValidationScoreButton
+                          score={i.validation_score}
+                          label={i.validation_label}
+                          breakdown={i.validation_breakdown}
+                        />
+                      </div>
+                    </td>
+                    <td className="ip-br-actions-cell">
+                      <div className="ip-br-row-actions">
+                        <button
+                          type="button"
+                          className={`ip-br-btn ip-br-btn--icon${i.saved ? ' is-saved' : ''}`}
+                          title={i.saved ? 'Unsave' : 'Save'}
+                          aria-label={i.saved ? 'Unsave' : 'Save'}
+                          onClick={() => toggleSave(i.id, i.saved)}
+                        >
+                          <Bookmark
+                            className="size-4"
+                            fill={i.saved ? 'currentColor' : 'none'}
+                          />
+                        </button>
+                        <button
+                          type="button"
+                          className="ip-br-btn ip-br-btn--icon"
+                          title="View & apply"
+                          aria-label="View & apply"
+                          onClick={() => router.push(`/candidate/internships/${i.id}`)}
+                        >
+                          <Eye className="size-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
                 {!items.length && !loading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  <tr>
+                    <td colSpan={8} className="ip-br-empty">
                       No internships match your filters.
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ) : null}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {items.map((i) => (
-            <Card key={i.id}>
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-base">{i.title}</CardTitle>
-                  <Badge variant="outline" className="min-w-fit overflow-visible">
-                    {i.match_score}% match
-                  </Badge>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="ip-br-cards">
+            {pageItems.map((i) => (
+              <div key={i.id} className={`ip-br-job-card${i.saved ? ' is-saved' : ''}`}>
+                {i.saved ? (
+                  <div className="ip-br-job-card__saved-banner">
+                    <span>
+                      <Bookmark className="size-3" fill="currentColor" />
+                      SAVED INTERNSHIP
+                    </span>
+                    <span>★ Bookmarked</span>
+                  </div>
+                ) : null}
+                <div className="ip-br-job-card__top">
+                  <div>
+                    <button
+                      type="button"
+                      className="ip-br-title-btn"
+                      onClick={() => router.push(`/candidate/internships/${i.id}`)}
+                    >
+                      <h3>{i.title}</h3>
+                    </button>
+                    <p>{i.company_name}</p>
+                  </div>
+                  <button
+                    type="button"
+                    className={`ip-br-btn ip-br-btn--icon ip-br-btn--ghost${i.saved ? ' is-saved' : ''}`}
+                    title={i.saved ? 'Unsave' : 'Save'}
+                    aria-label={i.saved ? 'Unsave' : 'Save'}
+                    onClick={() => toggleSave(i.id, i.saved)}
+                  >
+                    <Bookmark
+                      className="size-4"
+                      fill={i.saved ? 'currentColor' : 'none'}
+                    />
+                  </button>
                 </div>
-                <CardDescription>
-                  {i.company_name} · {i.location || i.work_mode}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex items-center justify-between gap-2">
-                <span className="text-sm font-medium">
-                  {i.stipend_inr
-                    ? `₹${i.stipend_inr}/mo`
-                    : i.stipend_type === 'incentive'
-                      ? 'Incentive'
-                      : 'Unpaid'}
-                </span>
-                <div className="flex gap-1">
-                  <Button size="sm" variant="ghost" onClick={() => toggleSave(i.id, i.saved)}>
-                    {i.saved ? 'Unsave' : 'Save'}
-                  </Button>
-                  <Button render={<Link href={`/candidate/internships/${i.id}`} />} size="sm">
-                    View &amp; apply
-                  </Button>
+                <div className="ip-br-job-card__meta">
+                  <span>
+                    <MapPin className="size-4 text-slate-400" />
+                    {i.work_mode || i.location || '—'}
+                  </span>
+                  <span>
+                    <span aria-hidden>₹</span>
+                    {stipendLabel(i)}
+                  </span>
+                  <MatchCell score={i.match_score} />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-          {!items.length && !loading ? (
-            <p className={cn('text-sm text-muted-foreground')}>No internships match your filters.</p>
-          ) : null}
-        </div>
-      )}
+                <div className="ip-br-job-card__foot">
+                  <div className="ip-br-valid">
+                    <ValidationScoreButton
+                      score={i.validation_score}
+                      label={i.validation_label}
+                      breakdown={i.validation_breakdown}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="ip-br-btn ip-br-btn--outline ip-br-btn--sm"
+                    onClick={() => router.push(`/candidate/internships/${i.id}`)}
+                  >
+                    View details
+                  </button>
+                </div>
+              </div>
+            ))}
+            {!items.length && !loading ? (
+              <p className="ip-br-empty">No internships match your filters.</p>
+            ) : null}
+          </div>
+        )}
+
+        {total > 0 ? (
+          <div className="ip-br-pager">
+            <span>
+              Showing {from}–{to} of {total}
+            </span>
+            <div className="ip-br-pager__btns">
+              <button
+                type="button"
+                className="ip-br-btn ip-br-btn--outline ip-br-btn--sm"
+                disabled={page <= 1}
+                onClick={() => setPage(Math.max(1, page - 1))}
+              >
+                Previous
+              </button>
+              <span>
+                Page {page} / {totalPages}
+              </span>
+              <button
+                type="button"
+                className="ip-br-btn ip-br-btn--outline ip-br-btn--sm"
+                disabled={page >= totalPages}
+                onClick={() => setPage(Math.min(totalPages, page + 1))}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

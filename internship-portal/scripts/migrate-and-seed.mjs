@@ -1,5 +1,8 @@
 /**
- * Apply ISM migrations + seed demo users. Only touches ism_/is_ tables.
+ * Apply ISM migrations + seed demo users (ism_/is_ tables).
+ * Also seeds ip_employer_documents demo rows for approved Internship Portal
+ * employers (ip_employers) so the SuperAdmin Documents tab has data —
+ * uses files under public/seed-docs/ (run `node scripts/create-seed-docs.mjs` first if missing).
  * Usage: node scripts/migrate-and-seed.mjs
  */
 import fs from 'fs';
@@ -434,6 +437,52 @@ async function main() {
       'Also seeded: pending Pulse verification, Open grievance, verified docs, apps (Aisha + Rohan on Frontend Intern), messages (Aisha only — Rohan has no thread yet), mailbox notifications',
     );
     console.log('ism_saved_jobs / ism_job_alerts: empty (students create via UI)');
+
+    // --- Internship Portal (ip_*): give every approved employer verification docs
+    // so SuperAdmin > Documents has real rows to review, pointing at public/seed-docs/.
+    const ipEmployersTableExists = await client.query(
+      `SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='ip_employers'`,
+    );
+    if (ipEmployersTableExists.rows[0]) {
+      const approvedEmployers = await client.query(
+        `SELECT id, company_name FROM ip_employers WHERE approval_status = 'approved'`,
+      );
+      const seedDocsDir = path.join(root, 'public', 'seed-docs');
+      const shopActFile = fs.existsSync(path.join(seedDocsDir, 'novatech-shop-act.docx'))
+        ? 'novatech-shop-act.docx'
+        : null;
+      const registrationFile = fs.existsSync(path.join(seedDocsDir, 'novatech-company-registration.pdf'))
+        ? 'novatech-company-registration.pdf'
+        : null;
+
+      for (const emp of approvedEmployers.rows) {
+        const existing = await client.query(
+          `SELECT 1 FROM ip_employer_documents WHERE employer_id = $1 LIMIT 1`,
+          [emp.id],
+        );
+        if (existing.rows[0]) continue; // don't clobber real uploads
+
+        if (shopActFile) {
+          await client.query(
+            `INSERT INTO ip_employer_documents (id, employer_id, doc_type, file_name, url, review_status)
+             VALUES ($1,$2,'Shop Act',$3,$4,'pending')
+             ON CONFLICT (id) DO NOTHING`,
+            [`ip_doc_seed_${emp.id}_shopact`, emp.id, shopActFile, `/seed-docs/${shopActFile}`],
+          );
+        }
+        if (registrationFile) {
+          await client.query(
+            `INSERT INTO ip_employer_documents (id, employer_id, doc_type, file_name, url, review_status)
+             VALUES ($1,$2,'Business PAN',$3,$4,'pending')
+             ON CONFLICT (id) DO NOTHING`,
+            [`ip_doc_seed_${emp.id}_reg`, emp.id, registrationFile, `/seed-docs/${registrationFile}`],
+          );
+        }
+      }
+      console.log(
+        `ip_employer_documents seeded for ${approvedEmployers.rows.length} approved employer(s): ${approvedEmployers.rows.map((e) => e.company_name).join(', ') || 'none'}`,
+      );
+    }
   } finally {
     client.release();
     await pool.end();

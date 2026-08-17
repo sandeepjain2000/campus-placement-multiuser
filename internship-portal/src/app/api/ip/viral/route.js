@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto';
 import { query } from '@/lib/db';
 import { requireSession, jsonError, jsonOk } from '@/lib/apiAuth';
 import { newId } from '@/lib/ids';
-import { LINKEDIN_PROMO_CREDITS, LINKEDIN_PROMO_POINTS } from '@/lib/pointsEconomy';
+import { LINKEDIN_PROMO_POINTS } from '@/lib/pointsEconomy';
 
 const CHECK_DELAY_MS = 24 * 60 * 60 * 1000;
 
@@ -16,11 +16,14 @@ export async function GET() {
 
   if (session.user.role === 'superadmin') {
     const result = await query(
-      `SELECT v.*, u.name as user_name, u.email, u.referral_code
-       FROM ip_viral_shares v JOIN ip_users u ON u.id = v.user_id
+      `SELECT v.*, u.name as user_name, u.email, u.referral_code, u.role as user_role,
+              e.company_name, e.website
+       FROM ip_viral_shares v
+       JOIN ip_users u ON u.id = v.user_id
+       LEFT JOIN ip_employers e ON e.user_id = u.id
        ORDER BY v.created_at DESC LIMIT 200`,
     );
-    return jsonOk({ items: result.rows });
+    return jsonOk({ items: result.rows, rewardPreview: { points: LINKEDIN_PROMO_POINTS } });
   }
 
   const result = await query(
@@ -28,13 +31,13 @@ export async function GET() {
     [session.user.id],
   );
   const user = await query(
-    `SELECT points, free_post_credits, referral_code FROM ip_users WHERE id = $1`,
+    `SELECT points, referral_code FROM ip_users WHERE id = $1`,
     [session.user.id],
   );
   return jsonOk({
     items: result.rows,
     ...user.rows[0],
-    rewardPreview: { points: LINKEDIN_PROMO_POINTS, credits: LINKEDIN_PROMO_CREDITS },
+    rewardPreview: { points: LINKEDIN_PROMO_POINTS },
   });
 }
 

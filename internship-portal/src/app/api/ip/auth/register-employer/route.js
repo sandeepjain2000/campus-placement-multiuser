@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { query } from '@/lib/db';
 import { newId, randomPassword, referralCodeFrom } from '@/lib/ids';
 import { sendMail, tempPasswordEmailHtml } from '@/lib/mail';
-import { notifyRole } from '@/lib/ipNotify';
+import { notifyRole, notifyUser } from '@/lib/ipNotify';
 import { referrerRewardsForRole } from '@/lib/pointsEconomy';
 import {
   domainFromEmail,
@@ -12,17 +12,21 @@ import {
   normalizeEmail,
 } from '@/lib/authRegisterRules';
 import { verifyLoginCaptcha } from '@/lib/simpleCaptcha';
+import { ensureIpFormRegistrationSchema } from '@/lib/ensureIpFormRegistrationSchema';
 
 export async function POST(request) {
   try {
+    await ensureIpFormRegistrationSchema();
     const body = await request.json();
     const website = String(body.website || '').trim();
     const email = normalizeEmail(body.email);
     const companyName = String(body.companyName || '').trim();
     const contactName = String(body.contactName || '').trim();
-    const reason = String(body.reason || '').trim();
+    const contactDesignation = String(body.designation || body.contactDesignation || '').trim();
+    const reason = String(body.reason || '').trim() || (contactDesignation ? `Designation: ${contactDesignation}` : '');
     const forceManual = Boolean(body.manualRequest);
     const referralCode = String(body.referralCode || '').trim() || null;
+    const passwordPlain = String(body.password || '');
 
     if (!email || !email.includes('@')) {
       return NextResponse.json({ error: 'Work email is required' }, { status: 400 });
@@ -51,23 +55,35 @@ export async function POST(request) {
       if (!companyName) {
         return NextResponse.json({ error: 'Company name is required for manual requests' }, { status: 400 });
       }
+      if (!contactName) {
+        return NextResponse.json({ error: 'Full name is required' }, { status: 400 });
+      }
+      if (!contactDesignation) {
+        return NextResponse.json({ error: 'Designation / Role is required' }, { status: 400 });
+      }
+      if (passwordPlain.length < 8) {
+        return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
+      }
       if (!reason) {
         return NextResponse.json({ error: 'Please explain why you need a manual account request' }, { status: 400 });
       }
       if (!verifyLoginCaptcha(body.captchaToken, body.captchaAnswer)) {
         return NextResponse.json({ error: 'Captcha verification failed' }, { status: 400 });
       }
+      const passwordHash = await bcrypt.hash(passwordPlain, 10);
       const reqId = newId('ip_ereq');
       await query(
-        `INSERT INTO ip_employer_requests (id, company_name, website, contact_email, contact_name, reason)
-         VALUES ($1,$2,$3,$4,$5,$6)`,
-        [reqId, companyName, website || null, email, contactName || null, reason],
+        `INSERT INTO ip_employer_requests (
+           id, company_name, website, contact_email, contact_name, reason, contact_designation, password_hash
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+        [reqId, companyName, website || null, email, contactName || null, reason, contactDesignation, passwordHash],
       );
       await notifyRole({
         role: 'superadmin',
         title: 'Manual employer request',
         body: `${companyName} — ${email}`,
-        link: '/superadmin/requests',
+        link: '/superadmin/form-registrations',
+        category: 'system',
       });
 
       return NextResponse.json({
@@ -75,7 +91,7 @@ export async function POST(request) {
         mode: 'manual_request',
         requestId: reqId,
         message:
-          'Request submitted. SuperAdmin will create your employer account after review — you will not receive an instant password on this path.',
+          'Request submitted. SuperAdmin will create your employer account after review — use the password you chose after approval.',
       });
     }
 
@@ -92,6 +108,7 @@ export async function POST(request) {
 
     let referredBy = null;
     let referrerRole = null;
+    let referralNotify = null;
     if (referralCode) {
       const ref = await query(`SELECT id, role FROM ip_users WHERE referral_code = $1 LIMIT 1`, [referralCode]);
       if (ref.rows[0]) {
@@ -103,14 +120,16 @@ export async function POST(request) {
     await query('BEGIN');
     try {
       await query(
-        `INSERT INTO ip_users (id, email, password_hash, role, name, points, free_post_credits, referral_code, referred_by)
-         VALUES ($1,$2,$3,'employer',$4,50,1,$5,$6)`,
+        `INSERT INTO ip_users (
+           id, email, password_hash, role, name, points, free_post_credits, referral_code, referred_by,
+           registration_source, form_approval_status, active
+         ) VALUES ($1,$2,$3,'employer',$4,50,1,$5,$6,'domain',null,true)`,
         [userId, email, passwordHash, name, referralCodeFrom(name), referredBy],
       );
       await query(
-        `INSERT INTO ip_employers (id, user_id, company_name, website, work_email, contact_name, approval_status)
-         VALUES ($1,$2,$3,$4,$5,$6,'pending')`,
-        [employerId, userId, companyName || webDomain, website, email, contactName || name],
+        `INSERT INTO ip_employers (id, user_id, company_name, website, work_email, contact_name, contact_designation, approval_status)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,'pending')`,
+        [employerId, userId, companyName || webDomain, website, email, contactName || name, contactDesignation || null],
       );
       await query(
         `INSERT INTO ip_points_ledger (id, user_id, delta, reason) VALUES ($1,$2,50,'default_signup')`,
@@ -136,6 +155,13 @@ export async function POST(request) {
            VALUES ($1,$2,$3,$4,'completed',$5)`,
           [newId('ip_ref'), referredBy, userId, referralCode, rewards.points],
         );
+        referralNotify = {
+          userId: referredBy,
+          title: 'Referral bonus earned',
+          body: `${name} completed registration using your link. You earned +${rewards.points} points.`,
+          link: referrerRole === 'employer' ? '/employer/referral' : '/candidate/referral',
+          category: 'referral',
+        };
       }
       await query('COMMIT');
     } catch (e) {
@@ -143,11 +169,16 @@ export async function POST(request) {
       throw e;
     }
 
+    if (referralNotify) {
+      await notifyUser(referralNotify).catch(() => {});
+    }
+
     await notifyRole({
       role: 'superadmin',
       title: 'New employer registered',
       body: `${companyName || webDomain} — ${email} (pending approval)`,
       link: '/superadmin/approvals',
+      category: 'system',
     });
 
     try {

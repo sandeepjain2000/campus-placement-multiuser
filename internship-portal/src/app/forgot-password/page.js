@@ -1,12 +1,13 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
+import { readCaptchaField } from '@/lib/captchaClient';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AuthShell from '@/components/ip/AuthShell';
 
@@ -17,6 +18,7 @@ function ForgotInner() {
   const [password, setPassword] = useState('');
   const [captchaToken, setCaptchaToken] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const captchaFieldRef = useRef(null);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
 
@@ -24,10 +26,11 @@ function ForgotInner() {
     e.preventDefault();
     setErr('');
     setMsg('');
+    const challenge = readCaptchaField(captchaFieldRef, captchaToken, captchaAnswer);
     const res = await fetch('/api/ip/auth/password-reset/request', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, captchaToken, captchaAnswer }),
+      body: JSON.stringify({ email, captchaToken: challenge.token, captchaAnswer: challenge.answer }),
     });
     const data = await res.json();
     if (!res.ok) setErr(data.error || 'Failed');
@@ -90,6 +93,7 @@ function ForgotInner() {
                 <Input id="reset-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
               </Field>
               <LoginCaptchaField
+                ref={captchaFieldRef}
                 token={captchaToken}
                 answer={captchaAnswer}
                 onTokenChange={setCaptchaToken}

@@ -1,7 +1,7 @@
 import { query } from '@/lib/db';
 import { requireSession, jsonOk } from '@/lib/apiAuth';
 import { newId } from '@/lib/ids';
-import { LINKEDIN_PROMO_CREDITS, LINKEDIN_PROMO_POINTS } from '@/lib/pointsEconomy';
+import { LINKEDIN_PROMO_POINTS } from '@/lib/pointsEconomy';
 import { notifyUser } from '@/lib/ipNotify';
 
 /**
@@ -55,22 +55,23 @@ export async function POST(request) {
 
     if (hit) {
       await query(
-        `UPDATE ip_users SET points = points + $2, free_post_credits = free_post_credits + $3, updated_at = now() WHERE id = $1`,
-        [share.user_id, LINKEDIN_PROMO_POINTS, LINKEDIN_PROMO_CREDITS],
+        `UPDATE ip_users SET points = points + $2, updated_at = now() WHERE id = $1`,
+        [share.user_id, LINKEDIN_PROMO_POINTS],
       );
       await query(
         `INSERT INTO ip_points_ledger (id, user_id, delta, reason, meta) VALUES ($1,$2,$3,'viral_share_verified',$4::jsonb)`,
         [newId('ip_pts'), share.user_id, LINKEDIN_PROMO_POINTS, JSON.stringify({ shareId: share.id, via: 'process-due' })],
       );
       await query(
-        `UPDATE ip_viral_shares SET status = 'rewarded', search_hit = true, search_notes = $2, points_awarded = $3, credits_awarded = $4, updated_at = now() WHERE id = $1`,
-        [share.id, notes, LINKEDIN_PROMO_POINTS, LINKEDIN_PROMO_CREDITS],
+        `UPDATE ip_viral_shares SET status = 'rewarded', search_hit = true, search_notes = $2, points_awarded = $3, credits_awarded = 0, updated_at = now() WHERE id = $1`,
+        [share.id, notes, LINKEDIN_PROMO_POINTS],
       );
       await notifyUser({
         userId: share.user_id,
         title: 'Viral LinkedIn share verified',
-        body: `+${LINKEDIN_PROMO_POINTS} points, +${LINKEDIN_PROMO_CREDITS} credit.`,
+        body: `+${LINKEDIN_PROMO_POINTS} points.`,
         link: '/employer/viral',
+        category: 'system',
       });
       results.push({ id: share.id, status: 'rewarded' });
     } else {

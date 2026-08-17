@@ -1,7 +1,7 @@
 import { query } from '@/lib/db';
 import { requireSession, jsonError, jsonOk } from '@/lib/apiAuth';
 import { newId } from '@/lib/ids';
-import { LINKEDIN_PROMO_CREDITS, LINKEDIN_PROMO_POINTS } from '@/lib/pointsEconomy';
+import { LINKEDIN_PROMO_POINTS } from '@/lib/pointsEconomy';
 import { notifyUser } from '@/lib/ipNotify';
 
 async function loadPromo(id) {
@@ -18,9 +18,9 @@ async function loadPromo(id) {
 
 async function rewardPromo(promo) {
   await query(
-    `UPDATE ip_users SET points = points + $2, free_post_credits = free_post_credits + $3, updated_at = now()
+    `UPDATE ip_users SET points = points + $2, updated_at = now()
      WHERE id = $1`,
-    [promo.employer_user_id, LINKEDIN_PROMO_POINTS, LINKEDIN_PROMO_CREDITS],
+    [promo.employer_user_id, LINKEDIN_PROMO_POINTS],
   );
   await query(
     `INSERT INTO ip_points_ledger (id, user_id, delta, reason, meta)
@@ -29,15 +29,16 @@ async function rewardPromo(promo) {
   );
   await query(
     `UPDATE ip_linkedin_promotions
-     SET status = 'rewarded', points_awarded = $2, credits_awarded = $3, updated_at = now()
+     SET status = 'rewarded', points_awarded = $2, credits_awarded = 0, updated_at = now()
      WHERE id = $1`,
-    [promo.id, LINKEDIN_PROMO_POINTS, LINKEDIN_PROMO_CREDITS],
+    [promo.id, LINKEDIN_PROMO_POINTS],
   );
   await notifyUser({
     userId: promo.employer_user_id,
     title: 'LinkedIn promotion verified',
-    body: `Rewards added for ${promo.title}: +${LINKEDIN_PROMO_POINTS} points, +${LINKEDIN_PROMO_CREDITS} posting credit.`,
+    body: `Rewards added for ${promo.title}: +${LINKEDIN_PROMO_POINTS} points.`,
     link: '/employer/referral',
+    category: 'referral',
   });
 }
 
@@ -73,29 +74,36 @@ export async function PATCH(request, { params }) {
   const notes = body.notes || null;
   if (!['verify', 'fail'].includes(action)) return jsonError('action must be verify or fail');
 
-  if (action === 'fail') {
-    await query(
-      `UPDATE ip_linkedin_promotions
-       SET status = 'failed', review_notes = $2, reviewed_by = $3, reviewed_at = now(), updated_at = now()
-       WHERE id = $1`,
-      [id, notes, session.user.id],
-    );
-    await notifyUser({
-      userId: promo.employer_user_id,
-      title: 'LinkedIn promotion not verified',
-      body: notes || `Could not verify promotion for ${promo.title}.`,
-      link: '/employer/internships',
-    });
-    return jsonOk({ ok: true, status: 'failed' });
+  const ids = Array.isArray(body.ids) ? body.ids.map(String).filter(Boolean) : [String(id)].filter(Boolean);
+  let processed = 0;
+  for (const promoId of ids) {
+    const row = await loadPromo(promoId);
+    if (!row) continue;
+    if (action === 'fail') {
+      await query(
+        `UPDATE ip_linkedin_promotions
+         SET status = 'failed', review_notes = $2, reviewed_by = $3, reviewed_at = now(), updated_at = now()
+         WHERE id = $1`,
+        [promoId, notes, session.user.id],
+      );
+      await notifyUser({
+        userId: row.employer_user_id,
+        title: 'LinkedIn promotion not verified',
+        body: notes || `Could not verify promotion for ${row.title}.`,
+        link: '/employer/internships',
+        category: 'system',
+      });
+    } else {
+      await query(
+        `UPDATE ip_linkedin_promotions
+         SET status = 'verified', review_notes = $2, reviewed_by = $3, reviewed_at = now(), updated_at = now()
+         WHERE id = $1`,
+        [promoId, notes, session.user.id],
+      );
+      await rewardPromo(await loadPromo(promoId));
+    }
+    processed += 1;
   }
-
-  await query(
-    `UPDATE ip_linkedin_promotions
-     SET status = 'verified', review_notes = $2, reviewed_by = $3, reviewed_at = now(), updated_at = now()
-     WHERE id = $1`,
-    [id, notes, session.user.id],
-  );
-  const fresh = await loadPromo(id);
-  await rewardPromo(fresh);
-  return jsonOk({ ok: true, status: 'rewarded' });
+  if (!processed) return jsonError('Not found', 404);
+  return jsonOk({ ok: true, processed, status: action === 'fail' ? 'failed' : 'rewarded' });
 }

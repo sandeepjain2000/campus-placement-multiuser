@@ -23,6 +23,7 @@ export default function MessageThreadView({ role }) {
   const [draft, setDraft] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [archiving, setArchiving] = useState(false);
   const [error, setError] = useState('');
 
   async function load() {
@@ -67,6 +68,28 @@ export default function MessageThreadView({ role }) {
     }
   }
 
+  async function toggleArchive() {
+    if (!thread) return;
+    setArchiving(true);
+    setError('');
+    try {
+      const next = !thread.archived;
+      const res = await fetch(`/api/ip/messages/threads/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ archived: next }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not update archive');
+      if (data.thread) setThread(data.thread);
+      else await load();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setArchiving(false);
+    }
+  }
+
   const counterpart =
     role === 'candidate'
       ? thread?.company_name || thread?.employer_name || 'Employer'
@@ -80,6 +103,17 @@ export default function MessageThreadView({ role }) {
           <ArrowLeft data-icon="inline-start" className="size-4" />
           Back to inbox
         </Button>
+        {thread ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={archiving}
+            onClick={toggleArchive}
+          >
+            {archiving ? 'Updating…' : thread.archived ? 'Unarchive' : 'Archive'}
+          </Button>
+        ) : null}
       </div>
 
       <PageHeader
