@@ -1,0 +1,7 @@
+TEMP MARKER — PlacementHub (campus-placement-multiuser)
+
+Local folder : C:\Users\place\Work\UIUX Migration\campus-placement-multiuser
+GitHub remote: https://github.com/sandeepjain2000/campus-placement-multiuser.git
+Branch       : main
+
+This file only confirms which GitHub repo this folder pushes to. Safe to delete.
