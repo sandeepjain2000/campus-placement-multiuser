@@ -1,0 +1,142 @@
+{
+  "id": "student-verified-first-app",
+  "title": "Student verified → first application",
+  "oneLiner": "Voice-guided tour for use case: Student verified → first application",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in → Profile",
+      "observe": "Editable profile fields",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in → Profile (continued)",
+      "observe": "Editable profile fields",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/profile"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Edit a field and save; upload résumé if available — manual step",
+      "observe": "Changes persist after refresh Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Refresh profile page",
+      "observe": "Saved values and document still present",
+      "action": {
+        "type": "reload"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in → Browse Jobs or Drives",
+      "observe": "Eligible opportunity visible",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student logs in → Browse Jobs or Drives (continued)",
+      "observe": "Eligible opportunity visible",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/jobs"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Apply to one opportunity — manual step",
+      "observe": "Application submitted Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Applications",
+      "observe": "New application in pipeline",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer → Applications (continued)",
+      "observe": "New application in pipeline",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/applications"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Update application status (shortlist/reject/etc.) — manual step",
+      "observe": "Status saved Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Applications",
+      "observe": "Status matches employer update",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Applications (continued)",
+      "observe": "Status matches employer update",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/applications"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Applications",
+      "observe": "Same status on college view",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Applications (continued)",
+      "observe": "Same status on college view",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/applications"
+      }
+    }
+  ]
+}

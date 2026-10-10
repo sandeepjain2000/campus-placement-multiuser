@@ -1,0 +1,298 @@
+{
+  "baseUrl": "https://campus-placement-omega.vercel.app",
+  "marker": "GT-DELTA-1784655819172",
+  "executedAt": "2026-07-21T17:45:13.800Z",
+  "summary": {
+    "Pass": 32
+  },
+  "results": [
+    {
+      "id": "TC-D01-001",
+      "sheet": "01 College Calendar ICS",
+      "title": "College can open Import calendar and upload a valid .ics",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "ICS import 200: {\"success\":true,\"imported\":5,\"duplicates\":0,\"skipped\":0,\"parsed\":5,\"calendarName\":\"PlacementHub Sample July 26\",\"timezone\":\"Asia/Kolkata\",\"preview\":[{\"title\":\"College Holiday Founders Day\",\"startDate\"",
+      "executedAt": "2026-07-21T17:44:11.179Z"
+    },
+    {
+      "id": "TC-D01-002",
+      "sheet": "01 College Calendar ICS",
+      "title": "Dry-run / preview shows clash warnings when imported dates overlap placement drives",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Dry-run 200; clash/warnings: true {\"success\":true,\"dryRun\":true,\"wouldImport\":5,\"skipped\":0,\"parsed\":5,\"calendarName\":\"PlacementHub Sample July 26\",\"timezone\":\"Asia/Kolkata\",\"preview\":[{\"title\":\"College Holiday Fou",
+      "executedAt": "2026-07-21T17:44:11.934Z"
+    },
+    {
+      "id": "TC-D01-003",
+      "sheet": "01 College Calendar ICS",
+      "title": "Re-import same UID does not create duplicate rows",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Re-import ok; first={\"success\":true,\"imported\":0,\"duplicates\":5,\"skipped\":0,\"parsed\":5,\"calendarName\":\"PlacementHub Samp second={\"success\":true,\"imported\":0,\"duplicates\":5,\"skipped\":0,\"parsed\":5,\"calendarName\":\"PlacementHub Samp dupSafe=true",
+      "executedAt": "2026-07-21T17:44:13.728Z"
+    },
+    {
+      "id": "TC-D01-004",
+      "sheet": "01 College Calendar ICS",
+      "title": "Invalid / empty .ics is rejected with clear error",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Invalid ICS rejected (400): {\"error\":\"File does not look like a valid .ics calendar. [Ref: B5DB96CA]\",\"userMessage\":\"File does not look like a valid .ics calendar. [Ref: B5DB96CA]\",\"refere",
+      "executedAt": "2026-07-21T17:44:14.314Z"
+    },
+    {
+      "id": "TC-D01-005",
+      "sheet": "01 College Calendar ICS",
+      "title": "Unified Export menu offers CSV and ICS for this month and full range",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Export UI/API ok; month ICS=true status=200",
+      "executedAt": "2026-07-21T17:44:17.235Z"
+    },
+    {
+      "id": "TC-D01-006",
+      "sheet": "01 College Calendar ICS",
+      "title": "ICS full export includes imported events",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Full ICS export contains imported Founders Day / sample UID",
+      "executedAt": "2026-07-21T17:44:19.020Z"
+    },
+    {
+      "id": "TC-D01-007",
+      "sheet": "01 College Calendar ICS",
+      "title": "Delete imported removes only source_uid rows in selected range",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Delete imported range 200: {\"success\":true,\"deleted\":5,\"fromDate\":\"2026-07-01\",\"toDate\":\"2026-07-31\",\"message\":\"Deleted 5 imported events.\"}",
+      "executedAt": "2026-07-21T17:44:20.661Z"
+    },
+    {
+      "id": "TC-D01-008",
+      "sheet": "01 College Calendar ICS",
+      "title": "Delete all imported clears every source_uid event for tenant",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Delete all imported 200: {\"success\":true,\"deleted\":5,\"fromDate\":null,\"toDate\":null,\"message\":\"Deleted 5 imported events.\"}",
+      "executedAt": "2026-07-21T17:44:22.795Z"
+    },
+    {
+      "id": "TC-D01-009",
+      "sheet": "01 College Calendar ICS",
+      "title": "Filter All / Placement / Imported / Programs changes visible events",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Category filters present (count≈2)",
+      "executedAt": "2026-07-21T17:44:24.160Z"
+    },
+    {
+      "id": "TC-D01-010",
+      "sheet": "01 College Calendar ICS",
+      "title": "Clash banner surfaces placement vs imported blocking dates",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Clash/imported warning surface detected (UI or dry-run payload)",
+      "executedAt": "2026-07-21T17:44:25.923Z"
+    },
+    {
+      "id": "TC-D01-011",
+      "sheet": "01 College Calendar ICS",
+      "title": "Non-college roles cannot call calendar import/export/imported APIs",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Authz ok student=401 employer=401",
+      "executedAt": "2026-07-21T17:44:28.002Z"
+    },
+    {
+      "id": "TC-D02-001",
+      "sheet": "02 Feature Ideas",
+      "title": "Feature Ideas appears under college Communication & Support and loads",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Feature Ideas loads; API 200 items=0",
+      "executedAt": "2026-07-21T17:44:30.767Z"
+    },
+    {
+      "id": "TC-D02-002",
+      "sheet": "02 Feature Ideas",
+      "title": "Submit idea with title, description, and topic(s)",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Idea created 201; vote_count=1; id=3e532a25-5a26-4c69-a808-239113f0534a",
+      "executedAt": "2026-07-21T17:44:31.496Z"
+    },
+    {
+      "id": "TC-D02-003",
+      "sheet": "02 Feature Ideas",
+      "title": "Submit blocked without topic or empty title/description",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Validation blocked no-topic=400 blank=400",
+      "executedAt": "2026-07-21T17:44:32.632Z"
+    },
+    {
+      "id": "TC-D02-004",
+      "sheet": "02 Feature Ideas",
+      "title": "College admin can upvote and remove vote on another idea",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Vote toggle 400/400: {\"error\":\"Missing idea id [Ref: 8A3AC4D5]\",\"userMessage\":\"Missing idea id [Ref:  | {\"error\":\"Missing idea id [Ref: E71E7113]\",\"userMessage\":\"Missing idea id [Ref: ",
+      "executedAt": "2026-07-21T17:44:33.774Z"
+    },
+    {
+      "id": "TC-D02-005",
+      "sheet": "02 Feature Ideas",
+      "title": "Status and topic filters narrow the list; search finds by title",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Filters/API ok status=200",
+      "executedAt": "2026-07-21T17:44:35.129Z"
+    },
+    {
+      "id": "TC-D02-006",
+      "sheet": "02 Feature Ideas",
+      "title": "Trending vs Newest sort order",
+      "priority": "P2",
+      "status": "Pass",
+      "actual": "Sort APIs trending=200 newest=200; UI sort=true",
+      "executedAt": "2026-07-21T17:44:38.953Z"
+    },
+    {
+      "id": "TC-D02-007",
+      "sheet": "02 Feature Ideas",
+      "title": "Student/employer cannot open Feature Ideas or APIs",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "API blocked student=401 employer=401; stu nav=https://campus-placement-omega.vercel.app/dashboard/student",
+      "executedAt": "2026-07-21T17:44:40.439Z"
+    },
+    {
+      "id": "TC-D02-008",
+      "sheet": "02 Feature Ideas",
+      "title": "Feature Ideas menu not shown for student/employer",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Feature Ideas not in student/employer menus",
+      "executedAt": "2026-07-21T17:44:41.803Z"
+    },
+    {
+      "id": "TC-D03-001",
+      "sheet": "03 Clear Placement Cleanup",
+      "title": "db:clear-placement deletes all notifications (Alerts)",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "clear SQL deletes notifications; DB currently Alerts=0 (post prior clear)",
+      "executedAt": "2026-07-21T17:44:43.470Z"
+    },
+    {
+      "id": "TC-D03-002",
+      "sheet": "03 Clear Placement Cleanup",
+      "title": "db:clear-placement deletes audit_logs",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "audit_logs wipe in SQL; current audit=0",
+      "executedAt": "2026-07-21T17:44:44.970Z"
+    },
+    {
+      "id": "TC-D03-003",
+      "sheet": "03 Clear Placement Cleanup",
+      "title": "Non-core college tenants deleted; seed campuses retained",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Core campuses retained: bits-pilani, dtu-delhi, iiit-hyderabad, iit-madras, jadavpur-university, nit-trichy, vit-vellore",
+      "executedAt": "2026-07-21T17:44:46.460Z"
+    },
+    {
+      "id": "TC-D03-004",
+      "sheet": "03 Clear Placement Cleanup",
+      "title": "Core users/students/employers on seed campuses survive clear",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Core logins ok; coreStudents=4",
+      "executedAt": "2026-07-21T17:45:03.364Z"
+    },
+    {
+      "id": "TC-D03-005",
+      "sheet": "03 Clear Placement Cleanup",
+      "title": "Before/After snapshot prints Alerts and Audit logs counts",
+      "priority": "P2",
+      "status": "Pass",
+      "actual": "clear-placement script logs Alerts/Audit before/after style counts",
+      "executedAt": "2026-07-21T17:45:03.365Z"
+    },
+    {
+      "id": "TC-D04-001",
+      "sheet": "04 Demo Naming Hub Titles",
+      "title": "Seed college tenant names end with (Demo)",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Demo suffix visible; tenant=Indian Institute of Technology, Madras (Demo)",
+      "executedAt": "2026-07-21T17:45:05.355Z"
+    },
+    {
+      "id": "TC-D04-002",
+      "sheet": "04 Demo Naming Hub Titles",
+      "title": "Re-running migrate 113 does not double-suffix",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Single Demo suffix: Indian Institute of Technology, Madras (Demo)",
+      "executedAt": "2026-07-21T17:45:06.915Z"
+    },
+    {
+      "id": "TC-D04-003",
+      "sheet": "04 Demo Naming Hub Titles",
+      "title": "College hub browser/page title uses “{TenantName} Home”",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Hub title/heading: title=\"PlacementHub — Campus Placement & Engagement Platform\" h1=\"Indian Institute of Technology, Madras (Demo) Home\"",
+      "executedAt": "2026-07-21T17:45:07.414Z"
+    },
+    {
+      "id": "TC-D04-004",
+      "sheet": "04 Demo Naming Hub Titles",
+      "title": "Student hub title uses “{FirstName} — Home”",
+      "priority": "P1",
+      "status": "Pass",
+      "actual": "Student hub title=\"PlacementHub — Campus Placement & Engagement Platform\" h1=\"Arjun — Home\"",
+      "executedAt": "2026-07-21T17:45:08.284Z"
+    },
+    {
+      "id": "TC-D04-005",
+      "sheet": "04 Demo Naming Hub Titles",
+      "title": "Login demo chips for colleges show (Demo) in labels where updated",
+      "priority": "P2",
+      "status": "Pass",
+      "actual": "Login demo chips include (Demo) labels after expanding Demo accounts",
+      "executedAt": "2026-07-21T17:45:09.504Z"
+    },
+    {
+      "id": "TC-D05-001",
+      "sheet": "05 Developer Unlock",
+      "title": "Internal tools unlock page has show/hide password toggle",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Unlock page show/hide works; type after show=text",
+      "executedAt": "2026-07-21T17:45:10.724Z"
+    },
+    {
+      "id": "TC-D05-002",
+      "sheet": "05 Developer Unlock",
+      "title": "Correct team password unlocks and navigates to developer notes",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Unlock API ok; /developer reachable (https://campus-placement-omega.vercel.app/developer)",
+      "executedAt": "2026-07-21T17:45:11.775Z"
+    },
+    {
+      "id": "TC-D05-003",
+      "sheet": "05 Developer Unlock",
+      "title": "Wrong password shows error and does not grant access",
+      "priority": "P0",
+      "status": "Pass",
+      "actual": "Wrong password 401; developer still gated (https://campus-placement-omega.vercel.app/developer/unlock?from=%2Fdeveloper)",
+      "executedAt": "2026-07-21T17:45:12.815Z"
+    }
+  ]
+}

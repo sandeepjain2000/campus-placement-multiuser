@@ -1,0 +1,86 @@
+[
+  {
+    "phase": "COLLEGE",
+    "label": "College assigns campus guide for the intern",
+    "observe": "Programs and Drives → Internship guides. Find the selected student for the GT- internship. Click Assign guide, enter faculty name, email, and notes, then save.",
+    "action": { "type": "login", "account": "college_admin" }
+  },
+  {
+    "phase": "COLLEGE",
+    "label": "Open Internship guides",
+    "observe": "Cards list selected and in-progress interns on your campus.",
+    "action": { "type": "goto", "path": "/dashboard/college/internship-guides" }
+  },
+  {
+    "phase": "COLLEGE",
+    "label": "Assign campus guide — manual",
+    "observe": "Enter guide name, department, email, and notes for the student. Save updates the card.",
+    "action": { "type": "wait", "ms": 14000 }
+  },
+  {
+    "phase": "EMPLOYER",
+    "label": "Employer assigns company supervisor",
+    "observe": "Student Opportunities → Internship supervisors for selected or in-progress interns.",
+    "action": { "type": "login", "account": "employer" }
+  },
+  {
+    "phase": "EMPLOYER",
+    "label": "Open Internship supervisors",
+    "observe": "Intern cards for your company; Assign supervisor opens the contact form.",
+    "action": { "type": "goto", "path": "/dashboard/employer/internship-supervisors" }
+  },
+  {
+    "phase": "EMPLOYER",
+    "label": "Assign company supervisor — manual",
+    "observe": "Enter supervisor name, team or role, email, phone, and notes for the intern.",
+    "action": { "type": "wait", "ms": 14000 }
+  },
+  {
+    "phase": "EMPLOYER",
+    "label": "Open Internship Progress Reviews",
+    "observe": "Table of selected interns; Add or Edit opens employer feedback form. Student feedback shows read-only when present.",
+    "action": { "type": "goto", "path": "/dashboard/employer/internship-feedback" }
+  },
+  {
+    "phase": "EMPLOYER",
+    "label": "Submit employer internship progress review — manual",
+    "observe": "Optional star rating plus feedback text of at least ten characters.",
+    "action": { "type": "wait", "ms": 14000 }
+  },
+  {
+    "phase": "STUDENT",
+    "label": "Student opens Internship Progress Reviews",
+    "observe": "Campus guide and company supervisor blocks appear when assigned. Submit student feedback on the same page.",
+    "action": { "type": "login", "account": "student" }
+  },
+  {
+    "phase": "STUDENT",
+    "label": "Navigate to Internship Progress Reviews",
+    "observe": "Selected internship card with guide, supervisor, and feedback form.",
+    "action": { "type": "goto", "path": "/dashboard/student/internship-feedback" }
+  },
+  {
+    "phase": "STUDENT",
+    "label": "Submit student internship progress review — manual",
+    "observe": "Star rating optional; feedback text at least ten characters.",
+    "action": { "type": "wait", "ms": 14000 }
+  },
+  {
+    "phase": "COLLEGE",
+    "label": "College reviews internship progress review (read-only)",
+    "observe": "Internship Outcomes → Internship Progress Reviews. Table shows student and employer submissions; Export CSV available.",
+    "action": { "type": "login", "account": "college_admin" }
+  },
+  {
+    "phase": "COLLEGE",
+    "label": "Open Internship Progress Reviews",
+    "observe": "Rows appear after at least one side submits feedback.",
+    "action": { "type": "goto", "path": "/dashboard/college/internship-feedback" }
+  },
+  {
+    "phase": "COLLEGE",
+    "label": "Verify guide card shows company supervisor",
+    "observe": "On Internship guides, the same intern card shows campus guide you assigned and employer supervisor read-only.",
+    "action": { "type": "goto", "path": "/dashboard/college/internship-guides" }
+  }
+]

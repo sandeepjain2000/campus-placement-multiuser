@@ -366,7 +366,8 @@ export default function CollegeEmployersContent() {
               </Table>
             </div>
 
-            <div className="flex flex-col gap-3 p-4 md:hidden">
+            <div className="md:hidden">
+            <div className="flex flex-col gap-3 p-4">
               {displayList.length === 0 ? (
                 <p className="text-muted-foreground m-0 text-sm">No employers match your search or filters.</p>
               ) : null}
@@ -397,6 +398,7 @@ export default function CollegeEmployersContent() {
                   </Card>
                 );
               })}
+            </div>
             </div>
           </CardContent>
         </Card>

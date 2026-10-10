@@ -1,0 +1,229 @@
+{
+  "id": "internships-employer-publish",
+  "title": "Employer — fill & publish internship (EI-02 + EI-03)",
+  "oneLiner": "Automated tester entry: open form, type every field, publish, then college approves for campus.",
+  "useStoredMarker": false,
+  "skipPartnershipSetupWhenApproved": true,
+  "sourceCases": ["UC-001", "EI-01", "EI-02", "EI-03", "CI-01"],
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Next step signs in as employer (hr@techcorp.com) automatically — you should land on the employer dashboard.",
+      "action": { "type": "wait", "ms": 400 }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Log in as employer",
+      "observe": "Employer dashboard loads (sign-in is automatic — no manual login needed).",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open campus tie-up directory",
+      "observe": "List of colleges with status badges (Approved / Pending / Request tie-up).",
+      "action": { "type": "goto", "path": "/dashboard/employer/select-campus" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Request tie-up with IIT Madras (if not already Approved)",
+      "observe": "Toast confirms request, or row already shows Approved — either is OK.",
+      "action": { "type": "clickInRow", "rowText": "Indian Institute of Technology", "buttonName": "Request Tie-up", "skipIfMissing": true }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Log in as college admin",
+      "observe": "College dashboard loads.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open Employer Partnership Requests",
+      "observe": "Pending list shows TechCorp Solutions (if request was sent).",
+      "action": { "type": "goto", "path": "/dashboard/college/employers/requests" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Approve TechCorp partnership request",
+      "observe": "TechCorp row disappears or status becomes approved.",
+      "action": { "type": "clickInRow", "rowText": "TechCorp", "buttonName": "Approve" }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Log in as employer again",
+      "observe": "Employer hub loads.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "EI-01",
+      "label": "Navigate to Internship Programs",
+      "observe": "Page title Internship Programs; list or empty state visible.",
+      "action": { "type": "goto", "path": "/dashboard/employer/internships" }
+    },
+    {
+      "phase": "EI-01",
+      "label": "Scan internship list and status filter",
+      "observe": "Note existing postings (draft / published / closed).",
+      "action": { "type": "wait", "ms": 500 }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Click Post Internship to open the create form",
+      "observe": "Post New Internship card appears with campus checkboxes and fields.",
+      "action": { "type": "click", "role": "button", "name": "Post Internship" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Review target campuses (pre-selected when form opens)",
+      "observe": "At least one approved campus checkbox is checked.",
+      "action": { "type": "wait", "ms": 400 }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type internship title",
+      "observe": "Title field shows the guided test title with session marker.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Internship Title",
+        "value": "{{marker}} Summer Data Intern"
+      }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Set internship start date",
+      "observe": "Start date shows 01 Jul 2026.",
+      "action": { "type": "fillSegmentedDate", "nearLabel": "Start date", "value": "2026-07-01" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Set internship end date",
+      "observe": "End date shows 31 Dec 2026.",
+      "action": { "type": "fillSegmentedDate", "nearLabel": "End date", "value": "2026-12-31" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type stipend minimum (INR/month)",
+      "observe": "Stipend min field shows 25000.",
+      "action": { "type": "type", "nearLabel": "Stipend / month (min", "value": "25000" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type stipend maximum (INR/month)",
+      "observe": "Stipend max field shows 35000.",
+      "action": { "type": "type", "nearLabel": "Stipend / month (max", "value": "35000" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type number of openings",
+      "observe": "Openings field shows 3.",
+      "action": { "type": "type", "nearLabel": "Openings", "value": "3" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type minimum CGPA",
+      "observe": "Min CGPA field shows 7.5.",
+      "action": { "type": "type", "nearLabel": "Min CGPA", "value": "7.5" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type eligible branches",
+      "observe": "Eligible branches shows All (every branch).",
+      "action": { "type": "type", "nearLabel": "Eligible branches", "value": "All" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type batch year (2026 — matches seeded students)",
+      "observe": "Batch year field shows 2026.",
+      "action": { "type": "type", "nearLabel": "Batch year", "value": "2026" }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type skills / keywords",
+      "observe": "Skills field shows Python, SQL, Data Analysis.",
+      "action": {
+        "type": "type",
+        "placeholder": "Python, SQL, ML",
+        "value": "Python, SQL, Data Analysis"
+      }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Type additional notes",
+      "observe": "Notes textarea shows guided test note with marker.",
+      "action": {
+        "type": "type",
+        "nearLabel": "Additional notes",
+        "value": "Guided test {{marker}} — on-campus preferred."
+      }
+    },
+    {
+      "phase": "EI-02",
+      "label": "Review complete form before publish",
+      "observe": "All fields populated; campuses selected. You decide if values look correct.",
+      "action": { "type": "wait", "ms": 500 }
+    },
+    {
+      "phase": "EI-03",
+      "label": "Click Publish Internship",
+      "observe": "Success toast; form closes; new row in list with your title.",
+      "action": { "type": "click", "role": "button", "name": "Publish Internship" }
+    },
+    {
+      "phase": "EI-03",
+      "label": "Confirm posting appears in published list",
+      "observe": "Table shows marker in title; status Published. Employer publish done — college must approve before students see it.",
+      "action": { "type": "wait", "ms": 1000 }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Log in as college admin",
+      "observe": "College hub loads — approve the new listing for campus.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Open college Internships list",
+      "observe": "New posting shows Campus = Pending review.",
+      "action": { "type": "goto", "path": "/dashboard/college/internships" }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Search for the guided internship by marker",
+      "observe": "Table filters to {{marker}} in the title column.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search title, employer, or skills",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Filter campus status to Pending review",
+      "observe": "Only listings awaiting college approval remain visible.",
+      "action": { "type": "select", "id": "college-listing-approval-filter", "value": "pending" }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Switch to list view",
+      "observe": "Table rows with Actions column — approve icon is easier to target in list view.",
+      "action": { "type": "click", "role": "button", "name": "List view" }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Approve guided internship for campus",
+      "observe": "Row with {{marker}} — click Approve for campus (green check icon; skipped if already Approved).",
+      "action": {
+        "type": "clickInRow",
+        "rowText": "{{marker}}",
+        "buttonName": "Approve for campus",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "CI-01",
+      "label": "Confirm campus status is Approved",
+      "observe": "Filter Campus status → Approved; {{marker}} row shows Approved badge. Students can now browse it.",
+      "action": { "type": "select", "id": "college-listing-approval-filter", "value": "approved" }
+    }
+  ]
+}

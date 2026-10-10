@@ -1,0 +1,80 @@
+{
+  "id": "interview-scheduling",
+  "title": "Interview scheduling",
+  "oneLiner": "Voice-guided tour for use case: Interview scheduling",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in → Interview Scheduling",
+      "observe": "Schedule form/list visible",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer logs in → Interview Scheduling (continued)",
+      "observe": "Schedule form/list visible",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/interviews"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Create interview slot for a candidate — manual step",
+      "observe": "Slot saved Complete this on screen during the recording pause.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Interviews (or calendar)",
+      "observe": "Same slot visible",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student → Interviews (or calendar) (continued)",
+      "observe": "Same slot visible",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/interviews"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Interview Scheduling",
+      "observe": "Same slot on college view",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College → Interview Scheduling (continued)",
+      "observe": "Same slot on college view",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/interviews"
+      }
+    }
+  ]
+}

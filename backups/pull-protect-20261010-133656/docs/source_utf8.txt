@@ -1,0 +1,685 @@
+﻿<!-- Slide number: 1 -->
+
+PLACEMENTHUB
+The Operating System for
+Campus Placements & Industry Engagement
+A multi-tenant SaaS platform connecting colleges, students, and employers through a single workflow.
+Full product overview  ╖  Roles ╖ Modules ╖ Features  ╖  Sandbox June 2026
+
+### Notes:
+
+<!-- Slide number: 2 -->
+
+Founder background
+30+ years across staffing, campus engagement, and talent development
+
+Leadership & experience
+Campus & talent focus
+30+ years across enterprise and startup environments
+Recruitment, workforce planning, and talent acquisition
+Built and mentored high-performing delivery teams
+Scaled teams with governance and operational efficiency
+Campus hiring and internship engagement programs
+Industryûacademia collaboration
+Employee development and leadership coaching
+People leadership + product delivery expertise
+LinkedIn: linkedin.com/in/jain35
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 3 -->
+
+Agenda
+What this overview covers
+
+Why PlacementHub
+01
+Fragmentation, gaps in existing tools, and the platform thesis
+
+Roles & access
+02
+Student, College Admin, Employer, Super Admin, Alumni
+
+Opportunity modules
+03
+Drives, jobs, internships, projects, hackathons, alumni
+
+Feature deep-dives
+04
+Recruitment, rules, communication, engagement, ops
+
+Season workflow
+05
+End-to-end placement lifecycle and governance
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 4 -->
+
+Placement management is still fragmented
+Disconnected tools create operational drag
+
+Email
+Excel
+WhatsApp
+Shared drives
+Standalone portals
+
+Students miss updates
+Rules hard to enforce
+Deadlines and communications get lost across channels
+Policies applied inconsistently across processes
+
+Employers repeat effort
+No reliable reporting
+Same coordination work with every campus, every season
+Leadership lacks audit trails and season insights
+
+Manual administration
+Placement offices burn time on repetitive tasks
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 5 -->
+
+Why existing approaches fall short
+Multiple tools. Multiple processes. Multiple sources of truth.
+| Current approach | Limitation |
+| --- | --- |
+| Email & Excel | Manual tracking ù error-prone, no automation |
+| WhatsApp groups | Scattered info ù no search, no audit trail |
+| Generic job portals | Not built for campus placement controls |
+| ERP placement modules | Often weak employer engagement |
+| Separate systems | Duplicate entry and inconsistent records |
+
+Result: placement offices, employers, and students spend more time coordinating than executing.
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 6 -->
+
+The solution ù PlacementHub
+One platform for the complete placement lifecycle
+
+Students
+Placement Office
+Employers
+Super Admin
+Discover opportunities
+Apply online
+Track status
+Interviews & offers
+Partnerships
+Enforce rules
+Monitor drives
+Reports & audit
+Campus tie-ups
+Publish roles
+Run selection
+Issue offers
+Onboard tenants
+Approvals queue
+Platform settings
+Ops monitoring
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 7 -->
+
+What makes PlacementHub different
+Built specifically for campus hiring ù not a generic job board
+
+Core capabilities
+Beyond placements
+Multi-tenant college architecture
+Employerûcampus partnership workflow
+Placement rules engine (CGPA, offers, FCFS)
+Per-campus visibility controls
+Clarifications & moderated discussions
+Audit logs, email logs, reporting
+Internships & short projects
+Hackathons & alumni jobs
+Assessment CSV + online updates
+Interview scheduling
+Sponsorships & startup funding
+Guest faculty & mentorship requests
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 8 -->
+
+Who uses PlacementHub
+Four roles. One ecosystem. Role-based navigation.
+| Role | How they join | Home after login |
+| --- | --- | --- |
+| Student | College provisions master list (no self-signup) | Student dashboard |
+| Alumni student | Flagged on student account | Alumni jobs browse / apply |
+| College admin (TPO) | Register or super-admin onboard | College dashboard |
+| Employer | Register (may need platform approval) | Employer dashboard |
+| Super admin | Provisioned by platform ops | Admin dashboard |
+Shared across roles where enabled: alerts, data export, feedback, and in-app help.
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 9 -->
+
+Multi-tenant architecture
+Every college is a tenant ù data isolation with cross-campus employers
+
+College tenant
+Students belong to one college. Academic years and season labels scope batches and reporting.
+
+Employer (cross-tenant)
+One company account can request partnerships with many colleges.
+
+Partnerships gate
+employer_approvals: pending ? approved ? rejected. Until approved, campus actions are blocked.
+
+Visibility rows
+Jobs/internships/projects need per-campus college_status before students see them.
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 10 -->
+
+Opportunity modules
+First-class pipelines ù browse, apply, and track per type
+| Type | Typical use | Who publishes / gate |
+| --- | --- | --- |
+| Placement drives | On-campus / virtual hiring events | Employer requests ╖ College approves |
+| Jobs | Full-time, part-time, PPO | Employer publishes ╖ College visibility |
+| Internships | Summer / semester programs | Employer ╖ College visibility |
+| Short projects | Portfolio / exposure work | Employer ╖ College visibility |
+| Hackathons | Competitions (optional PPO) | Employer ╖ College visibility |
+| Alumni jobs | Lateral roles for graduates | Employer ? alumni students |
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 11 -->
+
+Engagement beyond hiring pipelines
+Same tenant model ù lighter workflows, no offer lock
+
+Mentorship requests
+Guest faculty & lectures
+Sponsorships
+Student posts need ? college approves ? partnered employers volunteer. Not a select/offer pipeline.
+College lists campus guest needs; employers confirm interest by email.
+Employers offer sponsorships; colleges coordinate campus programs.
+
+Startup seed funding
+Events & calendars
+Discussions & clarifications
+Employers apply / track; colleges review campus startups.
+College events + employer calendars to avoid clashes and plan visits.
+Official Q&A batches and moderated threads for season communication.
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 12 -->
+
+Student module ù features
+From profile to offer response
+
+Profile & docs
+Discovery & apply
+Pipeline
+Engage & privacy
+Academic profile & skills
+Resume / labelled CVs
+Documents & proofs
+Profile completion guidance
+Browse drives & programs
+Placement calendar
+Eligibility checks
+Apply before deadlines
+My Applications (by type)
+My Interviews
+My Offers accept/decline
+Withdrawals where allowed
+Mentorship requests
+Clarifications & alerts
+Feedback
+My data export
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 13 -->
+
+Student journey
+Provisioned ? placed ù with built-in eligibility controls
+
+1
+2
+3
+4
+5
+Account provisioned by college
+Profile & resume
+Browse approved opportunities
+Eligibility validated
+Apply
+
+6
+7
+8
+9
+Assessments
+Interviews
+Offers
+Outcome tracked
+Controls: CGPA ╖ backlogs ╖ batch year ╖ deadlines ╖ institute placement policies
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 14 -->
+
+Employer module ù features
+Partner, publish, select, offer
+
+Organization
+Partnerships
+Publishing
+Company profile
+Sponsorships
+Startup seed funding
+Campus guest needs
+Request campus tie-ups
+Track pending / approved
+College directory
+Multi-campus ops
+Drives, jobs, internships
+Projects & hackathons
+Alumni jobs
+Select target campuses
+
+Selection
+Offers & schedule
+Engage
+Applications board
+Assessment CSV upload
+Assessment update online
+Hiring results dashboard
+Offers (+ CSV)
+Interview scheduling
+FCFS unavailable list
+Events calendar
+Clarifications
+Discussions
+Email templates
+Mentorship volunteers
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 15 -->
+
+College admin (TPO) ù features
+Govern the season from partnership to report
+
+Students
+Partnerships
+Programs
+Master list & verify
+Add student
+Enrollment key
+Archived students view
+Approve employer requests
+Employer directory
+Campus visibility
+Reject / pending queue
+Placement drives board
+Internships & results
+Applications board
+Offers monitor
+
+Rules & eval
+Engagement
+Ops
+Placement rules config
+FCFS settings
+Hiring assessment (RO)
+Interview scheduling
+Guest faculty & lectures
+Sponsorships
+Startup funding
+Calendar & events
+Clarifications publish
+Discussions
+Reports & audit
+Mentorship moderation
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 16 -->
+
+Super admin ù platform operations
+Operate the whole PlacementHub instance
+
+Directory
+Onboarding
+Operations inbox
+Colleges, employers, users, placement listings, archived students
+Pending registrations ù college & employer approval queue
+Feedback inbox, platform error logs, email logs
+
+Compliance
+Configuration
+Support
+Audit reports across tenants; operational visibility
+SMTP, branding URLs, marketing site, feature globals
+User support tooling and tenant health monitoring
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 17 -->
+
+College & employer day-to-day
+Governed partnership model
+
+College placement office
+Employer
+Approve employer partnerships
+Manage student eligibility
+Configure placement policies
+Curate drive / listing visibility
+Monitor hiring progress
+Generate reports & audits
+Request campus partnerships
+Publish opportunities
+Run assessments (CSV / online)
+Schedule interviews
+Record offers
+Engage via clarifications
+
+No employer interacts with a campus until that institution approves the partnership.
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 18 -->
+
+End-to-end placement season
+One workflow. Complete visibility.
+Super Admin onboards college & employer
+
+1
+
+Assessment flexibility
+College approves partnership
+
+2
+
+Employer publishes opportunity
+
+3
+Online result management
+CSV export / import
+Import review & fix rows
+Submit locks edits
+College read-only mirror
+
+College approves visibility
+
+4
+
+Students apply
+
+5
+
+Assessments & interviews
+
+6
+
+Offers issued
+
+7
+
+Placement rules enforced
+
+8
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 19 -->
+
+Recruitment & selection subsystem
+Assessments, interviews, offers, FCFS
+
+Assessment CSV
+Assessment Online
+Interviews
+Export campus students ? fill hiring_result offline ? upload ? validate ? commit ? submit (locks).
+Same data model with inline edits ù Shortlist, Reject, Select, Decline, Withdraw.
+Employer and college coordinate schedules; students see My Interviews.
+
+Offers
+FCFS lock
+Unavailable list
+UI entry or CSV from Offers page; students accept/decline under college rules.
+When enabled, first employer to confirm a student on a track blocks others for that campus track.
+Employers see students already claimed under FCFS for the selected track.
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 20 -->
+
+Placement rules engine
+Configurable per college tenant ù enforced at apply and offer time
+
+01
+Offer limits
+Max simultaneous / cumulative offers per student policy
+
+02
+Academic gates
+Minimum CGPA and backlog restrictions
+
+03
+Season windows
+Placement season start/end and academic year scoping
+
+04
+FCFS enablement
+First-come confirmation locking per hiring track
+
+05
+Drive eligibility
+Batch year and other drive-level criteria
+
+06
+Visibility gates
+Students only see approved, published listings
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 21 -->
+
+Communication & support modules
+Keep the season aligned without WhatsApp sprawl
+
+Alerts
+Transactional email
+Clarifications
+In-app notifications for applications, approvals, and reminders
+Welcome, selection, resets ù logged for super admin
+Official batched Q&A published by the college for employers
+
+Discussions
+Templates
+Help & feedback
+Moderated threads where enabled for campusûemployer dialogue
+Reusable email / message templates for college and employer
+In-app help widget + feedback routed to admin inbox
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 22 -->
+
+Alumni hiring module
+Lateral roles for graduated students ù separate from campus drives
+
+Employer posts alumni jobs
+Dedicated alumni listing flow and assessment online updates
+
+Alumni-flagged students
+Browse Alumni Jobs instead of campus placement drives
+
+Separate application tabs
+Application and interview flows scoped for alumni where configured
+
+Same partnership model
+Campus partnership still governs which institutes see employer activity
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 23 -->
+
+Capability matrix
+Quick reference across roles
+| Capability | Student | Employer | College | Super Admin |
+| --- | --- | --- | --- | --- |
+| Browse / apply | ? | ù | monitor | ù |
+| Publish drives & listings | ù | ? | approve | listings |
+| Assessment results | view | CSV / online | read-only | ù |
+| Interview scheduling | view | ? | ? | ù |
+| Offers | accept / decline | ? + CSV | monitor | ù |
+| Placement rules | subject to | ù | configure | ù |
+| Partnership approval | ù | request | approve | ù |
+| User / tenant admin | ù | profile | students | ? |
+| Audit / email logs | self export | self export | audit | ? |
+| Mentorship requests | post | volunteer | approve | ù |
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 24 -->
+
+Platform strengths
+Built for real campus operations
+
+Governance
+Compliance
+Reporting
+Experience
+Partnership approvals
+Visibility controls
+Role-based permissions
+Audit logs
+Email logs
+Activity history
+Placement analytics
+Student / employer reports
+CSV exports
+Mobile-friendly student flows
+Dark & light themes
+In-app help
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 25 -->
+
+Accounts & security
+How access is provisioned and protected
+
+Student onboarding
+College master list ? issued credentials (not public student signup)
+
+Employer / college signup
+/register with captcha; may require super-admin approval
+
+Sessions
+Role-based dashboards; middleware protects routes
+
+Tenant isolation
+Tenant ID on student data; employer campus scope on APIs
+
+Dev / QA surfaces
+Password-gated developer & data-entry tools; screen IDs for guided QA
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 26 -->
+
+Current status ù June 2026
+Pilot-ready sandbox environment
+
+Completed
+Current focus
+Multi-tenant architecture
+Student / employer / college workflows
+Opportunity management
+Assessment & offer pipelines
+Engagement modules
+Reporting foundation
+Sandbox deployment
+User testing
+Pilot institution onboarding
+Feedback incorporation
+Production readiness
+PLACEMENTHUB
+Sandbox  ╖  June 2026
+
+### Notes:
+
+<!-- Slide number: 27 -->
+
+PLACEMENTHUB
+The Operating System for Campus Placements
+and Industry Engagement
+Immediate next steps
+Long-term vision
+Pilot deployment with one institution
+Onboard 2û3 employer partners
+Student data migration
+Placement office training
+Production rollout
+Become the central platform through which institutions, students, alumni, and employers collaborate throughout the academic and hiring lifecycle.
+Sandbox Environment  ╖  June 2026
+
+### Notes:

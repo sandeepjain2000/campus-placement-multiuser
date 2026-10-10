@@ -1,0 +1,223 @@
+================================================================================
+Generic SaaS — QA test case generation prompts (test design only)
+================================================================================
+Use these prompts with an LLM or author to produce test cases, not execution
+results. Omit pass/fail, actual results, and automation run logs unless you
+explicitly want a results sheet.
+
+--------------------------------------------------------------------------------
+Meta-prompt (reuse for any new suite)
+--------------------------------------------------------------------------------
+You are writing manual test cases only for a named SaaS product. First
+summarize the product’s personas (or permission tiers), primary modules, and
+main URL patterns you will assume—then generate cases against that context.
+
+Output a table with columns:
+  Test Case ID, Category, Title, Persona or permission tier (if any),
+  Preconditions, Steps (numbered), Expected results (bullet checklist), Priority.
+
+Do not include pass/fail, actual results, or automation run logs.
+
+Append the category-specific intent from one of the sections below.
+
+--------------------------------------------------------------------------------
+Suite A — Classic E2E / smoke matrix (broad functional coverage)
+--------------------------------------------------------------------------------
+Produce a classic manual test matrix for the product.
+
+Columns (adjust names to your template):
+  Test Case ID, Module, Scenario, Description, Pre-conditions, Steps,
+  Expected Result, Status (placeholder only), Automation Script reference
+  (optional).
+
+Cover at least:
+  - Authentication and session: valid sign-in per persona, invalid credentials,
+    sign-up or invite acceptance if applicable, sign-out.
+  - Shell and navigation: primary nav, deep links, theme or layout preferences,
+    responsive behavior.
+  - Core workflows for each major persona (CRUD on their primary objects).
+  - Tenant or org admin vs platform operator flows, if the product has both.
+  - Bulk import/export, reporting, or integrations the product advertises.
+  - Operational or background jobs only if in scope for QA.
+
+Use concrete routes or deep links where they exist in the app. Do not include
+execution results.
+
+--------------------------------------------------------------------------------
+Suite B — Role-based screen access and open stability
+--------------------------------------------------------------------------------
+Generate exhaustive persona (or role) × route test cases for positive
+navigation and negative authorization.
+
+For each defined persona or permission tier:
+  - For every URL or client route that persona SHOULD access: authenticate,
+    open the route, assert the view loads with no unhandled error, blank shell,
+    or crash.
+  - For every route outside that persona’s allowlist: assert direct access is
+    blocked, redirected, or met with an explicit forbidden state—not a silent
+    wrong workspace.
+
+Output columns suitable for manual QA, for example:
+  Test Case ID, Category, Type (positive navigation / negative authorization),
+  Persona, Demo or test credentials reference, Target route, Steps,
+  Expected result, Priority, leave execution columns empty on a fresh sheet.
+
+--------------------------------------------------------------------------------
+Suite C — Tabular screens: CSV (or spreadsheet) export
+--------------------------------------------------------------------------------
+For each list- or table-heavy screen (by persona and path), define one test
+case.
+
+Preconditions:
+  Representative data loaded, user authenticated as the right persona,
+  the grid or list shows at least one row when the scenario requires it.
+
+Steps:
+  Open the screen, locate the export action, run export, open the downloaded
+  file.
+
+Expectations:
+  Export control is visible and enabled where policy allows, file downloads
+  without errors, file has headers and body rows when the UI lists rows, and a
+  small sample of cells matches on-screen values.
+
+One case per screen in the agreed inventory.
+
+--------------------------------------------------------------------------------
+Suite D — Cross-persona transactional flow and visibility
+--------------------------------------------------------------------------------
+Define end-to-end business flows where one persona creates or changes shared
+state (e.g. request → approval → publication, assignment, billing event).
+
+For each flow specify:
+  - Owning persona, entry screen, concrete action.
+  - Downstream checks: other personas sign in, open their relevant screens, and
+    assert the same record shows consistent status and fields.
+
+Emphasize visibility and state alignment across actors, not pixel-level checks.
+
+--------------------------------------------------------------------------------
+Suite E — Non-hardcoded / data-backed UI validation
+--------------------------------------------------------------------------------
+For major screens per persona, define tests that visible data matches an
+explicit backend source of truth (database tables, REST or GraphQL responses,
+events)—not static placeholder copy baked into the client.
+
+Each case includes:
+  Persona, route or screen name, data under test, declared source of truth,
+  steps to compare UI to API or read-only query results.
+
+Goal: prove primary screens are driven by live configuration and persisted data.
+
+--------------------------------------------------------------------------------
+Suite F — Tabular screens: CSV (or bulk file) upload and reflection
+--------------------------------------------------------------------------------
+For screens that support bulk upload, define cases for:
+  - Valid file or template succeeds and rows reconcile.
+  - Invalid or malformed files produce clear, actionable validation errors.
+  - After success, new or updated rows appear in the UI without silent partial
+    failure.
+
+Include preconditions: correct persona, correct screen, optional template
+download step.
+
+--------------------------------------------------------------------------------
+Suite G — PDF (or fixed-layout) report availability and correctness
+--------------------------------------------------------------------------------
+Inventory screens or records that should expose PDF (or similar) export.
+
+Per item:
+  - Confirm the export action exists and is reachable.
+  - Generate the artifact and open it.
+  - Assert structure and key fields match the on-screen or API source record
+    (identifiers, amounts, dates, parties).
+
+Split “action exists” from “content correct” where useful.
+
+--------------------------------------------------------------------------------
+Suite H — Email notifications and user preference control
+--------------------------------------------------------------------------------
+For each important domain event that should notify by email:
+  - Assert an email is triggered to the intended recipient or role.
+  - Describe how to verify delivery in a test mailbox or provider sandbox.
+  - Assert per-user or per-workspace preferences can enable or mute categories
+    without breaking unrelated mail.
+
+Map events to notification types or template names explicitly.
+
+--------------------------------------------------------------------------------
+Suite I — In-app alerts: trigger, visibility, and control
+--------------------------------------------------------------------------------
+Define tests for in-app notification or alert feeds:
+  - Each relevant transaction or state change creates the correct alert type.
+  - Visibility matches policy (which personas or workspaces should see it).
+  - Users can control noise (read, mute, category toggles) without losing
+    mandatory signals.
+
+--------------------------------------------------------------------------------
+Suite J — Transactional lifecycle: add, edit, view, delete, cancel
+--------------------------------------------------------------------------------
+Per major entity type in the domain model, define governance around lifecycle:
+  Create, read, update, delete vs cancel or void, who may perform destructive
+  actions, retention or soft-delete semantics if applicable, elevated-operator
+  visibility of archived or deleted records, and notifications to affected users.
+
+Include negative cases (unauthorized mutation or delete).
+
+--------------------------------------------------------------------------------
+Suite K — Profile and settings: editable vs immutable fields
+--------------------------------------------------------------------------------
+For user, organization, workspace, or billing profile surfaces (as applicable):
+  - Classify fields as mutable configuration vs immutable identity or legal
+    anchors (account IDs, legal name, immutable keys).
+  - Include file or media uploads where the product uses them.
+
+Expectations: allowed edits persist; disallowed edits are blocked or rejected
+with clear messaging.
+
+--------------------------------------------------------------------------------
+Suite L — Design refresh and component-quality backlog
+--------------------------------------------------------------------------------
+Identify screens or shells prioritized for visual or interaction upgrades
+(aligned to your design system or target component library).
+
+For each candidate describe:
+  - Current friction (density, hierarchy, affordances, accessibility).
+  - Target patterns (navigation patterns, forms, validation, tables, empty and
+    loading states).
+
+Treat this as a UX or design-debt catalog, not a substitute for functional
+regression of business rules.
+
+--------------------------------------------------------------------------------
+Suite M — Use-case executability (journey-based)
+--------------------------------------------------------------------------------
+From a catalog of named business scenarios, write one executable manual test
+per scenario:
+  Primary actor, supporting actors, preconditions, ordered steps through the
+  production-like UI, and explicit done criteria that show the journey completes.
+
+Automation stack details are optional unless you are generating automation specs.
+
+--------------------------------------------------------------------------------
+Suite N — Visual consistency against design tokens
+--------------------------------------------------------------------------------
+Define visual or design-system checks:
+  Typography, color, spacing, corner radius, and shared components should align
+  with the product’s documented tokens (theme file, Figma variables, or style
+  guide).
+
+Per page or region, list what to compare and any allowed tolerance (e.g.
+rounding, responsive breakpoints).
+
+--------------------------------------------------------------------------------
+Suite O — Extended UAT batch (wide acceptance net)
+--------------------------------------------------------------------------------
+Produce or extend a large batch of user-acceptance scenarios (e.g. dozens of
+rows) for cross-module smoke and edge cases. Match the column layout of your
+team’s UAT spreadsheet or CSV import template. Use this for breadth beyond the
+structured suites above.
+
+================================================================================
+End of file
+================================================================================

@@ -1,0 +1,122 @@
+# QA2 test execution results
+
+| Field | Value |
+|-------|-------|
+| Results file | `agent_results_20260516T154639Z.json` |
+| Run ID | `20260516T154639Z` |
+| Base URL | https://campus-placement-omega.vercel.app |
+| Cases | 100 |
+
+## Pass/Fail summary
+
+| Pass/Fail | Count |
+|-----------|------:|
+| N/A | 97 |
+| INCONCLUSIVE | 3 |
+
+> **N/A** = run finished but the agent never returned `{"verdict":"PASS|FAIL|BLOCKED"}` in saved output. Re-run with the updated `run_agent_cloud.py` to populate real Pass/Fail.
+
+## All cases
+
+| # | Test Case ID | Suite | Kind | Role | Route | Run Status | Pass/Fail | Notes | Tokens |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | C1-VISIT-001 | A | primary | student | /dashboard/alerts | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 101848 |
+| 2 | C1-VISIT-001-COMP | A | companion | student | /dashboard/alerts | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6122 |
+| 3 | C1-VISIT-002 | A | primary | student | /dashboard/feedback | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 25826 |
+| 4 | C1-VISIT-002-COMP | A | companion | student | /dashboard/feedback | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6092 |
+| 5 | C1-VISIT-003 | A | primary | student | /dashboard/my-exports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12358 |
+| 6 | C1-VISIT-003-COMP | A | companion | student | /dashboard/my-exports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 32899 |
+| 7 | C1-VISIT-004 | A | primary | student | /dashboard/student/applications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 144718 |
+| 8 | C1-VISIT-004-COMP | A | companion | student | /dashboard/student/applications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12494 |
+| 9 | C1-VISIT-005 | A | primary | student | /dashboard/student/calendar | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 39746 |
+| 10 | C1-VISIT-005-COMP | A | companion | student | /dashboard/student/calendar | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 56118 |
+| 11 | C1-VISIT-006 | A | primary | student | /dashboard/student/clarifications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 18599 |
+| 12 | C1-VISIT-006-COMP | A | companion | student | /dashboard/student/clarifications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12526 |
+| 13 | C1-VISIT-007 | A | primary | student | /dashboard/student/discussions | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 5985 |
+| 14 | C1-VISIT-007-COMP | A | companion | student | /dashboard/student/discussions | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6100 |
+| 15 | C1-VISIT-008 | A | primary | student | /dashboard/student/documents | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12405 |
+| 16 | C1-VISIT-008-COMP | A | companion | student | /dashboard/student/documents | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 127945 |
+| 17 | C1-VISIT-009 | A | primary | student | /dashboard/student/drives | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 46732 |
+| 18 | C1-VISIT-009-COMP | A | companion | student | /dashboard/student/drives | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6158 |
+| 19 | C1-VISIT-010 | A | primary | student | /dashboard/student/internships | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6002 |
+| 20 | C1-VISIT-010-COMP | A | companion | student | /dashboard/student/internships | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6094 |
+| 21 | C1-VISIT-011 | A | primary | student | /dashboard/student/interviews | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 84549 |
+| 22 | C1-VISIT-011-COMP | A | companion | student | /dashboard/student/interviews | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 40123 |
+| 23 | C1-VISIT-012 | A | primary | student | /dashboard/student/offers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 163722 |
+| 24 | C1-VISIT-012-COMP | A | companion | student | /dashboard/student/offers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6123 |
+| 25 | C1-VISIT-013 | A | primary | student | /dashboard/student/overview | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 66935 |
+| 26 | C1-VISIT-013-COMP | A | companion | student | /dashboard/student/overview | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 86215 |
+| 27 | C1-VISIT-014 | A | primary | student | /dashboard/student/profile | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 18525 |
+| 28 | C1-VISIT-014-COMP | A | companion | student | /dashboard/student/profile | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6102 |
+| 29 | C1-VISIT-015 | A | primary | student | /dashboard/student/projects | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 139968 |
+| 30 | C1-VISIT-015-COMP | A | companion | student | /dashboard/student/projects | completed | INCONCLUSIVE | Hollow run (0 LLM tokens — agent did not execute) | 0 |
+| 31 | C1-BLOCK-016 | A | primary | student | /dashboard/admin/audit-reports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6045 |
+| 32 | C1-BLOCK-016-COMP | A | companion | student | /dashboard/admin/audit-reports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6110 |
+| 33 | C1-BLOCK-017 | A | primary | student | /dashboard/admin/colleges | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 18909 |
+| 34 | C1-BLOCK-017-COMP | A | companion | student | /dashboard/admin/colleges | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6092 |
+| 35 | C1-BLOCK-018 | A | primary | student | /dashboard/admin/employers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 148682 |
+| 36 | C1-BLOCK-018-COMP | A | companion | student | /dashboard/admin/employers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 19417 |
+| 37 | C1-BLOCK-019 | A | primary | student | /dashboard/admin/feedback | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6076 |
+| 38 | C1-BLOCK-019-COMP | A | companion | student | /dashboard/admin/feedback | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12537 |
+| 39 | C1-BLOCK-020 | A | primary | student | /dashboard/admin/overview | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 5982 |
+| 40 | C1-BLOCK-020-COMP | A | companion | student | /dashboard/admin/overview | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6077 |
+| 41 | C1-BLOCK-021 | A | primary | student | /dashboard/admin/pending-registrations | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12303 |
+| 42 | C1-BLOCK-021-COMP | A | companion | student | /dashboard/admin/pending-registrations | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6106 |
+| 43 | C1-BLOCK-022 | A | primary | student | /dashboard/admin/settings | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 47006 |
+| 44 | C1-BLOCK-022-COMP | A | companion | student | /dashboard/admin/settings | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 40047 |
+| 45 | C1-BLOCK-023 | A | primary | student | /dashboard/admin/users | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12378 |
+| 46 | C1-BLOCK-023-COMP | A | companion | student | /dashboard/admin/users | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 48311 |
+| 47 | C1-BLOCK-024 | A | primary | student | /dashboard/college/applications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6040 |
+| 48 | C1-BLOCK-024-COMP | A | companion | student | /dashboard/college/applications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 54386 |
+| 49 | C1-BLOCK-025 | A | primary | student | /dashboard/college/audit-reports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12285 |
+| 50 | C1-BLOCK-025-COMP | A | companion | student | /dashboard/college/audit-reports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12534 |
+| 51 | C1-BLOCK-026 | A | primary | student | /dashboard/college/calendar | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12383 |
+| 52 | C1-BLOCK-026-COMP | A | companion | student | /dashboard/college/calendar | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 78250 |
+| 53 | C1-BLOCK-027 | A | primary | student | /dashboard/college/clarifications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 109206 |
+| 54 | C1-BLOCK-027-COMP | A | companion | student | /dashboard/college/clarifications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6086 |
+| 55 | C1-BLOCK-028 | A | primary | student | /dashboard/college/discussions | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 25676 |
+| 56 | C1-BLOCK-028-COMP | A | companion | student | /dashboard/college/discussions | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 33105 |
+| 57 | C1-BLOCK-029 | A | primary | student | /dashboard/college/drives | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 71059 |
+| 58 | C1-BLOCK-029-COMP | A | companion | student | /dashboard/college/drives | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 26153 |
+| 59 | C1-BLOCK-030 | A | primary | student | /dashboard/college/employers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6019 |
+| 60 | C1-BLOCK-030-COMP | A | companion | student | /dashboard/college/employers | completed | INCONCLUSIVE | Hollow run (0 LLM tokens — agent did not execute) | 0 |
+| 61 | C1-BLOCK-031 | A | primary | student | /dashboard/college/employers/requests | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12543 |
+| 62 | C1-BLOCK-031-COMP | A | companion | student | /dashboard/college/employers/requests | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6087 |
+| 63 | C1-BLOCK-032 | A | primary | student | /dashboard/college/enrollment-key | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 82891 |
+| 64 | C1-BLOCK-032-COMP | A | companion | student | /dashboard/college/enrollment-key | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 208639 |
+| 65 | C1-BLOCK-033 | A | primary | student | /dashboard/college/events | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 39699 |
+| 66 | C1-BLOCK-033-COMP | A | companion | student | /dashboard/college/events | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6133 |
+| 67 | C1-BLOCK-034 | A | primary | student | /dashboard/college/guest-engagements | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6040 |
+| 68 | C1-BLOCK-034-COMP | A | companion | student | /dashboard/college/guest-engagements | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 18836 |
+| 69 | C1-BLOCK-035 | A | primary | student | /dashboard/college/hiring-assessment | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 118838 |
+| 70 | C1-BLOCK-035-COMP | A | companion | student | /dashboard/college/hiring-assessment | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 153896 |
+| 71 | C1-BLOCK-036 | A | primary | student | /dashboard/college/infrastructure | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12407 |
+| 72 | C1-BLOCK-036-COMP | A | companion | student | /dashboard/college/infrastructure | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6131 |
+| 73 | C1-BLOCK-037 | A | primary | student | /dashboard/college/internship-results | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 19057 |
+| 74 | C1-BLOCK-037-COMP | A | companion | student | /dashboard/college/internship-results | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 132036 |
+| 75 | C1-BLOCK-038 | A | primary | student | /dashboard/college/internships | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6035 |
+| 76 | C1-BLOCK-038-COMP | A | companion | student | /dashboard/college/internships | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 39252 |
+| 77 | C1-BLOCK-039 | A | primary | student | /dashboard/college/interviews | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 86992 |
+| 78 | C1-BLOCK-039-COMP | A | companion | student | /dashboard/college/interviews | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6107 |
+| 79 | C1-BLOCK-040 | A | primary | student | /dashboard/college/offers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 115893 |
+| 80 | C1-BLOCK-040-COMP | A | companion | student | /dashboard/college/offers | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 83811 |
+| 81 | C1-BLOCK-041 | A | primary | student | /dashboard/college/offers-upload | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 19149 |
+| 82 | C1-BLOCK-041-COMP | A | companion | student | /dashboard/college/offers-upload | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6095 |
+| 83 | C1-BLOCK-042 | A | primary | student | /dashboard/college/overview | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 39946 |
+| 84 | C1-BLOCK-042-COMP | A | companion | student | /dashboard/college/overview | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6051 |
+| 85 | C1-BLOCK-043 | A | primary | student | /dashboard/college/reports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 32776 |
+| 86 | C1-BLOCK-043-COMP | A | companion | student | /dashboard/college/reports | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 40343 |
+| 87 | C1-BLOCK-044 | A | primary | student | /dashboard/college/rules | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 95077 |
+| 88 | C1-BLOCK-044-COMP | A | companion | student | /dashboard/college/rules | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6159 |
+| 89 | C1-BLOCK-045 | A | primary | student | /dashboard/college/settings | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 25570 |
+| 90 | C1-BLOCK-045-COMP | A | companion | student | /dashboard/college/settings | completed | INCONCLUSIVE | Hollow run (0 LLM tokens — agent did not execute) | 0 |
+| 91 | C1-BLOCK-046 | A | primary | student | /dashboard/college/sponsorships | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 5997 |
+| 92 | C1-BLOCK-046-COMP | A | companion | student | /dashboard/college/sponsorships | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 12491 |
+| 93 | C1-BLOCK-047 | A | primary | student | /dashboard/college/students | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6012 |
+| 94 | C1-BLOCK-047-COMP | A | companion | student | /dashboard/college/students | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 25892 |
+| 95 | C1-BLOCK-048 | A | primary | student | /dashboard/employer/applications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6061 |
+| 96 | C1-BLOCK-048-COMP | A | companion | student | /dashboard/employer/applications | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6084 |
+| 97 | C1-BLOCK-049 | A | primary | student | /dashboard/employer/assessment-summary | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 32706 |
+| 98 | C1-BLOCK-049-COMP | A | companion | student | /dashboard/employer/assessment-summary | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6113 |
+| 99 | C1-BLOCK-050 | A | primary | student | /dashboard/employer/assessment-uploads | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6046 |
+| 100 | C1-BLOCK-050-COMP | A | companion | student | /dashboard/employer/assessment-uploads | completed | N/A | Verdict not captured in this run (re-run with updated run_agent_cloud.py) | 6095 |

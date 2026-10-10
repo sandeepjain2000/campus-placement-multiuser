@@ -1,0 +1,11 @@
+flowchart TD
+  A[Select campus + drive/job target] --> B[Export CSV - all campus students]
+  B --> C[Fill hiring_result offline]
+  C --> D[Upload CSV]
+  D --> E{Validation OK?}
+  E -->|No| F[Import review - fix rows]
+  F --> D
+  E -->|Yes| G[Rows committed]
+  G --> H[Submit results - locks edits]
+  H --> I[Hiring Results Dashboard]
+  I --> J[College Hiring Assessment read-only]

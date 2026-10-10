@@ -1,0 +1,62 @@
+{
+  "id": "session-ads-toggle",
+  "title": "Session ads banner toggle",
+  "oneLiner": "Voice-guided tour for use case: Session ads banner toggle",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Platform Settings controls session ad banner.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Platform Settings",
+      "observe": "Show sponsored banner checkbox — default off.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/settings"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Toggle sponsored banner — manual",
+      "observe": "Save; refresh student dashboard to see SessionAdBanner appear or disappear.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student dashboard check",
+      "observe": "Banner visibility matches platform setting after refresh.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Open student dashboard",
+      "observe": "No email sent — UI-only regression.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student"
+      }
+    }
+  ]
+}

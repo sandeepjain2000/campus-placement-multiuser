@@ -1,0 +1,152 @@
+{
+  "id": "internship-guides-feedback-supervisors",
+  "title": "Internship guides, supervisors & feedback",
+  "oneLiner": "Voice-guided tour for use case: Internship guides, supervisors & feedback",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Prerequisite — selected intern on record",
+      "observe": "Requires at least one internship application in Selected or In progress. If lists are empty, run qa/runners/batch/run_internship_apply_auto_voice.bat or the full internship E2E through Select first.",
+      "action": {
+        "type": "wait",
+        "ms": 2000
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College assigns campus guide for the intern",
+      "observe": "Programs and Drives → Internship guides. Find the selected student. Click Assign guide, enter faculty contact details and notes, then save.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Internship guides",
+      "observe": "Cards list selected and in-progress interns on your campus.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internship-guides"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Assign campus guide — manual",
+      "observe": "Enter guide name, department, email, and notes for the student.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Employer assigns company supervisor",
+      "observe": "Student Opportunities → Internship supervisors.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship supervisors",
+      "observe": "Selected and in-progress interns for your company.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/internship-supervisors"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Assign company supervisor — manual",
+      "observe": "Enter supervisor name, team, email, phone, and notes for the intern.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Internship Progress Reviews",
+      "observe": "Employer feedback table; Add or Edit on a selected intern row.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/internship-feedback"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Submit employer internship progress review — manual",
+      "observe": "Optional star rating plus at least ten characters of feedback text.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens Internship Progress Reviews",
+      "observe": "Campus guide and company supervisor visible when assigned. Submit student feedback below.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to Internship Progress Reviews",
+      "observe": "Selected internship card with guide, supervisor, and feedback form.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/student/internship-feedback"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Submit student internship progress review — manual",
+      "observe": "Star rating optional; feedback text at least ten characters.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College reviews internship progress review",
+      "observe": "Read-only table; Export CSV when rows exist.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Internship Progress Reviews",
+      "observe": "Student and employer feedback columns for submitted rows.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internship-feedback"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Confirm supervisor on Internship guides",
+      "observe": "Same intern card shows campus guide and company supervisor read-only.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/internship-guides"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "admin-governance",
+  "title": "Super admin governance and audit visibility",
+  "oneLiner": "Super admin reviews tenants, error logs, and audit reports",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open.",
+      "action": { "type": "wait", "ms": 400 }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin logs in",
+      "observe": "Admin dashboard hub loads.",
+      "action": { "type": "login", "account": "super_admin" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open platform overview",
+      "observe": "Colleges, employers, and system health summary.",
+      "action": { "type": "goto", "path": "/dashboard/admin/overview" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Error logs",
+      "observe": "platform_error_logs with reference codes.",
+      "action": { "type": "goto", "path": "/dashboard/admin/error-logs" }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Audit reports",
+      "observe": "Export and delivery options for compliance.",
+      "action": { "type": "goto", "path": "/dashboard/admin/audit-reports" }
+    }
+  ]
+}

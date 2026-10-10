@@ -1,0 +1,71 @@
+{
+  "id": "bulk-student-import",
+  "title": "Bulk student import (CSV)",
+  "oneLiner": "Voice-guided tour for use case: Bulk student import (CSV)",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Ready for bulk CSV import.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Students list",
+      "observe": "Bulk upload control on Students screen.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/students"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Upload student CSV — manual",
+      "observe": "student_welcome emails sent; college_student_bulk_import summary to admin.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "New student signs in — manual",
+      "observe": "Use temp password from welcome mail; complete profile.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College verifies student — manual",
+      "observe": "Verify student on Students list unlocks placement features.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Return to Students",
+      "observe": "Verified badge on imported row.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/students"
+      }
+    }
+  ]
+}

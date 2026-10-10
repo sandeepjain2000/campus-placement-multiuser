@@ -1,0 +1,136 @@
+{
+  "id": "drives-apply-select",
+  "title": "Placement drive E2E — college approve, student apply, employer select",
+  "oneLiner": "After a GT-* drive is requested: college approves (if needed), student applies, employer shortlists and selects.",
+  "useStoredMarker": true,
+  "sourceCases": ["DRV-C03", "DRV-S04", "DRV-E12", "DRV-E13", "DRV-S10"],
+  "steps": [
+    {
+      "phase": "DRV-C03",
+      "label": "Log in as college admin",
+      "observe": "College hub loads. Approve the employer drive if it is still Awaiting Approval.",
+      "action": { "type": "login", "account": "college_admin" }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Open college Placement Drives",
+      "observe": "Find the row with your GT- session marker in the drive title.",
+      "action": { "type": "goto", "path": "/dashboard/college/drives" }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Approve guided drive (if still requested)",
+      "observe": "Click Approve on the {{marker}} row — skipped if already Approved.",
+      "action": {
+        "type": "clickInRow",
+        "rowSelector": "div[id^='drive-']",
+        "rowText": "{{marker}}",
+        "buttonName": "Approve",
+        "skipIfMissing": true
+      }
+    },
+    {
+      "phase": "DRV-C03",
+      "label": "Confirm Approved status",
+      "observe": "Status pill shows Approved. Handoff to Student.",
+      "action": { "type": "wait", "ms": 600 }
+    },
+    {
+      "phase": "DRV-S04",
+      "label": "Log in as student (Arjun Verma)",
+      "observe": "Student dashboard loads. Primary CV must exist on profile to apply.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "DRV-S04",
+      "label": "Open Browse Placement Drives",
+      "observe": "Approved / scheduled drives visible for IIT Madras.",
+      "action": { "type": "goto", "path": "/dashboard/student/drives" }
+    },
+    {
+      "phase": "DRV-S04",
+      "label": "Search for the guided drive by marker",
+      "observe": "Card list filters to {{marker}} in the role/title line.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search company or role",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "DRV-S04",
+      "label": "Click Apply now on the guided drive",
+      "observe": "Apply confirmation modal opens.",
+      "action": {
+        "type": "clickInRow",
+        "rowSelector": "div.card.card-hover",
+        "rowText": "{{marker}}",
+        "buttonName": "Apply now"
+      }
+    },
+    {
+      "phase": "DRV-S04",
+      "label": "Confirm application in modal",
+      "observe": "Success toast; card shows Applied badge.",
+      "action": { "type": "click", "role": "button", "name": "Confirm application" }
+    },
+    {
+      "phase": "DRV-S04",
+      "label": "Confirm Applied status on drive card",
+      "observe": "Same card shows Applied (not Apply now).",
+      "action": { "type": "wait", "ms": 800 }
+    },
+    {
+      "phase": "DRV-E12",
+      "label": "Log in as employer",
+      "observe": "Employer hub loads.",
+      "action": { "type": "login", "account": "employer" }
+    },
+    {
+      "phase": "DRV-E08",
+      "label": "Open Applications — Jobs tab (placement drives)",
+      "observe": "Jobs tab shows drive applicants (not internship program applications).",
+      "action": { "type": "goto", "path": "/dashboard/employer/applications?tab=jobs" }
+    },
+    {
+      "phase": "DRV-E12",
+      "label": "Search applicants by guided drive marker",
+      "observe": "Filters to Arjun Verma for the GT- drive opening.",
+      "action": {
+        "type": "fillSearch",
+        "placeholder": "Search by name, email, college, or opening",
+        "value": "{{marker}}"
+      }
+    },
+    {
+      "phase": "DRV-E12",
+      "label": "Shortlist the applicant",
+      "observe": "Status changes from Applied to Shortlisted.",
+      "action": { "type": "clickInRow", "rowText": "Arjun", "buttonName": "Shortlist" }
+    },
+    {
+      "phase": "DRV-E13",
+      "label": "Select the shortlisted candidate",
+      "observe": "Status becomes Selected.",
+      "action": { "type": "clickInRow", "rowText": "Arjun", "buttonName": "Select" }
+    },
+    {
+      "phase": "DRV-E13",
+      "label": "Filter list to Selected and confirm",
+      "observe": "Applicant row shows Selected badge.",
+      "action": { "type": "click", "role": "button", "name": "Selected" }
+    },
+    {
+      "phase": "DRV-S10",
+      "label": "Log in as student — verify Selected status",
+      "observe": "My Applications → Drives shows Selected for {{marker}} drive.",
+      "action": { "type": "login", "account": "student" }
+    },
+    {
+      "phase": "DRV-S10",
+      "label": "Open My Applications — Drives",
+      "observe": "Application for GT- drive shows Selected (or latest employer status).",
+      "action": { "type": "goto", "path": "/dashboard/student/applications/drives" }
+    }
+  ]
+}

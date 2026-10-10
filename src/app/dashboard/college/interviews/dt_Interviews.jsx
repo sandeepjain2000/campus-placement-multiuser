@@ -258,7 +258,7 @@ export default function CollegeInterviewsPage() {
             ))}
           </div>
 
-          <div className="grid items-start gap-4 xl:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.2fr)]">
+          <div className="grid items-start gap-4 xl:grid-cols-[minmax(20rem,0.75fr)_minmax(0,1.25fr)]">
             <Card>
               <CardHeader className="flex-row items-start justify-between">
                 <div className="flex flex-col gap-1">
@@ -336,6 +336,40 @@ export default function CollegeInterviewsPage() {
                 <CardDescription>{slots.length} scheduled interview window{slots.length === 1 ? '' : 's'}</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
+                <div className="lg:hidden">
+                  {isLoading || slots.length === 0 ? (
+                    <p className="text-muted-foreground m-0 px-4 py-8 text-center text-sm">
+                      {isLoading ? 'Loading slots…' : 'No interview slots scheduled yet.'}
+                    </p>
+                  ) : (
+                    <ul className="divide-border m-0 list-none divide-y p-0">
+                      {slots.map((slot) => (
+                        <li key={slot.id} className={editingId === slot.id ? 'bg-muted px-4 py-3' : 'px-4 py-3'}>
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0 break-words">
+                              <div className="font-semibold">{slot.company}</div>
+                              <div className="text-muted-foreground text-xs">{slot.round}</div>
+                            </div>
+                            <InterviewSlotActions
+                              onEdit={() => startEdit(slot)}
+                              onDelete={() => removeSlot(slot)}
+                              disabled={saving}
+                            />
+                          </div>
+                          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                            <span>{formatDate(slot.date)} · {formatSlotRange(slot)}</span>
+                            <StatusBadge tone={slot.createdBy === 'TPO' ? 'indigo' : 'blue'} showDot>{slot.createdBy || 'Company'}</StatusBadge>
+                          </div>
+                          <div className="text-muted-foreground mt-1 break-words text-xs">
+                            Host: {slot.interviewer || '—'}
+                            {slot.panelNames ? ` · ${slot.panelNames}` : ''}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div className="hidden lg:block">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -355,7 +389,7 @@ export default function CollegeInterviewsPage() {
                       </TableRow>
                     ) : slots.map((slot) => (
                       <TableRow key={slot.id} data-state={editingId === slot.id ? 'selected' : undefined}>
-                        <TableCell>
+                        <TableCell className="min-w-36 max-w-56 whitespace-normal break-words">
                           <div className="font-semibold">{slot.company}</div>
                           <div className="text-muted-foreground text-xs">{slot.round}</div>
                         </TableCell>
@@ -363,9 +397,9 @@ export default function CollegeInterviewsPage() {
                           <div>{formatDate(slot.date)}</div>
                           <div className="text-muted-foreground text-xs">{formatSlotRange(slot)}</div>
                         </TableCell>
-                        <TableCell className="max-w-44">
-                          <div className="truncate">{slot.interviewer}</div>
-                          {slot.panelNames ? <div className="text-muted-foreground truncate text-xs">{slot.panelNames}</div> : null}
+                        <TableCell className="min-w-28 max-w-36 whitespace-normal break-words">
+                          <div>{slot.interviewer}</div>
+                          {slot.panelNames ? <div className="text-muted-foreground text-xs">{slot.panelNames}</div> : null}
                         </TableCell>
                         <TableCell><StatusBadge tone={slot.createdBy === 'TPO' ? 'indigo' : 'blue'} showDot>{slot.createdBy || 'Company'}</StatusBadge></TableCell>
                         <TableCell>
@@ -381,6 +415,7 @@ export default function CollegeInterviewsPage() {
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </Card>
           </div>

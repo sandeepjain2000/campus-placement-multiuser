@@ -1,0 +1,565 @@
+{
+  "category": "C-4",
+  "categoryTitle": "Non-hardcoded information validation",
+  "description": "Validate all major information blocks are dynamic and data-driven, not static hard-coded literals.",
+  "testCases": [
+    {
+      "testCaseId": "C4-STU-001",
+      "category": "C-4",
+      "title": "Student identity + academic profile fields is not hard-coded",
+      "role": "student",
+      "route": "/dashboard/student/profile",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Student identity + academic profile fields",
+      "sourceOfTruth": "users + student_profiles tables",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-STU-002",
+      "category": "C-4",
+      "title": "Drive list (title, company, dates, status) is not hard-coded",
+      "role": "student",
+      "route": "/dashboard/student/drives",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Drive list (title, company, dates, status)",
+      "sourceOfTruth": "placement_drives + job_postings + employer_profiles",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-STU-003",
+      "category": "C-4",
+      "title": "Application status timeline is not hard-coded",
+      "role": "student",
+      "route": "/dashboard/student/applications",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Application status timeline",
+      "sourceOfTruth": "applications + application_status_log",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-STU-004",
+      "category": "C-4",
+      "title": "Offer amount, deadline, response status is not hard-coded",
+      "role": "student",
+      "route": "/dashboard/student/offers",
+      "demoAccount": {
+        "email": "arjun.verma@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Offer amount, deadline, response status",
+      "sourceOfTruth": "offers",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-EMP-001",
+      "category": "C-4",
+      "title": "Company profile details and logo is not hard-coded",
+      "role": "employer",
+      "route": "/dashboard/employer/profile",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Company profile details and logo",
+      "sourceOfTruth": "employer_profiles",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-EMP-002",
+      "category": "C-4",
+      "title": "Job postings list and criteria is not hard-coded",
+      "role": "employer",
+      "route": "/dashboard/employer/jobs",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Job postings list and criteria",
+      "sourceOfTruth": "job_postings",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-EMP-003",
+      "category": "C-4",
+      "title": "Candidate rows and statuses is not hard-coded",
+      "role": "employer",
+      "route": "/dashboard/employer/applications",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Candidate rows and statuses",
+      "sourceOfTruth": "applications + student_profiles + shortlists",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-EMP-004",
+      "category": "C-4",
+      "title": "Issued offer list is not hard-coded",
+      "role": "employer",
+      "route": "/dashboard/employer/offers",
+      "demoAccount": {
+        "email": "hr@techcorp.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Issued offer list",
+      "sourceOfTruth": "offers",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-COL-001",
+      "category": "C-4",
+      "title": "Dashboard KPI cards is not hard-coded",
+      "role": "college_admin",
+      "route": "/dashboard/college/overview",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Dashboard KPI cards",
+      "sourceOfTruth": "aggregated API from drives/applications/offers",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-COL-002",
+      "category": "C-4",
+      "title": "Student directory rows is not hard-coded",
+      "role": "college_admin",
+      "route": "/dashboard/college/students",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Student directory rows",
+      "sourceOfTruth": "student_profiles + users",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-COL-003",
+      "category": "C-4",
+      "title": "Drive request/approval data is not hard-coded",
+      "role": "college_admin",
+      "route": "/dashboard/college/drives",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Drive request/approval data",
+      "sourceOfTruth": "placement_drives",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-COL-004",
+      "category": "C-4",
+      "title": "Employer approvals and company data is not hard-coded",
+      "role": "college_admin",
+      "route": "/dashboard/college/employers",
+      "demoAccount": {
+        "email": "admin@iitm.edu",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Employer approvals and company data",
+      "sourceOfTruth": "employer_approvals + employer_profiles",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-ADM-001",
+      "category": "C-4",
+      "title": "Platform-wide totals is not hard-coded",
+      "role": "super_admin",
+      "route": "/dashboard/admin/overview",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Platform-wide totals",
+      "sourceOfTruth": "aggregated tenant/user/employer/student counts",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-ADM-002",
+      "category": "C-4",
+      "title": "Colleges list and metadata is not hard-coded",
+      "role": "super_admin",
+      "route": "/dashboard/admin/colleges",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Colleges list and metadata",
+      "sourceOfTruth": "tenants",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-ADM-003",
+      "category": "C-4",
+      "title": "Users list and roles is not hard-coded",
+      "role": "super_admin",
+      "route": "/dashboard/admin/users",
+      "demoAccount": {
+        "email": "admin@placementhub.com",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Users list and roles",
+      "sourceOfTruth": "users",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-ALL-001",
+      "category": "C-4",
+      "title": "Alert/notification entries is not hard-coded",
+      "role": "all_roles",
+      "route": "/dashboard/alerts",
+      "demoAccount": {
+        "email": "use role-wise demo account",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Alert/notification entries",
+      "sourceOfTruth": "notifications",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-ALL-002",
+      "category": "C-4",
+      "title": "Feedback tickets and updates is not hard-coded",
+      "role": "all_roles",
+      "route": "/dashboard/feedback",
+      "demoAccount": {
+        "email": "use role-wise demo account",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Feedback tickets and updates",
+      "sourceOfTruth": "platform_feedback + platform_feedback_replies",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    },
+    {
+      "testCaseId": "C4-ALL-003",
+      "category": "C-4",
+      "title": "Export history list is not hard-coded",
+      "role": "all_roles",
+      "route": "/dashboard/my-exports",
+      "demoAccount": {
+        "email": "use role-wise demo account",
+        "password": "Admin@123"
+      },
+      "dataPointUnderTest": "Export history list",
+      "sourceOfTruth": "audit/export tracking records",
+      "verificationApproach": [
+        "Capture baseline value on UI.",
+        "Modify source data (seed/DB/API fixture) for the same record.",
+        "Reload page (or re-login) and verify updated value appears.",
+        "Confirm old baseline value no longer appears.",
+        "Run same check with second record to avoid one-off caching effects."
+      ],
+      "expectedResult": [
+        "UI values reflect latest source data after refresh.",
+        "No constant/static placeholder remains in place of live data.",
+        "Different tenants/users show different values where expected."
+      ],
+      "negativeSignalsOfHardcoding": [
+        "Same value shown regardless of changed DB/API record.",
+        "Identical demo text appears for multiple distinct entities.",
+        "Value only changes after code change, not data change."
+      ],
+      "priority": "critical"
+    }
+  ]
+}

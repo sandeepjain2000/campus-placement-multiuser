@@ -1,0 +1,7 @@
+{
+  "items": [
+    { "file": "sample_cv_software_engineer.pdf", "label": "SWE CV" },
+    { "file": "sample_cv_marketing.pdf", "label": "Marketing CV" },
+    { "file": "sample_cv_graduate.pdf", "label": "Grad CV" }
+  ]
+}

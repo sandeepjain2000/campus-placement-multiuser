@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusPlacement — Comprehensive UI/UX & SaaS Audit</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; font-size: 13.5px; background: #f5f7fa; color: #1a1a2e; line-height: 1.55; }
+
+  header { background: #0f172a; color: #fff; padding: 28px 40px 24px; }
+  header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  header p  { font-size: 13px; color: #94a3b8; }
+  .meta { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+  .meta div { background: #1e293b; border-radius: 8px; padding: 10px 20px; text-align: center; min-width: 90px; }
+  .meta div span { display: block; }
+  .meta div .n  { font-size: 24px; font-weight: 700; }
+  .meta div .lh { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .n.high   { color: #f87171; }
+  .n.medium { color: #fbbf24; }
+  .n.low    { color: #34d399; }
+  .n.info   { color: #60a5fa; }
+
+  .stack-info { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .stack-pill { background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 4px 14px; font-size: 11px; color: #94a3b8; }
+  .stack-pill strong { color: #e2e8f0; }
+
+  section { max-width: 1320px; margin: 28px auto; padding: 0 24px; }
+  h2 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 8px; }
+  h2 .cat-count { font-size: 11px; font-weight: 600; background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 10px; margin-left: auto; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  thead tr { background: #0f172a; color: #fff; }
+  thead th { padding: 11px 14px; text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .1s; }
+  tbody tr:hover { background: #f8fafc; }
+  td { padding: 11px 14px; vertical-align: top; font-size: 13px; }
+
+  .cat { font-weight: 600; color: #475569; white-space: nowrap; font-size: 12px; }
+
+  .sev { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .sev.High   { background: #fee2e2; color: #b91c1c; }
+  .sev.Medium { background: #fef3c7; color: #92400e; }
+  .sev.Low    { background: #dcfce7; color: #166534; }
+
+  .loc { font-size: 11.5px; color: #64748b; font-style: normal; }
+  .loc code { font-family: 'Courier New', monospace; background: #f1f5f9; color: #334155; border-radius: 3px; padding: 1px 5px; font-size: 11px; }
+
+  .issue-text { color: #334155; }
+  .issue-text code { font-family: 'Courier New', monospace; background: #fef2f2; color: #991b1b; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
+
+  .fix-text { color: #1e293b; }
+  .fix-text code { font-family: 'Courier New', monospace; background: #f0fdf4; color: #15803d; border-radius: 3px; padding: 1px 5px; font-size: 11.5px; }
+  .fix-text strong { color: #0f172a; }
+
+  .section-summary { background: #fff; border-radius: 8px; padding: 14px 18px; margin-bottom: 14px; border-left: 4px solid #6366f1; font-size: 13px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .section-summary strong { color: #0f172a; }
+
+  .score-bar { display: flex; align-items: center; background: #fff; border-radius: 10px; padding: 18px 24px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(0,0,0,.07); gap: 32px; flex-wrap: wrap; }
+  .score-item { text-align: center; }
+  .score-item .score-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .score-item .score-val { font-size: 26px; font-weight: 800; }
+  .score-val.grade-b  { color: #fbbf24; }
+  .score-val.grade-c  { color: #f97316; }
+  .score-val.grade-d  { color: #f87171; }
+  .score-val.grade-a  { color: #34d399; }
+  .score-divider { width: 1px; height: 40px; background: #e2e8f0; }
+
+  footer { text-align: center; padding: 32px 0 48px; color: #94a3b8; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CampusPlacement — Comprehensive UI/UX & SaaS Completeness Audit</h1>
+  <p>Evaluated against Advanced UI/UX Implementation Prompt v2 & SaaS Completeness Audit (Full Set)</p>
+  <div class="meta">
+    <div><span class="n high">10</span><span class="lh">High</span></div>
+    <div><span class="n medium">9</span><span class="lh">Medium</span></div>
+    <div><span class="n low">4</span><span class="lh">Low</span></div>
+    <div><span class="n info">23</span><span class="lh">Total Issues</span></div>
+    <div><span class="n" style="color:#a78bfa">6</span><span class="lh">Categories</span></div>
+  </div>
+  <div class="stack-info">
+    <span class="stack-pill"><strong>Framework:</strong> Next.js 16 · App Router</span>
+    <span class="stack-pill"><strong>Styling:</strong> CSS Custom Properties</span>
+    <span class="stack-pill"><strong>Data:</strong> SWR · PostgreSQL</span>
+  </div>
+</header>
+
+<section>
+
+  <!-- ── OVERALL SCORE ── -->
+  <div class="score-bar" style="margin-top: 28px;">
+    <div class="score-item">
+      <div class="score-label">Overall Grade</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Data Tables & CRUD</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">State & Edge Cases</div>
+      <div class="score-val grade-d">D</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Accessibility</div>
+      <div class="score-val grade-d">D</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Interaction & Feedback</div>
+      <div class="score-val grade-c">C+</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Security & Compliance</div>
+      <div class="score-val grade-d">D+</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-label">Multi-Tenancy & Roles</div>
+      <div class="score-val grade-c">C</div>
+    </div>
+  </div>
+
+
+  <!-- ── 1. DATA TABLES & CRUD ── -->
+  <h2>1 · Data Tables & CRUD Completeness
+    <span class="cat-count">4 issues</span>
+  </h2>
+  <div class="section-summary">
+    Data tables (like those on the Documents page) lack advanced SaaS features such as sorting, pagination, search, and export. CRUD operations are missing soft-delete capability.
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:11%">Category</th>
+        <th style="width:20%">Screen / Component</th>
+        <th style="width:30%">Issue</th>
+        <th style="width:8%">Severity</th>
+        <th style="width:31%">Recommended Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat">Data Tables</td>
+        <td class="loc">Document Table<br><code>documents/page.js</code></td>
+        <td class="issue-text">Missing pagination, search, and sorting. As the dataset scales, rendering all records will degrade performance and usability.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Implement server-side pagination and sorting. Add a debounced search input to filter documents by name or type.</td>
+      </tr>
+      <tr>
+        <td class="cat">CRUD: Delete</td>
+        <td class="loc">All Delete Actions</td>
+        <td class="issue-text">Hard deletes are used instead of soft deletes. There is no "undo" or recovery mechanism once a record is removed.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Implement a <code>deleted_at</code> timestamp for soft deletes. Provide a toast notification with an "Undo" action valid for 5-10 seconds.</td>
+      </tr>
+      <tr>
+        <td class="cat">Bulk Actions</td>
+        <td class="loc">List Views</td>
+        <td class="issue-text">No ability to select multiple rows for batch operations (e.g., bulk delete, bulk status update).</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add a checkbox column to data tables to enable bulk actions. Display a floating action bar when items are selected.</td>
+      </tr>
+      <tr>
+        <td class="cat">Export & Reporting</td>
+        <td class="loc">Dashboard Views</td>
+        <td class="issue-text">Missing export functionality. Users cannot download lists (CSV/Excel) or generate PDF reports for offline use.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Add export buttons to data tables. Ensure exports respect the current filters and sorting applied to the view.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 2. STATE & EDGE CASES ── -->
+  <h2>2 · State, Edge Cases & Performance
+    <span class="cat-count">4 issues</span>
+  </h2>
+  <div class="section-summary">
+    The application lacks robust handling for network failures, background refreshes, and offline states. Infinite loading skeletons erode trust during API errors.
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:11%">Category</th>
+        <th style="width:20%">Screen / Component</th>
+        <th style="width:30%">Issue</th>
+        <th style="width:8%">Severity</th>
+        <th style="width:31%">Recommended Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat">API Failures</td>
+        <td class="loc">All SWR Hooks</td>
+        <td class="issue-text">Unhandled SWR error states result in infinite loading skeletons when network requests fail.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Create a global <code>&lt;PageError onRetry={mutate} /&gt;</code> component and render it whenever SWR returns an error.</td>
+      </tr>
+      <tr>
+        <td class="cat">Offline Indicator</td>
+        <td class="loc">Global Layout</td>
+        <td class="issue-text">No offline indicator or recovery mechanism. Users are not informed if their internet connection drops while using the app.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Listen to <code>window.addEventListener('offline')</code> and show a persistent offline banner. Re-sync pending actions on <code>'online'</code>.</td>
+      </tr>
+      <tr>
+        <td class="cat">Background Sync</td>
+        <td class="loc">Dashboard Pages</td>
+        <td class="issue-text">Stale data may persist if a user returns to a tab after a long period. No explicit refresh prompts.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Enable SWR <code>revalidateOnFocus</code> and consider showing a subtle "New data available" toast for large updates.</td>
+      </tr>
+      <tr>
+        <td class="cat">Empty States</td>
+        <td class="loc">Dashboard Widgets</td>
+        <td class="issue-text">Hardcoded placeholder data is displayed (e.g., "↑ 2 this week") instead of true empty/zero-state guidance.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Implement explicit empty states that provide clear guidance and primary CTAs (e.g., "Upload your first document") instead of fake data.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 3. ACCESSIBILITY ── -->
+  <h2>3 · Accessibility & Navigation
+    <span class="cat-count">5 issues</span>
+  </h2>
+  <div class="section-summary">
+    Accessibility fails due to reliance on emojis for iconography, missing ARIA attributes, and lack of keyboard navigation aids like skip links.
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:11%">Category</th>
+        <th style="width:20%">Screen / Component</th>
+        <th style="width:30%">Issue</th>
+        <th style="width:8%">Severity</th>
+        <th style="width:31%">Recommended Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat">Iconography</td>
+        <td class="loc">Navigation & Menus</td>
+        <td class="issue-text">Extensive use of emojis as icons. Screen readers announce emojis verbatim, creating a confusing navigational experience.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Replace all emojis with accessible SVG icons (e.g., Lucide React) with <code>aria-hidden="true"</code>.</td>
+      </tr>
+      <tr>
+        <td class="cat">Keyboard Navigation</td>
+        <td class="loc">Global Layout</td>
+        <td class="issue-text">No "Skip to Main Content" link. Keyboard users must tab through the entire sidebar to reach the main content area.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Add a visually hidden skip link that becomes visible on focus at the start of the DOM.</td>
+      </tr>
+      <tr>
+        <td class="cat">State Indication</td>
+        <td class="loc">Sidebar Menu</td>
+        <td class="issue-text">Active menu items rely solely on visual CSS classes and lack <code>aria-current="page"</code> to inform screen readers.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Dynamically add <code>aria-current="page"</code> to the active navigation link.</td>
+      </tr>
+      <tr>
+        <td class="cat">Live Regions</td>
+        <td class="loc">Forms & Actions</td>
+        <td class="issue-text">Success and error messages are not wrapped in ARIA live regions, so they are not announced to screen reader users.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add <code>role="alert"</code> or <code>role="status"</code> to form error banners and toast notifications.</td>
+      </tr>
+      <tr>
+        <td class="cat">Navigation Context</td>
+        <td class="loc">List Views</td>
+        <td class="issue-text">Scroll position and filter states are lost when navigating away from and back to a list view.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Store list filter states in URL query parameters or session storage to preserve context across navigation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 4. INTERACTION & FEEDBACK ── -->
+  <h2>4 · Interaction & Feedback Loops
+    <span class="cat-count">4 issues</span>
+  </h2>
+  <div class="section-summary">
+    Micro-interactions lack polish. Reduced motion preferences are ignored, focus indicators are missing, and action feedback latency is not optimized.
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:11%">Category</th>
+        <th style="width:20%">Screen / Component</th>
+        <th style="width:30%">Issue</th>
+        <th style="width:8%">Severity</th>
+        <th style="width:31%">Recommended Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat">Focus Visibility</td>
+        <td class="loc">Global Styles</td>
+        <td class="issue-text">Buttons lack a visible <code>:focus-visible</code> outline, making keyboard navigation nearly impossible to track.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Define a clear, high-contrast <code>outline</code> and <code>outline-offset</code> for <code>:focus-visible</code> states in globals.css.</td>
+      </tr>
+      <tr>
+        <td class="cat">Reduced Motion</td>
+        <td class="loc">Animations</td>
+        <td class="issue-text">The UI does not respect the OS-level <code>prefers-reduced-motion</code> setting, forcing animations on all users.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Add a global CSS media query to disable or drastically reduce animations when reduced motion is preferred.</td>
+      </tr>
+      <tr>
+        <td class="cat">Action Feedback</td>
+        <td class="loc">Buttons</td>
+        <td class="issue-text">Loading buttons collapse their width due to changing text, and lack proper spinner feedback.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Maintain button min-width during loading states and insert an animated spinner alongside the loading text.</td>
+      </tr>
+      <tr>
+        <td class="cat">Hover Intent</td>
+        <td class="loc">Dropdowns / Menus</td>
+        <td class="issue-text">Hover-triggered elements (like notifications) open instantly, which can lead to accidental activation when moving the mouse.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Introduce a slight hover delay (100-150ms) for mega-menus and tooltips to confirm user intent.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 5. SECURITY & COMPLIANCE ── -->
+  <h2>5 · Security UX & Compliance
+    <span class="cat-count">3 issues</span>
+  </h2>
+  <div class="section-summary">
+    Security UX is compromised by plaintext password fields and explicit error messages. Compliance features like data export and account deletion are missing.
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:11%">Category</th>
+        <th style="width:20%">Screen / Component</th>
+        <th style="width:30%">Issue</th>
+        <th style="width:8%">Severity</th>
+        <th style="width:31%">Recommended Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat">Credential Exposure</td>
+        <td class="loc">Login Form</td>
+        <td class="issue-text">Password field uses <code>type="text"</code>, making passwords visible and preventing password managers from working correctly.</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Change to <code>type="password"</code> immediately. Add a toggle (eye icon) to allow users to view the password if needed.</td>
+      </tr>
+      <tr>
+        <td class="cat">User Enumeration</td>
+        <td class="loc">Login Errors</td>
+        <td class="issue-text">Detailed authentication errors are passed directly to the UI, potentially allowing attackers to verify registered email addresses.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Display a generic "Invalid email or password" error message to prevent user enumeration attacks.</td>
+      </tr>
+      <tr>
+        <td class="cat">Compliance</td>
+        <td class="loc">User Settings</td>
+        <td class="issue-text">Missing "Export my data" and "Delete my account" workflows, which are essential for GDPR/CCPA compliance.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Implement secure self-service workflows for data export and account deletion with appropriate re-authentication steps.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 6. MULTI-TENANCY & ROLES ── -->
+  <h2>6 · Multi-Tenancy, Roles & Audit
+    <span class="cat-count">3 issues</span>
+  </h2>
+  <div class="section-summary">
+    Role definitions and menus are hardcoded rather than database-driven. There is a lack of audit logging for administrative actions.
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:11%">Category</th>
+        <th style="width:20%">Screen / Component</th>
+        <th style="width:30%">Issue</th>
+        <th style="width:8%">Severity</th>
+        <th style="width:31%">Recommended Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cat">Hardcoded RBAC</td>
+        <td class="loc">Menus & Routes</td>
+        <td class="issue-text">Dashboard menus and valid roles are hardcoded in configuration files (e.g., <code>dashboardMenu.js</code>, <code>validators.js</code>).</td>
+        <td><span class="sev High">High</span></td>
+        <td class="fix-text">Migrate role definitions and menu structures to the database to support dynamic permissions and future role expansions.</td>
+      </tr>
+      <tr>
+        <td class="cat">Audit Logs</td>
+        <td class="loc">Admin Actions</td>
+        <td class="issue-text">No audit trail exists for critical operations (e.g., approving drives, updating statuses) performed by College Admins or Employers.</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td class="fix-text">Implement a secure audit logging table to track "who did what and when" for all destructive or status-altering actions.</td>
+      </tr>
+      <tr>
+        <td class="cat">Simultaneous Edits</td>
+        <td class="loc">Shared Resources</td>
+        <td class="issue-text">No detection or locking mechanism when two admins edit the same resource (e.g., a Placement Drive) simultaneously.</td>
+        <td><span class="sev Low">Low</span></td>
+        <td class="fix-text">Implement optimistic concurrency control using a version column, or add presence awareness/locking for shared forms.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── PRIORITY FIX ORDER ── -->
+  <h2>Recommended Fix Priority Order</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:6%">Priority</th>
+        <th style="width:28%">Fix</th>
+        <th style="width:10%">Effort</th>
+        <th style="width:10%">Impact</th>
+        <th style="width:46%">Why First</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:700; color:#b91c1c;">P0</td>
+        <td>Change password <code>type="text"</code> → <code>type="password"</code></td>
+        <td>1 word</td>
+        <td><span class="sev High">Critical</span></td>
+        <td>Major security regression. Takes seconds to fix.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700; color:#b91c1c;">P0</td>
+        <td>Handle SWR error states globally</td>
+        <td>Medium</td>
+        <td><span class="sev High">Critical</span></td>
+        <td>Infinite skeletons completely break the user experience during network or auth failures.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700; color:#92400e;">P1</td>
+        <td>Replace emojis with accessible SVG icons</td>
+        <td>High</td>
+        <td><span class="sev High">High</span></td>
+        <td>Addresses WCAG failures and greatly improves the professional look and feel.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700; color:#92400e;">P1</td>
+        <td>Add <code>:focus-visible</code> and Skip Links</td>
+        <td>Low</td>
+        <td><span class="sev High">High</span></td>
+        <td>Fundamental requirements for keyboard navigation accessibility.</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700; color:#166534;">P2</td>
+        <td>Implement Data Table Pagination and Search</td>
+        <td>High</td>
+        <td><span class="sev Medium">Medium</span></td>
+        <td>Essential for handling large datasets as the platform scales.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</section>
+
+<footer>
+  CampusPlacement Comprehensive Audit · <strong>Evaluated against SaaS Completeness & Advanced UI/UX Prompts</strong>
+</footer>
+</body>
+</html>

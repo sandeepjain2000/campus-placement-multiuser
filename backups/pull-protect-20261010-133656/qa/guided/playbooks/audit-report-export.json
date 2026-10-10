@@ -1,0 +1,62 @@
+{
+  "id": "audit-report-export",
+  "title": "Audit report export email",
+  "oneLiner": "Voice-guided tour for use case: Audit report export email",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College admin logs in",
+      "observe": "Audit Reports export with emailed download link.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Open Audit Reports",
+      "observe": "Pick date range and delivery email.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/audit-reports"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Export CSV with email — manual",
+      "observe": "audit_report_export context; time-limited download link in inbox.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Verify in Email logs",
+      "observe": "Export notification row with acting user.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Email delivery logs",
+      "observe": "Filter audit_report_export context.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/email-logs"
+      }
+    }
+  ]
+}

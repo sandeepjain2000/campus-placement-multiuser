@@ -1,0 +1,34 @@
+role,screen_label,route,csv_download,csv_upload,post_upload_verify_route,demo_account,notes
+student,Applications,/dashboard/student/applications,Yes,No,,arjun.verma@iitm.edu,Export via ExportCsvSplitButton per application type
+student,Offers,/dashboard/student/offers,Yes,No,,arjun.verma@iitm.edu,Export current list
+student,Clarifications,/dashboard/student/clarifications,Yes (thread),No,,arjun.verma@iitm.edu,Per-thread CSV export
+college_admin,Students,/dashboard/college/students,Yes,Yes (import),/dashboard/college/students,admin@iitm.edu,Template download + ImportCsvSplitButton
+college_admin,Offers,/dashboard/college/offers,Yes (starter),Yes,/dashboard/college/offers,admin@iitm.edu,Starter CSV + upload on same page
+college_admin,Offers upload,/dashboard/college/offers-upload,Yes (starter),Yes,/dashboard/college/offers,admin@iitm.edu,No sidebar link; open from Offers page
+college_admin,Hiring assessment,/dashboard/college/hiring-assessment,Yes,No (view only),,admin@iitm.edu,Export college view; reflects employer CSV/online updates
+college_admin,Placement drives,/dashboard/college/drives,Yes,No,,admin@iitm.edu,ExportCsvSplitButton on desktop
+college_admin,Interview scheduling,/dashboard/college/interviews,Yes,No,,admin@iitm.edu,Schedule + results exports
+college_admin,Internship results,/dashboard/college/internship-results,Yes,No,,admin@iitm.edu,Export CSV button
+college_admin,Calendar,/dashboard/college/calendar,Yes,No,,admin@iitm.edu,
+college_admin,Reports,/dashboard/college/reports,Yes (multi),No,,admin@iitm.edu,Multiple report CSVs from menu
+college_admin,Clarifications,/dashboard/college/clarifications,Yes (thread),No,,admin@iitm.edu,
+college_admin,Guest engagements,/dashboard/college/guest-engagements,Yes,No,,admin@iitm.edu,
+college_admin,Audit reports,/dashboard/college/audit-reports,Yes (async email),No,,admin@iitm.edu,Export CSV & email link — check export history
+employer,Applications,/dashboard/employer/applications,Yes,No,,hr@techcorp.com,
+employer,Job postings,/dashboard/employer/jobs,No,No,,hr@techcorp.com,Create via UI not CSV
+employer,Placement drives,/dashboard/employer/drives,Yes,No,,hr@techcorp.com,
+employer,Hiring Results Dashboard,/dashboard/employer/hiring-assessment,Yes,No (read-only),,hr@techcorp.com,Tabbed export; data from CSV uploads / online update
+employer,Assessment uploads (CSV),/dashboard/employer/assessment-uploads,Yes (per tab),Yes,/dashboard/employer/hiring-assessment,hr@techcorp.com,Export all applications per tab; CSV upload; labels from Assessment map
+employer,Assessment Update Online,/dashboard/employer/assessment-update-online,No,No (inline save),/dashboard/employer/hiring-assessment,hr@techcorp.com,Tabbed application table; same data as CSV path
+employer,Assessment map,/dashboard/employer/assessment-summary,No,No,,hr@techcorp.com,Round display names per opportunity kind
+employer,Offers,/dashboard/employer/offers,Yes (starter),Yes (via page link),/dashboard/employer/offers,hr@techcorp.com,Starter download; upload at /offers-upload (no sidebar item)
+employer,Offers upload,/dashboard/employer/offers-upload,Yes (starter),Yes,/dashboard/employer/offers,hr@techcorp.com,Reach via Offers page only
+employer,Interviews,/dashboard/employer/interviews,Yes,No,,hr@techcorp.com,
+employer,Calendar,/dashboard/employer/calendar,Yes,No,,hr@techcorp.com,
+super_admin,Platform overview,/dashboard/admin/overview,Yes,No,,admin@placementhub.com,
+super_admin,Colleges,/dashboard/admin/colleges,Yes,No,,admin@placementhub.com,
+super_admin,Employers,/dashboard/admin/employers,Yes,No,,admin@placementhub.com,
+super_admin,Users,/dashboard/admin/users,Yes,No,,admin@placementhub.com,
+super_admin,Pending registrations,/dashboard/admin/pending-registrations,Yes,No,,admin@placementhub.com,
+super_admin,Feedback inbox,/dashboard/admin/feedback,Yes,No,,admin@placementhub.com,
+super_admin,Audit reports,/dashboard/admin/audit-reports,Yes (async),No,,admin@placementhub.com,

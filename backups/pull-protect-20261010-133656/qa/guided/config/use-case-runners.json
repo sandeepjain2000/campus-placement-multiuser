@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "voiceCommand": "npm run test:guided:voice -- <slug>",
+  "batCommand": "qa/runners/batch/run_use_case_auto_voice.bat <slug>",
+  "cases": [
+    { "slug": "placement-drive-full", "playbook": "drives-full-cycle", "title": "Placement drive (full cycle)" },
+    { "slug": "internship-publish-hire", "playbook": "internships-full-cycle", "title": "Internship publish → hire" },
+    { "slug": "student-verified-first-app", "playbook": "student-verified-first-app", "title": "Student verified → first application", "ucId": "UC-009", "appendUcIds": ["UC-003"] },
+    { "slug": "assessment-csv", "playbook": "assessment-csv", "title": "Assessment results (CSV)", "ucId": "UC-006" },
+    { "slug": "campus-partnership-posting", "playbook": "campus-partnership-posting", "title": "Campus partnership → visible posting", "ucId": "UC-001", "appendSteps": "partnership-posting-tail" },
+    { "slug": "offer-accept-lock", "playbook": "offer-accept-lock", "title": "Offer → accept → placement lock", "ucId": "UC-005" },
+    { "slug": "assessment-update-online", "playbook": "assessment-update-online", "title": "Assessment Update Online", "tourKey": "assessment-update-online" },
+    { "slug": "clarifications", "playbook": "clarifications", "title": "Clarifications (official Q&A)", "ucId": "UC-008" },
+    { "slug": "interview-scheduling", "playbook": "interview-scheduling", "title": "Interview scheduling", "ucId": "UC-004" },
+    { "slug": "full-time-job", "playbook": "full-time-job", "title": "Full-time job (no placement drive)", "tourKey": "full-time-job" },
+    { "slug": "employer-registration", "playbook": "employer-registration", "title": "New employer registration → approval", "tourKey": "employer-registration" },
+    { "slug": "password-reset", "playbook": "password-reset", "title": "Password reset", "tourKey": "password-reset" },
+    { "slug": "bulk-student-import", "playbook": "bulk-student-import", "title": "Bulk student import (CSV)", "tourKey": "bulk-student-import" },
+    { "slug": "sponsorship-receipt", "playbook": "sponsorship-receipt", "title": "Sponsorship donation receipt", "tourKey": "sponsorship-receipt" },
+    { "slug": "interview-slot-notify", "playbook": "interview-slot-notify", "title": "Employer interview slot notify", "tourKey": "interview-slot-notify" },
+    { "slug": "email-delivery-audit", "playbook": "email-delivery-audit", "title": "Email delivery audit (super admin)", "tourKey": "email-delivery-audit" },
+    { "slug": "communication-email-routing", "playbook": "communication-email-routing", "title": "Communication email routing", "tourKey": "communication-email-routing" },
+    { "slug": "session-ads-toggle", "playbook": "session-ads-toggle", "title": "Session ads banner toggle", "tourKey": "session-ads-toggle" },
+    { "slug": "audit-report-export", "playbook": "audit-report-export", "title": "Audit report export email", "tourKey": "audit-report-export" },
+    { "slug": "login-support-feedback", "playbook": "login-support-feedback", "title": "Login support & feedback reply", "tourKey": "login-support-feedback" },
+    { "slug": "data-export-notice", "playbook": "data-export-notice", "title": "Personal data export notice", "tourKey": "data-export-notice" },
+    { "slug": "guest-engagement", "playbook": "guest-engagement", "title": "Guest engagement confirmation", "tourKey": "guest-engagement", "ucId": "UC-GUEST" },
+    { "slug": "college-internship-approve", "playbook": "internships-employer-publish", "title": "College internship approve (list view)" },
+    { "slug": "college-offers-upload", "playbook": "college-offers-upload", "title": "College offers upload and student visibility", "ucId": "UC-007" },
+    { "slug": "admin-governance", "playbook": "admin-governance", "title": "Super admin governance and audit visibility", "ucId": "UC-010" },
+    {
+      "slug": "internship-guides-feedback-supervisors",
+      "playbook": "internship-guides-feedback-supervisors",
+      "title": "Internship guides, supervisors & feedback",
+      "tourKey": "internship-guides-feedback-supervisors"
+    }
+  ]
+}

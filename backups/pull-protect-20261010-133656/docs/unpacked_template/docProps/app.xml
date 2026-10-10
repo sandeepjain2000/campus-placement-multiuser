@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <TotalTime>3</TotalTime>
+  <Words>1190</Words>
+  <Application>Microsoft Office PowerPoint</Application>
+  <PresentationFormat>Custom</PresentationFormat>
+  <Paragraphs>262</Paragraphs>
+  <Slides>14</Slides>
+  <Notes>14</Notes>
+  <HiddenSlides>0</HiddenSlides>
+  <MMClips>0</MMClips>
+  <ScaleCrop>false</ScaleCrop>
+  <HeadingPairs>
+    <vt:vector size="6" baseType="variant">
+      <vt:variant>
+        <vt:lpstr>Fonts Used</vt:lpstr>
+      </vt:variant>
+      <vt:variant>
+        <vt:i4>3</vt:i4>
+      </vt:variant>
+      <vt:variant>
+        <vt:lpstr>Theme</vt:lpstr>
+      </vt:variant>
+      <vt:variant>
+        <vt:i4>1</vt:i4>
+      </vt:variant>
+      <vt:variant>
+        <vt:lpstr>Slide Titles</vt:lpstr>
+      </vt:variant>
+      <vt:variant>
+        <vt:i4>14</vt:i4>
+      </vt:variant>
+    </vt:vector>
+  </HeadingPairs>
+  <TitlesOfParts>
+    <vt:vector size="18" baseType="lpstr">
+      <vt:lpstr>Liter</vt:lpstr>
+      <vt:lpstr>Arial</vt:lpstr>
+      <vt:lpstr>Quattrocento Sans</vt:lpstr>
+      <vt:lpstr>Office Theme</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+      <vt:lpstr>PowerPoint Presentation</vt:lpstr>
+    </vt:vector>
+  </TitlesOfParts>
+  <Company>Moonshot</Company>
+  <LinksUpToDate>false</LinksUpToDate>
+  <SharedDoc>false</SharedDoc>
+  <HyperlinksChanged>false</HyperlinksChanged>
+  <AppVersion>16.0000</AppVersion>
+</Properties>

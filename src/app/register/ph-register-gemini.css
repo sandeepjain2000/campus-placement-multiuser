@@ -1,0 +1,393 @@
+/* PlacementHub /register — HTML mock chrome (placementhub_register_page). Presentation only. */
+
+.ph-register-gemini {
+  --ph-reg-brand: #2563eb;
+  --ph-reg-brand-hover: #1d4ed8;
+  --ph-reg-slate-50: #f8fafc;
+  --ph-reg-slate-200: #e2e8f0;
+  --ph-reg-slate-300: #cbd5e1;
+  --ph-reg-slate-400: #94a3b8;
+  --ph-reg-slate-500: #64748b;
+  --ph-reg-slate-600: #475569;
+  --ph-reg-slate-800: #1e293b;
+  --ph-reg-slate-900: #0f172a;
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  background-color: var(--ph-reg-slate-50);
+  background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06) 0%, transparent 60%);
+  padding: 2rem 1rem;
+  color: var(--ph-reg-slate-800);
+}
+
+.ph-register-gemini.ph-register-gemini--with-job-aid {
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+}
+
+.ph-register-gemini .ph-reg-shell {
+  width: 100%;
+  max-width: 36rem;
+}
+
+.ph-register-gemini--with-job-aid .ph-reg-shell {
+  max-width: 520px;
+}
+
+.ph-register-gemini .ph-reg-card {
+  border: 1px solid var(--ph-reg-slate-200);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow:
+    0 10px 30px -5px rgba(15, 23, 42, 0.05),
+    0 0 3px rgba(15, 23, 42, 0.03);
+  padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .ph-register-gemini .ph-reg-card {
+    padding: 2rem;
+  }
+}
+
+.ph-register-gemini .ph-reg-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  width: fit-content;
+}
+
+.ph-register-gemini .ph-reg-brand-mark {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: var(--ph-reg-brand);
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.ph-register-gemini .ph-reg-brand-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--ph-reg-slate-900);
+}
+
+.ph-register-gemini .ph-reg-brand-tag {
+  font-size: 0.75rem;
+  color: var(--ph-reg-slate-500);
+}
+
+.ph-register-gemini .ph-reg-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ph-reg-slate-900);
+}
+
+.ph-register-gemini .ph-reg-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ph-reg-slate-500);
+}
+
+.ph-register-gemini .ph-reg-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 1.75rem 0 2rem;
+  list-style: none;
+  padding: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ph-reg-slate-400);
+}
+
+.ph-register-gemini .ph-reg-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ph-register-gemini .ph-reg-step-badge {
+  display: flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid var(--ph-reg-slate-300);
+  background: var(--ph-reg-slate-50);
+  color: var(--ph-reg-slate-500);
+}
+
+.ph-register-gemini .ph-reg-step--active {
+  color: var(--ph-reg-brand);
+  font-weight: 600;
+}
+
+.ph-register-gemini .ph-reg-step--active .ph-reg-step-badge {
+  background: var(--ph-reg-brand);
+  border-color: var(--ph-reg-brand);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+.ph-register-gemini .ph-reg-step--done .ph-reg-step-badge {
+  background: var(--ph-reg-brand);
+  border-color: var(--ph-reg-brand);
+  color: #fff;
+}
+
+.ph-register-gemini .ph-reg-step-connector {
+  flex: 1;
+  height: 2px;
+  margin: 0 0.75rem;
+  border-radius: 999px;
+  background: var(--ph-reg-slate-200);
+}
+
+.ph-register-gemini .ph-reg-step-connector--done {
+  background: color-mix(in srgb, var(--ph-reg-brand) 55%, var(--ph-reg-slate-200));
+}
+
+.ph-register-gemini .ph-reg-step-label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .ph-register-gemini .ph-reg-step-label {
+    display: inline;
+  }
+}
+
+.ph-register-gemini .ph-reg-student-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--ph-reg-slate-200);
+  background: var(--ph-reg-slate-50);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ph-reg-slate-600);
+}
+
+.ph-register-gemini .ph-reg-student-notice strong {
+  color: var(--ph-reg-slate-900);
+}
+
+.ph-register-gemini .ph-reg-student-notice a {
+  color: var(--ph-reg-brand);
+  font-weight: 600;
+}
+
+.ph-register-gemini .ph-reg-student-notice code {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  background: #fff;
+  border: 1px solid var(--ph-reg-slate-200);
+}
+
+.ph-register-gemini .ph-reg-role-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.ph-register-gemini .ph-reg-role-card {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-radius: 0.75rem;
+  border: 1px solid var(--ph-reg-slate-200);
+  background: color-mix(in srgb, var(--ph-reg-slate-50) 50%, #fff);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.ph-register-gemini .ph-reg-role-card:hover {
+  background: var(--ph-reg-slate-50);
+  border-color: var(--ph-reg-slate-300);
+}
+
+.ph-register-gemini .ph-reg-role-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ph-reg-brand);
+}
+
+.ph-register-gemini .ph-reg-role-card--selected {
+  border-color: var(--ph-reg-brand);
+  background: color-mix(in srgb, var(--ph-reg-brand) 6%, #fff);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ph-reg-brand) 35%, transparent);
+}
+
+.ph-register-gemini .ph-reg-role-icon {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid var(--ph-reg-slate-200);
+  background: #fff;
+  color: var(--ph-reg-slate-500);
+}
+
+.ph-register-gemini .ph-reg-role-card--selected .ph-reg-role-icon {
+  color: var(--ph-reg-brand);
+  border-color: color-mix(in srgb, var(--ph-reg-brand) 30%, var(--ph-reg-slate-200));
+}
+
+.ph-register-gemini .ph-reg-role-badge {
+  display: inline-flex;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.ph-register-gemini .ph-reg-role-badge--employer {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.ph-register-gemini .ph-reg-role-badge--college {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.ph-register-gemini .ph-reg-role-radio {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 2px solid var(--ph-reg-slate-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ph-register-gemini .ph-reg-role-card--selected .ph-reg-role-radio {
+  border-color: var(--ph-reg-brand);
+  background: var(--ph-reg-brand);
+  color: #fff;
+}
+
+.ph-register-gemini .ph-reg-cta {
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.75rem;
+}
+
+.ph-register-gemini .ph-reg-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--ph-reg-slate-500);
+}
+
+.ph-register-gemini .ph-reg-footer a {
+  font-weight: 600;
+  color: var(--ph-reg-brand);
+  text-decoration: none;
+}
+
+.ph-register-gemini .ph-reg-footer a:hover {
+  text-decoration: underline;
+}
+
+.ph-register-gemini .ph-reg-meta {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ph-reg-slate-400);
+}
+
+.ph-register-gemini #register-first-name,
+.ph-register-gemini #register-last-name,
+.ph-register-gemini #register-email,
+.ph-register-gemini #register-phone,
+.ph-register-gemini #register-company-name,
+.ph-register-gemini #register-college-name,
+.ph-register-gemini #register-password,
+.ph-register-gemini #register-confirm-password,
+.ph-register-gemini #register-captcha,
+.ph-register-gemini #campus-binding-token,
+.ph-register-gemini #register-roll-number,
+.ph-register-gemini #register-batch-year,
+.ph-register-gemini #register-city,
+.ph-register-gemini #register-state {
+  border-radius: 0.75rem;
+}
+
+.ph-register-gemini button:focus-visible,
+.ph-register-gemini a:focus-visible,
+.ph-register-gemini input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ph-reg-brand);
+}
+
+@media (max-width: 960px) {
+  .ph-register-gemini--with-job-aid .hidden-on-mobile {
+    display: none !important;
+  }
+
+  .ph-register-gemini--with-job-aid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ph-register-gemini--with-job-aid .ph-reg-shell {
+    width: 100%;
+    max-width: 36rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ph-register-gemini {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .ph-register-gemini .ph-reg-card {
+    padding: 1.25rem;
+  }
+}

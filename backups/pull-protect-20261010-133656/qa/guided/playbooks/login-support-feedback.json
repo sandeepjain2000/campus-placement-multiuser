@@ -1,0 +1,71 @@
+{
+  "id": "login-support-feedback",
+  "title": "Login support & feedback reply",
+  "oneLiner": "Voice-guided tour for use case: Login support & feedback reply",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Open Login page",
+      "observe": "Login support contact form for pre-login help.",
+      "action": {
+        "type": "goto",
+        "path": "/login"
+      }
+    },
+    {
+      "phase": "SETUP",
+      "label": "Submit login support message — manual",
+      "observe": "login_support context mail to platform inbox with replyTo user email.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Student opens Feedback",
+      "observe": "Submit feedback thread as any role.",
+      "action": {
+        "type": "login",
+        "account": "student"
+      }
+    },
+    {
+      "phase": "STUDENT",
+      "label": "Navigate to Feedback",
+      "observe": "Create new feedback item.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/feedback"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Super admin replies on Feedback inbox",
+      "observe": "feedback_reply email and in-app alert to submitter.",
+      "action": {
+        "type": "login",
+        "account": "super_admin"
+      }
+    },
+    {
+      "phase": "SUPER_ADMIN",
+      "label": "Open Feedback inbox",
+      "observe": "Post reply — manual step during recording.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/admin/feedback"
+      }
+    }
+  ]
+}

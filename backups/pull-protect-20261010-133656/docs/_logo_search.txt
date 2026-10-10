@@ -1,0 +1,47 @@
+src\app\api\employer\profile\route.js:135:            'Logo URL must be a web address (https://ΓÇª) or site path (/ΓÇª). Use Upload New Logo instead of a file path on your computer.',
+src\app\dashboard\college\settings\dt_Settings.jsx:317:              {logoUploading ? 'Uploading logoΓÇª' : 'Upload college logo'}
+src\app\dashboard\college\settings\dt_Settings.jsx:330:              <label className="form-label">Logo URL (optional)</label>
+src/app/dashboard/college\settings\mb_Settings.jsx:18:    website: '', logoUrl: '', websiteApi: '', placementSeasonLabel: '',
+src/app/dashboard/college\settings\mb_Settings.jsx:159:                  <EntityLogo name={form.institution.collegeName || 'College'} logoUrl={form.logoUrl} website={form.website} size="lg" shape="rounded" />
+src/app/dashboard/college\settings\dt_Settings.jsx:39:    logoUrl: '',
+src/app/dashboard/college\settings\dt_Settings.jsx:71:          logoUrl: json.logoUrl || '',
+src/app/dashboard/college\settings\dt_Settings.jsx:263:      setForm((prev) => ({ ...prev, logoUrl: presign.fileUrl }));
+src/app/dashboard/college\settings\dt_Settings.jsx:315:            <EntityLogo name={form.institution.collegeName || 'College'} logoUrl={form.logoUrl} website={form.website} size="lg" shape="rounded" />
+src/app/dashboard/college\settings\dt_Settings.jsx:331:              <input className="form-input" type="url" placeholder="https://.../logo.png" value={form.logoUrl} onChange={(e) => setRoot('logoUrl', e.target.value)} />
+academic-years
+applications
+assessments
+audit-reports
+bulk-notifications
+calendar
+clarifications
+communication-templates
+discussions
+drives
+employers
+enrollment-key
+events
+getting-started
+guest-engagements
+hiring-assessment
+infrastructure
+internship-feedback
+internship-guides
+internship-ppo
+internship-results
+internships
+interviews
+jobs
+marketplace
+mentorship-requests
+message-templates
+offers
+offers-upload
+overview
+purge-test-data
+reports
+rules
+settings
+sponsorships
+startup-funding
+students

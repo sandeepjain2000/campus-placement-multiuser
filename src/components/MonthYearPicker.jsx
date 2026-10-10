@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -33,28 +33,15 @@ function clampYear(y, minYear, maxYear) {
  */
 export default function MonthYearPicker({ value, onChange, minYear, maxYear, disabled, id }) {
   const [open, setOpen] = useState(false);
-  const wrapRef = useRef(null);
   const [viewYear, setViewYear] = useState(() => clampYear(new Date().getFullYear(), minYear, maxYear));
 
-  const syncViewFromValue = useCallback(() => {
-    const p = parseMonthKey(value);
-    const y = p?.y ?? new Date().getFullYear();
-    setViewYear(clampYear(y, minYear, maxYear));
-  }, [value, minYear, maxYear]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (open) syncViewFromValue();
-  }, [open, syncViewFromValue]);
-
-  useEffect(() => {
-    if (!open) return;
-    const onDoc = (e) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [open]);
+  const handleOpenChange = (next) => {
+    if (next) {
+      const p = parseMonthKey(value);
+      setViewYear(clampYear(p?.y ?? new Date().getFullYear(), minYear, maxYear));
+    }
+    setOpen(next);
+  };
 
   const selectMonth = (monthIndex0) => {
     const key = `${viewYear}-${String(monthIndex0 + 1).padStart(2, '0')}`;
@@ -65,31 +52,30 @@ export default function MonthYearPicker({ value, onChange, minYear, maxYear, dis
   const label = formatMonthKeyLabel(value);
 
   return (
-    <div ref={wrapRef} className="relative block w-full">
-      <Button
-        type="button"
-        variant="outline"
-        id={id}
-        disabled={disabled}
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        aria-label={label ? `Drive month filter: ${label}` : 'Filter drives by month and year'}
-        className="w-full justify-between font-normal"
-        onClick={() => !disabled && setOpen((o) => !o)}
+    <Popover open={open} onOpenChange={handleOpenChange}>
+      <PopoverTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            id={id}
+            disabled={disabled}
+            aria-label={label ? `Drive month filter: ${label}` : 'Filter drives by month and year'}
+            className="w-full justify-between font-normal"
+          />
+        }
       >
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           <CalendarDays data-icon="inline-start" aria-hidden />
           <span className="truncate">{value ? label : 'Any month'}</span>
         </span>
         <span aria-hidden className="text-muted-foreground">▾</span>
-      </Button>
-      {open && (
-        <Card
-          role="dialog"
-          aria-label="Choose month and year"
-          className="absolute top-full left-0 z-50 mt-1 min-w-68 shadow-xl"
-        >
-          <CardContent className="p-3">
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        aria-label="Choose month and year"
+        className="w-68 gap-0 p-3"
+      >
           <div className="mb-3 flex items-center justify-between">
             <Button
               type="button"
@@ -145,9 +131,7 @@ export default function MonthYearPicker({ value, onChange, minYear, maxYear, dis
               Clear month
             </Button>
           ) : null}
-          </CardContent>
-        </Card>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 }

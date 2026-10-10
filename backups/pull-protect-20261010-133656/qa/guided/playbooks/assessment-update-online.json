@@ -1,0 +1,89 @@
+{
+  "id": "assessment-update-online",
+  "title": "Assessment Update Online",
+  "oneLiner": "Voice-guided tour for use case: Assessment Update Online",
+  "useStoredMarker": false,
+  "steps": [
+    {
+      "phase": "SETUP",
+      "label": "Landing page ready",
+      "observe": "Home page is open. Auto voice tour begins — no blue-tag clicks needed.",
+      "action": {
+        "type": "wait",
+        "ms": 400
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Log in as employer",
+      "observe": "Employer dashboard loads.",
+      "action": {
+        "type": "login",
+        "account": "employer"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Assessment uploads (CSV)",
+      "observe": "Tabbed Internship, Jobs, Drive, Projects — export CSV per tab.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/assessment-uploads"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Assessment Update Online",
+      "observe": "Inline editable hiring_result rows per application.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/assessment-update-online"
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Edit hiring_result inline — manual",
+      "observe": "Change round values; Save changes shows dirty row count.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Submit results when complete — manual",
+      "observe": "Submit locks further CSV and online edits for that context.",
+      "action": {
+        "type": "wait",
+        "ms": 14000
+      }
+    },
+    {
+      "phase": "EMPLOYER",
+      "label": "Open Hiring Results Dashboard",
+      "observe": "Read-only summary of submitted assessment outcomes.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/employer/hiring-assessment"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "College opens Hiring Assessment",
+      "observe": "Read-only mirror of employer submitted results.",
+      "action": {
+        "type": "login",
+        "account": "college_admin"
+      }
+    },
+    {
+      "phase": "COLLEGE",
+      "label": "Navigate to college Hiring Assessment",
+      "observe": "Same outcomes visible to college TPO.",
+      "action": {
+        "type": "goto",
+        "path": "/dashboard/college/hiring-assessment"
+      }
+    }
+  ]
+}
