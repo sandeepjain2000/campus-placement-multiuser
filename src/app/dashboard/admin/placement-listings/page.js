@@ -282,9 +282,18 @@ export default function AdminPlacementListingsPage() {
         <Card className="gap-0 py-0">
           <CardHeader className="border-b py-4"><CardTitle>All listings</CardTitle><CardDescription>{typeFilteredCount} shown</CardDescription></CardHeader>
           <CardContent className="p-0">
-            <Table className="student-opportunities-table">
+            <Table className="student-opportunities-table admin-placement-listings-table">
               <colgroup>
-                <col className="student-opportunities-col-select" />
+                <col className="admin-listings-col-select" />
+                <col className="admin-listings-col-type" />
+                <col className="admin-listings-col-title" />
+                <col className="admin-listings-col-employer" />
+                <col className="admin-listings-col-college" />
+                <col className="admin-listings-col-status" />
+                <col className="admin-listings-col-apps" />
+                <col className="admin-listings-col-date" />
+                <col className="admin-listings-col-date" />
+                <col className="admin-listings-col-actions" />
               </colgroup>
               <TableHeader>
                 <TableRow>
@@ -332,8 +341,7 @@ export default function AdminPlacementListingsPage() {
                       {row.employerId ? (
                         <Link
                           href={`/dashboard/admin/employers?view=${encodeURIComponent(row.employerId)}`}
-                          className="text-primary font-medium hover:underline"
-                          style={{ display: 'inline' }}
+                          className="admin-listings-ellipsis-link text-primary font-medium hover:underline"
                         >
                           {row.employerName}
                         </Link>
@@ -345,8 +353,7 @@ export default function AdminPlacementListingsPage() {
                       {row.collegeId ? (
                         <Link
                           href={`/dashboard/admin/colleges/${row.collegeId}`}
-                          className="text-primary font-medium hover:underline"
-                          style={{ display: 'inline' }}
+                          className="admin-listings-ellipsis-link text-primary font-medium hover:underline"
                         >
                           {row.collegeNames}
                         </Link>

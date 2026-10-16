@@ -6,7 +6,7 @@ export default function EmployerCompanyCell({ name, website, email }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
       <EntityLogo name={name} website={website} size="sm" shape="rounded" />
-      <div style={{ minWidth: 0 }}>
+      <div style={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
         <div
           style={{
             fontWeight: 600,

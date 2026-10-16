@@ -378,10 +378,14 @@ export default function CollegeEmployersContent() {
                   .filter(Boolean);
                 return (
                   <Card key={employer.approval_id} size="sm" className="gap-3">
-                    <CardHeader className="gap-2 px-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <EmployerCompanyCell name={employer.name} website={employer.website} email={employer.email} />
-                        <EmployerStatus status={employer.status} />
+                    <CardHeader className="min-w-0 gap-2 px-4">
+                      <div className="flex min-w-0 items-start gap-2">
+                        <div className="min-w-0 flex-1 overflow-hidden">
+                          <EmployerCompanyCell name={employer.name} website={employer.website} email={employer.email} />
+                        </div>
+                        <div className="shrink-0">
+                          <EmployerStatus status={employer.status} />
+                        </div>
                       </div>
                       <CardDescription>{employer.industry || 'Industry not provided'}</CardDescription>
                     </CardHeader>

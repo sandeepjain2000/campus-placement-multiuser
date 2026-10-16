@@ -248,12 +248,14 @@ export default function CollegeInterviewsPage() {
               { label: 'Scheduled by TPO', value: stats.tpo, icon: Users },
               { label: 'Scheduled by Company', value: stats.company, icon: Building2 },
             ].map(({ label, value, icon: Icon }) => (
-              <Card key={label}>
-                <CardHeader className="flex-row items-center justify-between pb-2">
+              <Card key={label} size="sm" className="gap-2">
+                <CardHeader className="flex flex-row items-center justify-between py-0">
                   <CardDescription>{label}</CardDescription>
-                  <Icon className="text-muted-foreground size-5" aria-hidden />
+                  <Icon className="text-muted-foreground size-4" aria-hidden />
                 </CardHeader>
-                <CardContent><div className="text-3xl font-semibold tabular-nums">{value}</div></CardContent>
+                <CardContent>
+                  <div className="text-3xl font-semibold leading-none tabular-nums">{value}</div>
+                </CardContent>
               </Card>
             ))}
           </div>

@@ -21,7 +21,11 @@ export function buildContentSecurityPolicy(opts = {}) {
     : // Static / asset responses (no per-request nonce): no unsafe-inline / unsafe-eval.
       ["'self'", ...(isDev ? ["'unsafe-eval'"] : [])].join(' ');
 
-  const styleSrc = nonce
+  // Chrome checks React's style={{…}} (CSSOM) against style-src, not style-src-attr.
+  // A nonce in style-src makes 'unsafe-inline' ignored, so those styles were blocked.
+  // Keep the nonce on style elements only. Scripts stay nonce-only.
+  const styleSrc = "'self' 'unsafe-inline'";
+  const styleSrcElem = nonce
     ? `'self' 'nonce-${nonce}'`
     : "'self'";
 
@@ -33,7 +37,8 @@ export function buildContentSecurityPolicy(opts = {}) {
     "form-action 'self'",
     `script-src ${scriptSrc}`,
     `style-src ${styleSrc}`,
-    // React `style={{…}}` attributes (not executable JS). Keeps UI intact without script unsafe-inline.
+    `style-src-elem ${styleSrcElem}`,
+    // HTML style attributes. React also sets styles through CSSOM, covered by style-src above.
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",

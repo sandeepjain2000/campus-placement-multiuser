@@ -33,15 +33,10 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 
 ### A. Broken or unreadable
 
-**PH-UI-01 — OPEN (confirmed) — Employer — Hiring Pipeline labels overlap**
-- **Go to:** Home → **Core / Overview** → **Dashboard** (page heading "Welcome, TechCorp…"). Scroll to the **Hiring Pipeline** card.
-- **You see:** "SHORTLISTED", "INTERVIEW" and "SELECTED" spill out of their boxes and overlap the next box.
-- **Likely cause:** boxes too narrow for the uppercase labels; made worse by PH-UI-04.
-- Fallback address: `/dashboard/employer/overview`
-
-**PH-UI-02 — OPEN (confirmed) — Super Admin — Placement listings table squashed**
+**PH-UI-02 — FIXED 2026-10-16 — Super Admin — Placement listings name columns were cut too short**
 - **Go to:** sidebar **Platform Directory** → **Placement listings**. Scroll to the **All listings** card.
-- **You see:** the Title column shrinks to "Q…"/"AI…", the Employer and College(s) columns to a few letters, and the Posted column runs off the right edge.
+- **Was:** **Title**, **Employer**, and **College(s)** were cut to a few letters while spare width sat in the short columns. **Posted** did not run off the card.
+- **Now:** those name columns use the spare width. A name still ends in **…** only when it is longer than the wider column.
 - Fallback address: `/dashboard/admin/placement-listings`
 
 **PH-UI-03 — FIXED 2026-10-10 — College admin — Upcoming Slots table pushes Edit/Delete out of the card** (see Implementation Log 2026-10-10; details below are the original report)
@@ -50,26 +45,13 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 - **Note:** this page only has slots if some exist. If the card says "No interview slots scheduled yet.", create one with the **Create Interview Slot** form first.
 - Fallback address: `/dashboard/college/interviews`
 
-**PH-UI-04 — OPEN (confirmed) — All roles — spacing between tiles/fields is wrong almost everywhere**
-- **Go to:** any page with tiles or form fields in columns, for example College admin Home → **Evaluation & Selection** → **Interview Scheduling** (the three tiles **Total Slots**, **Scheduled by TPO**, **Scheduled by Company**).
-- **You see:** gaps between boxes are all the same large size (24 px), even where the design asks for tight spacing (for example the 12 month buttons in the student month filter).
-- **Where in code:** an old rule `.grid { display: grid; gap: 1.5rem; }` in `src/app/globals.css` (line 5120) overrides Tailwind's `gap-*` classes. ~80 files affected. Same kind of bug as BUG-010.
-
 ### B. Row action buttons pushed past the card edge (laptop width; you must scroll the table sideways)
 
-**PH-UI-05 — OPEN — College admin — Applications**
-- **Go to:** Home → **Students & Applications** → **Applications**.
-- **You see:** the last column's eye icon (hover "View") is ~90 px past the card edge.
-- Fallback address: `/dashboard/college/applications`
-
-**PH-UI-06 — OPEN — College admin — Students**
-- **Go to:** Home → **Students & Applications** → **Students**.
-- **You see:** the **Actions** column's eye icon (hover "View") is ~84 px off. In the **Degree / Specialisation** column, long text like "Computer Science & Engineering" spills out of its cell.
-- Fallback address: `/dashboard/college/students`
-
-**PH-UI-07 — OPEN — College admin — Employers**
-- **Go to:** Home → **Employers & Partnerships** → **Employers**.
-- **You see:** in the **Actions** column, the two-people icon (hover "Manage points of contact") is ~19 px past the card edge. At ~1024 px window width the whole table scrolls sideways, so **Status**, **POC** and **Actions** are off-screen until you scroll.
+**PH-UI-07 — FIXED 2026-10-16 — College admin — Employers phone card cut Approved**
+- **Go to:** Home → **Employers & Partnerships** → **Employers**. Narrow the window to a phone (the check used iPhone SE, 375 px wide).
+- **Was:** the green badge was cut to **Appro**.
+- **Now:** the badge shows **Approved**. The long email shortens instead.
+- **Desktop:** not this bug. On a wide window the table already showed the full badge.
 - Fallback address: `/dashboard/college/employers`
 
 **PH-UI-08 — OPEN — College admin — Custom Message Templates**
@@ -159,21 +141,14 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 - **Go to:** any Employer page. Look at the company card at the bottom of the sidebar and the header.
 - **You see:** TechCorp's logo is an empty white circle.
 
-**PH-UI-25 — OPEN (confirmed) — Employer — floating Help button covers buttons**
-- **Go to:** Home → **Core / Overview** → **Dashboard**, and Home → **Settings** → **Campus Posting Limits**. Scroll to the bottom.
-- **You see:** the round **Help** button at the bottom-right covers "View All Pipeline" (Dashboard) and a Save button (Employer settings).
+**PH-UI-25 — OPEN — Employer — floating Help button on Employer settings**
+- **Go to:** Home → **Settings** → **Campus Posting Limits** (page heading **Employer settings**). Scroll to the bottom.
+- **You see:** the round **Help** button at the bottom-right covers a Save button.
+- **Dashboard:** disproven 2026-10-16. On **Welcome, TechCorp Solutions**, **View All Pipeline** is fully visible and the Help button does not cover it.
 
 **PH-UI-26 — OPEN (confirmed) — Employer — heavy dashed border on empty page**
 - **Go to:** Home → **Candidate Pipeline** → **Shortlisted / Unavailable (FCFS)** (page heading **Unavailable candidates (FCFS)**).
 - **You see:** the empty-state box has a heavy black dashed border.
-
-**PH-UI-27 — OPEN (confirmed) — Employer / Super Admin — old-style number tiles**
-- **Go to:** Employer Home → **Core / Overview** → **Dashboard** (top of page); Super Admin sidebar **Platform Directory** → **Placement listings** (top of page).
-- **You see:** the number tiles have black borders and typewriter-style numbers, unlike the rest of the app.
-
-**PH-UI-28 — OPEN (confirmed) — College admin — Students toolbar still old style**
-- **Go to:** Home → **Students & Applications** → **Students**.
-- **You see:** the search box hint "Search by name, roll, batch, or degree…" is cut to "…batch, or de"; the search icon is oversized; the **Sort by** strip and the orange **⬆ Import** / **⬇ Export CSV** buttons still use the old styling. The old **Export CSV** button appears on ~15 pages.
 
 **PH-UI-29 — OPEN — Employer — campus dropdown text cut**
 - **Go to:** Home → **Recruitment & Selection** → **Interview Scheduling**. In the **Create Slot** card, look at **College / campus**.
@@ -199,6 +174,18 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 - Fallback address: `/dashboard/employer/hiring-assessment`
 
 ---
+
+## Disproven on 2026-10-16 (removed from the open list)
+
+Checked on screen. The described problem was not there.
+
+- **PH-UI-01** — Employer **Hiring Pipeline**. **APPLIED**, **SHORTLISTED**, **INTERVIEW**, and **SELECTED** sit inside their boxes.
+- **PH-UI-04** — College admin **Interviews** tiles. The gap between **Total Slots**, **Scheduled by TPO**, and **Scheduled by Company** looks even. The tiles were later shortened in height at the user's request; that was a separate change.
+- **PH-UI-05** — College admin **Applications**. The eye icon in **Actions** sits inside the card.
+- **PH-UI-06** — College admin **Students**. **Computer Science & Engineering** stays in the **Degree** cell. The eye, pencil, and bin icons sit inside the card.
+- **PH-UI-25 (dashboard only)** — Employer **Welcome, TechCorp Solutions**. **View All Pipeline** is fully visible. The round **Help** button does not cover it. The **Employer settings** half of this note is still open.
+- **PH-UI-27** — Employer **Recruitment Snapshot** and Super Admin **Placement listings** number tiles. They use the same rounded cards as the rest of the page, not black borders or typewriter numbers.
+- **PH-UI-28** — College admin **Students** toolbar. The search hint includes **degree**, **Sort by** is a normal dropdown, and **Import CSV** / **Export CSV** are not the old orange buttons.
 
 ## Fixed on 2026-10-10 (kept here so the gap history is complete)
 
