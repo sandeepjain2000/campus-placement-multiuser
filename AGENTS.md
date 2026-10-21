@@ -82,6 +82,7 @@ Read both before writing any significant UI code.
 | Path | Contents |
 |------|----------|
 | [`docs/README.md`](docs/README.md) | Master doc index |
+| [`docs/project-cortex/PROJECT_INDEX.md`](docs/project-cortex/PROJECT_INDEX.md) | Project Cortex entry. Facts and plans only; no secret values |
 | [`docs/product/placementhub-functionality.md`](docs/product/placementhub-functionality.md) | Features & flows |
 | [`docs/test-cases/`](docs/test-cases/) | Excel/CSV test case suites |
 | [`docs/help/`](docs/help/) | In-app help export |

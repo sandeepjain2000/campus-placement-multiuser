@@ -9,6 +9,7 @@ Markdown in this repo is grouped by purpose. **Root-level** `PRODUCT.md`, `DESIG
 | [`PRODUCT.md`](../PRODUCT.md) | Product purpose, users, brand tone |
 | [`DESIGN.md`](../DESIGN.md) | UI / design system principles |
 | [`AGENTS.md`](../AGENTS.md) | Agent / contributor conventions |
+| [`project-cortex/`](project-cortex/) | AI project map. Start at `project-cortex/PROJECT_INDEX.md`. No secret values |
 | [`product/`](product/) | Feature overview & flows |
 | [`test-cases/`](test-cases/) | PlacementHub Excel/CSV test case suites |
 | [`help/`](help/) | In-app help export (sync via `npm run qa:sync-help-knowledge`) |

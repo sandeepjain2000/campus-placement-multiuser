@@ -2,7 +2,7 @@
 
 App: `campus-placement-multiuser` (Placement Hub). Not InternSafar.
 
-Status of this file: **Cortex seed.** Project Cortex for Placement Hub is not built yet (plan decision D6 is open). When it is, copy this file to `campus-placement-multiuser/docs/project-cortex/09-work/project-health/Known Gaps.md`. Until then this is the dated backlog.
+Status of this file: **Project Cortex, project health.** This is the dated backlog. The rest of the Cortex is `docs/project-cortex/`.
 
 Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <date>`, `DECIDED-NOT-NOW`.
 
@@ -54,30 +54,10 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 - **Desktop:** not this bug. On a wide window the table already showed the full badge.
 - Fallback address: `/dashboard/college/employers`
 
-**PH-UI-08 — OPEN — College admin — Custom Message Templates**
-- **Go to:** Home → **Communication & Support** → **Custom Message Templates**.
-- **You see:** text in the **Variables** column spills out of its cell.
-- Fallback address: `/dashboard/college/message-templates`
-
-**PH-UI-09 — OPEN — Employer — Campus Partnerships**
-- **Go to:** Home → **Core / Overview** → **Campus Partnerships**.
-- **You see:** the eye icon at the end of each college row (hover "View details for <college name>") is ~208 px past the card edge.
-- Fallback address: `/dashboard/employer/select-campus`
-
-**PH-UI-10 — OPEN — Employer — Startup seed funding**
-- **Go to:** Home → **Organization Management** → **Startup Seed Funding**.
-- **You see:** the **Inquire** button is ~36 px past the card edge.
-- Fallback address: `/dashboard/employer/startup-funding`
-
 **PH-UI-11 — OPEN — Super Admin — Email logs**
 - **Go to:** sidebar **Operations & Risk** → **Email logs**. Scroll to the **Delivery history** card.
 - **You see:** the **Actions** column's eye icon (no hover text) is ~329 px off. Email addresses in **Recipient (login)** run over the next column.
 - Fallback address: `/dashboard/admin/email-logs`
-
-**PH-UI-12 — OPEN — Super Admin — Error logs**
-- **Go to:** sidebar **Operations & Risk** → **Error logs**. Scroll to the **Diagnostics** card.
-- **You see:** the **Actions** column's eye icon (no hover text) is ~148 px off. Text in the **Route** column spills.
-- Fallback address: `/dashboard/admin/error-logs`
 
 **PH-UI-13 — OPEN — Super Admin — Marketplace**
 - **Go to:** sidebar **Platform Directory** → **Marketplace**. Stay on the **Providers** tab and scroll to the **Providers (N)** card.
@@ -111,27 +91,11 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 - **You see:** the **Help & Documentation** title overflows its banner.
 - Fallback address: `/dashboard/help`
 
-**PH-UI-19 — OPEN — Student — Alerts**
-- **Go to:** Home → **Communication** → **Notifications / Alerts** (page heading **Inbox & alerts**).
-- **You see:** the star icon on each alert (hover "Star this alert") is clipped by ~6 px.
-- Fallback address: `/dashboard/alerts`
-
 ### D. Wrong or odd text and visuals
-
-**PH-UI-20 — OPEN (confirmed) — Employer — typo on Employer settings**
-- **Go to:** Home → **Settings** → **Campus Posting Limits** (page heading **Employer settings**).
-- **You see:** "All 7 approved **college s** can receive internships **.**" (stray spaces).
-- **Where in code:** line break inside the sentence at `src/app/dashboard/employer/settings/page.js` lines 206–207.
-- Fallback address: `/dashboard/employer/settings`
 
 **PH-UI-21 — OPEN (confirmed) — Super Admin — wrong header subtitle**
 - **Go to:** any Super Admin page.
 - **You see:** the top header reads "PlacementHub SuperAdmin" with the subtitle **"College Administration"**.
-
-**PH-UI-22 — OPEN (confirmed, data not code) — Signed out — support phone looks wrong**
-- **Go to:** the login page (signed out).
-- **You see:** the support phone reads "+91 80000 12345688889".
-- **Fix:** correct the saved value at Super Admin sidebar **Operations & Risk** → **Settings** → Support phone. The built-in default is "+91 80000 12345".
 
 **PH-UI-23 — OPEN (confirmed) — College admin — invisible count on Calendar filter**
 - **Go to:** Home → **Engagement** → **Calendar** (**Placement calendar**). Look at the category chips above the calendar (All, Placement, …).
@@ -141,19 +105,9 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 - **Go to:** any Employer page. Look at the company card at the bottom of the sidebar and the header.
 - **You see:** TechCorp's logo is an empty white circle.
 
-**PH-UI-25 — OPEN — Employer — floating Help button on Employer settings**
-- **Go to:** Home → **Settings** → **Campus Posting Limits** (page heading **Employer settings**). Scroll to the bottom.
-- **You see:** the round **Help** button at the bottom-right covers a Save button.
-- **Dashboard:** disproven 2026-10-16. On **Welcome, TechCorp Solutions**, **View All Pipeline** is fully visible and the Help button does not cover it.
-
 **PH-UI-26 — OPEN (confirmed) — Employer — heavy dashed border on empty page**
 - **Go to:** Home → **Candidate Pipeline** → **Shortlisted / Unavailable (FCFS)** (page heading **Unavailable candidates (FCFS)**).
 - **You see:** the empty-state box has a heavy black dashed border.
-
-**PH-UI-29 — OPEN — Employer — campus dropdown text cut**
-- **Go to:** Home → **Recruitment & Selection** → **Interview Scheduling**. In the **Create Slot** card, look at **College / campus**.
-- **You see:** the selected college name is cut mid-word with no "…".
-- **Also on:** the **Alumni Interview Scheduling** page. No menu item or button links to it; it can only be opened by typing the address `/dashboard/employer/alumni/interviews`.
 
 ### E. Dev only
 
@@ -175,7 +129,7 @@ Each entry is dated with the day it was found. Status values: `OPEN`, `FIXED <da
 
 ---
 
-## Disproven on 2026-10-16 (removed from the open list)
+## Disproven (removed from the open list)
 
 Checked on screen. The described problem was not there.
 
@@ -183,9 +137,17 @@ Checked on screen. The described problem was not there.
 - **PH-UI-04** — College admin **Interviews** tiles. The gap between **Total Slots**, **Scheduled by TPO**, and **Scheduled by Company** looks even. The tiles were later shortened in height at the user's request; that was a separate change.
 - **PH-UI-05** — College admin **Applications**. The eye icon in **Actions** sits inside the card.
 - **PH-UI-06** — College admin **Students**. **Computer Science & Engineering** stays in the **Degree** cell. The eye, pencil, and bin icons sit inside the card.
-- **PH-UI-25 (dashboard only)** — Employer **Welcome, TechCorp Solutions**. **View All Pipeline** is fully visible. The round **Help** button does not cover it. The **Employer settings** half of this note is still open.
-- **PH-UI-27** — Employer **Recruitment Snapshot** and Super Admin **Placement listings** number tiles. They use the same rounded cards as the rest of the page, not black borders or typewriter numbers.
-- **PH-UI-28** — College admin **Students** toolbar. The search hint includes **degree**, **Sort by** is a normal dropdown, and **Import CSV** / **Export CSV** are not the old orange buttons.
+- **PH-UI-08** — College admin **Custom Message Templates**. There is no **Variables** column. The variable-names field stays inside the card. Your later screenshot of the template table also keeps the **Variables** text inside its cell.
+- **PH-UI-09** — Employer **Campus Partnerships**. The eye icon and **Use campus** sit inside the **Campus Directory** table.
+- **PH-UI-19** — Student **Inbox & alerts**. The star on each alert sits inside the card.
+- **PH-UI-20** — Employer settings. The line reads "All 7 approved colleges can receive internships."
+- **PH-UI-22** — Login **Contact support**. The phone reads "+91 80000 12345".
+- **PH-UI-29** — Employer **Interview Scheduling** and **Alumni Interview Scheduling**. **College / campus** shows "Birla Institute of Technology, Pilani (Demo)" in full.
+- **PH-UI-10** — Employer **Startup seed funding**, wide window. **Inquire** sits inside the card.
+- **PH-UI-12** — Super Admin **Error logs**, wide window. The eye icon in **Actions** sits inside the table. **Route** stays in its cell.
+- **PH-UI-25** — Employer dashboard and **Employer settings**, wide window. **Help** does not cover **View All Pipeline** or **Save**.
+- **PH-UI-27** — Employer dashboard and Super Admin **Placement listings**. The number tiles are ordinary light cards, not black typewriter tiles.
+- **PH-UI-28** — College admin **Students**, wide window. The search hint reads "Search by name, roll, batch, or degree…" in full. The search icon is a normal size.
 
 ## Fixed on 2026-10-10 (kept here so the gap history is complete)
 

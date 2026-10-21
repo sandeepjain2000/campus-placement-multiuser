@@ -2,7 +2,7 @@
 
 App: `campus-placement-multiuser` (Placement Hub). Catch-all log for small fixes that belong to no feature folder.
 
-Status of this file: **Cortex seed.** When Placement Hub Cortex is built (plan decision D6), copy to `campus-placement-multiuser/docs/project-cortex/09-work/project-health/Implementation Log.md`. Open items live in `Known Gaps.md` next to this file.
+Status of this file: **Project Cortex, project health.** Small fixes that belong to no feature folder. Open items live in `Known Gaps.md` next to this file.
 
 Entry format: `YYYY-MM-DD — <slice>`.
 

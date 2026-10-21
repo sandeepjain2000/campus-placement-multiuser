@@ -1,0 +1,16 @@
+# Placement Hub Project Cortex. No secret values.
+
+[project]
+name = "placement-hub"
+repo = "campus-placement-multiuser"
+entry = "PROJECT_INDEX.md"
+
+[deny]
+paths = [
+  ".env",
+  ".env.*",
+  "*.pem",
+  "*WITH-SECRETS*",
+  "*nvidia_keys*",
+]
+notes = "Do not copy filled Ctrl+H values from the AWS setup guide into this folder."
