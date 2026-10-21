@@ -38,5 +38,5 @@ Today the running app is Vercel + Supabase. The first AWS setup is planned, not 
 3. Do not commit or push unless the user asks in that message.
 4. Do not put secret values in this folder. It is pushed with the app.
 5. Do not publish this Cortex, or the AWS guide, as a page on `https://placementhub.online/`.
-6. `https://placementhub.online/` and `https://www.placementhub.online/` stay on the existing homepage. AWS uses `https://app.placementhub.online/` on the same EC2 and the same database. The domain is the only difference.
+6. `https://placementhub.online/` and `https://www.placementhub.online/` stay on the existing homepage. It will be the same server, the same database, and the same EC2. The only thing different is the domain: `https://app.placementhub.online/`.
 7. InternSafar stays running on its current server. Placement Hub is added beside it. It does not replace that server, that database, or that public site.

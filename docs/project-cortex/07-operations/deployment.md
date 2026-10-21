@@ -11,7 +11,7 @@ Status: **not started.** This is the plan. The runnable steps are the Word guide
 
 ## Where it runs
 
-Same EC2, same server, and same database as InternSafar. The domain is the only difference. The address is `https://app.placementhub.online/`.
+It will be the same server, and it will be the same database and the same EC2. The only thing different is the domain: `https://app.placementhub.online/`.
 
 - InternSafar: existing public address → Nginx → port 3000.
 - Placement Hub: subdomain → the same public address → Nginx → port 3001.
@@ -21,7 +21,7 @@ Same EC2, same server, and same database as InternSafar. The domain is the only 
 
 The owner does not need a new AWS account login for these steps. Namecheap is required for the DNS record. Secret values are typed on the server, not into this file.
 
-File storage stays on the bucket the current site already uses. Checked from the server on 2026-10-21, using the keys already there: the bucket has no bucket policy, public access is blocked, and there is no CORS configuration. `s3-student-read.json` is not applied. When CORS is added, add `https://app.placementhub.online` and do not remove an origin that is already there.
+File storage stays on the bucket Placement Hub already uses on Vercel. InternSafar uses that same bucket. Do not create a new bucket, and do not change its policy or CORS for this setup. Checked from the server on 2026-10-21: no bucket policy, public access blocked, no CORS configuration. `s3-student-read.json` is not applied. Leave the bucket as it is.
 
 ## Order of work
 
