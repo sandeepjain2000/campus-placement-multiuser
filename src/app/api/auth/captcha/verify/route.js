@@ -4,6 +4,13 @@ import { verifyLoginCaptcha } from '@/lib/simpleCaptcha';
 
 async function __platform_POST(request) {
   try {
+    const body = await request.json().catch(() => ({}));
+    if (!verifyLoginCaptcha(body.captchaToken, body.captchaAnswer)) {
+      return NextResponse.json(
+        { ok: false, error: 'Incorrect answer. Try again or refresh the question.' },
+        { status: 400 },
+      );
+    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error('POST /api/auth/captcha/verify', e);

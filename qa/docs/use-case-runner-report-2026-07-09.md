@@ -21,10 +21,10 @@ Headless batch run of all **26** happy-path use-case runners against local dev.
 1. **Dev server running** — `npm run dev` on port 3000.
 2. **Demo data** — TechCorp ↔ IIT Madras partnership assumed approved (playbooks skip partnership steps when already approved).
 3. **Demo accounts** (password `Admin@123`):
-   - Employer: `hr@techcorp.com`
-   - College admin: `admin@iitm.edu`
-   - Student: `arjun.verma@iitm.edu`
-   - Super admin: `admin@placementhub.com`
+   - Employer: ``
+   - College admin: ``
+   - Student: ``
+   - Super admin: ``
 4. **Playwright** — Chromium available via project Playwright install.
 
 ### Infrastructure used

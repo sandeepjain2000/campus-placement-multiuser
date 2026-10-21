@@ -10,13 +10,13 @@
       "title": "Create placement drive -> approve -> visible to student",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/drives",
       "transactionAction": "Create new placement drive",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/drives",
         "Execute transaction: Create new placement drive",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -54,13 +54,13 @@
       "title": "Create job posting -> visible in student opportunities",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/jobs",
       "transactionAction": "Create job posting with eligibility criteria",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/jobs",
         "Execute transaction: Create job posting with eligibility criteria",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -93,13 +93,13 @@
       "title": "Student applies -> application visible to employer and college",
       "transactionOwnerRole": "student",
       "transactionOwnerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/student/applications",
       "transactionAction": "Apply for an internship/drive",
       "steps": [
-        "Login as student (arjun.verma@iitm.edu)",
+        "Login as student ()",
         "Open /dashboard/student/applications",
         "Execute transaction: Apply for an internship/drive",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -132,13 +132,13 @@
       "title": "Employer shortlist decision reflects to student and college",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/applications",
       "transactionAction": "Mark candidate as shortlisted",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/applications",
         "Execute transaction: Mark candidate as shortlisted",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -171,13 +171,13 @@
       "title": "Interview schedule visible to student, employer, and college",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/interviews",
       "transactionAction": "Create or update interview slot",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/interviews",
         "Execute transaction: Create or update interview slot",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -210,13 +210,13 @@
       "title": "Employer releases offer -> visible to student and college",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/offers",
       "transactionAction": "Issue offer to selected student",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/offers",
         "Execute transaction: Issue offer to selected student",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -249,13 +249,13 @@
       "title": "Student accepts/rejects offer -> reflected back to employer and college",
       "transactionOwnerRole": "student",
       "transactionOwnerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/student/offers",
       "transactionAction": "Accept or reject offer",
       "steps": [
-        "Login as student (arjun.verma@iitm.edu)",
+        "Login as student ()",
         "Open /dashboard/student/offers",
         "Execute transaction: Accept or reject offer",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -288,13 +288,13 @@
       "title": "Assessment upload and result mapping visible across stakeholders",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/assessment-uploads",
       "transactionAction": "Upload assessment CSV/results",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/assessment-uploads",
         "Execute transaction: Upload assessment CSV/results",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -327,13 +327,13 @@
       "title": "College bulk offers upload visible to student and employer views",
       "transactionOwnerRole": "college_admin",
       "transactionOwnerAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/college/offers-upload",
       "transactionAction": "Upload offers CSV from placement office",
       "steps": [
-        "Login as college_admin (admin@iitm.edu)",
+        "Login as college_admin ()",
         "Open /dashboard/college/offers-upload",
         "Execute transaction: Upload offers CSV from placement office",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -366,13 +366,13 @@
       "title": "Employer partnership request -> visible to college review queue",
       "transactionOwnerRole": "employer",
       "transactionOwnerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/employer/select-campus",
       "transactionAction": "Send partnership/tie-up request to a college",
       "steps": [
-        "Login as employer (hr@techcorp.com)",
+        "Login as employer ()",
         "Open /dashboard/employer/select-campus",
         "Execute transaction: Send partnership/tie-up request to a college",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -405,13 +405,13 @@
       "title": "College placement event creation visible on student calendar",
       "transactionOwnerRole": "college_admin",
       "transactionOwnerAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/college/calendar",
       "transactionAction": "Create placement event/interview block",
       "steps": [
-        "Login as college_admin (admin@iitm.edu)",
+        "Login as college_admin ()",
         "Open /dashboard/college/calendar",
         "Execute transaction: Create placement event/interview block",
         "Capture transaction reference (name/id/status/timestamp)",
@@ -444,13 +444,13 @@
       "title": "Clarification/discussion created by college visible to student and employer",
       "transactionOwnerRole": "college_admin",
       "transactionOwnerAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "transactionRoute": "/dashboard/college/clarifications",
       "transactionAction": "Publish clarification entry for a company/drive",
       "steps": [
-        "Login as college_admin (admin@iitm.edu)",
+        "Login as college_admin ()",
         "Open /dashboard/college/clarifications",
         "Execute transaction: Publish clarification entry for a company/drive",
         "Capture transaction reference (name/id/status/timestamp)",

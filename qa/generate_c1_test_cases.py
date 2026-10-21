@@ -1,3 +1,4 @@
+import os
 import json
 from pathlib import Path
 
@@ -89,10 +90,10 @@ ROLE_SCREENS = {
 }
 
 DEMO_USERS = {
-    "student": "arjun.verma@iitm.edu",
-    "employer": "hr@techcorp.com",
-    "college_admin": "admin@iitm.edu",
-    "super_admin": "admin@placementhub.com",
+    "student": os.environ["QA_STUDENT_EMAIL"],
+    "employer": os.environ["QA_EMPLOYER_EMAIL"],
+    "college_admin": os.environ["QA_COLLEGE_ADMIN_EMAIL"],
+    "super_admin": os.environ["QA_SUPER_ADMIN_EMAIL"],
 }
 
 PASSWORD = "Admin@123"

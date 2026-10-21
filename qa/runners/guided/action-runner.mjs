@@ -1,7 +1,10 @@
 /**
  * Execute one UI action (no assertions). Used by guided playbooks.
  */
+import { createRequire } from 'node:module';
 import { DEMO_SEED_PASSWORD } from '../../../src/lib/demoLogins.js';
+
+const { answerLoginCaptcha } = createRequire(import.meta.url)('../../answerLoginCaptcha.js');
 
 export function resolveTemplate(value, ctx) {
   if (typeof value !== 'string') return value;
@@ -71,11 +74,7 @@ async function uiLogin(page, baseUrl, email, password = DEMO_SEED_PASSWORD) {
     },
     { timeout: 30_000 },
   );
-  const captcha = page.locator('#login-captcha');
-  if (await captcha.count()) {
-    const current = await captcha.inputValue();
-    if (!current) await captcha.fill('7');
-  }
+  await answerLoginCaptcha(page);
   await page.click('#login-submit');
   await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
   if (page.url().includes('/auth/continue')) {

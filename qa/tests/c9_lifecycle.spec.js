@@ -7,11 +7,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 30_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 30_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   try {
     await page.waitForURL(/\/dashboard\//, { timeout: 30_000 });
   } catch (e) {
@@ -38,38 +41,38 @@ async function verifyLifecycleUI(page, route, entityName) {
 test.describe('C9 - Lifecycle CRUDV Validation', () => {
 
   test('C9-CRUDV-001 - Placement Drive Lifecycle', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyLifecycleUI(page, '/dashboard/employer/drives', 'Placement Drive');
   });
 
   test('C9-CRUDV-002 - Job Posting Lifecycle', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyLifecycleUI(page, '/dashboard/employer/jobs', 'Job Posting');
   });
 
   test('C9-CRUDV-003 - Application Lifecycle', async ({ page }) => {
     // Applications are submitted by students
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await verifyLifecycleUI(page, '/dashboard/student/jobs', 'Application');
   });
 
   test('C9-CRUDV-004 - Interview Schedule Lifecycle', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyLifecycleUI(page, '/dashboard/employer/interviews', 'Interview Schedule');
   });
 
   test('C9-CRUDV-005 - Offer Lifecycle', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyLifecycleUI(page, '/dashboard/employer/offers', 'Offer');
   });
 
   test('C9-CANCEL-DELETE-001 - Cancel vs Delete Placement Drive', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyLifecycleUI(page, '/dashboard/employer/drives', 'Placement Drive Cancellation');
   });
 
   test('C9-CANCEL-DELETE-002 - Cancel vs Delete Job Posting', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyLifecycleUI(page, '/dashboard/employer/jobs', 'Job Posting Cancellation');
   });
 

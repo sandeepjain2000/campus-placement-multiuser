@@ -7,11 +7,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await page.waitForURL(/\/dashboard\//, { timeout: 15_000 });
 }
 
@@ -33,17 +36,17 @@ async function verifyProfileEditability(page, route, roleName) {
 test.describe('C10 - Profile Editability Validation', () => {
 
   test('C10-EDIT-001 - Student Profile editable fields', async ({ page }) => {
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await verifyProfileEditability(page, '/dashboard/student/profile', 'Student');
   });
 
   test('C10-EDIT-002 - Employer Profile editable fields', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyProfileEditability(page, '/dashboard/employer/profile', 'Employer');
   });
 
   test('C10-EDIT-003 - College Admin Profile editable fields', async ({ page }) => {
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
     // For College Admin, profile might be under settings or profile
     await verifyProfileEditability(page, '/dashboard/college/settings', 'College Admin');
   });

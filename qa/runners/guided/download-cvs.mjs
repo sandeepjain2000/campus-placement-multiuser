@@ -5,12 +5,16 @@
  *   node qa/runners/guided/download-cvs.mjs --role student --limit 3
  *   node qa/runners/guided/download-cvs.mjs --marker GT-20260502-120000
  */
+import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
 import { DEMO_SEED_PASSWORD } from '../../../src/lib/demoLogins.js';
 import { configPath } from './paths.mjs';
 import { CV_DOWNLOAD_ROOT, downloadEmployerApplicationCvs, downloadStudentOwnCvs } from './cv-download.mjs';
+const { genuineAccount } = createRequire(import.meta.url)('../../genuineAccounts.js');
+
+const { loginThroughUi } = createRequire(import.meta.url)('../../answerLoginCaptcha.js');
 
 function loadJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -78,7 +82,12 @@ async function guidedLogin(page, baseUrl, email, password) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok() || !data.ok) {
-    throw new Error(data.error || `Guided sign-in failed (${res.status()})`);
+    const message = data.error || `Guided sign-in failed (${res.status()})`;
+    if (res.status() === 403 || /disabled in this environment/i.test(String(message))) {
+      await loginThroughUi(page, baseUrl, email, password);
+      return;
+    }
+    throw new Error(message);
   }
   await page.goto(`${baseUrl}${data.redirectTo}`, { waitUntil: 'domcontentloaded' });
   await page.waitForURL(/\/dashboard\//, { timeout: 30_000 });
@@ -100,9 +109,9 @@ async function main() {
   ).replace(/\/$/, '');
 
   const accounts = config?.accounts || {
-    student: 'arjun.verma@iitm.edu',
-    employer: 'hr@techcorp.com',
-    college_admin: 'admin@iitm.edu',
+    student: genuineAccount('student'),
+    employer: genuineAccount('employer'),
+    college_admin: genuineAccount('college_admin'),
   };
   const password = accounts.password || DEMO_SEED_PASSWORD;
 

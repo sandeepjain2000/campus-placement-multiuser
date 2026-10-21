@@ -4,12 +4,47 @@
  */
 
 /**
- * @param {{ nonce?: string, isDev?: boolean }} [opts]
+ * HTTPS-only headers belong on the public site, not on localhost.
+ * NEXTAUTH_URL / NEXT_PUBLIC_APP_URL names the public origin. The request
+ * host has to match it. A direct hit on localhost:3001 stays plain HTTP,
+ * which is what InternSafar already does (no upgrade-insecure-requests).
+ * @param {{ isProd?: boolean, appOrigin?: string, host?: string }} opts
+ */
+export function shouldForceHttps(opts = {}) {
+  const isProd = opts.isProd ?? process.env.NODE_ENV === 'production';
+  if (!isProd) return false;
+  let originUrl;
+  try {
+    originUrl = new URL(String(opts.appOrigin || ''));
+  } catch {
+    return false;
+  }
+  if (originUrl.protocol !== 'https:') return false;
+  const configured = originUrl.hostname.toLowerCase();
+  if (configured === 'localhost' || configured === '127.0.0.1' || configured === '::1') return false;
+  const seen = requestHostname(opts.host);
+  if (!seen || seen === 'localhost' || seen === '127.0.0.1' || seen === '::1') return false;
+  return seen === configured;
+}
+
+function requestHostname(hostHeader) {
+  const raw = String(hostHeader || '').trim().toLowerCase();
+  if (!raw) return '';
+  if (raw.startsWith('[')) {
+    const end = raw.indexOf(']');
+    return end === -1 ? '' : raw.slice(1, end);
+  }
+  return raw.split(':')[0];
+}
+
+/**
+ * @param {{ nonce?: string, isDev?: boolean, upgradeInsecureRequests?: boolean }} [opts]
  * @returns {string}
  */
 export function buildContentSecurityPolicy(opts = {}) {
   const isDev = opts.isDev ?? process.env.NODE_ENV !== 'production';
   const nonce = opts.nonce ? String(opts.nonce) : '';
+  const upgradeInsecureRequests = opts.upgradeInsecureRequests === true;
 
   const scriptSrc = nonce
     ? [
@@ -46,7 +81,7 @@ export function buildContentSecurityPolicy(opts = {}) {
     "media-src 'self' blob: https:",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
-    'upgrade-insecure-requests',
+    ...(upgradeInsecureRequests ? ['upgrade-insecure-requests'] : []),
   ];
 
   return directives.join('; ');
@@ -54,12 +89,13 @@ export function buildContentSecurityPolicy(opts = {}) {
 
 /**
  * Non-CSP security headers (safe on HTML and static assets).
- * @param {{ isProd?: boolean, appOrigin?: string }} [opts]
+ * @param {{ isProd?: boolean, appOrigin?: string, includeHsts?: boolean }} [opts]
  * @returns {{ key: string, value: string }[]}
  */
 export function buildSecurityHeaderList(opts = {}) {
   const isProd = opts.isProd ?? process.env.NODE_ENV === 'production';
   const appOrigin = opts.appOrigin || '';
+  const includeHsts = opts.includeHsts ?? isProd;
 
   /** @type {{ key: string, value: string }[]} */
   const headers = [
@@ -76,7 +112,7 @@ export function buildSecurityHeaderList(opts = {}) {
     // COEP omitted: require-corp breaks common HTTPS media (S3/Supabase) without CORP on those origins.
   ];
 
-  if (isProd) {
+  if (includeHsts) {
     headers.push({
       key: 'Strict-Transport-Security',
       value: 'max-age=31536000; includeSubDomains; preload',
@@ -93,7 +129,7 @@ export function buildSecurityHeaderList(opts = {}) {
 /**
  * Apply security headers onto a NextResponse (mutates and returns it).
  * @param {import('next/server').NextResponse} response
- * @param {{ nonce?: string, isDev?: boolean, isProd?: boolean, appOrigin?: string }} [opts]
+ * @param {{ nonce?: string, isDev?: boolean, isProd?: boolean, appOrigin?: string, host?: string, upgradeInsecureRequests?: boolean, includeHsts?: boolean }} [opts]
  */
 export function applySecurityHeaders(response, opts = {}) {
   const list = buildSecurityHeaderList(opts);
@@ -102,7 +138,11 @@ export function applySecurityHeaders(response, opts = {}) {
   }
   response.headers.set(
     'Content-Security-Policy',
-    buildContentSecurityPolicy({ nonce: opts.nonce, isDev: opts.isDev }),
+    buildContentSecurityPolicy({
+      nonce: opts.nonce,
+      isDev: opts.isDev,
+      upgradeInsecureRequests: opts.upgradeInsecureRequests,
+    }),
   );
   return response;
 }

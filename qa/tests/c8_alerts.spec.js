@@ -7,11 +7,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await page.waitForURL(/\/dashboard\//, { timeout: 15_000 });
 }
 
@@ -36,22 +39,22 @@ async function verifyAlertDropdown(page, roleName) {
 test.describe('C8 - Alerts & Notifications Validation', () => {
 
   test('C8-ALERT-001 - Employer Alert Visibility', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyAlertDropdown(page, 'Employer');
   });
 
   test('C8-ALERT-002 - College Admin Alert Visibility', async ({ page }) => {
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
     await verifyAlertDropdown(page, 'College Admin');
   });
 
   test('C8-ALERT-003 - Student Alert Visibility', async ({ page }) => {
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await verifyAlertDropdown(page, 'Student');
   });
 
   test('C8-ALERT-004 - Super Admin Alert Visibility', async ({ page }) => {
-    await loginAs(page, 'admin@placementhub.com');
+    await loginAs(page, genuineAccount('super_admin'));
     await verifyAlertDropdown(page, 'Super Admin');
   });
 

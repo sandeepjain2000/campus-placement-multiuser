@@ -9,7 +9,7 @@
     {
       "phase": "SETUP",
       "label": "Landing page ready",
-      "observe": "Home page is open. Next step signs in as employer (hr@techcorp.com) automatically — you should land on the employer dashboard.",
+      "observe": "Home page is open. Next step signs in as employer () automatically — you should land on the employer dashboard.",
       "action": { "type": "wait", "ms": 400 }
     },
     {

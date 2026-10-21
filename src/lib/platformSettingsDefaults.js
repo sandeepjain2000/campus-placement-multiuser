@@ -2,8 +2,8 @@
 export const PLATFORM_SETTINGS_DEFAULTS = {
   platformName: 'PlacementHub',
   marketingWebsiteUrl: '',
-  supportEmail: 'placementhub@yopmail.com',
-  supportPhone: '+91 80000 12345',
+  supportEmail: 'support.placementhub@placementhub.online',
+  supportPhone: '+91 724 907 2620',
   systemNotificationInboxEmail: 'placementhub@yopmail.com',
   systemNotificationWebmailUrl: 'https://yopmail.com/wm',
   systemNotificationSenderName: 'placementhub',

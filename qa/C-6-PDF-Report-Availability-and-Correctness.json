@@ -11,7 +11,7 @@
       "role": "student",
       "route": "/dashboard/student/applications",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -34,7 +34,7 @@
       "role": "student",
       "route": "/dashboard/student/interviews",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -57,7 +57,7 @@
       "role": "student",
       "route": "/dashboard/student/offers",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -80,7 +80,7 @@
       "role": "employer",
       "route": "/dashboard/employer/jobs",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -103,7 +103,7 @@
       "role": "employer",
       "route": "/dashboard/employer/drives",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -126,7 +126,7 @@
       "role": "employer",
       "route": "/dashboard/employer/applications",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -149,7 +149,7 @@
       "role": "employer",
       "route": "/dashboard/employer/interviews",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -172,7 +172,7 @@
       "role": "employer",
       "route": "/dashboard/employer/offers",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -195,7 +195,7 @@
       "role": "employer",
       "route": "/dashboard/employer/assessment-summary",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -218,7 +218,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/drives",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -241,7 +241,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/applications",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -264,7 +264,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/interviews",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -287,7 +287,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/offers",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -310,7 +310,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/reports",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -333,7 +333,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/audit-reports",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -356,7 +356,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/overview",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -379,7 +379,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/audit-reports",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -402,7 +402,7 @@
       "role": "student",
       "route": "/dashboard/student/applications",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -428,7 +428,7 @@
       "role": "student",
       "route": "/dashboard/student/interviews",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -454,7 +454,7 @@
       "role": "student",
       "route": "/dashboard/student/offers",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -480,7 +480,7 @@
       "role": "employer",
       "route": "/dashboard/employer/jobs",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -506,7 +506,7 @@
       "role": "employer",
       "route": "/dashboard/employer/drives",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -532,7 +532,7 @@
       "role": "employer",
       "route": "/dashboard/employer/applications",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -558,7 +558,7 @@
       "role": "employer",
       "route": "/dashboard/employer/interviews",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -584,7 +584,7 @@
       "role": "employer",
       "route": "/dashboard/employer/offers",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -610,7 +610,7 @@
       "role": "employer",
       "route": "/dashboard/employer/assessment-summary",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -636,7 +636,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/drives",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -662,7 +662,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/applications",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -688,7 +688,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/interviews",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -714,7 +714,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/offers",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -740,7 +740,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/reports",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -766,7 +766,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/audit-reports",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -792,7 +792,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/overview",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -818,7 +818,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/audit-reports",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [

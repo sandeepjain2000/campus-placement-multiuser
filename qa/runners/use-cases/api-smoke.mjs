@@ -1,8 +1,12 @@
 /**
  * API smoke tests for use cases that can be verified without manual steps.
  */
+import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
 import { DEMO_SEED_PASSWORD } from '../../../src/lib/demoLogins.js';
+const { genuineAccount } = createRequire(import.meta.url)('../../genuineAccounts.js');
+
+const { answerLoginCaptcha } = createRequire(import.meta.url)('../../answerLoginCaptcha.js');
 
 const DEFAULT_BASE = process.env.QA_BASE_URL || process.env.BASE_URL || 'http://127.0.0.1:3000';
 
@@ -21,11 +25,7 @@ async function uiLogin(page, baseUrl, email, password = DEMO_SEED_PASSWORD) {
     },
     { timeout: 30_000 },
   );
-  const captcha = page.locator('#login-captcha');
-  if (await captcha.count()) {
-    const current = await captcha.inputValue();
-    if (!current) await captcha.fill('7');
-  }
+  await answerLoginCaptcha(page);
   await page.click('#login-submit');
   await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
   if (page.url().includes('/auth/continue')) {
@@ -38,7 +38,7 @@ const API_SMOKE = {
     const marker = `GT-UC-GUEST-${Date.now()}`;
     const browser = await chromium.launch({ headless: true });
     const college = await browser.newPage();
-    await uiLogin(college, baseUrl, 'admin@iitm.edu');
+    await uiLogin(college, baseUrl, genuineAccount('college_admin'));
     const create = await college.request.post(`${baseUrl}/api/college/engagement-listings`, {
       data: {
         kind: 'guest_lecture',
@@ -52,7 +52,7 @@ const API_SMOKE = {
     await college.close();
 
     const employer = await browser.newPage();
-    await uiLogin(employer, baseUrl, 'hr@techcorp.com');
+    await uiLogin(employer, baseUrl, genuineAccount('employer'));
     const list = await employer.request.get(`${baseUrl}/api/employer/engagement-listings`);
     const listJson = await list.json().catch(() => ({}));
     const row = (listJson.listings || []).find((l) => String(l.title || '').includes(marker));
@@ -65,7 +65,7 @@ const API_SMOKE = {
     const marker = `GT-UC-CLAR-${Date.now()}`;
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
-    await uiLogin(page, baseUrl, 'arjun.verma@iitm.edu');
+    await uiLogin(page, baseUrl, genuineAccount('student'));
     const res = await page.request.post(`${baseUrl}/api/clarifications`, {
       data: {
         company: 'TechCorp Solutions',

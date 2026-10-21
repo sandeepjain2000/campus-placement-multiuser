@@ -14,6 +14,7 @@ import {
 } from '@/lib/validators';
 import { isRegistrationJobAidEnabled } from '@/lib/registrationJobAid';
 import RegisterJobAidPanel from '@/components/auth/RegisterJobAidPanel';
+import BrandMark from '@/components/BrandMark';
 import AdminFilterSelect from '@/components/AdminFilterSelect';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import { verifyCaptchaAnswer } from '@/lib/captchaClient';
@@ -319,7 +320,7 @@ export default function RegisterPage() {
           style={{ maxWidth: showStudentJobAid ? '520px' : undefined }}
         >
           <Link href="/login" className="auth-logo">
-            <div className="sidebar-logo-icon">P</div>
+            <BrandMark size={36} />
             PlacementHub
           </Link>
 

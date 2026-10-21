@@ -10,7 +10,7 @@
       "role": "student",
       "route": "/dashboard/student/applications",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -53,7 +53,7 @@
       "role": "student",
       "route": "/dashboard/student/offers",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -96,7 +96,7 @@
       "role": "student",
       "route": "/dashboard/student/interviews",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -139,7 +139,7 @@
       "role": "student",
       "route": "/dashboard/student/documents",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -182,7 +182,7 @@
       "role": "employer",
       "route": "/dashboard/employer/applications",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -225,7 +225,7 @@
       "role": "employer",
       "route": "/dashboard/employer/offers",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -268,7 +268,7 @@
       "role": "employer",
       "route": "/dashboard/employer/drives",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -311,7 +311,7 @@
       "role": "employer",
       "route": "/dashboard/employer/interviews",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -354,7 +354,7 @@
       "role": "employer",
       "route": "/dashboard/employer/assessment-summary",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -397,7 +397,7 @@
       "role": "employer",
       "route": "/dashboard/employer/assessment-uploads",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -440,7 +440,7 @@
       "role": "employer",
       "route": "/dashboard/employer/calendar",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -483,7 +483,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/students",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -526,7 +526,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/applications",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -569,7 +569,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/offers",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -612,7 +612,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/drives",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -655,7 +655,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/interviews",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -698,7 +698,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/internship-results",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -741,7 +741,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/employers",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -784,7 +784,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/employers/requests",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -827,7 +827,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/calendar",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -870,7 +870,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/reports",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -913,7 +913,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/colleges",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -956,7 +956,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/users",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -999,7 +999,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/employers",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -1042,7 +1042,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/pending-registrations",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -1085,7 +1085,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/feedback",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [
@@ -1128,7 +1128,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/audit-reports",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preConditions": [

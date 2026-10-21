@@ -2,10 +2,10 @@
   "version": 1,
   "defaultBaseUrl": "http://127.0.0.1:3000",
   "accounts": {
-    "student": "arjun.verma@iitm.edu",
-    "employer": "hr@techcorp.com",
-    "college_admin": "admin@iitm.edu",
-    "super_admin": "admin@placementhub.com"
+    "student": "",
+    "employer": "",
+    "college_admin": "",
+    "super_admin": ""
   },
   "useCases": [
     {

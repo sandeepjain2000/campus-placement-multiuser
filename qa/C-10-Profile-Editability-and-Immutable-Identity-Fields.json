@@ -11,7 +11,7 @@
       "role": "student",
       "route": "/dashboard/student/profile",
       "account": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "editableFieldSamples": [
@@ -42,7 +42,7 @@
       "role": "employer",
       "route": "/dashboard/employer/profile",
       "account": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "editableFieldSamples": [
@@ -73,7 +73,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/settings",
       "account": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "editableFieldSamples": [
@@ -104,7 +104,7 @@
       "role": "student",
       "route": "/dashboard/student/profile",
       "account": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "immutableFields": [
@@ -132,7 +132,7 @@
       "role": "employer",
       "route": "/dashboard/employer/profile",
       "account": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "immutableFields": [
@@ -160,7 +160,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/settings",
       "account": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "immutableFields": [
@@ -188,7 +188,7 @@
       "role": "student",
       "route": "/dashboard/student/profile",
       "account": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "awsElements": [
@@ -217,7 +217,7 @@
       "role": "employer",
       "route": "/dashboard/employer/profile",
       "account": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "awsElements": [
@@ -245,7 +245,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/settings",
       "account": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "awsElements": [

@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import { Mail, Phone, MessageSquare, Building2, School, GraduationCap, Clock, ExternalLink } from 'lucide-react';
+import { Mail, Phone, MessageSquare, Building2, School, GraduationCap, Clock } from 'lucide-react';
 import MarketingPageShell from '@/components/marketing/MarketingPageShell';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { buttonVariants } from '@/components/ui/button';
 import { getPlatformSettings } from '@/lib/platformSettings';
 import { buildPublicSupportConfig } from '@/lib/supportContact';
@@ -209,30 +208,6 @@ export default async function ContactPage() {
           ))}
         </ul>
       </section>
-
-      <Alert className="mb-8">
-        <MessageSquare aria-hidden />
-        <AlertTitle>Demo environment</AlertTitle>
-        <AlertDescription>
-          <p>
-          This deployment uses a disposable demo inbox for system and support mail:{' '}
-          <strong style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{support.notificationInboxEmail}</strong>.
-          Open{' '}
-          <a
-            href={support.yopmailWebmailUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}
-          >
-            YOPmail
-            <ExternalLink size={14} aria-hidden />
-          </a>{' '}
-          and enter that mailbox name to read messages sent from the login support form or automated
-          notifications.
-          </p>
-          <p>Super admins can change support email and phone under Administration → Settings.</p>
-        </AlertDescription>
-      </Alert>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
         <Link href="/register" className={buttonVariants()}>

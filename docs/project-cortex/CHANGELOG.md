@@ -4,6 +4,8 @@ Changes to this folder, not to the product.
 
 ## 2026-10-21
 
+- Core accounts are not for testing. Tests use a genuine account. No production process may touch the 20 core accounts. A demo, if needed, is expected on Vercel.
+- Recorded that sign-in does not send mail for the 20 AWS core accounts, and that tests must not send mail to a bounce address.
 - Named `https://app.placementhub.online/` and the same EC2, server, and database.
 - Replaced the RDS console snapshot step with a server dump taken before Placement Hub changes. A Placement Hub-only dump comes only after those tables exist.
 - Rollback also drops `sync_job_posting_is_visible` when nothing else uses it.

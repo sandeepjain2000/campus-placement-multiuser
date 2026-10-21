@@ -10,14 +10,17 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 async function loginAs(page, email) {
   // Use domcontentloaded — faster and more reliable on Next.js than networkidle
   await page.goto(`/login?email=${encodeURIComponent(email)}`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 30_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 30_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   try {
     await page.waitForURL(/\/dashboard\//, { timeout: 30_000 });
   } catch (e) {
@@ -58,7 +61,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const page = await context.newPage();
 
     // Step 1: Employer tries to create a drive
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/drives');
     
     const canCreate = await tryInitiateAction(page, [
@@ -83,7 +86,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/jobs');
 
     const canCreate = await tryInitiateAction(page, [
@@ -105,7 +108,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await page.goto('/dashboard/student/jobs'); // or /dashboard/student/drives
 
     const canApply = await tryInitiateAction(page, [
@@ -126,7 +129,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/applications');
 
     const canShortlist = await tryInitiateAction(page, [
@@ -148,7 +151,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/interviews');
 
     const canSchedule = await tryInitiateAction(page, [
@@ -169,7 +172,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/offers');
 
     const canRelease = await tryInitiateAction(page, [
@@ -190,7 +193,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await page.goto('/dashboard/student/offers');
 
     const canRespond = await tryInitiateAction(page, [
@@ -211,7 +214,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/assessment-uploads');
 
     const canUpload = await tryInitiateAction(page, [
@@ -232,7 +235,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
     await page.goto('/dashboard/college/offers');
 
     const canUpload = await tryInitiateAction(page, [
@@ -253,7 +256,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer/select-campus');
 
     const canRequest = await tryInitiateAction(page, [
@@ -275,7 +278,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
     await page.goto('/dashboard/college/calendar');
 
     const canCreate = await tryInitiateAction(page, [
@@ -296,7 +299,7 @@ test.describe('C-3 Transactional Flows & Cross-Role Visibility', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
     // We don't have a specific discussion board route in the earlier lists, checking reports or general
     await page.goto('/dashboard/college/overview');
 

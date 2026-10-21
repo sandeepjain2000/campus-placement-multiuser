@@ -1,3 +1,4 @@
+import os
 from __future__ import annotations
 
 import asyncio
@@ -11,7 +12,7 @@ from openpyxl import load_workbook
 
 
 BASE_URL = "http://127.0.0.1:3000"
-EMAIL = "arjun.verma@iitm.edu"
+EMAIL = os.environ["QA_STUDENT_EMAIL"]
 ROOT = Path(__file__).resolve().parent
 XLSX_PATH = ROOT / "uat_test_cases_extended_batch_50.xlsx"
 RESULTS_PATH = ROOT / "browser_use_10_results.json"

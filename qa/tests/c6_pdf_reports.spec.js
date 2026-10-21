@@ -7,11 +7,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await page.waitForURL(/\/dashboard\//, { timeout: 15_000 });
   await page.waitForLoadState('networkidle');
 }
@@ -35,7 +38,7 @@ test.describe('C6 - PDF Report Export Validation', () => {
   // STUDENT
   test.describe('Student', () => {
     test.beforeEach(async ({ page }) => {
-      await loginAs(page, 'arjun.verma@iitm.edu');
+      await loginAs(page, genuineAccount('student'));
     });
     test('C6-PDF-001 - Applications', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/student/applications', 'C6-PDF-001'));
     test('C6-PDF-002 - Interviews', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/student/interviews', 'C6-PDF-002'));
@@ -45,7 +48,7 @@ test.describe('C6 - PDF Report Export Validation', () => {
   // EMPLOYER
   test.describe('Employer', () => {
     test.beforeEach(async ({ page }) => {
-      await loginAs(page, 'hr@techcorp.com');
+      await loginAs(page, genuineAccount('employer'));
     });
     test('C6-PDF-004 - Jobs', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/employer/jobs', 'C6-PDF-004'));
     test('C6-PDF-005 - Drives', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/employer/drives', 'C6-PDF-005'));
@@ -58,7 +61,7 @@ test.describe('C6 - PDF Report Export Validation', () => {
   // COLLEGE ADMIN
   test.describe('College Admin', () => {
     test.beforeEach(async ({ page }) => {
-      await loginAs(page, 'admin@iitm.edu');
+      await loginAs(page, genuineAccount('college_admin'));
     });
     test('C6-PDF-010 - Students', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/college/students', 'C6-PDF-010'));
     test('C6-PDF-011 - Applications', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/college/applications', 'C6-PDF-011'));
@@ -73,7 +76,7 @@ test.describe('C6 - PDF Report Export Validation', () => {
   // SUPER ADMIN
   test.describe('Super Admin', () => {
     test.beforeEach(async ({ page }) => {
-      await loginAs(page, 'admin@placementhub.com');
+      await loginAs(page, genuineAccount('super_admin'));
     });
     test('C6-PDF-018 - Colleges', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/admin/colleges', 'C6-PDF-018'));
     test('C6-PDF-019 - Users', async ({ page }) => await verifyPdfExportExists(page, '/dashboard/admin/users', 'C6-PDF-019'));

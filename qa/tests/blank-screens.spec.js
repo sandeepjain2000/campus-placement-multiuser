@@ -4,13 +4,15 @@
  * Catches regressions like lowercase JSX tags (<dt_Settings />) that mount empty DOM nodes.
  */
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
 const { DEMO_LOGINS, ROLE_HOME, ROUTES_BY_ROLE } = require('../routes-by-role');
 
 async function loginAsDemo(page, email, homePattern) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await expect(page.locator('#login-password')).not.toHaveValue('', { timeout: 10_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await expect(page.locator('#login-form').locator('#login-password').first()).not.toHaveValue('', { timeout: 10_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await expect(page).toHaveURL(homePattern, { timeout: 30_000 });
   await expect(page.locator('#main-content, .dashboard-nav-hub-page-title').first()).toBeVisible({
     timeout: 30_000,

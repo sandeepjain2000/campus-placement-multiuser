@@ -474,7 +474,7 @@
   "priority": "P0",
   "type": "Regression",
   "roles": "Developer / QA",
-  "steps": "1. Run clear-placement\n2. Sign in as admin@iitm.edu and hr@techcorp.com",
+  "steps": "1. Run clear-placement\n2. Sign in as  and ",
   "expected": "Login succeeds; jobs/drives cleared but accounts intact",
   "automation": "Manual",
   "status": null

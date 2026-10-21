@@ -1,5 +1,8 @@
 import { PLATFORM_SETTINGS_DEFAULTS } from '@/lib/platformSettingsDefaults';
 
+export const PLACEMENTHUB_SUPPORT_PHONE = '+91 724 907 2620';
+export const PLACEMENTHUB_SUPPORT_EMAIL = 'support.placementhub@placementhub.online';
+
 /** Inbox where login-page support messages are delivered (YOPmail demo). */
 export function resolveSupportInboxEmail(platform) {
   const inbox = String(platform?.systemNotificationInboxEmail || '').trim();

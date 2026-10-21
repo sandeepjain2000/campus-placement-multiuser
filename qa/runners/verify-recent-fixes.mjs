@@ -4,8 +4,12 @@
  * Run: node qa/runners/verify-recent-fixes.mjs
  * Requires: npm run dev on localhost:3000
  */
+import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
+
+const { loginThroughUi } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 import { startGuidedSession, endGuidedSession } from '../../src/lib/guidedRunnerDb.js';
+const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
 
 const BASE = process.env.BASE_URL || 'http://localhost:3000';
 const PASSWORD = 'Admin@123';
@@ -16,14 +20,19 @@ async function login(page, email) {
   });
   const data = await signInRes.json().catch(() => ({}));
   if (!signInRes.ok() || !data.ok || !data.redirectTo) {
-    throw new Error(data.error || `Guided sign-in failed (${signInRes.status()})`);
+    const message = data.error || `Guided sign-in failed (${signInRes.status()})`;
+    if (signInRes.status() === 403 || /disabled in this environment/i.test(String(message))) {
+      await loginThroughUi(page, BASE, email, PASSWORD);
+      return;
+    }
+    throw new Error(message);
   }
   await page.goto(`${BASE}${data.redirectTo}`, { waitUntil: 'domcontentloaded' });
   await page.waitForURL(/\/dashboard\//, { timeout: 60_000 });
 }
 
 async function verifyOfferTemplateEdit(page) {
-  await login(page, 'hr@techcorp.com');
+  await login(page, genuineAccount('employer'));
 
   const marker = `GT-FIX-${Date.now()}`;
   const createRes = await page.request.post(`${BASE}/api/employer/offer-templates`, {
@@ -60,7 +69,7 @@ async function verifyOfferTemplateEdit(page) {
 }
 
 async function verifyInternshipBacklogsDefault(page) {
-  await login(page, 'hr@techcorp.com');
+  await login(page, genuineAccount('employer'));
   await page.goto(`${BASE}/dashboard/employer/internships`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(800);
   await page.getByRole('button', { name: /post internship/i }).click();

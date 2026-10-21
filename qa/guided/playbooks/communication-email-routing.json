@@ -34,7 +34,7 @@
     {
       "phase": "SUPER_ADMIN",
       "label": "Search known student login — manual",
-      "observe": "arjun.verma@iitm.edu or test user; trace three-step routing trail.",
+      "observe": " or test user; trace three-step routing trail.",
       "action": {
         "type": "wait",
         "ms": 14000

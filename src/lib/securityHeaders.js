@@ -6,4 +6,5 @@ export {
   buildContentSecurityPolicy,
   buildSecurityHeaderList,
   applySecurityHeaders,
+  shouldForceHttps,
 } from '../../securityHeaders.mjs';

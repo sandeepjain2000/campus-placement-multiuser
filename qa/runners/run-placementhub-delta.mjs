@@ -7,10 +7,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
 import { DEMO_SEED_PASSWORD } from '../../src/lib/demoLogins.js';
+
+const { answerLoginCaptcha } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 import { DEV_NOTES_PASSWORD } from '../../src/lib/developerNotesPassword.js';
 import { FEATURE_IDEA_TOPICS } from '../../src/lib/featureIdeas.js';
 import { Client } from 'pg';
+const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
 
 const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus-placement-omega.vercel.app').replace(
   /\/$/,
@@ -23,10 +27,10 @@ const OUT_PATH = path.join(process.cwd(), 'qa/data/placementhub_delta_results.js
 const SAMPLE_ICS = path.join(process.cwd(), 'docs/sample-import-july26.ics');
 
 const EMAILS = {
-  student: 'arjun.verma@iitm.edu',
-  employer: 'hr@techcorp.com',
-  college: 'admin@iitm.edu',
-  admin: 'admin@placementhub.com',
+  student: genuineAccount('student'),
+  employer: genuineAccount('employer'),
+  college: genuineAccount('college_admin'),
+  admin: genuineAccount('super_admin'),
 };
 
 function nowIso() {
@@ -69,8 +73,7 @@ async function uiLogin(page, email) {
   }
   if ((await page.inputValue('#login-email')) !== email) await page.fill('#login-email', email);
   if (!(await page.inputValue('#login-password'))) await page.fill('#login-password', PASSWORD);
-  const captcha = page.locator('#login-captcha');
-  if ((await captcha.count()) && !(await captcha.inputValue())) await captcha.fill('7');
+  await answerLoginCaptcha(page);
   await page.click('#login-submit');
   await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
   if (page.url().includes('/auth/continue')) {
@@ -150,7 +153,7 @@ async function dbCounts() {
       `SELECT COUNT(*)::int AS n FROM student_profiles sp
        JOIN users u ON u.id=sp.user_id
        WHERE LOWER(u.email) = ANY($1::text[])`,
-      [['arjun.verma@iitm.edu', 'sneha.rao@nitt.edu', 'rohan.mehta@bits.edu', 'priya.sharma.alumni@iitm.edu']],
+      [[genuineAccount('student'), genuineAccount('student2'), genuineAccount('student3'), genuineAccount('alumni')]],
     );
     return {
       notifications: notifications.rows[0].n,

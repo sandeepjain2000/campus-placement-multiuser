@@ -40,7 +40,7 @@
       "route": "/dashboard/employer/offers-upload",
       "postUploadVerifyRoute": "/dashboard/employer/offers",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "csvDataStrategy": [
@@ -73,7 +73,7 @@
       "route": "/dashboard/employer/assessment-uploads",
       "postUploadVerifyRoute": "/dashboard/employer/assessment-summary",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "csvDataStrategy": [
@@ -106,7 +106,7 @@
       "route": "/dashboard/college/offers-upload",
       "postUploadVerifyRoute": "/dashboard/college/offers",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "csvDataStrategy": [
@@ -139,7 +139,7 @@
       "route": "/dashboard/college/students",
       "postUploadVerifyRoute": "/dashboard/college/students",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "csvDataStrategy": [

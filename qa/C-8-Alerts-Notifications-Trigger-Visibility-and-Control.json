@@ -11,13 +11,13 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/drives",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "college_admin",
       "intendedViewerRoute": "/dashboard/alerts",
       "intendedViewerAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Drive request",
@@ -43,13 +43,13 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/college/drives",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "employer",
       "intendedViewerRoute": "/dashboard/alerts",
       "intendedViewerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Drive approval",
@@ -75,13 +75,13 @@
       "actorRole": "student",
       "actorRoute": "/dashboard/student/drives",
       "actorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "employer",
       "intendedViewerRoute": "/dashboard/alerts",
       "intendedViewerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "New application",
@@ -107,13 +107,13 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/applications",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "student",
       "intendedViewerRoute": "/dashboard/alerts",
       "intendedViewerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Application status changed",
@@ -139,13 +139,13 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/interviews",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "student",
       "intendedViewerRoute": "/dashboard/student/interviews",
       "intendedViewerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Interview schedule",
@@ -171,13 +171,13 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/offers",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "student",
       "intendedViewerRoute": "/dashboard/alerts",
       "intendedViewerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Offer released",
@@ -203,13 +203,13 @@
       "actorRole": "student",
       "actorRoute": "/dashboard/student/offers",
       "actorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "employer",
       "intendedViewerRoute": "/dashboard/alerts",
       "intendedViewerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Offer response",
@@ -235,13 +235,13 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/select-campus",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "college_admin",
       "intendedViewerRoute": "/dashboard/college/employers/requests",
       "intendedViewerAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Partnership request",
@@ -267,13 +267,13 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/college/clarifications",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "intendedViewerRole": "student",
       "intendedViewerRoute": "/dashboard/student/clarifications",
       "intendedViewerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedAlertType": "Clarification posted",
@@ -299,7 +299,7 @@
       "actorRole": "student",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -324,7 +324,7 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -349,7 +349,7 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -374,7 +374,7 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [
@@ -399,7 +399,7 @@
       "actorRole": "super_admin",
       "actorRoute": "/dashboard/admin/settings",
       "actorAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "steps": [

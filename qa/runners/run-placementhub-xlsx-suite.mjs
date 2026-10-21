@@ -9,14 +9,17 @@
  * Usage:
  *   node qa/runners/run-placementhub-xlsx-suite.mjs
  *   QA_BASE_URL=https://campus-placement-omega.vercel.app node qa/runners/run-placementhub-xlsx-suite.mjs
+ *   node qa/runners/run-placementhub-xlsx-suite.mjs --creates-only
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
+const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
 
 const require = createRequire(import.meta.url);
 const { DEMO_LOGINS, ROLE_HOME, ROUTES_BY_ROLE } = require('../routes-by-role.js');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha.js');
 
 const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus-placement-omega.vercel.app').replace(
   /\/$/,
@@ -28,12 +31,12 @@ const OUT_PATH = path.join(process.cwd(), 'qa/data/placementhub_test_results.jso
 
 const ROLE_EMAIL = {
   student: DEMO_LOGINS.student,
-  alumni: 'priya.sharma.alumni@iitm.edu',
+  alumni: genuineAccount('alumni'),
   employer: DEMO_LOGINS.employer,
   'college admin': DEMO_LOGINS.college_admin,
   college: DEMO_LOGINS.college_admin,
-  'placement committee': 'committee@iitm.edu',
-  committee: 'committee@iitm.edu',
+  'placement committee': genuineAccount('committee'),
+  committee: genuineAccount('committee'),
   'super admin': DEMO_LOGINS.super_admin,
   admin: DEMO_LOGINS.super_admin,
   public: null,
@@ -148,6 +151,8 @@ function isNegativeHard(tc) {
   return String(tc.type || '').toLowerCase() === 'negative' || /invalid|rejected|blank required|error shown/i.test(tc.title);
 }
 
+const CREATE_MARK = 'QA basic';
+
 async function guidedSignIn(page, email) {
   const res = await page.request.post(`${BASE}/api/guided-runner/sign-in`, {
     data: { email, password: PASSWORD },
@@ -167,11 +172,7 @@ async function guidedSignIn(page, email) {
     if (!pwd) await page.fill('#login-password', PASSWORD);
     const emailVal = await page.inputValue('#login-email');
     if (emailVal !== email) await page.fill('#login-email', email);
-    const captcha = page.locator('#login-captcha');
-    if (await captcha.count()) {
-      const current = await captcha.inputValue();
-      if (!current) await captcha.fill('7');
-    }
+    await answerLoginCaptcha(page);
     await page.click('#login-submit');
     await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
     if (page.url().includes('/auth/continue')) {
@@ -352,11 +353,7 @@ async function runFoundation(browser) {
         el.value = '';
       });
       await page.fill('#login-password', 'WrongPassword!999');
-      const captcha = page.locator('#login-captcha');
-      if (await captcha.count()) {
-        const current = await captcha.inputValue();
-        if (!current) await captcha.fill('7');
-      }
+      await answerLoginCaptcha(page);
       await page.click('#login-submit');
       await page.waitForTimeout(3000);
       const stillLogin = /\/login/.test(page.url());
@@ -377,8 +374,8 @@ async function runFoundation(browser) {
   {
     const page = await browser.newPage();
     try {
-      await guidedSignIn(page, 'priya.sharma.alumni@iitm.edu');
-      evidence.logins.alumni = { ok: true, email: 'priya.sharma.alumni@iitm.edu', url: page.url() };
+      await guidedSignIn(page, genuineAccount('alumni'));
+      evidence.logins.alumni = { ok: true, email: genuineAccount('alumni'), url: page.url() };
     } catch (e) {
       evidence.logins.alumni = { ok: false, error: e.message };
     } finally {
@@ -551,7 +548,167 @@ function result(tc, status, actual, executedAt) {
   };
 }
 
+async function waitForOutcome(page, pattern, timeout = 20_000) {
+  const started = Date.now();
+  while (Date.now() - started < timeout) {
+    const text = await page.locator('body').innerText().catch(() => '');
+    if (pattern.test(text)) return text;
+    if (/application error|failed to|could not|network error/i.test(text) && !/no requests yet|no internship/i.test(text)) {
+      return text;
+    }
+    await page.waitForTimeout(400);
+  }
+  return page.locator('body').innerText().catch(() => '');
+}
+
+async function createMentorshipDraft(page, title) {
+  await page.goto(`${BASE}/dashboard/student/mentorship-requests`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  const button = page.getByRole('button', { name: 'New request' });
+  await button.waitFor({ state: 'visible', timeout: 20_000 });
+  await button.click();
+  await page.locator('#mentor-title').fill(title);
+  await page.locator('#mentor-summary').fill('Basic create check for the mentorship request form.');
+  await page.getByRole('button', { name: 'Save draft' }).click();
+  const text = await waitForOutcome(page, /Draft saved/);
+  if (!/Draft saved/i.test(text) || !text.includes(title)) {
+    throw new Error(`Mentorship draft was not saved. Page said: ${text.slice(0, 300)}`);
+  }
+}
+
+async function runBasicCreates(browser) {
+  const results = [];
+
+  async function runOne(role, email, action) {
+    const page = await browser.newPage();
+    try {
+      await guidedSignIn(page, email);
+      await action(page);
+      results.push({ role, email, status: 'Pass', actual: 'Basic create saved' });
+      console.log(`PASS ${role}`);
+    } catch (error) {
+      const body = await page.locator('body').innerText().catch(() => '');
+      results.push({
+        role,
+        email,
+        status: 'Fail',
+        actual: `${error.message} | ${body.slice(0, 240)}`,
+      });
+      console.log(`FAIL ${role}: ${error.message}`);
+    } finally {
+      await page.close();
+    }
+  }
+
+  await runOne('student', DEMO_LOGINS.student, (page) =>
+    createMentorshipDraft(page, `${CREATE_MARK} student mentorship`),
+  );
+  await runOne('alumni', genuineAccount('alumni'), (page) =>
+    createMentorshipDraft(page, `${CREATE_MARK} alumni mentorship`),
+  );
+  await runOne('employer', DEMO_LOGINS.employer, async (page) => {
+    await page.goto(`${BASE}/dashboard/employer/jobs`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.getByRole('button', { name: 'Create Job' }).click();
+    await page.getByPlaceholder('e.g. Software Development Engineer').fill(`${CREATE_MARK} employer job`);
+    await page.getByRole('button', { name: 'Save as Draft' }).click();
+    const text = await waitForOutcome(page, /Draft saved/);
+    if (!/Draft saved/i.test(text)) {
+      throw new Error(`Job draft was not saved. Page said: ${text.slice(0, 300)}`);
+    }
+  });
+  await runOne('college_admin', DEMO_LOGINS.college_admin, async (page) => {
+    await page.goto(`${BASE}/dashboard/college/guest-engagements/add`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.locator('#engagement-title').fill(`${CREATE_MARK} college guest session`);
+    await page.locator('#engagement-summary').fill('Basic create check for a guest engagement listing.');
+    await page.getByRole('button', { name: 'Save listing' }).click();
+    await page.waitForURL(/\/dashboard\/college\/guest-engagements\/?$/, { timeout: 20_000 });
+    const text = await waitForOutcome(page, new RegExp(CREATE_MARK));
+    if (!text.includes(`${CREATE_MARK} college guest session`)) {
+      throw new Error(`Guest listing was not listed. Page said: ${text.slice(0, 300)}`);
+    }
+  });
+  await runOne('super_admin', DEMO_LOGINS.super_admin, async (page) => {
+    await page.goto(`${BASE}/dashboard/admin/colleges/add`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.locator('#collegeName').fill('QA Create Check College');
+    await page.locator('#city').fill('Chennai');
+    await page.locator('#state').fill('Tamil Nadu');
+    await page.locator('#adminFirstName').fill('QA');
+    await page.locator('#adminLastName').fill('Create');
+    await page.locator('#adminEmail').fill('qa-create-check@placementhub.online');
+    await page.locator('#adminPassword').fill('QaCreate1!');
+    await page.getByRole('button', { name: 'Create college' }).click();
+    const text = await waitForOutcome(page, /Student enrollment key|College created/);
+    if (!/Student enrollment key|College created/i.test(text)) {
+      throw new Error(`College was not created. Page said: ${text.slice(0, 300)}`);
+    }
+  });
+
+  const committee = await browser.newPage();
+  try {
+    await guidedSignIn(committee, genuineAccount('committee'));
+    await committee.goto(`${BASE}/dashboard/college/guest-engagements`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    const add = committee.getByRole('link', { name: /^Add$/ }).or(committee.getByRole('button', { name: /^Add$/ }));
+    const hasAdd = await add.first().isVisible({ timeout: 8_000 }).catch(() => false);
+    const readOnly = await committee.getByText('Read-only placement committee view').isVisible().catch(() => false);
+    if (!hasAdd && readOnly) {
+      results.push({
+        role: 'placement_committee',
+        email: genuineAccount('committee'),
+        status: 'Skip',
+        actual: 'This role is read-only and has no create control.',
+      });
+      console.log('SKIP placement_committee');
+    } else if (!hasAdd) {
+      results.push({
+        role: 'placement_committee',
+        email: genuineAccount('committee'),
+        status: 'Skip',
+        actual: 'No create control on the college guest-engagement page.',
+      });
+      console.log('SKIP placement_committee');
+    } else {
+      results.push({
+        role: 'placement_committee',
+        email: genuineAccount('committee'),
+        status: 'Fail',
+        actual: 'A create control is visible on a role that is supposed to be read-only.',
+      });
+      console.log('FAIL placement_committee: create control was visible');
+    }
+  } catch (error) {
+    results.push({ role: 'placement_committee', email: genuineAccount('committee'), status: 'Fail', actual: error.message });
+    console.log(`FAIL placement_committee: ${error.message}`);
+  } finally {
+    await committee.close();
+  }
+
+  return results;
+}
+
 async function main() {
+  const createsOnly = process.argv.includes('--creates-only');
+  if (createsOnly) {
+    console.log(`Base URL: ${BASE}`);
+    console.log('Running basic create checks…');
+    const browser = await chromium.launch({ headless: true });
+    let results;
+    try {
+      results = await runBasicCreates(browser);
+    } finally {
+      await browser.close();
+    }
+    const summary = results.reduce((acc, row) => {
+      acc[row.status] = (acc[row.status] || 0) + 1;
+      return acc;
+    }, {});
+    const outPath = path.join(process.cwd(), 'qa/data/placementhub_create_results.json');
+    fs.mkdirSync(path.dirname(outPath), { recursive: true });
+    fs.writeFileSync(outPath, JSON.stringify({ baseUrl: BASE, executedAt: new Date().toISOString(), summary, results }, null, 2));
+    console.log('Summary:', summary);
+    console.log('Wrote', outPath);
+    if ((summary.Fail || 0) > 0) process.exitCode = 1;
+    return;
+  }
+
   if (!fs.existsSync(CASES_PATH)) {
     console.error(`Missing ${CASES_PATH}. Export cases first.`);
     process.exit(1);

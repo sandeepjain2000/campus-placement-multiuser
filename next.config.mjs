@@ -110,7 +110,11 @@ const nextConfig = {
   async headers() {
     // Non-CSP headers on all routes. CSP for HTML documents is set per-request in
     // middleware with a fresh nonce (two CSP headers would AND and break scripts).
-    const securityHeaders = buildSecurityHeaderList({ isProd, appOrigin: APP_ORIGIN });
+    const securityHeaders = buildSecurityHeaderList({
+      isProd,
+      appOrigin: APP_ORIGIN,
+      includeHsts: false,
+    });
 
     return [
       {
@@ -126,14 +130,6 @@ const nextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-          ...(isProd
-            ? [
-                {
-                  key: 'Strict-Transport-Security',
-                  value: 'max-age=31536000; includeSubDomains; preload',
-                },
-              ]
-            : []),
         ],
       },
     ];

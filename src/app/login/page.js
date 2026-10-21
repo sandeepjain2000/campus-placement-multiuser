@@ -11,6 +11,7 @@ import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
 import LoginSupportContact from '@/components/auth/LoginSupportContact';
 import DevScreenTag from '@/components/DevScreenTag';
+import BrandMark from '@/components/BrandMark';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -578,19 +579,19 @@ function LoginPageInner() {
           showCredentials && showDemoLogins ? 'max-w-5xl' : 'max-w-lg'
         )}
       >
-        <Link
-          href="/"
-          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
-        >
-          <span>&larr;</span> Back to landing page
-        </Link>
+        {showDemoLogins ? (
+          <Link
+            href="/"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+          >
+            <span>&larr;</span> Back to landing page
+          </Link>
+        ) : null}
 
         <Card className="w-full gap-6 py-6">
           <CardHeader className="gap-6 px-6">
-            <Link href="/" className="inline-flex items-center gap-3 no-underline">
-              <div className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-lg text-lg font-bold shadow-xs">
-                P
-              </div>
+            <Link href={showDemoLogins ? '/' : '/login'} className="inline-flex items-center gap-3 no-underline">
+              <BrandMark size={40} />
               <span className="text-foreground text-lg font-semibold tracking-tight">PlacementHub</span>
             </Link>
             <div>
@@ -764,13 +765,15 @@ function LoginPageInner() {
                 <p className="text-muted-foreground text-sm">or</p>
                 <Separator className="flex-1" />
               </div>
-              <Button variant="outline" className="h-auto w-full justify-between px-3 py-2.5" render={<Link href="/demo-accounts" target="_blank" rel="noopener noreferrer" />} nativeButton={false}>
-                <span className="inline-flex items-center gap-2">
-                  <Users data-icon="inline-start" />
-                  View all system accounts
-                </span>
-                <ArrowRight className="text-muted-foreground" />
-              </Button>
+              {showDemoLogins ? (
+                <Button variant="outline" className="h-auto w-full justify-between px-3 py-2.5" render={<Link href="/demo-accounts" target="_blank" rel="noopener noreferrer" />} nativeButton={false}>
+                  <span className="inline-flex items-center gap-2">
+                    <Users data-icon="inline-start" />
+                    View all system accounts
+                  </span>
+                  <ArrowRight className="text-muted-foreground" />
+                </Button>
+              ) : null}
               <Button variant="outline" className="hidden-on-mobile h-auto w-full justify-between px-3 py-2.5" render={<Link href="/help" />} nativeButton={false}>
                 <span className="inline-flex items-center gap-2">
                   <BookOpen data-icon="inline-start" />

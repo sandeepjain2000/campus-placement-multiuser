@@ -24,17 +24,17 @@ Structured manual QA for **CSV upload/download** and **cross-view data consisten
 
 ## Before every session
 
-1. **Pick one campus** and use it for the whole session (e.g. IITM — `admin@iitm.edu`).
+1. **Pick one campus** and use it for the whole session (e.g. IITM — ``).
 2. **Session ID:** `MT-YYYYMMDD-A` (increment A→B if you run twice same day).
 3. **Unique marker:** embed in titles, remarks, or company fields, e.g. `MT-20260529-A Offer Test`.
 4. **Demo logins** (password `Admin@123` unless reset):
 
    | Role | Email |
    |------|-------|
-   | Student | `arjun.verma@iitm.edu` |
-   | College | `admin@iitm.edu` |
-   | Employer | `hr@techcorp.com` |
-   | Super admin | `admin@placementhub.com` |
+   | Student | `` |
+   | College | `` |
+   | Employer | `` |
+   | Super admin | `` |
 
 5. Open `qa/data/catalogs/manual_session_log.csv` and fill the session header row.
 

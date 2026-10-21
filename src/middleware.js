@@ -28,7 +28,9 @@ import {
 import {
   applySecurityHeaders,
   buildContentSecurityPolicy,
+  shouldForceHttps,
 } from '@/lib/securityHeaders';
+import { isDemoLoginsEnabled } from '@/lib/demoLogins';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 const IS_DEV = process.env.NODE_ENV !== 'production';
@@ -67,12 +69,36 @@ function withNoStore(response) {
   return response;
 }
 
+function redirectTarget(request, path) {
+  const configured = resolveAppOrigin(request);
+  try {
+    const host = new URL(configured).hostname.toLowerCase();
+    if (host && host !== 'localhost' && host !== '127.0.0.1' && host !== '::1') {
+      return new URL(path, configured);
+    }
+  } catch {
+    /* local dev has no public origin */
+  }
+  return new URL(path, request.url);
+}
+
+function httpsPolicy(request) {
+  const appOrigin = resolveAppOrigin(request);
+  const host = request.headers.get('host') || '';
+  const forceHttps = shouldForceHttps({ isProd: IS_PROD, appOrigin, host });
+  return { appOrigin, forceHttps };
+}
+
 function seal(response, request, nonce) {
+  const { appOrigin, forceHttps } = httpsPolicy(request);
   applySecurityHeaders(response, {
     nonce,
     isDev: IS_DEV,
     isProd: IS_PROD,
-    appOrigin: resolveAppOrigin(request),
+    appOrigin,
+    host: request.headers.get('host') || '',
+    upgradeInsecureRequests: forceHttps,
+    includeHsts: forceHttps,
   });
   return appendLegacyCookieClearance(response);
 }
@@ -81,7 +107,12 @@ function seal(response, request, nonce) {
  * Continue the request with a fresh CSP nonce so Next can stamp framework scripts.
  */
 function passThrough(request, nonce, { noStore = false } = {}) {
-  const csp = buildContentSecurityPolicy({ nonce, isDev: IS_DEV });
+  const { forceHttps } = httpsPolicy(request);
+  const csp = buildContentSecurityPolicy({
+    nonce,
+    isDev: IS_DEV,
+    upgradeInsecureRequests: forceHttps,
+  });
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
   // Next extracts the nonce from the request CSP during SSR.
@@ -136,6 +167,18 @@ export default async function proxy(request) {
   const { pathname } = request.nextUrl;
   const nonce = createNonce();
 
+  // Production (demo logins hidden): / is the sign-in page. The marketing home stays for sandbox/Vercel.
+  if ((pathname === '/' || pathname === '') && !isDemoLoginsEnabled()) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+      cookieName: SESSION_COOKIE_NAME,
+      secureCookie: SESSION_COOKIE_NAME.startsWith('__Secure-'),
+    });
+    const dest = token?.role ? (ROLE_HOME_PATHS[token.role] || '/dashboard') : '/login';
+    return redirectTo(redirectTarget(request, dest), request, nonce);
+  }
+
   if (isPlacementApiPath(pathname)) {
     return passThrough(request, nonce, { noStore: true });
   }
@@ -145,7 +188,7 @@ export default async function proxy(request) {
     const token = request.cookies.get(DEV_NOTES_COOKIE)?.value;
     const ok = await verifyDevNotesSessionToken(token);
     if (!ok) {
-      const unlock = new URL('/developer/unlock', request.url);
+      const unlock = redirectTarget(request, '/developer/unlock');
       unlock.searchParams.set('from', pathname);
       return redirectTo(unlock, request, nonce);
     }
@@ -168,7 +211,7 @@ export default async function proxy(request) {
       });
       if (token?.role) {
         const dest = ROLE_HOME_PATHS[token.role] || '/dashboard';
-        return redirectTo(new URL(dest, request.url), request, nonce);
+        return redirectTo(redirectTarget(request, dest), request, nonce);
       }
     }
     return passThrough(request, nonce);
@@ -185,7 +228,7 @@ export default async function proxy(request) {
 
     // Unauthenticated → login
     if (!token?.role) {
-      return redirectTo(new URL('/login', request.url), request, nonce);
+      return redirectTo(redirectTarget(request, '/login'), request, nonce);
     }
 
     const role = token.role;
@@ -193,13 +236,13 @@ export default async function proxy(request) {
     if (role === 'student') {
       if (!token.isAlumni && isAlumniStudentJobPath(pathname)) {
         const dest = campusStudentJobRedirectPath(pathname);
-        return redirectTo(new URL(dest, request.url), request, nonce);
+        return redirectTo(redirectTarget(request, dest), request, nonce);
       }
       if (token.isAlumni && pathname === LEGACY_STUDENT_JOBS_PATH) {
-        return redirectTo(new URL(ALUMNI_BROWSE_JOBS_PATH, request.url), request, nonce);
+        return redirectTo(redirectTarget(request, ALUMNI_BROWSE_JOBS_PATH), request, nonce);
       }
       if (token.isAlumni && pathname === LEGACY_STUDENT_APPLICATIONS_JOBS_PATH) {
-        return redirectTo(new URL(ALUMNI_MY_JOBS_PATH, request.url), request, nonce);
+        return redirectTo(redirectTarget(request, ALUMNI_MY_JOBS_PATH), request, nonce);
       }
     }
 
@@ -210,15 +253,15 @@ export default async function proxy(request) {
       token.isAlumni &&
       pathname === LEGACY_STUDENT_GETTING_STARTED_PATH
     ) {
-      return redirectTo(new URL(ALUMNI_GETTING_STARTED_PATH, request.url), request, nonce);
+      return redirectTo(redirectTarget(request, ALUMNI_GETTING_STARTED_PATH), request, nonce);
     }
 
     if (role === 'student' && token.isAlumni && pathname === '/dashboard/student/clarifications') {
-      return redirectTo(new URL(ALUMNI_BROWSE_JOBS_PATH, request.url), request, nonce);
+      return redirectTo(redirectTarget(request, ALUMNI_BROWSE_JOBS_PATH), request, nonce);
     }
 
     if (role === 'employer' && pathname === LEGACY_EMPLOYER_JOBS_PATH) {
-      return redirectTo(new URL(EMPLOYER_ALUMNI_JOBS_PATH, request.url), request, nonce);
+      return redirectTo(redirectTarget(request, EMPLOYER_ALUMNI_JOBS_PATH), request, nonce);
     }
 
     // Allow shared routes for all authenticated users
@@ -236,14 +279,14 @@ export default async function proxy(request) {
     // Allow the role's own dashboard subtree
     if (ownedPrefix && (pathname === ownedPrefix || pathname.startsWith(ownedPrefix + '/'))) {
       if (role === 'placement_committee' && !isPlacementCommitteePathAllowed(pathname)) {
-        return redirectTo(new URL('/dashboard/college/students', request.url), request, nonce);
+        return redirectTo(redirectTarget(request, '/dashboard/college/students'), request, nonce);
       }
       return passThrough(request, nonce);
     }
 
     // Block cross-role access — redirect to the role's own home
     const dest = ROLE_HOME_PATHS[role] || '/dashboard';
-    return redirectTo(new URL(dest, request.url), request, nonce);
+    return redirectTo(redirectTarget(request, dest), request, nonce);
   }
 
   // Public pages and other matched routes — security headers + CSP nonce only

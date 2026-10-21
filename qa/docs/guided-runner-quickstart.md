@@ -120,7 +120,7 @@ One-off partnership setup (if campuses empty):
 # IIT Madras × every employer
 npm run qa:ensure-partnership
 
-# TechCorp (hr@techcorp.com) × all active colleges — internship playbook / EI-15
+# TechCorp () × all active colleges — internship playbook / EI-15
 npm run qa:ensure-techcorp-partnerships
 ```
 
@@ -195,9 +195,9 @@ Automated playbooks search for the session marker (`GT-…`) and click **Approve
 
 | Role | Email |
 |------|-------|
-| Employer | `hr@techcorp.com` |
-| College admin | `admin@iitm.edu` |
-| Student | `arjun.verma@iitm.edu` |
+| Employer | `` |
+| College admin | `` |
+| Student | `` |
 
 Seeded Data Tester users use `@placementhub.test`. System mail demos: **placementhub@yopmail.com** at [yopmail.com](https://yopmail.com/).
 

@@ -6,3 +6,17 @@ export function appOrigin() {
   if (v) return (v.startsWith('http') ? v : `https://${v}`).replace(/\/$/, '');
   return '';
 }
+
+/** Browser redirects use the public origin. A local NEXTAUTH_URL keeps the request host. */
+export function publicRedirectUrl(path, requestUrl) {
+  const configured = appOrigin();
+  try {
+    const host = new URL(configured).hostname.toLowerCase();
+    if (host && host !== 'localhost' && host !== '127.0.0.1' && host !== '::1') {
+      return new URL(path, configured);
+    }
+  } catch {
+    /* use the request host */
+  }
+  return new URL(path, requestUrl);
+}

@@ -3,8 +3,12 @@
  */
 import fs from 'fs';
 import { startGuidedSession, endGuidedSession } from '../../../src/lib/guidedRunnerDb.js';
+import { createRequire } from 'node:module';
 import { DEMO_SEED_PASSWORD } from '../../../src/lib/demoLogins.js';
+
+const { loginThroughUi } = createRequire(import.meta.url)('../../answerLoginCaptcha.js');
 import { configPath } from './paths.mjs';
+const { genuineAccount } = createRequire(import.meta.url)('../../genuineAccounts.js');
 
 export function loadUseCasesConfig() {
   return JSON.parse(fs.readFileSync(configPath('use-cases.json'), 'utf8'));
@@ -25,9 +29,9 @@ export function resolveAccounts() {
   const config = loadUseCasesConfig();
   const accounts = config?.accounts || {};
   return {
-    student: accounts.student || 'arjun.verma@iitm.edu',
-    employer: accounts.employer || 'hr@techcorp.com',
-    college_admin: accounts.college_admin || 'admin@iitm.edu',
+    student: accounts.student || genuineAccount('student'),
+    employer: accounts.employer || genuineAccount('employer'),
+    college_admin: accounts.college_admin || genuineAccount('college_admin'),
     password: accounts.password || DEMO_SEED_PASSWORD,
   };
 }
@@ -39,7 +43,12 @@ export async function guidedLogin(page, baseUrl, email, password = DEMO_SEED_PAS
   });
   const data = await signInRes.json().catch(() => ({}));
   if (!signInRes.ok() || !data.ok || !data.redirectTo) {
-    throw new Error(data.error || `Guided sign-in failed (${signInRes.status()})`);
+    const message = data.error || `Guided sign-in failed (${signInRes.status()})`;
+    if (signInRes.status() === 403 || /disabled in this environment/i.test(String(message))) {
+      await loginThroughUi(page, baseUrl, email, password);
+      return;
+    }
+    throw new Error(message);
   }
   await page.goto(`${baseUrl}${data.redirectTo}`, { waitUntil: 'domcontentloaded' });
   await page.waitForURL(/\/dashboard\//, { timeout: 60_000 });

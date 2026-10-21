@@ -7,11 +7,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await page.waitForURL(/\/dashboard\//, { timeout: 15_000 });
 }
 
@@ -33,22 +36,22 @@ async function verifyUseCaseEntry(page, route, actionSelectors, ucId) {
 test.describe('C12 - Use Case Executability', () => {
 
   test('C12-UC-001 - Employer onboarding and campus partnership', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyUseCaseEntry(page, '/dashboard/employer/select-campus', ['button:has-text("Add Campus")', 'button:has-text("Connect")'], 'C12-UC-001');
   });
 
   test('C12-UC-002 - Create and publish placement drive', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyUseCaseEntry(page, '/dashboard/employer/drives', ['button:has-text("Create Drive")', 'button:has-text("New Drive")'], 'C12-UC-002');
   });
 
   test('C12-UC-003 - Student application lifecycle', async ({ page }) => {
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await verifyUseCaseEntry(page, '/dashboard/student/jobs', ['button:has-text("Apply")'], 'C12-UC-003');
   });
 
   test('C12-UC-004 - Interview scheduling and visibility', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await verifyUseCaseEntry(page, '/dashboard/employer/interviews', ['button:has-text("Schedule Interview")'], 'C12-UC-004');
   });
 

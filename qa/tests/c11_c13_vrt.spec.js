@@ -9,11 +9,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await page.waitForURL(/\/dashboard\//, { timeout: 15_000 });
   
   // Wait for all network requests to finish to avoid capturing loading spinners
@@ -28,7 +31,7 @@ test.describe('C11/C13 - Visual Regression Testing', () => {
   // we capture full page.
 
   test('Student Dashboard Overview VRT', async ({ page }) => {
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
     await page.goto('/dashboard/student');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
@@ -42,7 +45,7 @@ test.describe('C11/C13 - Visual Regression Testing', () => {
   });
 
   test('Employer Dashboard Overview VRT', async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
     await page.goto('/dashboard/employer');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
@@ -54,7 +57,7 @@ test.describe('C11/C13 - Visual Regression Testing', () => {
   });
 
   test('College Admin Dashboard Overview VRT', async ({ page }) => {
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
     await page.goto('/dashboard/college');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
@@ -66,7 +69,7 @@ test.describe('C11/C13 - Visual Regression Testing', () => {
   });
 
   test('Super Admin Dashboard Overview VRT', async ({ page }) => {
-    await loginAs(page, 'admin@placementhub.com');
+    await loginAs(page, genuineAccount('super_admin'));
     await page.goto('/dashboard/admin/overview');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);

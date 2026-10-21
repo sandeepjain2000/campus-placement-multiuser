@@ -1,3 +1,5 @@
+import { createRequire } from 'node:module';
+const { genuineAccount } = createRequire(import.meta.url)('../../genuineAccounts.js');
 /**
  * Guided manual test runner
  *
@@ -129,7 +131,7 @@ MARKER (links publish + apply playbooks)
   Saved in SQLite guided_session.marker after publish
 
 LOGINS (password Admin@123)
-  employer hr@techcorp.com | college admin@iitm.edu | student arjun.verma@iitm.edu
+  employer, college, and student addresses come from QA_EMPLOYER_EMAIL, QA_COLLEGE_ADMIN_EMAIL, and QA_STUDENT_EMAIL
   Demo mail inbox: placementhub@yopmail.com (yopmail.com) · Data Tester users @placementhub.test
 
 RUNNER ALERTS — 2026-05-29
@@ -472,9 +474,9 @@ async function main() {
   ).replace(/\/$/, '');
 
   const accounts = focus?.accounts || config?.accounts || {
-    student: 'arjun.verma@iitm.edu',
-    employer: 'hr@techcorp.com',
-    college_admin: 'admin@iitm.edu',
+    student: genuineAccount('student'),
+    employer: genuineAccount('employer'),
+    college_admin: genuineAccount('college_admin'),
   };
 
   if (args.playbookList) {

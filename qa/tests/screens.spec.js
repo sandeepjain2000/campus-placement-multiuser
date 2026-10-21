@@ -5,15 +5,19 @@
  * no blank screen). Does NOT test data correctness — that is covered by manual tests.
  *
  * Login strategy: ?email= URL param fills both email + password automatically.
+ * The verification question is answered from the text on the page.
  */
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 // ─── Login helper ─────────────────────────────────────────────────────────────
 async function loginAsDemo(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await expect(page.locator('#login-password')).not.toHaveValue('', { timeout: 10_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await expect(page.locator('#login-form').locator('#login-password').first()).not.toHaveValue('', { timeout: 10_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
 }
 
 // Verify a page opened successfully — no error boundary, not a 404
@@ -33,21 +37,21 @@ test.describe('TC_AUTH – Authentication screens', () => {
   test('TC_AUTH_001 – /login screen opens', async ({ page }) => {
     await page.goto('/login');
     await assertPageOpened(page, /\/login/);
-    await expect(page.locator('#login-email')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#login-form').locator('#login-email').first()).toBeVisible({ timeout: 15_000 });
   });
 
   test('TC_AUTH_001b – Student login lands on /dashboard/student', async ({ page }) => {
-    await loginAsDemo(page, 'arjun.verma@iitm.edu');
+    await loginAsDemo(page, genuineAccount('student'));
     await assertPageOpened(page, /\/dashboard\/student/);
   });
 
   test('TC_AUTH_002 – Employer login lands on /dashboard/employer', async ({ page }) => {
-    await loginAsDemo(page, 'hr@techcorp.com');
+    await loginAsDemo(page, genuineAccount('employer'));
     await assertPageOpened(page, /\/dashboard\/employer/);
   });
 
   test('TC_AUTH_003 – College Admin login lands on /dashboard/college', async ({ page }) => {
-    await loginAsDemo(page, 'admin@iitm.edu');
+    await loginAsDemo(page, genuineAccount('college_admin'));
     await assertPageOpened(page, /\/dashboard\/college/);
   });
 
@@ -62,7 +66,7 @@ test.describe('TC_AUTH – Authentication screens', () => {
   });
 
   test('TC_AUTH_006 – Logout returns to /login', async ({ page }) => {
-    await loginAsDemo(page, 'arjun.verma@iitm.edu');
+    await loginAsDemo(page, genuineAccount('student'));
     await expect(page).toHaveURL(/\/dashboard\/student/, { timeout: 15_000 });
     await page.getByRole('button', { name: /sign out/i }).click();
     await assertPageOpened(page, /\/login/);
@@ -76,7 +80,7 @@ test.describe('TC_AUTH – Authentication screens', () => {
 test.describe('TC_NAV – Navigation & dashboard screens', () => {
 
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'arjun.verma@iitm.edu');
+    await loginAsDemo(page, genuineAccount('student'));
     await expect(page).toHaveURL(/\/dashboard\/student/, { timeout: 15_000 });
   });
 
@@ -109,7 +113,7 @@ test.describe('TC_NAV – Navigation & dashboard screens', () => {
 test.describe('TC_STU – Student screens open', () => {
 
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'arjun.verma@iitm.edu');
+    await loginAsDemo(page, genuineAccount('student'));
     await expect(page).toHaveURL(/\/dashboard\/student/, { timeout: 15_000 });
   });
 
@@ -151,7 +155,7 @@ test.describe('TC_STU – Student screens open', () => {
 test.describe('TC_EMP – Employer screens open', () => {
 
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'hr@techcorp.com');
+    await loginAsDemo(page, genuineAccount('employer'));
     await expect(page).toHaveURL(/\/dashboard\/employer/, { timeout: 15_000 });
   });
 
@@ -205,7 +209,7 @@ test.describe('TC_EMP – Employer screens open', () => {
 test.describe('TC_COL – College Admin screens open', () => {
 
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'admin@iitm.edu');
+    await loginAsDemo(page, genuineAccount('college_admin'));
     await expect(page).toHaveURL(/\/dashboard\/college/, { timeout: 15_000 });
   });
 
@@ -315,7 +319,7 @@ test.describe('TC_COL – College Admin screens open', () => {
 test.describe('TC_SAD – Super Admin screens open', () => {
 
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'admin@placementhub.com');
+    await loginAsDemo(page, genuineAccount('super_admin'));
     await expect(page).toHaveURL(/\/dashboard\/admin/, { timeout: 15_000 });
   });
 

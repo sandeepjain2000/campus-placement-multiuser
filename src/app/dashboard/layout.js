@@ -24,6 +24,7 @@ import {
 } from '@/config/dashboardMenu';
 import NotificationDropdown from '@/components/NotificationDropdown';
 import DevScreenTag from '@/components/DevScreenTag';
+import BrandMark from '@/components/BrandMark';
 import ScreenSearchBar from '@/components/ScreenSearchBar';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
 import { Menu, Mail, Home, PanelLeft, PanelLeftClose, LogOut, ChevronRight, ArrowLeft } from 'lucide-react';
@@ -414,9 +415,7 @@ export default function DashboardLayout({ children }) {
               setMobileOpen(false);
             }}
           >
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-xs">
-              P
-            </div>
+            <BrandMark size={32} />
             <div className={cn('min-w-0 flex-1', sidebarCollapsed && 'md:hidden')}>
               <div className="truncate text-sm font-semibold">PlacementHub</div>
               <div className="truncate text-xs text-sidebar-foreground/60">Career workspace</div>

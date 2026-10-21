@@ -1,3 +1,4 @@
+import os
 import json
 from pathlib import Path
 
@@ -7,10 +8,10 @@ from openpyxl.styles import Font
 
 PASSWORD = "Admin@123"
 DEMO_USERS = {
-    "student": "arjun.verma@iitm.edu",
-    "employer": "hr@techcorp.com",
-    "college_admin": "admin@iitm.edu",
-    "super_admin": "admin@placementhub.com",
+    "student": os.environ["QA_STUDENT_EMAIL"],
+    "employer": os.environ["QA_EMPLOYER_EMAIL"],
+    "college_admin": os.environ["QA_COLLEGE_ADMIN_EMAIL"],
+    "super_admin": os.environ["QA_SUPER_ADMIN_EMAIL"],
 }
 
 OUTPUT_JSON = Path("qa/C-6-PDF-Report-Availability-and-Correctness.json")

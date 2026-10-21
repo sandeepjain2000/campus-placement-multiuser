@@ -4,11 +4,15 @@
  *
  *   npm run test:guided:upload-sample-cvs
  */
+import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
 import fs from 'fs';
 import { DEMO_SEED_PASSWORD } from '../../../src/lib/demoLogins.js';
 import { configPath } from './paths.mjs';
 import { SAMPLE_CV_DIR, uploadSampleCvs } from './cv-upload.mjs';
+const { genuineAccount } = createRequire(import.meta.url)('../../genuineAccounts.js');
+
+const { loginThroughUi } = createRequire(import.meta.url)('../../answerLoginCaptcha.js');
 
 function loadJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -50,7 +54,12 @@ async function guidedLogin(page, baseUrl, email, password) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok() || !data.ok) {
-    throw new Error(data.error || `Guided sign-in failed (${res.status()})`);
+    const message = data.error || `Guided sign-in failed (${res.status()})`;
+    if (res.status() === 403 || /disabled in this environment/i.test(String(message))) {
+      await loginThroughUi(page, baseUrl, email, password);
+      return;
+    }
+    throw new Error(message);
   }
   await page.goto(`${baseUrl}${data.redirectTo}`, { waitUntil: 'domcontentloaded' });
   await page.waitForURL(/\/dashboard\//, { timeout: 30_000 });
@@ -71,7 +80,7 @@ async function main() {
     'http://127.0.0.1:3000'
   ).replace(/\/$/, '');
 
-  const accounts = config?.accounts || { student: 'arjun.verma@iitm.edu' };
+  const accounts = config?.accounts || { student: genuineAccount('student') };
   const email = accounts.student;
   const password = accounts.password || DEMO_SEED_PASSWORD;
 

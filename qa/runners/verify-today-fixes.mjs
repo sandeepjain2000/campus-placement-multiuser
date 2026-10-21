@@ -9,20 +9,24 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
+
+const { loginThroughUi } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 import pg from 'pg';
 import { startGuidedSession, endGuidedSession } from '../../src/lib/guidedRunnerDb.js';
 import { REJECT_DRIVE_CONFIRM_PHRASE } from '../../src/lib/collegeDriveRejectConfirm.js';
 import { DEFAULT_COLLEGE_DRIVE_STATUS_TAB } from '../../src/lib/collegeDriveStatusTabs.js';
+const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
 
 const BASE = (process.env.BASE_URL || process.env.QA_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '');
 const PASSWORD = 'Admin@123';
 
 const COMMITTEE_RETRY_EMAILS = [
-  'committee.jadavpur@campus-placement.work',
-  'committee.vit@campus-placement.work',
-  'committee.dtu@campus-placement.work',
-  'committee.iiith@campus-placement.work',
+  genuineAccount('committee4'),
+  genuineAccount('committee5'),
+  genuineAccount('committee6'),
+  genuineAccount('committee7'),
 ];
 
 function readEnvFile(filename) {
@@ -51,14 +55,19 @@ async function login(page, email) {
   });
   const data = await signInRes.json().catch(() => ({}));
   if (!signInRes.ok() || !data.ok || !data.redirectTo) {
-    throw new Error(data.error || `Guided sign-in failed for ${email} (${signInRes.status()})`);
+    const message = data.error || `Guided sign-in failed for ${email} (${signInRes.status()})`;
+    if (signInRes.status() === 403 || /disabled in this environment/i.test(String(message))) {
+      await loginThroughUi(page, BASE, email, PASSWORD);
+      return;
+    }
+    throw new Error(message);
   }
   await page.goto(`${BASE}${data.redirectTo}`, { waitUntil: 'domcontentloaded' });
   await page.waitForURL(/\/dashboard\//, { timeout: 60_000 });
 }
 
 async function verifyAlumniLabel(page) {
-  await login(page, 'priya.sharma.alumni@iitm.edu');
+  await login(page, genuineAccount('alumni'));
   await page.waitForTimeout(1000);
 
   const sessionRes = await page.request.get(`${BASE}/api/auth/session`);
@@ -84,7 +93,7 @@ async function verifyAlumniLabel(page) {
     throw new Error('Hub still shows Student role under alumni name');
   }
 
-  return { email: 'priya.sharma.alumni@iitm.edu', ok: true };
+  return { email: genuineAccount('alumni'), ok: true };
 }
 
 async function verifyCommitteeLogins(page) {
@@ -97,7 +106,7 @@ async function verifyCommitteeLogins(page) {
 }
 
 async function verifyCommitteeGettingStarted(page) {
-  await login(page, 'committee@iitm.edu');
+  await login(page, genuineAccount('committee'));
   await page.goto(`${BASE}/dashboard/college/getting-started`, { waitUntil: 'domcontentloaded' });
   await page.getByText(/Coming soon/i).waitFor({ timeout: 20_000 });
 
@@ -119,7 +128,7 @@ async function verifyCommitteeGettingStarted(page) {
 }
 
 async function verifyCollegeDriveTabsAndReject(page) {
-  await login(page, 'admin@iitm.edu');
+  await login(page, genuineAccount('college_admin'));
   await page.goto(`${BASE}/dashboard/college/drives`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1000);
 
@@ -183,9 +192,9 @@ async function verifyPurgeClearsAlerts() {
     const beforeN = before.rows[0]?.n ?? 0;
 
     // Insert a clearly marked probe so we always have something to delete
-    const user = await client.query(`SELECT id FROM users WHERE email = 'admin@iitm.edu' LIMIT 1`);
+    const user = await client.query(`SELECT id FROM users WHERE email = $1 LIMIT 1`, [genuineAccount('college_admin')]);
     const userId = user.rows[0]?.id;
-    if (!userId) throw new Error('admin@iitm.edu not found to insert probe notification');
+    if (!userId) throw new Error('Genuine college admin account was not found');
     await client.query(
       `INSERT INTO notifications (user_id, title, message, type, link)
        VALUES ($1, $2, $3, 'info', '/dashboard')`,

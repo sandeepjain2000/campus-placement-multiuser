@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 import {
   getDashboardMenu,
   NAV_SECTION_STORAGE_KEY,
@@ -230,15 +230,23 @@ export default function DashboardFullScreenHub({ role, session }) {
       </div>
 
       {role === 'employer' && employerNeedsPartnership && (
-        <Alert>
-          <AlertTitle>No campus partnership yet</AlertTitle>
-          <AlertDescription>
-            Request an <strong>approved</strong> campus tie-up to unlock campus-scoped recruiting views. You can still
-            open internships and job postings below once a college approves your partnership.
-          </AlertDescription>
-          <div className="col-start-2 mt-3">
-            <Button render={<Link href="/dashboard/employer/select-campus" />} size="sm" nativeButton={false}>
-              Campus Partnerships →
+        <Alert role="status">
+          <div className="ph-partnership-banner">
+            <div className="ph-partnership-banner__copy">
+              <AlertTitle>No campus partnership yet</AlertTitle>
+              <AlertDescription>
+                Request an <strong>approved</strong> campus tie-up to unlock campus-scoped recruiting views. You can still
+                open internships and job postings below once a college approves your partnership.
+              </AlertDescription>
+            </div>
+            <Button
+              className="ph-partnership-banner__action"
+              render={<Link href="/dashboard/employer/select-campus" />}
+              size="sm"
+              nativeButton={false}
+            >
+              Campus Partnerships
+              <ArrowRight aria-hidden="true" data-icon="inline-end" />
             </Button>
           </div>
         </Alert>

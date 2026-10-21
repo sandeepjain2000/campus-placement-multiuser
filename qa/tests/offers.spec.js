@@ -1,18 +1,21 @@
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 // ─── Shared login helper (URL-param approach — no dropdown needed) ────────────
 async function loginAsDemo(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await expect(page.locator('#login-password')).not.toHaveValue('', { timeout: 10_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await expect(page.locator('#login-form').locator('#login-password').first()).not.toHaveValue('', { timeout: 10_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
 }
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 test.describe('Offers Service Integrity', () => {
 
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'hr@techcorp.com');
+    await loginAsDemo(page, genuineAccount('employer'));
     await expect(page).toHaveURL(/\/dashboard\/employer/, { timeout: 15_000 });
   });
 

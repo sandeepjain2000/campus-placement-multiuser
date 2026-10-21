@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { publicRedirectUrl } from '@/lib/email/appOrigin';
 import { SESSION_COOKIE_NAME } from '@/lib/sessionPolicy';
 import { getRequestIp, writePlatformErrorLog } from '@/lib/platformErrorLog';
 
@@ -38,7 +39,7 @@ export async function GET(request) {
 
   if (token?.role && ROLE_HOME_PATHS[token.role]) {
     const dest = ROLE_HOME_PATHS[token.role];
-    return NextResponse.redirect(new URL(dest, request.url));
+    return NextResponse.redirect(publicRedirectUrl(dest, request.url));
   }
 
   const failureMessage = tokenError
@@ -63,6 +64,6 @@ export async function GET(request) {
     },
   });
 
-  return NextResponse.redirect(new URL('/login?error=session', request.url));
+  return NextResponse.redirect(publicRedirectUrl('/login?error=session', request.url));
 }
 

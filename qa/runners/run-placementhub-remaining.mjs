@@ -7,7 +7,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
 import { DEMO_SEED_PASSWORD } from '../../src/lib/demoLogins.js';
+const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
+
+const { answerLoginCaptcha } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 
 const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus-placement-omega.vercel.app').replace(
   /\/$/,
@@ -19,11 +23,11 @@ const NOT_RUN_PATH = path.join(process.cwd(), 'qa/data/placementhub_not_run_case
 const RESULTS_PATH = path.join(process.cwd(), 'qa/data/placementhub_test_results.json');
 
 const EMAILS = {
-  student: 'arjun.verma@iitm.edu',
-  alumni: 'priya.sharma.alumni@iitm.edu',
-  employer: 'hr@techcorp.com',
-  college: 'admin@iitm.edu',
-  admin: 'admin@placementhub.com',
+  student: genuineAccount('student'),
+  alumni: genuineAccount('alumni'),
+  employer: genuineAccount('employer'),
+  college: genuineAccount('college_admin'),
+  admin: genuineAccount('super_admin'),
 };
 
 function nowIso() {
@@ -54,10 +58,7 @@ async function uiLogin(page, email) {
   }
   if ((await page.inputValue('#login-email')) !== email) await page.fill('#login-email', email);
   if (!(await page.inputValue('#login-password'))) await page.fill('#login-password', PASSWORD);
-  const captcha = page.locator('#login-captcha');
-  if (await captcha.count()) {
-    if (!(await captcha.inputValue())) await captcha.fill('7');
-  }
+  await answerLoginCaptcha(page);
   await page.click('#login-submit');
   await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
   if (page.url().includes('/auth/continue')) {
@@ -105,8 +106,7 @@ async function handleAuth(tc, pages) {
     await page.fill('#login-email', `nobody-${Date.now()}@example.com`);
     await page.locator('#login-password').evaluate((el) => el.removeAttribute('readonly'));
     await page.fill('#login-password', PASSWORD);
-    const captcha = page.locator('#login-captcha');
-    if (await captcha.count() && !(await captcha.inputValue())) await captcha.fill('7');
+    await answerLoginCaptcha(page);
     await page.click('#login-submit');
     await page.waitForTimeout(2500);
     const body = await waitBody(page);

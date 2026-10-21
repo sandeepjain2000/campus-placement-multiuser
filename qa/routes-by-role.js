@@ -142,12 +142,14 @@ const superAdminRoutes = dedupe([
   { label: "Settings", href: "/dashboard/admin/settings" },
 ]);
 
+const { genuineAccount } = require('./genuineAccounts');
+
 module.exports = {
   DEMO_LOGINS: {
-    student: 'arjun.verma@iitm.edu',
-    employer: 'hr@techcorp.com',
-    college_admin: 'admin@iitm.edu',
-    super_admin: 'admin@placementhub.com',
+    get student() { return genuineAccount('student'); },
+    get employer() { return genuineAccount('employer'); },
+    get college_admin() { return genuineAccount('college_admin'); },
+    get super_admin() { return genuineAccount('super_admin'); },
   },
   ROLE_HOME: {
     student: /\/dashboard\/student/,

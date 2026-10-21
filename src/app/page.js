@@ -18,8 +18,13 @@ import { appendClientDebugLog } from '@/lib/clientDebugLog';
 import ThemeToggleButton from '@/components/ThemeToggleButton';
 import DevScreenTag from '@/components/DevScreenTag';
 import SandboxEnvironmentBanner from '@/components/SandboxEnvironmentBanner';
+import BrandMark from '@/components/BrandMark';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import {
+  PLACEMENTHUB_SUPPORT_EMAIL,
+  PLACEMENTHUB_SUPPORT_PHONE,
+} from '@/lib/supportContact';
 
 const BUILTIN_MARKETING_ROUTES = new Set(['/features', '/about', '/contact']);
 
@@ -47,13 +52,18 @@ export default function LandingPage() {
   const gitSha = process.env.NEXT_PUBLIC_APP_GIT_SHA || '';
   const deployId = process.env.NEXT_PUBLIC_VERCEL_DEPLOYMENT_ID || '';
   const [marketingUrl, setMarketingUrl] = useState('');
+  const [supportPhone, setSupportPhone] = useState(PLACEMENTHUB_SUPPORT_PHONE);
+  const [supportEmail, setSupportEmail] = useState(PLACEMENTHUB_SUPPORT_EMAIL);
 
   useEffect(() => {
     let cancelled = false;
     fetch('/api/public/site-config')
       .then((r) => r.json())
       .then((d) => {
-        if (!cancelled && d?.marketingWebsiteUrl) setMarketingUrl(String(d.marketingWebsiteUrl));
+        if (cancelled || !d) return;
+        if (d.marketingWebsiteUrl) setMarketingUrl(String(d.marketingWebsiteUrl));
+        if (d.supportPhone) setSupportPhone(String(d.supportPhone));
+        if (d.supportEmail) setSupportEmail(String(d.supportEmail));
       })
       .catch(() => {});
     return () => {
@@ -83,21 +93,17 @@ export default function LandingPage() {
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', display: 'flex', flexDirection: 'column' }}>
       <SandboxEnvironmentBanner />
 
-      {/* Demo Email Banner */}
       <div style={{ backgroundColor: 'var(--primary-50)', borderBottom: '1px solid var(--primary-200)', padding: '0.75rem 1.5rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-primary)', zIndex: 60, position: 'relative' }}>
-        <strong>Demo Emails:</strong> All System emails can be checked on this disposable mail id: <strong>placementhub@yopmail.com</strong> at{' '}
-        <a href="https://yopmail.com/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', fontWeight: 600, color: 'var(--primary-900)' }}>https://yopmail.com/</a>
+        <a href={`tel:${supportPhone.replace(/[^\d+]/g, '')}`} style={{ fontWeight: 700, color: 'var(--primary-900)', textDecoration: 'underline' }}>{supportPhone}</a>
         {' · '}
-        <Link href="/developer" prefetch={false} style={{ fontWeight: 700, color: 'var(--primary-900)', textDecoration: 'underline' }}>Developer Notes</Link>
+        <a href={`mailto:${supportEmail}`} style={{ fontWeight: 700, color: 'var(--primary-900)', textDecoration: 'underline' }}>{supportEmail}</a>
       </div>
 
       {/* Top Navbar */}
       <header style={{ borderBottom: '1px solid var(--border-default)', backgroundColor: 'var(--bg-primary)', position: 'sticky', top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', height: '2.5rem', width: '2.5rem', alignItems: 'center', justifyContent: 'center', borderRadius: '0.75rem', backgroundColor: 'var(--primary-600)', color: '#ffffff', fontWeight: 'bold', fontSize: '1.125rem', boxShadow: '0 4px 6px rgba(79, 70, 229, 0.2)' }}>
-              P
-            </div>
+            <BrandMark size={40} />
             <div>
               <h1 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, lineHeight: 1, letterSpacing: '-0.025em' }}>PlacementHub</h1>
             </div>
@@ -310,7 +316,7 @@ export default function LandingPage() {
       <footer style={{ backgroundColor: 'var(--bg-secondary)', borderTop: '1px solid var(--border-default)', padding: '3rem 1.5rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              <div style={{ display: 'flex', height: '1.5rem', width: '1.5rem', alignItems: 'center', justifyContent: 'center', borderRadius: '0.375rem', backgroundColor: 'var(--primary-600)', color: '#ffffff', fontSize: '0.75rem' }}>P</div>
+              <BrandMark size={24} />
               PlacementHub
             </div>
             <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }} aria-label="Footer">
@@ -318,7 +324,7 @@ export default function LandingPage() {
               <MarketingNavLink marketingUrl={marketingUrl} internalHref="/about" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>About</MarketingNavLink>
               <MarketingNavLink marketingUrl={marketingUrl} internalHref="/contact" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Contact</MarketingNavLink>
               <Link href="/register" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Register</Link>
-              <Link href="/login" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Sign in (Testing)</Link>
+              <Link href="/login" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Sign in</Link>
               <Link href="/developer" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Developer Notes</Link>
             </nav>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', textAlign: 'center', margin: 0 }}>© 2026 PlacementHub. All rights reserved.</p>

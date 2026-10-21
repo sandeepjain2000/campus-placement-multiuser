@@ -1,14 +1,17 @@
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
-const STUDENT_EMAIL = process.env.QA_STUDENT_EMAIL || 'arjun.verma@iitm.edu';
+const STUDENT_EMAIL = process.env.QA_STUDENT_EMAIL || genuineAccount('student');
 const GT_MARKER = process.env.QA_GT_MARKER || 'GT-2026-06-301902';
 
 async function loginAsStudent(page) {
   await page.goto(`${BASE}/login?email=${encodeURIComponent(STUDENT_EMAIL)}`);
-  await expect(page.locator('#login-email')).toHaveValue(STUDENT_EMAIL, { timeout: 25_000 });
-  await expect(page.locator('#login-password')).not.toHaveValue('', { timeout: 15_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(STUDENT_EMAIL, { timeout: 25_000 });
+  await expect(page.locator('#login-form').locator('#login-password').first()).not.toHaveValue('', { timeout: 15_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   await expect(page).toHaveURL(/\/dashboard\/student/, { timeout: 25_000 });
 }
 

@@ -239,7 +239,7 @@
       ],
       "primaryActor": "employer",
       "primaryActorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -275,7 +275,7 @@
       ],
       "primaryActor": "employer",
       "primaryActorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -310,7 +310,7 @@
       ],
       "primaryActor": "student",
       "primaryActorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -344,7 +344,7 @@
       ],
       "primaryActor": "employer",
       "primaryActorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -378,7 +378,7 @@
       ],
       "primaryActor": "employer",
       "primaryActorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -411,7 +411,7 @@
       ],
       "primaryActor": "employer",
       "primaryActorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -444,7 +444,7 @@
       ],
       "primaryActor": "college_admin",
       "primaryActorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -477,7 +477,7 @@
       ],
       "primaryActor": "college_admin",
       "primaryActorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -507,7 +507,7 @@
       ],
       "primaryActor": "student",
       "primaryActorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [
@@ -538,7 +538,7 @@
       ],
       "primaryActor": "super_admin",
       "primaryActorAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "preconditions": [

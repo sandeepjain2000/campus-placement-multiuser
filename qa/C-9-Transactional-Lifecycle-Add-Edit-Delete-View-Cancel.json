@@ -12,7 +12,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/drives",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "deletePermissibleRule": "conditional",
@@ -41,7 +41,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/jobs",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "deletePermissibleRule": "conditional",
@@ -70,7 +70,7 @@
       "ownerRole": "student",
       "ownerRoute": "/dashboard/student/applications",
       "ownerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "deletePermissibleRule": "no_hard_delete_expected",
@@ -99,7 +99,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/interviews",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "deletePermissibleRule": "conditional",
@@ -128,7 +128,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/offers",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "deletePermissibleRule": "restricted_after_acceptance",
@@ -157,7 +157,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/drives",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -192,7 +192,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/jobs",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -227,7 +227,7 @@
       "ownerRole": "student",
       "ownerRoute": "/dashboard/student/applications",
       "ownerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -262,7 +262,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/interviews",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -297,7 +297,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/offers",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -332,7 +332,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/drives",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -366,7 +366,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/jobs",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -400,7 +400,7 @@
       "ownerRole": "student",
       "ownerRoute": "/dashboard/student/applications",
       "ownerAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -434,7 +434,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/interviews",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [
@@ -468,7 +468,7 @@
       "ownerRole": "employer",
       "ownerRoute": "/dashboard/employer/offers",
       "ownerAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "impactedRoles": [

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import BrandMark from '@/components/BrandMark';
 
 export default function ResetPasswordPage() {
   const [token, setToken] = useState('');
@@ -67,9 +68,7 @@ export default function ResetPasswordPage() {
         <Card className="w-full gap-6 py-6">
           <CardHeader className="gap-6 px-6">
             <Link href="/" className="inline-flex items-center gap-3 no-underline">
-              <div className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-lg text-lg font-bold shadow-xs">
-                P
-              </div>
+              <BrandMark size={40} />
               <span className="text-foreground text-lg font-semibold tracking-tight">PlacementHub</span>
             </Link>
             <div>

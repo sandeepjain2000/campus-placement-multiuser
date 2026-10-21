@@ -11,6 +11,12 @@ export const metadata = {
   title: 'PlacementHub — Campus Placement & Engagement Platform',
   description: 'A SaaS platform connecting students, employers, and colleges for seamless campus recruitment. Manage placement drives, job postings, applications, and offers in one place.',
   keywords: 'campus placement, recruitment, hiring, college placements, job portal, SaaS',
+  icons: {
+    icon: [
+      { url: '/brand/placementhub-mark.png', type: 'image/png' },
+    ],
+    apple: '/brand/placementhub-mark.png',
+  },
 };
 
 /** Allow user zoom (a11y). Do not set maximumScale or user-scalable=no. */

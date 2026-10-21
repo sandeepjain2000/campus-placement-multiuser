@@ -11,11 +11,11 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/drives",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "college_admin",
-      "expectedRecipientEmail": "admin@iitm.edu",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Drive request notification",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -39,11 +39,11 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/college/drives",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "employer",
-      "expectedRecipientEmail": "hr@techcorp.com",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Drive approval update",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -67,11 +67,11 @@
       "actorRole": "student",
       "actorRoute": "/dashboard/student/drives",
       "actorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "employer",
-      "expectedRecipientEmail": "hr@techcorp.com",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "New application alert",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -95,11 +95,11 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/applications",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "student",
-      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Shortlist status update",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -123,11 +123,11 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/interviews",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "student",
-      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Interview schedule notification",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -151,11 +151,11 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/offers",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "student",
-      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Offer release email",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -179,11 +179,11 @@
       "actorRole": "student",
       "actorRoute": "/dashboard/student/offers",
       "actorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "employer",
-      "expectedRecipientEmail": "hr@techcorp.com",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Offer response update",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -207,11 +207,11 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/employer/select-campus",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "college_admin",
-      "expectedRecipientEmail": "admin@iitm.edu",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Partnership request notification",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -235,11 +235,11 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/college/clarifications",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "expectedRecipientRole": "student",
-      "expectedRecipientEmail": "arjun.verma@iitm.edu",
+      "expectedRecipientEmail": "",
       "expectedEmailType": "Clarification broadcast",
       "mailVerificationMethod": [
         "Use working mailbox credentials from JSON config.",
@@ -263,7 +263,7 @@
       "actorRole": "student",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "mailVerificationMethod": [
@@ -286,7 +286,7 @@
       "actorRole": "employer",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "mailVerificationMethod": [
@@ -309,7 +309,7 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "mailVerificationMethod": [
@@ -332,7 +332,7 @@
       "actorRole": "college_admin",
       "actorRoute": "/dashboard/alerts",
       "actorAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "mailVerificationMethod": [
@@ -355,7 +355,7 @@
       "actorRole": "super_admin",
       "actorRoute": "/dashboard/admin/settings",
       "actorAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "mailVerificationMethod": [

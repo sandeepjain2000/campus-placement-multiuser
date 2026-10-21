@@ -10,7 +10,7 @@
       "role": "student",
       "route": "/dashboard/student/profile",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Student identity + academic profile fields",
@@ -41,7 +41,7 @@
       "role": "student",
       "route": "/dashboard/student/drives",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Drive list (title, company, dates, status)",
@@ -72,7 +72,7 @@
       "role": "student",
       "route": "/dashboard/student/applications",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Application status timeline",
@@ -103,7 +103,7 @@
       "role": "student",
       "route": "/dashboard/student/offers",
       "demoAccount": {
-        "email": "arjun.verma@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Offer amount, deadline, response status",
@@ -134,7 +134,7 @@
       "role": "employer",
       "route": "/dashboard/employer/profile",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Company profile details and logo",
@@ -165,7 +165,7 @@
       "role": "employer",
       "route": "/dashboard/employer/jobs",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Job postings list and criteria",
@@ -196,7 +196,7 @@
       "role": "employer",
       "route": "/dashboard/employer/applications",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Candidate rows and statuses",
@@ -227,7 +227,7 @@
       "role": "employer",
       "route": "/dashboard/employer/offers",
       "demoAccount": {
-        "email": "hr@techcorp.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Issued offer list",
@@ -258,7 +258,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/overview",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Dashboard KPI cards",
@@ -289,7 +289,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/students",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Student directory rows",
@@ -320,7 +320,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/drives",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Drive request/approval data",
@@ -351,7 +351,7 @@
       "role": "college_admin",
       "route": "/dashboard/college/employers",
       "demoAccount": {
-        "email": "admin@iitm.edu",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Employer approvals and company data",
@@ -382,7 +382,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/overview",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Platform-wide totals",
@@ -413,7 +413,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/colleges",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Colleges list and metadata",
@@ -444,7 +444,7 @@
       "role": "super_admin",
       "route": "/dashboard/admin/users",
       "demoAccount": {
-        "email": "admin@placementhub.com",
+        "email": "",
         "password": "Admin@123"
       },
       "dataPointUnderTest": "Users list and roles",

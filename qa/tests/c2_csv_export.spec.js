@@ -13,13 +13,16 @@
  * (does NOT fail) — this lets us distinguish "missing feature" from "broken feature".
  */
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 // ─── Login helper ─────────────────────────────────────────────────────────────
 async function loginAsDemo(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`);
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 15_000 });
-  await expect(page.locator('#login-password')).not.toHaveValue('', { timeout: 10_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 15_000 });
+  await expect(page.locator('#login-form').locator('#login-password').first()).not.toHaveValue('', { timeout: 10_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   // Wait for full navigation to dashboard
   await page.waitForURL(/\/dashboard\//, { timeout: 15_000 });
 }
@@ -98,7 +101,7 @@ async function navigateAndAssertLoaded(page, route) {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C2 – Student CSV Exports', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'arjun.verma@iitm.edu');
+    await loginAsDemo(page, genuineAccount('student'));
   });
 
   const studentScreens = [
@@ -128,7 +131,7 @@ test.describe('C2 – Student CSV Exports', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C2 – Employer CSV Exports', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'hr@techcorp.com');
+    await loginAsDemo(page, genuineAccount('employer'));
   });
 
   const employerScreens = [
@@ -160,7 +163,7 @@ test.describe('C2 – Employer CSV Exports', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C2 – College Admin CSV Exports', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'admin@iitm.edu');
+    await loginAsDemo(page, genuineAccount('college_admin'));
   });
 
   const collegeScreens = [
@@ -195,7 +198,7 @@ test.describe('C2 – College Admin CSV Exports', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C2 – Super Admin CSV Exports', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsDemo(page, 'admin@placementhub.com');
+    await loginAsDemo(page, genuineAccount('super_admin'));
   });
 
   const adminScreens = [

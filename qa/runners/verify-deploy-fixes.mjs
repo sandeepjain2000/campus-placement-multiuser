@@ -8,6 +8,7 @@
  *   node qa/runners/verify-deploy-fixes.mjs
  *   node qa/runners/verify-deploy-fixes.mjs --base-url https://campus-placement-omega.vercel.app
  */
+import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
 import {
   beginGuidedSession,
@@ -16,6 +17,8 @@ import {
   resolveBaseUrl,
 } from './guided/runner-session.mjs';
 import { DEMO_SEED_PASSWORD } from '../../src/lib/demoLogins.js';
+
+const { answerLoginCaptcha } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 
 function parseArgs(argv) {
   const args = { baseUrl: null, help: false };
@@ -68,11 +71,7 @@ async function uiLogin(page, baseUrl, email, password = DEMO_SEED_PASSWORD) {
     { timeout: 30_000 },
   );
 
-  const captcha = page.locator('#login-captcha');
-  if (await captcha.count()) {
-    const current = await captcha.inputValue();
-    if (!current) await captcha.fill('7');
-  }
+  await answerLoginCaptcha(page);
 
   await page.click('#login-submit');
   await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });

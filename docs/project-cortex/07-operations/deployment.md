@@ -1,6 +1,6 @@
 # AWS first-time setup — plan for 2026-10-19
 
-Status: **not started.** This is the plan. The runnable steps are the Word guide. No server change was made while writing this page.
+Status: **server setup finished on 2026-10-21, public address still waiting.** The runnable steps are the Word guide. HTTPS is not on yet. Add the Namecheap A record for host `app` only, then issue the subdomain certificate. Do not change `@` or `www`.
 
 ## What must stay up
 
@@ -67,7 +67,7 @@ Before any Placement Hub change, take one dump of the current database on the se
 - Keep the renamed code folder (`chmod 700`) until the checks pass. It contains settings.
 - Confirm InternSafar’s table list, its user count, and a real sign-in. A homepage response alone is not enough.
 
-The drop script has not been run. Placement Hub’s tables are not on that database yet, so there is nothing to test it against.
+The drop script has not been run. Placement Hub’s tables are on the shared database as of 2026-10-21. They hold reference lists and one Super Admin, `admin@placementhub.com`. The other Placement Hub accounts were not copied. InternSafar’s tables and accounts were left as they were. Do not run the drop script unless the owner asks to remove Placement Hub.
 
 ## GitHub
 

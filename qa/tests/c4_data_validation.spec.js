@@ -8,11 +8,14 @@
  */
 
 const { test, expect } = require('@playwright/test');
+const { answerLoginCaptcha } = require('../answerLoginCaptcha');
+const { genuineAccount } = require('../genuineAccounts');
 
 async function loginAs(page, email) {
   await page.goto(`/login?email=${encodeURIComponent(email)}`, { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#login-email')).toHaveValue(email, { timeout: 30_000 });
-  await page.locator('#login-submit').click();
+  await expect(page.locator('#login-form').locator('#login-email').first()).toHaveValue(email, { timeout: 30_000 });
+  await answerLoginCaptcha(page);
+  await page.locator('#login-form').locator('#login-submit').first().click();
   try {
     await page.waitForURL(/\/dashboard\//, { timeout: 30_000 });
   } catch (e) {
@@ -26,7 +29,7 @@ async function loginAs(page, email) {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C4 - Student Data Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
   });
 
   test('C4-STU-001 - Student Profile dynamic data fields', async ({ page }) => {
@@ -61,7 +64,7 @@ test.describe('C4 - Student Data Validation', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C4 - Employer Data Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs(page, 'hr@techcorp.com');
+    await loginAs(page, genuineAccount('employer'));
   });
 
   test('C4-EMP-001 - Company profile details and logo', async ({ page }) => {
@@ -93,7 +96,7 @@ test.describe('C4 - Employer Data Validation', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C4 - College Admin Data Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs(page, 'admin@iitm.edu');
+    await loginAs(page, genuineAccount('college_admin'));
   });
 
   test('C4-COL-001 - Dashboard KPI cards', async ({ page }) => {
@@ -126,7 +129,7 @@ test.describe('C4 - College Admin Data Validation', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C4 - Super Admin Data Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs(page, 'admin@placementhub.com');
+    await loginAs(page, genuineAccount('super_admin'));
   });
 
   test('C4-ADM-001 - Platform-wide totals', async ({ page }) => {
@@ -152,7 +155,7 @@ test.describe('C4 - Super Admin Data Validation', () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 test.describe('C4 - All Roles Data Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAs(page, 'arjun.verma@iitm.edu');
+    await loginAs(page, genuineAccount('student'));
   });
 
   test('C4-ALL-001 - Alert/notification entries', async ({ page }) => {
