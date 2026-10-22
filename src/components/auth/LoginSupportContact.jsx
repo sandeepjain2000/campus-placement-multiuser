@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { validateEmail } from '@/lib/validators';
 import { PLATFORM_SETTINGS_DEFAULTS } from '@/lib/platformSettingsDefaults';
-import { buildPublicSupportConfig } from '@/lib/supportContact';
+import { buildPublicSupportConfig, PLACEMENTHUB_SUPPORT_GMAIL } from '@/lib/supportContact';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,9 +20,9 @@ import { Textarea } from '@/components/ui/textarea';
 
 const DEFAULT_CONFIG = buildPublicSupportConfig(PLATFORM_SETTINGS_DEFAULTS);
 
-function phoneTelHref(phone) {
-  const digits = String(phone || '').replace(/[^\d+]/g, '');
-  return digits ? `tel:${digits}` : '';
+function whatsAppHref(phone) {
+  const digits = String(phone || '').replace(/\D/g, '');
+  return digits ? `https://wa.me/${digits}` : '';
 }
 
 export default function LoginSupportContact() {
@@ -92,7 +92,7 @@ export default function LoginSupportContact() {
     }
   };
 
-  const tel = phoneTelHref(config.supportPhone);
+  const whatsApp = whatsAppHref(config.supportPhone);
 
   return (
     <>
@@ -108,11 +108,11 @@ export default function LoginSupportContact() {
               variant="outline"
               size="sm"
               className="w-fit max-w-full shrink-0 justify-start"
-              render={<a href={tel || undefined} title={`Call ${config.supportPhone}`} />}
+              render={<a href={whatsApp || undefined} target="_blank" rel="noopener noreferrer" title={`WhatsApp number ${config.supportPhone}`} />}
               nativeButton={false}
             >
               <Phone data-icon="inline-start" />
-              <span className="truncate">Phone {config.supportPhone}</span>
+              <span className="truncate">WhatsApp number {config.supportPhone}</span>
             </Button>
           ) : null}
 
@@ -137,7 +137,15 @@ export default function LoginSupportContact() {
             className="mt-1 flex flex-col gap-3 rounded-lg border bg-muted/30 p-4"
           >
               <p className="m-0 text-xs leading-relaxed text-muted-foreground">
-                Sends a message to <strong>{config.supportEmail}</strong>.
+                Sends a message to{' '}
+                {config.supportEmail
+                  && config.supportEmail.toLowerCase() !== PLACEMENTHUB_SUPPORT_GMAIL.toLowerCase() ? (
+                    <>
+                      <strong>{config.supportEmail}</strong>
+                      {' and '}
+                    </>
+                  ) : null}
+                <strong>{PLACEMENTHUB_SUPPORT_GMAIL}</strong>.
               </p>
             <Field>
               <FieldLabel htmlFor="support-reply-email" className="text-xs">

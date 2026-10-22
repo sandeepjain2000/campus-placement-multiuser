@@ -1,4 +1,7 @@
 import crypto from 'crypto';
+import { captchaFailureMessage } from './captchaFailureMessages';
+
+export { captchaFailureMessage };
 
 const TTL_MS = 10 * 60 * 1000;
 
@@ -47,36 +50,48 @@ export function createLoginCaptcha() {
 }
 
 /**
- * Signed challenge from createLoginCaptcha, plus the numeric answer.
+ * Why a signed challenge failed, or null when the answer matches.
  * @param {string | undefined} token
  * @param {string | number | undefined} answer
+ * @returns {'missing_answer' | 'wrong_answer' | 'expired' | 'bad_token' | null}
  */
-export function verifyLoginCaptcha(token, answer) {
-  if (token == null || typeof token !== 'string') return false;
+export function explainCaptchaFailure(token, answer) {
+  if (token == null || typeof token !== 'string') return 'bad_token';
   const raw = token.trim();
   const dot = raw.lastIndexOf('.');
-  if (dot <= 0 || dot === raw.length - 1) return false;
+  if (dot <= 0 || dot === raw.length - 1) return 'bad_token';
   const body = raw.slice(0, dot);
   const sig = raw.slice(dot + 1);
-  if (!body || !sig || body.includes('.')) return false;
+  if (!body || !sig || body.includes('.')) return 'bad_token';
 
   const expectedSig = signBody(body);
   const sigBuf = Buffer.from(sig);
   const expectedBuf = Buffer.from(expectedSig);
-  if (sigBuf.length !== expectedBuf.length) return false;
-  if (!crypto.timingSafeEqual(sigBuf, expectedBuf)) return false;
+  if (sigBuf.length !== expectedBuf.length) return 'bad_token';
+  if (!crypto.timingSafeEqual(sigBuf, expectedBuf)) return 'bad_token';
 
   let payload;
   try {
     payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8'));
   } catch {
-    return false;
+    return 'bad_token';
   }
-  if (!payload || typeof payload.a !== 'number' || typeof payload.b !== 'number') return false;
-  if (typeof payload.exp !== 'number' || Date.now() > payload.exp) return false;
+  if (!payload || typeof payload.a !== 'number' || typeof payload.b !== 'number') return 'bad_token';
+  if (typeof payload.exp !== 'number') return 'bad_token';
+  if (Date.now() > payload.exp) return 'expired';
 
-  if (answer === undefined || answer === null || String(answer).trim() === '') return false;
+  if (answer === undefined || answer === null || String(answer).trim() === '') return 'missing_answer';
   const n = Number(String(answer).trim());
-  if (!Number.isFinite(n)) return false;
-  return n === payload.a + payload.b;
+  if (!Number.isFinite(n)) return 'missing_answer';
+  if (n !== payload.a + payload.b) return 'wrong_answer';
+  return null;
+}
+
+/**
+ * Signed challenge from createLoginCaptcha, plus the numeric answer.
+ * @param {string | undefined} token
+ * @param {string | number | undefined} answer
+ */
+export function verifyLoginCaptcha(token, answer) {
+  return explainCaptchaFailure(token, answer) == null;
 }

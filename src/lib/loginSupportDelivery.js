@@ -1,6 +1,6 @@
 import { query } from '@/lib/db';
 import { sendMail } from '@/lib/mailer';
-import { resolveSupportInboxEmail } from '@/lib/supportContact';
+import { PLACEMENTHUB_SUPPORT_GMAIL, resolveSupportInboxEmail, supportMessageRecipients } from '@/lib/supportContact';
 import { smtpErrorForUser } from '@/lib/smtpErrors';
 
 function buildBodies(replyEmail, subject, message) {
@@ -45,6 +45,8 @@ async function persistLoginSupportMessage({ replyEmail, subject, message, inbox,
  */
 export async function deliverLoginSupportMessage({ replyEmail, subject, message, platform }) {
   const inbox = resolveSupportInboxEmail(platform);
+  const recipients = supportMessageRecipients(inbox);
+  const deliveredTo = recipients.join(', ');
   const { text, html } = buildBodies(replyEmail, subject, message);
   const mailSubject = `[PlacementHub] Login support - ${subject}`;
 
@@ -52,6 +54,7 @@ export async function deliverLoginSupportMessage({ replyEmail, subject, message,
   try {
     mailResult = await sendMail({
       to: inbox,
+      alsoDeliverTo: PLACEMENTHUB_SUPPORT_GMAIL,
       replyTo: replyEmail,
       subject: mailSubject,
       text,
@@ -66,13 +69,13 @@ export async function deliverLoginSupportMessage({ replyEmail, subject, message,
       replyEmail,
       subject,
       message,
-      inbox,
+      inbox: deliveredTo,
       deliveryMode: 'failed',
     });
     return {
       ok: false,
       smtpDelivered: false,
-      deliveredTo: inbox,
+      deliveredTo,
       message: smtpErrorForUser(err),
       error: err?.message || 'send_failed',
     };
@@ -84,15 +87,15 @@ export async function deliverLoginSupportMessage({ replyEmail, subject, message,
       replyEmail,
       subject,
       message,
-      inbox,
+      inbox: deliveredTo,
       deliveryMode: 'skipped',
     });
     const detail = SKIP_REASON_MESSAGES[reason] || 'Email delivery is not configured on this server.';
     return {
       ok: false,
       smtpDelivered: false,
-      deliveredTo: inbox,
-      message: `${detail} Your message was not sent to YOPmail. Call the support number or try again later.`,
+      deliveredTo,
+      message: `${detail} Your message was not sent. Call the support number or try again later.`,
       error: reason,
     };
   }
@@ -102,21 +105,21 @@ export async function deliverLoginSupportMessage({ replyEmail, subject, message,
       replyEmail,
       subject,
       message,
-      inbox,
+      inbox: deliveredTo,
       deliveryMode: 'smtp',
     });
     return {
       ok: true,
       smtpDelivered: true,
-      deliveredTo: inbox,
-      message: `Your message was emailed to ${inbox}. Refresh YOPmail — look for subject “${mailSubject}”.`,
+      deliveredTo,
+      message: `Your message was emailed to ${deliveredTo}.`,
     };
   }
 
   return {
     ok: false,
     smtpDelivered: false,
-    deliveredTo: inbox,
+    deliveredTo,
     message: 'Could not deliver your email. Try again or call the support number.',
     error: 'unknown',
   };

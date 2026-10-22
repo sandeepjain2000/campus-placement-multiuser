@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import { getDashboardPath, cn } from '@/lib/utils';
-import { DEMO_LOGINS, DEMO_SEED_PASSWORD, isDemoLoginsEnabled, SEEDED_EMPLOYER_CREDENTIALS } from '@/lib/demoLogins';
+import { DEMO_LOGINS, DEMO_SEED_PASSWORD, isDemoLoginsEnabled, SEEDED_EMPLOYER_CREDENTIALS, TESTING_LOGINS } from '@/lib/demoLogins';
 import { ArrowRight, ChevronDown, ChevronUp, KeyRound, GraduationCap, Building2, School, ShieldCheck, Users, Eye, EyeOff, MessageCircleQuestion, BookOpen, ClipboardList } from 'lucide-react';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
@@ -26,6 +26,7 @@ import {
   writeLoginFormValues,
 } from '@/lib/loginClient';
 import { markBrowserSessionActive, SESSION_BROWSER_MARKER_KEY } from '@/lib/sessionPolicy';
+import { captchaErrorKeepsQuestion } from '@/lib/captchaFailureMessages';
 
 /** Match `/demo-accounts` three-column grouping: Students | Employers | (Super + College admins). */
 const DEMO_GROUP_META = {
@@ -187,7 +188,7 @@ function LoginPageInner() {
 
   const uniqueDemoLogins = useMemo(() => {
     const seen = new Set();
-    const merged = [...DEMO_LOGINS, ...SEEDED_EMPLOYER_CREDENTIALS];
+    const merged = [...DEMO_LOGINS, ...SEEDED_EMPLOYER_CREDENTIALS, ...TESTING_LOGINS];
     return merged.filter((d) => {
       const key = String(d?.email || '').trim().toLowerCase();
       if (!key || seen.has(key)) return false;
@@ -385,7 +386,10 @@ function LoginPageInner() {
           setError(userMsg);
           debugLog.current('signin_failed', { error: result?.error, userMsg });
           await flushDebugLog.current(email, { failed: true });
-          if (String(result?.error || '').toLowerCase().includes('verification')) {
+          if (
+            String(result?.error || '').toLowerCase().includes('verification')
+            && !captchaErrorKeepsQuestion(result?.error)
+          ) {
             setCaptchaAnswer('');
             setCaptchaKey((k) => k + 1);
           }
@@ -495,7 +499,7 @@ function LoginPageInner() {
     }
     setError('');
     userChoseCredentials.current = true;
-    writeLoginFormValues(loginFormRef.current, { email: demo.email, password: DEMO_SEED_PASSWORD });
+    writeLoginFormValues(loginFormRef.current, { email: demo.email, password: demo.password || DEMO_SEED_PASSWORD });
     setShowCredentials(false);
     toast.info('Credentials auto-filled — click Sign In.');
   };
@@ -540,6 +544,9 @@ function LoginPageInner() {
                   {demo.name ? <span className="text-muted-foreground font-normal"> · {demo.name}</span> : null}
                 </div>
                 <div className="text-muted-foreground mt-0.5 truncate font-mono text-[0.68rem]">{demo.email}</div>
+                {demo.password ? (
+                  <div className="text-muted-foreground mt-0.5 truncate font-mono text-[0.68rem]">{demo.password}</div>
+                ) : null}
               </div>
               <Button
                 type="button"
@@ -623,8 +630,9 @@ function LoginPageInner() {
                 {showCredentials && (
                   <div className="border-border overflow-hidden rounded-lg border">
                     <div className="bg-muted text-muted-foreground flex flex-wrap items-center gap-1.5 border-b px-3.5 py-2 text-xs">
-                      Same layout as <strong className="text-foreground">View all system accounts</strong> — password:{' '}
+                      Same layout as <strong className="text-foreground">View all system accounts</strong> — demo password:{' '}
                       <code className="bg-background text-foreground rounded px-1.5 py-0.5 font-bold">{DEMO_SEED_PASSWORD}</code>
+                      . Testing rows use the password on that row.
                     </div>
 
                     <div className="bg-card p-3">
@@ -792,7 +800,7 @@ function LoginPageInner() {
         <div className="text-muted-foreground text-center text-sm">
           Employers and colleges:{' '}
           <Link href="/register" className="text-foreground font-medium hover:underline">
-            Request an account
+            Register
           </Link>
           <div className="mt-1 text-xs">
             Students are added by their college — use the login email from your welcome message.

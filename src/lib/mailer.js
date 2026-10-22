@@ -38,6 +38,17 @@ function createTransport() {
  * @param {string | string[]} originalTo
  * @param {Awaited<ReturnType<typeof getPlatformSettings>>} platform
  */
+function withAlsoDeliverTo(to, alsoDeliverTo) {
+  const extra = String(alsoDeliverTo || '').trim();
+  if (!extra) return to;
+  const list = (Array.isArray(to) ? to : [to])
+    .flatMap((item) => String(item || '').split(','))
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!list.some((address) => address.toLowerCase() === extra.toLowerCase())) list.push(extra);
+  return list;
+}
+
 function resolveRecipients(originalTo, platform, { skipRecipientRedirect = false } = {}) {
   if (platform?.testEnvironment === true) {
     return [...TEST_ENVIRONMENT_MAIL_RECIPIENTS];
@@ -319,6 +330,7 @@ export async function sendMail(opts) {
     recipientUserId,
     skipCommunicationRouting,
     skipRecipientRedirect,
+    alsoDeliverTo,
     replyTo,
     ...restMailOpts
   } = opts;
@@ -374,14 +386,15 @@ export async function sendMail(opts) {
     );
   }
 
-  const to = resolveRecipients(afterCommunication, platform, { skipRecipientRedirect });
+  const routedTo = resolveRecipients(afterCommunication, platform, { skipRecipientRedirect });
+  const to = withAlsoDeliverTo(routedTo, alsoDeliverTo);
   const redirected =
-    String(normalizeTo(afterCommunication)) !== String(Array.isArray(to) ? to.join(',') : to);
+    String(normalizeTo(afterCommunication)) !== String(Array.isArray(routedTo) ? routedTo.join(',') : routedTo);
   if (redirected) {
     console.info(
       `${logCtx} recipient redirect active: beforePlatformOverride=%s resolvedTo=%s (%s)`,
       String(normalizeTo(afterCommunication)),
-      String(Array.isArray(to) ? to.join(', ') : to),
+      String(Array.isArray(routedTo) ? routedTo.join(', ') : routedTo),
       platform?.testEnvironment
         ? 'testEnvironment'
         : 'OUTBOUND_EMAIL_OVERRIDE or systemNotificationInboxEmail',
@@ -393,7 +406,7 @@ export async function sendMail(opts) {
     const banner =
       `[PlacementHub Test environment]\n`
       + `Intended recipient (ignored for delivery): ${intended}\n`
-      + `Delivered to: ${TEST_ENVIRONMENT_MAIL_RECIPIENTS.join(', ')}\n\n`;
+      + `Delivered to: ${String(alsoDeliverTo || '').trim() ? normalizeTo(to) : TEST_ENVIRONMENT_MAIL_RECIPIENTS.join(', ')}\n\n`;
     if (mailOpts.text) {
       mailOpts = { ...mailOpts, text: `${banner}${mailOpts.text}` };
     }
@@ -401,7 +414,7 @@ export async function sendMail(opts) {
       const htmlBanner =
         `<p style="font-size:12px;color:#64748b;border:1px solid #e2e8f0;padding:8px 10px;border-radius:6px;">`
         + `<strong>Test environment</strong> — intended recipient (ignored): `
-        + `${intended.replace(/</g, '&lt;')}<br/>Delivered to: ${TEST_ENVIRONMENT_MAIL_RECIPIENTS.join(', ')}`
+        + `${intended.replace(/</g, '&lt;')}<br/>Delivered to: ${String(alsoDeliverTo || '').trim() ? normalizeTo(to) : TEST_ENVIRONMENT_MAIL_RECIPIENTS.join(', ')}`
         + `</p>`;
       mailOpts = { ...mailOpts, html: `${htmlBanner}${mailOpts.html}` };
     } else if (mailOpts.text) {

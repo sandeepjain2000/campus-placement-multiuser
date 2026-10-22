@@ -16,7 +16,7 @@ import {
 } from '@/lib/organizationNames';
 import { assertEmailAvailable, formatEmailDifferentTenantMessage, formatEmailInUseMessage } from '@/lib/userEmail';
 import { getPostRegistrationLoginPath } from '@/lib/postRegistrationRedirect';
-import { verifyLoginCaptcha } from '@/lib/simpleCaptcha';
+import { captchaFailureMessage, explainCaptchaFailure } from '@/lib/simpleCaptcha';
 import { isDemoDataApiEnabled } from '@/lib/demoDataAccess';
 import { ensureIitmTieUpForEmployer } from '@/lib/employerIitmTieUp';
 
@@ -27,9 +27,10 @@ async function __platform_POST(request) {
     const email = String(body.email || '').trim().toLowerCase();
     const allowedRoles = new Set(['college_admin', 'employer']);
 
-    if (!verifyLoginCaptcha(captchaToken, captchaAnswer)) {
+    const captchaFailure = explainCaptchaFailure(captchaToken, captchaAnswer);
+    if (captchaFailure) {
       return NextResponse.json(
-        { error: 'Verification failed or expired. Answer the question again and retry.' },
+        { error: captchaFailureMessage(captchaFailure), code: captchaFailure },
         { status: 400 },
       );
     }

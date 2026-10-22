@@ -2,6 +2,17 @@ import { PLATFORM_SETTINGS_DEFAULTS } from '@/lib/platformSettingsDefaults';
 
 export const PLACEMENTHUB_SUPPORT_PHONE = '+91 724 907 2620';
 export const PLACEMENTHUB_SUPPORT_EMAIL = 'support.placementhub@placementhub.online';
+/** Extra inbox for the login Contact support form. Same Gmail mailbox as the dotted form. */
+export const PLACEMENTHUB_SUPPORT_GMAIL = 'placementhubsupport@gmail.com';
+
+/** Login support goes to the configured inbox and also to the Gmail above. */
+export function supportMessageRecipients(inbox) {
+  const primary = String(inbox || '').trim();
+  const copy = PLACEMENTHUB_SUPPORT_GMAIL;
+  if (!primary) return [copy];
+  if (primary.toLowerCase() === copy.toLowerCase()) return [primary];
+  return [primary, copy];
+}
 
 /** Inbox where login-page support messages are delivered (YOPmail demo). */
 export function resolveSupportInboxEmail(platform) {

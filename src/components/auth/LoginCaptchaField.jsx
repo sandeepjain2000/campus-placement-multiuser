@@ -8,6 +8,22 @@ import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+/** Expiry stored in the signed question. Null when the token has none. */
+function captchaExpiresAt(token) {
+  const raw = String(token || '');
+  const sep = raw.lastIndexOf('~') >= 0 ? raw.lastIndexOf('~') : raw.lastIndexOf('.');
+  if (sep <= 0) return null;
+  const body = raw.slice(0, sep);
+  try {
+    const pad = body.length % 4 === 0 ? '' : '='.repeat(4 - (body.length % 4));
+    const json = atob(`${body.replace(/-/g, '+').replace(/_/g, '/')}${pad}`);
+    const payload = JSON.parse(json);
+    return typeof payload.exp === 'number' ? payload.exp : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Login / register captcha.
  * Only the latest /api/auth/captcha response may update token+question — avoids
@@ -33,6 +49,8 @@ export default function LoginCaptchaField({
   const verifyingRef = useRef(false);
   const loadSeqRef = useRef(0);
   const abortRef = useRef(null);
+  const tokenRef = useRef(token);
+  const loadChallengeRef = useRef(null);
   const onTokenChangeRef = useRef(onTokenChange);
   const onAnswerChangeRef = useRef(onAnswerChange);
   const onVerifiedChangeRef = useRef(onVerifiedChange);
@@ -46,6 +64,9 @@ export default function LoginCaptchaField({
   useEffect(() => {
     onVerifiedChangeRef.current = onVerifiedChange;
   }, [onVerifiedChange]);
+  useEffect(() => {
+    tokenRef.current = token;
+  }, [token]);
 
   const setVerified = useCallback((ok) => {
     onVerifiedChangeRef.current?.(ok);
@@ -96,13 +117,15 @@ export default function LoginCaptchaField({
       if (!res.ok) {
         setQuestion('Verification unavailable — refresh the page');
         setDummyHint('');
+        tokenRef.current = '';
         onTokenChangeRef.current('');
         return;
       }
       setQuestion(data.question || 'Answer the question below');
       // Never surface CAPTCHA shortcuts in the UI.
       setDummyHint('');
-      onTokenChangeRef.current(data.token || '');
+      tokenRef.current = data.token || '';
+      onTokenChangeRef.current(tokenRef.current);
       if (process.env.NODE_ENV === 'development' && data.dummyAnswer != null) {
         onAnswerChangeRef.current(String(data.dummyAnswer));
       } else {
@@ -112,11 +135,28 @@ export default function LoginCaptchaField({
       if (err?.name === 'AbortError') return;
       if (seq !== loadSeqRef.current) return;
       setQuestion('Verification unavailable — refresh the page');
+      tokenRef.current = '';
       onTokenChangeRef.current('');
     } finally {
       if (seq === loadSeqRef.current) setLoading(false);
     }
   }, [resetVerification]);
+
+  useEffect(() => {
+    loadChallengeRef.current = loadChallenge;
+  }, [loadChallenge]);
+
+  // A question left open past its stored expiry is replaced when the person comes back to this tab.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      const exp = captchaExpiresAt(tokenRef.current);
+      if (exp == null || Date.now() <= exp) return;
+      void loadChallengeRef.current?.();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
 
   // Mount once (plus remount when parent bumps key=). Do NOT depend on loadChallenge
   // identity — that used to re-fetch and race with an in-flight token.

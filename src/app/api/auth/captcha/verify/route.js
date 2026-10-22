@@ -1,13 +1,14 @@
 import { withApiHandlers } from '@/lib/platformErrorRoute';
 import { NextResponse } from 'next/server';
-import { verifyLoginCaptcha } from '@/lib/simpleCaptcha';
+import { captchaFailureMessage, explainCaptchaFailure } from '@/lib/simpleCaptcha';
 
 async function __platform_POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
-    if (!verifyLoginCaptcha(body.captchaToken, body.captchaAnswer)) {
+    const captchaFailure = explainCaptchaFailure(body.captchaToken, body.captchaAnswer);
+    if (captchaFailure) {
       return NextResponse.json(
-        { ok: false, error: 'Incorrect answer. Try again or refresh the question.' },
+        { ok: false, error: captchaFailureMessage(captchaFailure), code: captchaFailure },
         { status: 400 },
       );
     }

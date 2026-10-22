@@ -18,6 +18,7 @@ import BrandMark from '@/components/BrandMark';
 import AdminFilterSelect from '@/components/AdminFilterSelect';
 import LoginCaptchaField from '@/components/auth/LoginCaptchaField';
 import { verifyCaptchaAnswer } from '@/lib/captchaClient';
+import { captchaErrorKeepsQuestion } from '@/lib/captchaFailureMessages';
 import { redirectToLoginAfterRegistration } from '@/lib/postRegistrationRedirect';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -181,7 +182,7 @@ export default function RegisterPage() {
     setCaptchaChecking(false);
     if (!result.ok) {
       setError(result.error || 'Verification failed. Check your answer and try again.');
-      refreshCaptchaAfterFailure();
+      if (!captchaErrorKeepsQuestion(result.error)) refreshCaptchaAfterFailure();
       return false;
     }
     setCaptchaVerified(true);
@@ -245,7 +246,7 @@ export default function RegisterPage() {
         captchaOk.error ||
           'Verification expired or incorrect. Go back to step 1, answer the question again, then continue.',
       );
-      refreshCaptchaAfterFailure();
+      if (!captchaErrorKeepsQuestion(captchaOk.error)) refreshCaptchaAfterFailure();
       setStep(1);
       return;
     }
@@ -281,8 +282,8 @@ export default function RegisterPage() {
           setFieldErrors({ phone: msg });
           setStep(2);
         }
-        if (res.status === 400 && String(msg).toLowerCase().includes('verification')) {
-          refreshCaptchaAfterFailure();
+        if (res.status === 400 && (captchaErrorKeepsQuestion(msg) || String(msg).toLowerCase().includes('verification'))) {
+          if (!captchaErrorKeepsQuestion(msg)) refreshCaptchaAfterFailure();
           setStep(1);
         }
         return;

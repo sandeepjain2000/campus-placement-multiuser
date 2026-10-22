@@ -1,6 +1,9 @@
 node_modules
 .next
 backups
+PlacementHub_AWS_First_Time_Setup_Guide.docx
+qa/data/placementhub_create_results.json
+docs/test-cases/PlacementHub-Manual-Test-Set.xlsx
 qa2
 .agents
 playwright-report

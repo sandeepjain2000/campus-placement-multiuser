@@ -2,7 +2,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { query } from './db';
 import { SEED_DEMO_STUDENT_USER_IDS } from './seedDemoStudentIds';
-import { verifyLoginCaptcha } from './simpleCaptcha';
+import { captchaFailureMessage, explainCaptchaFailure } from './simpleCaptcha';
 import {
   JWT_SESSION_MAX_AGE_SECONDS,
   SESSION_COOKIE_NAME,
@@ -67,9 +67,10 @@ export const authOptions = {
           throw new Error('Email and password are required');
         }
 
-        if (!verifyLoginCaptcha(credentials.captchaToken, credentials.captchaAnswer)) {
-          console.warn(`[NextAuth Authorize] Captcha verification failed for email: ${credentials.email}`);
-          throw new Error('Incorrect verification answer. Click refresh beside the question and try again.');
+        const captchaFailure = explainCaptchaFailure(credentials.captchaToken, credentials.captchaAnswer);
+        if (captchaFailure) {
+          console.warn(`[NextAuth Authorize] Captcha verification failed for email: ${credentials.email} (${captchaFailure})`);
+          throw new Error(captchaFailureMessage(captchaFailure));
         }
 
         const email = String(credentials.email).trim().toLowerCase();
