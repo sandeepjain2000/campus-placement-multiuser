@@ -79,6 +79,18 @@ export default function DashboardLayout({ children }) {
       /* ignore */
     }
   }, [sidebarCollapsed]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 'b') return;
+      const el = e.target;
+      if (el?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el?.tagName || '')) return;
+      e.preventDefault();
+      setSidebarCollapsed((v) => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   const [employerCampusLabel, setEmployerCampusLabel] = useState(null);
   const [employerActiveCampus, setEmployerActiveCampus] = useState(null);
   const [employerAcademicYearOverride, setEmployerAcademicYearOverride] = useState(null);
@@ -421,17 +433,6 @@ export default function DashboardLayout({ children }) {
               <div className="truncate text-xs text-sidebar-foreground/60">Career workspace</div>
             </div>
           </Link>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            className={cn('shrink-0 max-md:hidden', sidebarCollapsed && 'md:hidden')}
-            onClick={() => setSidebarCollapsed((v) => !v)}
-            title={sidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
-            aria-label={sidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
-          >
-            {sidebarCollapsed ? <PanelLeft aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
-          </Button>
         </div>
         <Separator />
 
@@ -487,7 +488,31 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         <Separator />
-        <div className="shrink-0 p-2">
+        <div className="flex shrink-0 flex-col gap-1 p-2">
+          <button
+            type="button"
+            onClick={() => setSidebarCollapsed((v) => !v)}
+            className={cn(
+              'hidden h-8 w-full cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-2 text-sm font-medium text-sidebar-foreground/70 outline-none transition-colors md:flex',
+              'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+              sidebarCollapsed && 'md:justify-center md:px-0',
+            )}
+            title={sidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
+            aria-label={sidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
+            aria-expanded={!sidebarCollapsed}
+            data-testid="sidebar-collapse-toggle"
+          >
+            <span className="flex size-5 shrink-0 items-center justify-center">
+              {sidebarCollapsed ? (
+                <PanelLeft aria-hidden="true" className="size-4" />
+              ) : (
+                <PanelLeftClose aria-hidden="true" className="size-4" />
+              )}
+            </span>
+            <span className={cn('min-w-0 flex-1 truncate text-left', sidebarCollapsed && 'md:hidden')}>
+              Collapse menu
+            </span>
+          </button>
           <Link
             href={getRoleProfilePath(role)}
             className={cn(
@@ -563,19 +588,6 @@ export default function DashboardLayout({ children }) {
             >
               <Menu aria-hidden="true" />
             </Button>
-            {sidebarCollapsed && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="hidden md:inline-flex"
-                onClick={() => setSidebarCollapsed(false)}
-                title="Expand menu"
-                aria-label="Expand menu"
-              >
-                <PanelLeft aria-hidden="true" />
-              </Button>
-            )}
             <Separator orientation="vertical" className="mx-1 hidden h-5! data-vertical:self-center sm:block" />
             <div className="flex min-w-0 items-center gap-2.5">
                 <EntityLogo
