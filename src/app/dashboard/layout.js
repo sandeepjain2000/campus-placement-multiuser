@@ -27,7 +27,7 @@ import DevScreenTag from '@/components/DevScreenTag';
 import BrandMark from '@/components/BrandMark';
 import ScreenSearchBar from '@/components/ScreenSearchBar';
 import DocumentationHelpWidget from '@/components/DocumentationHelpWidget';
-import { Menu, Mail, Home, PanelLeft, PanelLeftClose, LogOut, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Menu, Mail, Home, PanelLeft, PanelLeftClose, LogOut, ChevronRight } from 'lucide-react';
 import { getAcademicYearOptions, getCurrentAcademicYear } from '@/lib/academicYear';
 import {
   ACTIVE_ACADEMIC_YEAR_KEY,
@@ -562,18 +562,6 @@ export default function DashboardLayout({ children }) {
               aria-label="Toggle navigation menu"
             >
               <Menu aria-hidden="true" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="dashboard-mobile-landing-link"
-              render={<Link href="/" />}
-              nativeButton={false}
-              title="Back to landing page"
-              aria-label="Back to landing page"
-            >
-              <ArrowLeft data-icon="inline-start" />
-              Landing
             </Button>
             {sidebarCollapsed && (
               <Button

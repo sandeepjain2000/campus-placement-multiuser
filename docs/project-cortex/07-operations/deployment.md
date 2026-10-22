@@ -74,3 +74,11 @@ The drop script has not been run. Placement Hub’s tables are on the shared dat
 The guide already on GitHub uses placeholders and has no secrets. Its rollback text is older than the file on this PC and in Downloads.
 
 If Ctrl+H is used to put real values into the guide, that updated file is not pushed.
+
+## Vercel
+
+PlacementHub and InternSafar deploy to different Vercel accounts. A GitHub push does not deploy PlacementHub.
+
+Run `deploy.bat` in this folder. It reads `.env.vercel.local` and deploys as `lawcarelegal20-6778`. Do not run `vercel` yourself, and do not keep or read `.vercel\project.json`. InternSafar uses the sibling folder’s `deploy.bat` and the account `placementhubsupport-7197`.
+
+`/` opens the sign-in page on AWS, Vercel, and local. The old Vercel demo landing is saved at `saved-demo-landing/page.js` and is not served.

@@ -24,11 +24,11 @@ export default function MarketingPageShell({ children, maxWidth = '960px' }) {
           }}
         >
           <Link
-            href="/"
+            href="/login"
             className={buttonVariants({ variant: 'ghost', size: 'sm' })}
           >
             <ArrowLeft data-icon="inline-start" aria-hidden />
-            Home
+            Sign in
           </Link>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             <Link href="/features" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>

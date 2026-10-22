@@ -4,6 +4,14 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+## Vercel deploy — do not guess the account
+
+PlacementHub and InternSafar use different Vercel accounts. A GitHub push does not deploy PlacementHub.
+
+Deploy PlacementHub only by running `deploy.bat` in this folder. That script reads `.env.vercel.local` and deploys as `lawcarelegal20-6778`. Do not run `vercel`, `vercel ls`, or `vercel --prod` yourself. Do not read or create `.vercel\project.json`. That file caused a deploy to be checked with the wrong account on 2026-10-22. `/` opens the sign-in page. The old demo landing is saved at `saved-demo-landing/page.js` and is not a route.
+
+InternSafar deploys only by running `deploy.bat` in the sibling `internship-portal` folder, as `placementhubsupport-7197`. Do not use that script, that token, or that login for PlacementHub.
+
 <!-- BEGIN:skills-auto-fetch -->
 # Skills Auto-Fetch Rules
 

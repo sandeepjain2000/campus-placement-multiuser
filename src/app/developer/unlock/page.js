@@ -92,10 +92,10 @@ function UnlockForm() {
           <Button type="submit" disabled={loading || !password}>
             {loading ? 'Checking…' : 'Unlock'}
           </Button>
-          <Link href="/" className={buttonVariants({ variant: 'ghost' })}>Back to landing</Link>
+          <Link href="/login" className={buttonVariants({ variant: 'ghost' })}>Sign in</Link>
         </CardFooter>
         </form>
-      </Card>
+      </Card>
     </div>
   );
 }

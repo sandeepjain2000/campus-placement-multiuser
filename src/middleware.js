@@ -30,7 +30,6 @@ import {
   buildContentSecurityPolicy,
   shouldForceHttps,
 } from '@/lib/securityHeaders';
-import { isDemoLoginsEnabled } from '@/lib/demoLogins';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 const IS_DEV = process.env.NODE_ENV !== 'production';
@@ -167,8 +166,8 @@ export default async function proxy(request) {
   const { pathname } = request.nextUrl;
   const nonce = createNonce();
 
-  // Production (demo logins hidden): / is the sign-in page. The marketing home stays for sandbox/Vercel.
-  if ((pathname === '/' || pathname === '') && !isDemoLoginsEnabled()) {
+  // Sign-in is the home on AWS, Vercel, and local. The demo landing file is not served.
+  if (pathname === '/' || pathname === '') {
     const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,

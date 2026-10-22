@@ -34,8 +34,8 @@ export default function Error({ error, reset }) {
           <Button onClick={() => reset()}>
             Try again
           </Button>
-          <Link href="/" className={buttonVariants({ variant: 'outline' })}>
-            Go back home
+          <Link href="/login" className={buttonVariants({ variant: 'outline' })}>
+            Sign in
           </Link>
         </CardFooter>
       </Card>

@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
       <div className="flex w-full max-w-md flex-col gap-6">
         <Card className="w-full gap-6 py-6">
           <CardHeader className="gap-6 px-6">
-            <Link href="/" className="inline-flex items-center gap-3 no-underline">
+            <Link href="/login" className="inline-flex items-center gap-3 no-underline">
               <BrandMark size={40} />
               <span className="text-foreground text-lg font-semibold tracking-tight">PlacementHub</span>
             </Link>

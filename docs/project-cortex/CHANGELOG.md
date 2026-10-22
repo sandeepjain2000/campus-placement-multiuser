@@ -2,6 +2,11 @@
 
 Changes to this folder, not to the product.
 
+## 2026-10-22
+
+- `/` opens sign-in on AWS, Vercel, and local. The old Vercel demo landing is saved at `saved-demo-landing/page.js` and is not served.
+- PlacementHub Vercel deploy is `deploy.bat` plus `.env.vercel.local` only. The account is `lawcarelegal20-6778`. There is no standing `.vercel` folder. InternSafar stays on `placementhubsupport-7197`.
+
 ## 2026-10-21
 
 - Core accounts are not for testing. Tests use a genuine account. No production process may touch the 20 core accounts. A demo, if needed, is expected on Vercel.

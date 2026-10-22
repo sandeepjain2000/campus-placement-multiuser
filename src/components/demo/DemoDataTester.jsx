@@ -600,7 +600,7 @@ export default function DemoDataTester({
 
         {!isEmbed ? (
         <p className="demo-tester-footer">
-          <Link href="/">Landing</Link> · <Link href="/developer">Developer Notes</Link> · <Link href="/login">Login</Link>
+          <Link href="/login">Sign in</Link> · <Link href="/developer">Developer Notes</Link>
           {' · '}
           <Link href="/data-entry">Full page</Link>
         </p>

@@ -57,7 +57,7 @@ export default function PublicJobPage({ params }) {
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <header style={{ borderBottom: '1px solid var(--border-default)', padding: '1rem 1.5rem' }}>
         <div style={{ maxWidth: '820px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-          <Link href="/" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>
+          <Link href="/login" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>
             <ArrowLeft data-icon="inline-start" aria-hidden /> PlacementHub
           </Link>
           <Link href="/login" className={buttonVariants({ size: 'sm' })}>

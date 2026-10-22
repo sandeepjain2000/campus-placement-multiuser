@@ -112,8 +112,8 @@ export default function DeveloperPage() {
       </div>
       <header className="dev-notes-header">
         <div className="dev-notes-header-inner">
-          <Link href="/" className="dev-notes-back">
-            <ArrowLeft size={16} aria-hidden /> Landing
+          <Link href="/login" className="dev-notes-back">
+            <ArrowLeft size={16} aria-hidden /> Sign in
           </Link>
           <div className="dev-notes-header-actions">
             <Button
@@ -665,7 +665,7 @@ export default function DeveloperPage() {
             ))}
           </ul>
         </Section>
-      </main>
+      </main>
     </div>
   );
 }

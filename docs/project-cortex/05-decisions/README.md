@@ -17,6 +17,8 @@ Locked for the first AWS setup. Details and commands stay in `07-operations/depl
 | Secrets in git | Placeholders in the guide and in Cortex. Filled-in values stay off GitHub |
 | Mail during tests (2026-10-21) | Never run a test that sends mail to a bounce address. The 20 AWS core accounts already have `email_verified_at`, so sign-in does not send mail and those accounts stay as they are. A new registration still sends a verification email. Bounce deliveries: `arjun.verma@iitm.edu`, `test-notifications@nitt.edu`, `qa-create-check@placementhub.online`, `@campus-placement.work`. The other 18 deliver to `sandeepjain200019@gmail.com` |
 | Core accounts (2026-10-21) | Do not test them. Test only with a genuine account. Leave them for a demo if one is required. A demo is expected on Vercel, not on AWS. No production process may touch them |
+| Vercel deploy (2026-10-22) | `deploy.bat` in this folder, token in `.env.vercel.local`, account `lawcarelegal20-6778`. No standing `.vercel` folder. A GitHub push is not this deploy. InternSafar is `placementhubsupport-7197` and its own `deploy.bat` |
+| Home page (2026-10-22) | `/` opens sign-in on AWS, Vercel, and local. The Vercel demo landing, including the YOPmail Demo Emails line and Developer Notes, is saved at `saved-demo-landing/page.js` and is not a route |
 
 File storage stays on the bucket Placement Hub already uses. Do not create or change a bucket for this setup. The database login stays the existing one on that server. A separate Placement Hub login is not a new server or a new database, and it is not part of this setup.
 

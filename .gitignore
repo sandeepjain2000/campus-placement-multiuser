@@ -105,3 +105,6 @@ qa2/agent_results_*.json
 qa2/logs/
 
 .vercel
+
+.vercel
+.env*
