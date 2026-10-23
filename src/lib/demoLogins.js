@@ -37,16 +37,6 @@ export const SEEDED_EMPLOYER_CREDENTIALS = [
   { label: 'Employer (FinEdge Systems)', email: 'careers@finedge.io', icon: '🏢', name: 'FinEdge Systems' },
 ];
 
-/** Vercel testing accounts. Not seed data. Each row fills its own password. */
-export const TESTING_LOGINS = [
-  { label: 'Student (Testing)', email: 'alias2@placementhub.online', icon: '🎓', name: 'Meera Iyer (Testing)', password: 'Cookie247@!09' },
-  { label: 'Alumni (Testing)', email: 'alias3@placementhub.online', icon: '🎓', group: 'alumni', name: 'Arjun Shah (Testing)', password: 'Cookie247@!09' },
-  { label: 'Employer (Testing)', email: 'alias1@placementhub.online', icon: '🏢', name: 'Neha Kapoor (Testing)', password: 'Cookie247@!09' },
-  { label: 'College admin (Testing)', email: 'alias4@placementhub.online', icon: '🏫', name: 'Rahul Menon (Testing)', password: 'Cookie247@!09' },
-  { label: 'Placement Committee (Testing)', email: 'alias5@placementhub.online', icon: '📋', group: 'placement_committee', name: 'Ananya Desai (Testing)', password: 'Cookie247@!09' },
-];
-
-
 /**
  * Whether to show quick demo account cards on `/login`.
  * Default is on (including Vercel production) so try-the-app flows work without extra env.
