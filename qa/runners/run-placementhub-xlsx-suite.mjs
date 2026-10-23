@@ -15,17 +15,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
-const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
+import { qaAccountPassword } from '../qaAccountPassword.js';
 
 const require = createRequire(import.meta.url);
+const { genuineAccount } = require('../genuineAccounts.js');
 const { DEMO_LOGINS, ROLE_HOME, ROUTES_BY_ROLE } = require('../routes-by-role.js');
-const { answerLoginCaptcha } = require('../answerLoginCaptcha.js');
+const { loginThroughUi, answerLoginCaptcha } = require('../answerLoginCaptcha.js');
 
 const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus-placement-omega.vercel.app').replace(
   /\/$/,
   '',
 );
-const PASSWORD = process.env.DEMO_SEED_PASSWORD || 'Admin@123';
+const PASSWORD = qaAccountPassword();
 const CASES_PATH = path.join(process.cwd(), 'qa/data/placementhub_test_cases.json');
 const OUT_PATH = path.join(process.cwd(), 'qa/data/placementhub_test_results.json');
 
@@ -37,15 +38,17 @@ const ROLE_EMAIL = {
   college: DEMO_LOGINS.college_admin,
   'placement committee': genuineAccount('committee'),
   committee: genuineAccount('committee'),
-  'super admin': DEMO_LOGINS.super_admin,
-  admin: DEMO_LOGINS.super_admin,
   public: null,
 };
+if (process.env.QA_SUPER_ADMIN_EMAIL) {
+  ROLE_EMAIL['super admin'] = genuineAccount('super_admin');
+  ROLE_EMAIL.admin = ROLE_EMAIL['super admin'];
+}
 
 const FEATURE_ROUTE_HINTS = [
   [/sign[- ]?in|login|credentials|sign out|session|captcha|register|password reset/i, null],
   [/my profile|profile fields|academic fields|cgpa/i, { student: '/dashboard/student/profile', employer: '/dashboard/employer/profile', college: '/dashboard/college/settings' }],
-  [/documents|resume|cv|my cvs/i, { student: '/dashboard/student/documents', college: '/dashboard/college/students' }],
+  [/documents|resume|cv|my cvs/i, { student: '/dashboard/student/my-cvs', college: '/dashboard/college/students' }],
   [/browse.?drives|placement drives|drive list|approve placement drive|request new placement drive/i, { student: '/dashboard/student/drives', employer: '/dashboard/employer/drives', college: '/dashboard/college/drives' }],
   [/browse.?jobs|job posting|alumni job/i, { student: '/dashboard/alumni/jobs', employer: '/dashboard/employer/alumni/jobs', alumni: '/dashboard/alumni/jobs' }],
   [/internship/i, { student: '/dashboard/student/internships', employer: '/dashboard/employer/internships', college: '/dashboard/college/internships' }],
@@ -159,25 +162,7 @@ async function guidedSignIn(page, email) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok() || !data.ok || !data.redirectTo) {
-    // Fallback UI login
-    await page.goto(`${BASE}/login?email=${encodeURIComponent(email)}`, { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('#login-email', { timeout: 20_000 });
-    for (let i = 0; i < 40; i += 1) {
-      const em = await page.inputValue('#login-email');
-      const pwd = await page.inputValue('#login-password');
-      if (em === email && pwd.length > 0) break;
-      await page.waitForTimeout(250);
-    }
-    const pwd = await page.locator('#login-password').inputValue();
-    if (!pwd) await page.fill('#login-password', PASSWORD);
-    const emailVal = await page.inputValue('#login-email');
-    if (emailVal !== email) await page.fill('#login-email', email);
-    await answerLoginCaptcha(page);
-    await page.click('#login-submit');
-    await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
-    if (page.url().includes('/auth/continue')) {
-      await page.waitForURL(/\/dashboard\//, { timeout: 90_000 });
-    }
+    await loginThroughUi(page, BASE, email, PASSWORD);
     return { ok: true, method: 'ui' };
   }
   await page.goto(`${BASE}${data.redirectTo}`, { waitUntil: 'domcontentloaded' });
@@ -187,16 +172,24 @@ async function guidedSignIn(page, email) {
 
 async function assertPageOk(page, href) {
   await page.goto(`${BASE}${href}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
-  let text = '';
-  let url = page.url();
-  for (let i = 0; i < 40; i += 1) {
-    url = page.url();
-    if (/\/login/i.test(url) && !/demo-accounts|\/login|sign-in/i.test(href)) {
-      throw new Error(`Redirected to login for ${href}`);
-    }
-    text = (await page.locator('body').innerText()).trim();
-    if (text.length > 80 && !/welcome back/i.test(text)) break;
-    await page.waitForTimeout(500);
+  try {
+    await page.waitForFunction(
+      (target) => {
+        const url = location.pathname + location.search;
+        const text = (document.body?.innerText || '').trim();
+        if (/\/login/i.test(url) && !/demo-accounts|\/login|sign-in/i.test(target)) return true;
+        return text.length > 80 && !/welcome back/i.test(text);
+      },
+      href,
+      { timeout: 20_000 },
+    );
+  } catch {
+    /* page stayed short or on the sign-in screen; the checks below report that */
+  }
+  const url = page.url();
+  const text = (await page.locator('body').innerText()).trim();
+  if (/\/login/i.test(url) && !/demo-accounts|\/login|sign-in/i.test(href)) {
+    throw new Error(`Redirected to login for ${href}`);
   }
   if (text.length < 40) throw new Error(`Blank page for ${href} (textLen=${text.length})`);
   if (/application error|unhandled runtime error/i.test(text)) throw new Error(`Runtime error on ${href}`);
@@ -242,8 +235,17 @@ async function runFoundation(browser) {
   }
   await publicPage.close();
 
+  const roleLogins = {
+    student: DEMO_LOGINS.student,
+    employer: DEMO_LOGINS.employer,
+    college_admin: DEMO_LOGINS.college_admin,
+  };
+  if (process.env.QA_SUPER_ADMIN_EMAIL) {
+    roleLogins.super_admin = DEMO_LOGINS.super_admin;
+  }
+
   // Role logins + route matrix
-  for (const [role, email] of Object.entries(DEMO_LOGINS)) {
+  for (const [role, email] of Object.entries(roleLogins)) {
     const page = await browser.newPage();
     try {
       await guidedSignIn(page, email);
@@ -259,6 +261,10 @@ async function runFoundation(browser) {
 
       for (const route of ROUTES_BY_ROLE[role] || []) {
         const key = `${role}:${route.href}`;
+        if (route.skip) {
+          evidence.routes[key] = { skipped: true, label: route.label, note: route.skipReason };
+          continue;
+        }
         try {
           const snap = await assertPageOk(page, route.href);
           evidence.routes[key] = { ok: true, ...snap, label: route.label };
@@ -306,17 +312,12 @@ async function runFoundation(browser) {
       if (role === 'student' && !evidence.authExtras.signOut) {
         try {
           await page.goto(`${BASE}/dashboard/student`, { waitUntil: 'domcontentloaded' });
-          await page.waitForTimeout(2000);
-          const signOut = page.getByText(/sign out/i);
-          if ((await signOut.count()) > 0) {
-            await signOut.first().click({ force: true });
-            await page.waitForURL(/\/login/, { timeout: 30_000 });
-            evidence.authExtras.signOut = { ok: true, url: page.url() };
-            // Re-login for remaining route matrix
-            await guidedSignIn(page, email);
-          } else {
-            evidence.authExtras.signOut = { ok: false, error: 'Sign out control not found' };
-          }
+          const signOut = page.getByRole('button', { name: 'Sign out' });
+          await signOut.waitFor({ state: 'visible', timeout: 20_000 });
+          await signOut.click();
+          await page.waitForURL(/\/login/, { timeout: 30_000 });
+          evidence.authExtras.signOut = { ok: true, url: page.url() };
+          await guidedSignIn(page, email);
         } catch (e) {
           evidence.authExtras.signOut = { ok: false, error: e.message };
           try {
@@ -340,22 +341,31 @@ async function runFoundation(browser) {
       await page.goto(`${BASE}/login?email=${encodeURIComponent(DEMO_LOGINS.student)}`, {
         waitUntil: 'domcontentloaded',
       });
-      await page.waitForSelector('#login-password', { timeout: 20_000 });
-      // Wait for demo autofill, then overwrite with a bad password
-      for (let i = 0; i < 40; i += 1) {
-        const email = await page.inputValue('#login-email');
-        const len = (await page.inputValue('#login-password')).length;
-        if (email && len > 0) break;
-        await page.waitForTimeout(250);
-      }
-      await page.locator('#login-password').evaluate((el) => {
-        el.removeAttribute('readonly');
-        el.value = '';
-      });
-      await page.fill('#login-password', 'WrongPassword!999');
+      const emailField = page.locator('#login-email');
+      const passwordField = page.locator('#login-password');
+      await emailField.waitFor({ state: 'visible', timeout: 20_000 });
+      await emailField.click();
+      await page.waitForFunction(
+        (expected) => {
+          const el = document.querySelector('#login-email');
+          return Boolean(el && !el.readOnly && el.value === expected);
+        },
+        DEMO_LOGINS.student,
+        { timeout: 15_000 },
+      );
+      await passwordField.click();
+      await page.waitForFunction(() => {
+        const el = document.querySelector('#login-password');
+        return Boolean(el && !el.readOnly);
+      }, null, { timeout: 10_000 });
+      await passwordField.fill('WrongPassword!999');
       await answerLoginCaptcha(page);
       await page.click('#login-submit');
-      await page.waitForTimeout(3000);
+      await page.waitForFunction(
+        () => /incorrect password|invalid|credentials|try again|failed/i.test(document.body?.innerText || ''),
+        null,
+        { timeout: 20_000 },
+      );
       const stillLogin = /\/login/.test(page.url());
       const body = await page.locator('body').innerText();
       evidence.authExtras.invalidPassword = {
@@ -370,14 +380,46 @@ async function runFoundation(browser) {
     }
   }
 
-  // Alumni login
+  // Alumni login and the alumni-only screens the student account must not open
   {
     const page = await browser.newPage();
     try {
       await guidedSignIn(page, genuineAccount('alumni'));
       evidence.logins.alumni = { ok: true, email: genuineAccount('alumni'), url: page.url() };
+      for (const href of ['/dashboard/alumni/jobs', '/dashboard/alumni/applications/jobs']) {
+        try {
+          const snap = await assertPageOk(page, href);
+          evidence.routes[`alumni:${href}`] = { ok: true, ...snap };
+        } catch (e) {
+          evidence.routes[`alumni:${href}`] = { ok: false, error: e.message };
+        }
+      }
     } catch (e) {
       evidence.logins.alumni = { ok: false, error: e.message };
+    } finally {
+      await page.close();
+    }
+  }
+
+  // Committee login. This account can open its home. It is not a college admin.
+  {
+    const page = await browser.newPage();
+    try {
+      await guidedSignIn(page, genuineAccount('committee'));
+      await page.goto(`${BASE}/dashboard/college`, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+      await page.waitForFunction(
+        () => (document.body?.innerText || '').length > 40,
+        null,
+        { timeout: 20_000 },
+      );
+      const text = await page.locator('body').innerText();
+      evidence.logins.committee = {
+        ok: /read-only|placement committee/i.test(text) && !/\/login/.test(page.url()),
+        email: genuineAccount('committee'),
+        url: page.url(),
+      };
+    } catch (e) {
+      evidence.logins.committee = { ok: false, error: e.message };
     } finally {
       await page.close();
     }
@@ -401,6 +443,22 @@ function mapCase(tc, evidence) {
   const blob = `${tc.feature} ${tc.title} ${tc.steps} ${tc.expected}`.toLowerCase();
   const executedAt = new Date().toISOString();
 
+  const outdated = {
+    'TC-01-022':
+      'Blocked. The home page is the sign-in page. The sandbox line is not on that screen.',
+    'TC-01-023': 'Blocked. The Landing link was removed on purpose.',
+    'TC-02-006':
+      'Blocked. The student CV on file is present, so there is no missing file to open.',
+    'TC-02-007': 'Blocked. The CV list loads. This case needs that request to fail.',
+    'TC-02-008': 'Blocked. This campus has no approved drive.',
+    'TC-02-009': 'Blocked. This campus has no approved drive to apply to.',
+    'TC-02-012': 'Blocked. This campus has no published short project.',
+  };
+  if (outdated[tc.id]) {
+    const status = outdated[tc.id].startsWith('Blocked') ? 'Blocked' : 'Not Run';
+    return result(tc, status, outdated[tc.id], executedAt);
+  }
+
   // Auth specifics
   if (/valid student credentials|student login|student.*land on student/i.test(tc.title)) {
     const e = evidence.logins.student;
@@ -416,6 +474,9 @@ function mapCase(tc, evidence) {
   }
   if (/valid super admin|super admin.*dashboard/i.test(tc.title)) {
     const e = evidence.logins.super_admin;
+    if (!e) {
+      return result(tc, 'Not Run', 'No testing super admin account. This case was not run.', executedAt);
+    }
     return result(tc, e?.ok ? 'Pass' : 'Fail', e?.ok ? `Logged in as ${e.email}` : e?.error, executedAt);
   }
   if (/invalid password/i.test(tc.title)) {
@@ -484,6 +545,10 @@ function mapCase(tc, evidence) {
 
   // Prefer exact route evidence
   let ev = routeEvidence(evidence, role, href);
+  if (/alumni/i.test(`${tc.roles} ${tc.title}`)) {
+    const alumniEv = evidence.routes[`alumni:${href}`];
+    if (alumniEv) ev = alumniEv;
+  }
   if (!ev) {
     // hub fallback
     const hub =
@@ -505,6 +570,9 @@ function mapCase(tc, evidence) {
     }
   }
   if (/error log/i.test(blob)) {
+    if (!evidence.logins.super_admin) {
+      return result(tc, 'Not Run', 'No testing super admin account. This case was not run.', executedAt);
+    }
     const api = evidence.apis['super_admin:GET /api/admin/error-logs'];
     const route = routeEvidence(evidence, 'super_admin', '/dashboard/admin/error-logs');
     const ok = (api && api.ok) || (route && route.ok);
@@ -518,6 +586,9 @@ function mapCase(tc, evidence) {
   }
 
   if (ev) {
+    if (ev.skipped) {
+      return result(tc, 'Not Run', ev.note || 'This route was not opened for this account.', executedAt);
+    }
     return result(tc, ev.ok ? 'Pass' : 'Fail', `Route ${href}: ${ev.ok ? `ok (${ev.textLen || ''} chars)` : ev.error}`, executedAt);
   }
 
@@ -626,21 +697,31 @@ async function runBasicCreates(browser) {
       throw new Error(`Guest listing was not listed. Page said: ${text.slice(0, 300)}`);
     }
   });
-  await runOne('super_admin', DEMO_LOGINS.super_admin, async (page) => {
-    await page.goto(`${BASE}/dashboard/admin/colleges/add`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
-    await page.locator('#collegeName').fill('QA Create Check College');
-    await page.locator('#city').fill('Chennai');
-    await page.locator('#state').fill('Tamil Nadu');
-    await page.locator('#adminFirstName').fill('QA');
-    await page.locator('#adminLastName').fill('Create');
-    await page.locator('#adminEmail').fill('qa-create-check@placementhub.online');
-    await page.locator('#adminPassword').fill('QaCreate1!');
-    await page.getByRole('button', { name: 'Create college' }).click();
-    const text = await waitForOutcome(page, /Student enrollment key|College created/);
-    if (!/Student enrollment key|College created/i.test(text)) {
-      throw new Error(`College was not created. Page said: ${text.slice(0, 300)}`);
-    }
-  });
+  if (process.env.QA_SUPER_ADMIN_EMAIL) {
+    await runOne('super_admin', DEMO_LOGINS.super_admin, async (page) => {
+      await page.goto(`${BASE}/dashboard/admin/colleges/add`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+      await page.locator('#collegeName').fill('QA Create Check College');
+      await page.locator('#city').fill('Chennai');
+      await page.locator('#state').fill('Tamil Nadu');
+      await page.locator('#adminFirstName').fill('QA');
+      await page.locator('#adminLastName').fill('Create');
+      await page.locator('#adminEmail').fill('qa-create-check@placementhub.online');
+      await page.locator('#adminPassword').fill('QaCreate1!');
+      await page.getByRole('button', { name: 'Create college' }).click();
+      const text = await waitForOutcome(page, /Student enrollment key|College created/);
+      if (!/Student enrollment key|College created/i.test(text)) {
+        throw new Error(`College was not created. Page said: ${text.slice(0, 300)}`);
+      }
+    });
+  } else {
+    results.push({
+      role: 'super_admin',
+      email: '',
+      status: 'Skip',
+      actual: 'No testing super admin account. College create was not run.',
+    });
+    console.log('SKIP super_admin');
+  }
 
   const committee = await browser.newPage();
   try {
@@ -738,10 +819,15 @@ async function main() {
     summary,
     evidence: {
       loginOk: Object.fromEntries(Object.entries(evidence.logins).map(([k, v]) => [k, !!v.ok])),
+      logins: evidence.logins,
       routePass: Object.values(evidence.routes).filter((r) => r.ok).length,
-      routeFail: Object.values(evidence.routes).filter((r) => !r.ok).length,
+      routeFail: Object.values(evidence.routes).filter((r) => r.ok === false).length,
+      failedRoutes: Object.entries(evidence.routes)
+        .filter(([, r]) => r.ok === false)
+        .map(([key, r]) => ({ key, label: r.label, error: r.error })),
       apiPass: Object.values(evidence.apis).filter((r) => r.ok).length,
       apiFail: Object.values(evidence.apis).filter((r) => !r.ok).length,
+      authExtras: evidence.authExtras,
     },
     results,
   };

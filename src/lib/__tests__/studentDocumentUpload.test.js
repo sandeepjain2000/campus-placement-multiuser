@@ -34,6 +34,24 @@ describe('validateStudentResumeFile', () => {
     expect(meta.ok).toBe(true);
   });
 
+  it('rejects notes.pdf.exe even when the type says PDF', () => {
+    const result = validateStudentResumeFile({
+      name: 'notes.pdf.exe',
+      type: 'application/pdf',
+      size: 1024,
+    });
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects an executable hidden behind a final .pdf', () => {
+    const result = validateStudentResumeFile({
+      name: 'notes.exe.pdf',
+      type: 'application/pdf',
+      size: 1024,
+    });
+    expect(result.ok).toBe(false);
+  });
+
   it('rejects PNG by MIME when extension is missing', () => {
     const result = validateStudentResumeFile({
       name: 'resume',

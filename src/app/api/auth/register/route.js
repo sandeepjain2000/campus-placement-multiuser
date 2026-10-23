@@ -21,10 +21,11 @@ import { isDemoDataApiEnabled } from '@/lib/demoDataAccess';
 import { ensureIitmTieUpForEmployer } from '@/lib/employerIitmTieUp';
 
 async function __platform_POST(request) {
+  let email = '';
   try {
     const body = await request.json();
     const { role, firstName, lastName, password, phone, captchaToken, captchaAnswer } = body;
-    const email = String(body.email || '').trim().toLowerCase();
+    email = String(body.email || '').trim().toLowerCase();
     const allowedRoles = new Set(['college_admin', 'employer']);
 
     const captchaFailure = explainCaptchaFailure(captchaToken, captchaAnswer);
@@ -217,7 +218,7 @@ async function __platform_POST(request) {
   } catch (error) {
     if (error.message === 'EMAIL_EXISTS') {
       return NextResponse.json(
-        { error: formatEmailInUseMessage(error.existing, { email }) },
+        { error: formatEmailInUseMessage(error.existing, { email: email || error.existing?.email }) },
         { status: 409 }
       );
     }

@@ -8,16 +8,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
-import { DEMO_SEED_PASSWORD } from '../../src/lib/demoLogins.js';
+import { qaAccountPassword } from '../qaAccountPassword.js';
 const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
 
-const { answerLoginCaptcha } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
+const { answerLoginCaptcha, loginThroughUi } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 
 const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus-placement-omega.vercel.app').replace(
   /\/$/,
   '',
 );
-const PASSWORD = process.env.DEMO_SEED_PASSWORD || DEMO_SEED_PASSWORD || 'Admin@123';
+const PASSWORD = qaAccountPassword();
 const MARKER = `GT-XLSX-${Date.now()}`;
 const NOT_RUN_PATH = path.join(process.cwd(), 'qa/data/placementhub_not_run_cases.json');
 const RESULTS_PATH = path.join(process.cwd(), 'qa/data/placementhub_test_results.json');
@@ -45,25 +45,7 @@ function blocked(actual) {
 }
 
 async function uiLogin(page, email) {
-  await page.goto(`${BASE}/login?email=${encodeURIComponent(email)}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 60_000,
-  });
-  await page.waitForSelector('#login-email', { timeout: 20_000 });
-  for (let i = 0; i < 40; i += 1) {
-    const em = await page.inputValue('#login-email');
-    const pwd = await page.inputValue('#login-password');
-    if (em === email && pwd.length > 0) break;
-    await page.waitForTimeout(250);
-  }
-  if ((await page.inputValue('#login-email')) !== email) await page.fill('#login-email', email);
-  if (!(await page.inputValue('#login-password'))) await page.fill('#login-password', PASSWORD);
-  await answerLoginCaptcha(page);
-  await page.click('#login-submit');
-  await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
-  if (page.url().includes('/auth/continue')) {
-    await page.waitForURL(/\/dashboard\//, { timeout: 90_000 });
-  }
+  await loginThroughUi(page, BASE, email, PASSWORD);
 }
 
 async function waitBody(page, min = 60) {
@@ -319,21 +301,18 @@ async function handleStudent(tc, pages) {
   }
 
   if (/upload resume|upload.*cv|double extensions/i.test(title)) {
-    await page.goto(`${BASE}/dashboard/student/documents`, { waitUntil: 'domcontentloaded' });
-    const body = await waitBody(page);
-    const hasUpload = /upload|choose file|cv|resume|my cvs/i.test(body);
+    await page.goto(`${BASE}/dashboard/student/my-cvs`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('heading', { name: 'My CVs' }).waitFor({ state: 'visible', timeout: 20_000 });
+    const chooseFile = page.getByRole('button', { name: 'Choose file' });
+    const uploadReady = await chooseFile.waitFor({ state: 'visible', timeout: 20_000 }).then(() => true).catch(() => false);
     if (/double extension/i.test(title)) {
-      // Attempt malicious name via API if available
       const probe = await api(page, 'GET', '/api/student/cv-list');
       return probe.status < 500
-        ? ok(`CV list reachable (${probe.status}); double-extension upload needs file fixture — UI present=${hasUpload}`)
+        ? ok(`CV list reachable (${probe.status}); double-extension upload needs a file fixture. Choose file visible=${uploadReady}`)
         : fail(probe.text);
     }
-    if (!hasUpload) return fail('Documents/CV upload UI missing');
-    // Soft pass if upload UI present; actual S3 may be misconfigured
-    const fileInput = page.locator('input[type="file"]').first();
-    if (!(await fileInput.count())) return ok('CV/documents page loads; no file input in current UI state');
-    return ok('Upload UI available on documents page');
+    if (!uploadReady) return fail('My CVs upload control was not ready');
+    return ok('Upload control is ready on My CVs');
   }
 
   if (/ineligible student blocked|apply-time cgpa|apply after deadline|cannot apply to cancelled/i.test(title)) {
@@ -698,7 +677,7 @@ async function handleGeneric(tc, pages) {
     if (/clarification/.test(blob)) return role === 'student' ? '/dashboard/student/clarifications' : role === 'employer' ? '/dashboard/employer/clarifications' : '/dashboard/college/clarifications';
     if (/mentorship/.test(blob)) return role === 'employer' ? '/dashboard/employer/mentorship-requests' : '/dashboard/student/mentorship-requests';
     if (/calendar|event/.test(blob)) return role === 'college' ? '/dashboard/college/calendar' : role === 'employer' ? '/dashboard/employer/calendar' : '/dashboard/student/calendar';
-    if (/cv|document|resume/.test(blob)) return '/dashboard/student/documents';
+    if (/cv|document|resume/.test(blob)) return '/dashboard/student/my-cvs';
     if (/rule|fcfs/.test(blob)) return '/dashboard/college/rules';
     if (/partner/.test(blob)) return role === 'employer' ? '/dashboard/employer/select-campus' : '/dashboard/college/employers/requests';
     if (/report|audit|export/.test(blob)) return role === 'admin' ? '/dashboard/admin/audit-reports' : role === 'college' ? '/dashboard/college/audit-reports' : '/dashboard/my-exports';

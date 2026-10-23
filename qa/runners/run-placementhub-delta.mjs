@@ -8,9 +8,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
-import { DEMO_SEED_PASSWORD } from '../../src/lib/demoLogins.js';
+import { qaAccountPassword } from '../qaAccountPassword.js';
 
-const { answerLoginCaptcha } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
+const { answerLoginCaptcha, loginThroughUi } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 import { DEV_NOTES_PASSWORD } from '../../src/lib/developerNotesPassword.js';
 import { FEATURE_IDEA_TOPICS } from '../../src/lib/featureIdeas.js';
 import { Client } from 'pg';
@@ -20,7 +20,7 @@ const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus
   /\/$/,
   '',
 );
-const PASSWORD = process.env.DEMO_SEED_PASSWORD || DEMO_SEED_PASSWORD || 'Admin@123';
+const PASSWORD = qaAccountPassword();
 const MARKER = `GT-DELTA-${Date.now()}`;
 const CASES_PATH = path.join(process.cwd(), 'qa/data/placementhub_delta_cases.json');
 const OUT_PATH = path.join(process.cwd(), 'qa/data/placementhub_delta_results.json');
@@ -60,25 +60,7 @@ function readEnvLocal() {
 }
 
 async function uiLogin(page, email) {
-  await page.goto(`${BASE}/login?email=${encodeURIComponent(email)}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 60_000,
-  });
-  await page.waitForSelector('#login-email', { timeout: 25_000 });
-  for (let i = 0; i < 40; i += 1) {
-    const em = await page.inputValue('#login-email');
-    const pwd = await page.inputValue('#login-password');
-    if (em === email && pwd.length > 0) break;
-    await page.waitForTimeout(250);
-  }
-  if ((await page.inputValue('#login-email')) !== email) await page.fill('#login-email', email);
-  if (!(await page.inputValue('#login-password'))) await page.fill('#login-password', PASSWORD);
-  await answerLoginCaptcha(page);
-  await page.click('#login-submit');
-  await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
-  if (page.url().includes('/auth/continue')) {
-    await page.waitForURL(/\/dashboard\//, { timeout: 90_000 });
-  }
+  await loginThroughUi(page, BASE, email, PASSWORD);
 }
 
 async function waitBody(page, min = 40) {

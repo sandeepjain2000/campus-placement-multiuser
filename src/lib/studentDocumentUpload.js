@@ -147,32 +147,35 @@ export function validateStudentDocumentFileForType(file, documentType) {
  * Client-side validation for primary résumé upload (profile / replace CV).
  * @param {{ name?: string, type?: string, size?: number }} file
  */
+const RESUME_DISGUISED_EXTENSIONS = new Set([
+  'pdf', 'doc', 'docx', 'exe', 'js', 'mjs', 'html', 'htm', 'svg',
+  'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'bat', 'cmd', 'com',
+  'scr', 'msi', 'php', 'asp', 'aspx', 'jar', 'vbs', 'ps1',
+]);
+
 export function validateStudentResumeFile(file) {
   const fileName = String(file?.name || '').trim() || 'document';
   const size = Number(file?.size || 0);
-  const ext = fileName.split('.').pop()?.toLowerCase() || '';
-  const imageExts = new Set(['png', 'jpg', 'jpeg', 'webp', 'gif', 'bmp', 'heic', 'heif']);
-  if (imageExts.has(ext)) {
+  const segments = fileName.split('.');
+  const ext = segments.length > 1 ? segments[segments.length - 1].toLowerCase() : '';
+  const earlierExtensions = segments.slice(0, -1).slice(1);
+  const extType = STUDENT_RESUME_EXT_TO_TYPE[ext] || '';
+  const disguised = earlierExtensions.some((part) => RESUME_DISGUISED_EXTENSIONS.has(part.toLowerCase()));
+  if (!extType || disguised) {
     return { ok: false, error: STUDENT_RESUME_VALIDATION_ERROR };
   }
-  const extType = ext && STUDENT_RESUME_EXT_TO_TYPE[ext] ? STUDENT_RESUME_EXT_TO_TYPE[ext] : '';
   const rawType = String(file?.type || '').split(';')[0].trim().toLowerCase();
   if (rawType.startsWith('image/')) {
     return { ok: false, error: STUDENT_RESUME_VALIDATION_ERROR };
   }
-  const contentType =
-    rawType && STUDENT_RESUME_ALLOWED_TYPES.has(rawType)
-      ? rawType
-      : extType;
-
-  if (!size || !contentType || !STUDENT_RESUME_ALLOWED_TYPES.has(contentType)) {
+  if (rawType && rawType !== 'application/octet-stream' && rawType !== extType) {
     return { ok: false, error: STUDENT_RESUME_VALIDATION_ERROR };
   }
-  if (size > STUDENT_RESUME_MAX_BYTES) {
+  if (!size || size > STUDENT_RESUME_MAX_BYTES) {
     return { ok: false, error: STUDENT_RESUME_VALIDATION_ERROR };
   }
 
-  return { ok: true, fileName, contentType, size };
+  return { ok: true, fileName, contentType: extType, size };
 }
 
 /** Client-side résumé validation including magic-byte check. */

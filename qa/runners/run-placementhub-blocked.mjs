@@ -10,16 +10,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
-import { DEMO_SEED_PASSWORD } from '../../src/lib/demoLogins.js';
+import { qaAccountPassword } from '../qaAccountPassword.js';
 const { genuineAccount } = createRequire(import.meta.url)('../genuineAccounts.js');
 
-const { answerLoginCaptcha } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
+const { answerLoginCaptcha, loginThroughUi } = createRequire(import.meta.url)('../answerLoginCaptcha.js');
 
 const BASE = (process.env.QA_BASE_URL || process.env.BASE_URL || 'https://campus-placement-omega.vercel.app').replace(
   /\/$/,
   '',
 );
-const PASSWORD = process.env.DEMO_SEED_PASSWORD || DEMO_SEED_PASSWORD || 'Admin@123';
+const PASSWORD = qaAccountPassword();
 const IITM_TENANT = 'a1000000-0000-0000-0000-000000000001';
 const MARKER = `GT-BLK-${Date.now()}`;
 
@@ -61,25 +61,7 @@ function blocked(actual) {
 }
 
 async function uiLogin(page, email) {
-  await page.goto(`${BASE}/login?email=${encodeURIComponent(email)}`, {
-    waitUntil: 'domcontentloaded',
-    timeout: 60_000,
-  });
-  await page.waitForSelector('#login-email', { timeout: 25_000 });
-  for (let i = 0; i < 40; i += 1) {
-    const em = await page.inputValue('#login-email');
-    const pwd = await page.inputValue('#login-password');
-    if (em === email && pwd.length > 0) break;
-    await page.waitForTimeout(250);
-  }
-  if ((await page.inputValue('#login-email')) !== email) await page.fill('#login-email', email);
-  if (!(await page.inputValue('#login-password'))) await page.fill('#login-password', PASSWORD);
-  await answerLoginCaptcha(page);
-  await page.click('#login-submit');
-  await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
-  if (page.url().includes('/auth/continue')) {
-    await page.waitForURL(/\/dashboard\//, { timeout: 90_000 });
-  }
+  await loginThroughUi(page, BASE, email, PASSWORD);
 }
 
 async function waitBody(page, min = 50) {

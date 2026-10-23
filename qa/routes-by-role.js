@@ -63,12 +63,12 @@ const studentRoutes = dedupe([
   { label: "Getting Started", href: "/dashboard/student/getting-started" },
   { label: "My data export", href: "/dashboard/my-exports" },
   { label: "Browse Drives", href: "/dashboard/student/drives" },
-  // Non-alumni demo (arjun) is redirected away — not a product bug; skip blank-screen (no menu entry either)
+  // The student QA account is not alumni, so this URL is opened on the alumni account instead.
   {
     label: "Browse Alumni Jobs",
     href: "/dashboard/alumni/jobs",
     skip: true,
-    skipReason: "Regular student demo is not alumni; URL redirects to drives (access control, not a blank-screen bug)",
+    skipReason: "The student QA account is not alumni. The alumni account opens this screen.",
   },
   { label: "Browse Internships", href: "/dashboard/student/internships" },
   { label: "Not Processed Internships", href: "/dashboard/student/internships/not-processed" },
@@ -80,7 +80,7 @@ const studentRoutes = dedupe([
     label: "My Alumni Jobs",
     href: "/dashboard/alumni/applications/jobs",
     skip: true,
-    skipReason: "Regular student demo is not alumni; URL redirects to drives (access control, not a blank-screen bug)",
+    skipReason: "The student QA account is not alumni. The alumni account opens this screen.",
   },
   { label: "My Internships", href: "/dashboard/student/applications/internships" },
   { label: "My Projects", href: "/dashboard/student/applications/projects" },
@@ -91,6 +91,7 @@ const studentRoutes = dedupe([
   { label: "Alerts", href: "/dashboard/alerts" },
   { label: "Feedback", href: "/dashboard/feedback" },
   { label: "My Profile", href: "/dashboard/student/profile" },
+  { label: "My CVs", href: "/dashboard/student/my-cvs" },
   { label: "Documents", href: "/dashboard/student/documents" },
 ]);
 

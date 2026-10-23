@@ -40,17 +40,37 @@ async function loginThroughUi(page, baseUrl, email, password) {
     waitUntil: 'domcontentloaded',
     timeout: 60_000,
   });
-  await loginForm(page).locator('#login-email').first().waitFor({ state: 'visible', timeout: 20_000 });
   const emailField = loginForm(page).locator('#login-email').first();
   const passwordField = loginForm(page).locator('#login-password').first();
-  for (let i = 0; i < 40; i += 1) {
-    const em = await emailField.inputValue().catch(() => '');
-    const current = await passwordField.inputValue().catch(() => '');
-    if (em === email && current.length > 0) break;
-    await page.waitForTimeout(250);
+  await emailField.waitFor({ state: 'visible', timeout: 20_000 });
+  await emailField.click();
+  const emailReady = await page
+    .waitForFunction(() => {
+      const el = document.querySelector('#login-form #login-email');
+      return Boolean(el && !el.readOnly);
+    }, null, { timeout: 20_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!emailReady) {
+    await emailField.evaluate((el) => {
+      el.readOnly = false;
+    });
   }
-  if ((await emailField.inputValue()) !== email) await emailField.fill(email);
-  if (!(await passwordField.inputValue()) && password) await passwordField.fill(password);
+  await emailField.fill(email);
+  await passwordField.click();
+  const passwordReady = await page
+    .waitForFunction(() => {
+      const el = document.querySelector('#login-form #login-password');
+      return Boolean(el && !el.readOnly);
+    }, null, { timeout: 20_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!passwordReady) {
+    await passwordField.evaluate((el) => {
+      el.readOnly = false;
+    });
+  }
+  await passwordField.fill(password);
   await answerLoginCaptcha(page);
   await loginForm(page).locator('#login-submit').click();
   await page.waitForURL(/\/(dashboard|auth\/continue)/, { timeout: 90_000 });
