@@ -1,0 +1,46 @@
+{
+  "baseUrl": "https://app.placementhub.online",
+  "executedAt": "2026-10-21T10:57:07.212Z",
+  "summary": {
+    "Pass": 5,
+    "Skip": 1
+  },
+  "results": [
+    {
+      "role": "student",
+      "email": "",
+      "status": "Pass",
+      "actual": "Basic create saved"
+    },
+    {
+      "role": "alumni",
+      "email": "",
+      "status": "Pass",
+      "actual": "Basic create saved"
+    },
+    {
+      "role": "employer",
+      "email": "",
+      "status": "Pass",
+      "actual": "Basic create saved"
+    },
+    {
+      "role": "college_admin",
+      "email": "",
+      "status": "Pass",
+      "actual": "Basic create saved"
+    },
+    {
+      "role": "super_admin",
+      "email": "",
+      "status": "Pass",
+      "actual": "Basic create saved"
+    },
+    {
+      "role": "placement_committee",
+      "email": "",
+      "status": "Skip",
+      "actual": "No create control on the college guest-engagement page."
+    }
+  ]
+}

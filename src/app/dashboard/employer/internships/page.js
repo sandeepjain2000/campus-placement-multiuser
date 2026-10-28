@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import useSWR from 'swr';
 import DataTableToolbar from '@/components/DataTableToolbar';
 import PageLoading from '@/components/PageLoading';
@@ -9,6 +9,7 @@ import { COMMON_SORT_OPTIONS, FILTER_ALL } from '@/lib/tableQueryPresets';
 import {
   GraduationCap, Plus, Users, IndianRupee, Activity, FileText, Settings,
   LayoutGrid, List, Ban, ArrowRight, Undo2,
+  Paperclip, UploadCloud, Trash2, Image as ImageIcon, ExternalLink,
 } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
@@ -67,6 +68,109 @@ async function swrFetcher(url) {
 
 function InternFieldError({ message }) {
   return <FieldError>{message}</FieldError>;
+}
+
+// ── Attachment helpers (mirrors projects page) ───────────────────────────────
+const ATTACH_ALLOWED_MIME = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+const ATTACH_MAX_BYTES = 10 * 1024 * 1024;
+
+function formatAttachFileSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function attachIcon(contentType) {
+  if (contentType?.startsWith('image/')) return <ImageIcon className="size-4 shrink-0 text-violet-500" aria-hidden />;
+  return <FileText className="size-4 shrink-0 text-red-500" aria-hidden />;
+}
+
+async function attachmentFetcher(url) {
+  const res = await fetch(url, { cache: 'no-store', credentials: 'include' });
+  if (res.status === 404) return { attachments: [] };
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+function PostingAttachments({ jobId, addToast }) {
+  const fileInputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const apiPath = `/api/employer/projects/${jobId}/attachments`;
+  const { data, error, isLoading, mutate } = useSWR(jobId ? apiPath : null, attachmentFetcher, { revalidateOnFocus: false });
+  const attachments = Array.isArray(data?.attachments) ? data.attachments : [];
+
+  const handleFileChange = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (!file) return;
+    if (!ATTACH_ALLOWED_MIME.includes(file.type)) { addToast('Only PDF and image files allowed.', 'warning'); return; }
+    if (file.size > ATTACH_MAX_BYTES) { addToast('File exceeds 10 MB limit.', 'warning'); return; }
+    if (attachments.length >= 5) { addToast('Maximum 5 attachments per posting.', 'warning'); return; }
+    const fd = new FormData(); fd.append('file', file);
+    setUploading(true);
+    try {
+      const res = await fetch(apiPath, { method: 'POST', body: fd, credentials: 'include' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) { addToast(json.error || 'Upload failed.', 'error'); return; }
+      addToast('File attached.', 'success'); await mutate();
+    } catch { addToast('Network error.', 'error'); } finally { setUploading(false); }
+  }, [apiPath, attachments.length, addToast, mutate]);
+
+  const handleDelete = useCallback(async (attachmentId) => {
+    setDeletingId(attachmentId);
+    try {
+      const res = await fetch(`${apiPath}?attachmentId=${attachmentId}`, { method: 'DELETE', credentials: 'include' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) { addToast(json.error || 'Could not remove.', 'error'); return; }
+      addToast('Attachment removed.', 'success'); await mutate();
+    } catch { addToast('Network error.', 'error'); } finally { setDeletingId(null); }
+  }, [apiPath, addToast, mutate]);
+
+  if (isLoading) return <p className="text-muted-foreground text-sm">Loading attachments…</p>;
+
+  return (
+    <div className="flex flex-col gap-3">
+      {error ? (
+        <p className="text-muted-foreground text-sm">Could not load existing attachments. You can still upload below.</p>
+      ) : attachments.length === 0 ? (
+        <p className="text-muted-foreground text-sm">No attachments yet. Upload a PDF or image below.</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {attachments.map((a) => (
+            <li key={a.id} className="bg-muted/40 flex items-center gap-3 rounded-lg border px-3 py-2.5">
+              <span className="text-muted-foreground">{attachIcon(a.content_type)}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-foreground m-0 truncate text-sm font-medium">{a.original_filename}</p>
+                <p className="text-muted-foreground m-0 text-xs">{formatAttachFileSize(a.file_size_bytes)}</p>
+              </div>
+              <a href={`/api/s3/view?url=${encodeURIComponent(a.file_url)}`} target="_blank" rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 shrink-0" aria-label={`Open ${a.original_filename}`}>
+                <ExternalLink className="size-4" />
+              </a>
+              <button type="button" aria-label={`Remove ${a.original_filename}`} disabled={deletingId === a.id}
+                onClick={() => handleDelete(a.id)}
+                className="text-destructive hover:text-destructive/80 shrink-0 disabled:opacity-50">
+                <Trash2 className="size-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {error || attachments.length < 5 ? (
+        <div>
+          <input ref={fileInputRef} type="file" accept=".pdf,image/*" className="sr-only" onChange={handleFileChange} aria-label="Upload attachment" />
+          <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileInputRef.current?.click()}>
+            <UploadCloud className="size-4" data-icon="inline-start" />
+            {uploading ? 'Uploading…' : 'Upload PDF or image'}
+          </Button>
+          <p className="text-muted-foreground mt-1.5 text-xs">PDF or image · max 10 MB · up to 5 files</p>
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 export default function EmployerInternshipsPage() {
@@ -1068,6 +1172,7 @@ export default function EmployerInternshipsPage() {
           onManage={openManage}
           onClosePosting={closePublishedInternship}
           onWithdrawPosting={withdrawPublishedInternship}
+          addToast={addToast}
         />
       ) : null}
 
@@ -1218,7 +1323,9 @@ function InternshipDetailDialog({
   onManage,
   onClosePosting,
   onWithdrawPosting,
+  addToast,
 }) {
+  const [tab, setTab] = useState('info');
   const parsed = parseInternshipDescription(internship.description || '');
   const dates = resolveInternshipDatesFromRow(internship);
   const branchLabel = formatEligibleBranchesLabel(internship.branches ?? internship.eligibleBranches);
@@ -1232,12 +1339,7 @@ function InternshipDetailDialog({
   }).filter((row) => row.id !== 'status' && row.id !== 'resume' && row.id !== 'placement' && row.id !== 'cgpa');
 
   return (
-    <Dialog
-      open
-      onOpenChange={(next) => {
-        if (!next) onClose();
-      }}
-    >
+    <Dialog open onOpenChange={(next) => { if (!next) onClose(); }}>
       <DialogContent className="sm:max-w-xl gap-4" showCloseButton>
         <DialogHeader className="gap-2 pr-8">
           <DialogTitle id="internship-detail-title" className="text-xl font-semibold">
@@ -1250,53 +1352,62 @@ function InternshipDetailDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid max-h-[min(60vh,28rem)] gap-3 overflow-y-auto pr-1">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <DetailField label="Stipend / month">{stipendLabel(internship.salaryMin, internship.salaryMax)}</DetailField>
-            <DetailField label="Start date">{dates.startDate ? formatDate(dates.startDate) : '—'}</DetailField>
-            <DetailField label="End date">{dates.endDate ? formatDate(dates.endDate) : '—'}</DetailField>
-            <DetailField label="Branch">{branchLabel}</DetailField>
-            <DetailField label="Specialization">{specializationLabel}</DetailField>
-            <DetailField label="Min CGPA">{formatEmployerMinCgpa(internship.minCgpa ?? internship.cgpa)}</DetailField>
-            <DetailField label="Openings">{internship.vacancies ?? '—'}</DetailField>
-            <DetailField label="Posted">{internship.createdAt ? formatDate(internship.createdAt) : '—'}</DetailField>
-          </div>
-          {internship.keywords ? <DetailField label="Skills">{internship.keywords}</DetailField> : null}
-          {eligibilityChecks.length > 0 ? (
-            <DetailField label="Eligibility">
-              <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-                {eligibilityChecks.map((row) => (
-                  <li key={row.id} className="text-sm leading-relaxed">
-                    <span className="font-semibold">{row.label}:</span> {row.requirement}
-                  </li>
-                ))}
-              </ul>
-            </DetailField>
-          ) : (
-            <DetailField label="Eligibility">Open to all eligible students</DetailField>
-          )}
-          {parsed.notes ? <DetailField label="Notes">{parsed.notes}</DetailField> : null}
-        </div>
+        <Tabs value={tab} onValueChange={setTab} className="w-full gap-3">
+          <TabsList variant="line" className="h-auto w-full justify-start gap-1 bg-transparent p-0">
+            <TabsTrigger value="info" className="px-3 py-1.5 text-sm data-active:shadow-none">Info</TabsTrigger>
+            <TabsTrigger value="attachments" className="flex items-center gap-1.5 px-3 py-1.5 text-sm data-active:shadow-none">
+              <Paperclip className="size-3.5" />Attachments
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="info" className="mt-0 outline-none">
+            <div className="grid max-h-[min(55vh,26rem)] gap-3 overflow-y-auto pr-1">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <DetailField label="Stipend / month">{stipendLabel(internship.salaryMin, internship.salaryMax)}</DetailField>
+                <DetailField label="Start date">{dates.startDate ? formatDate(dates.startDate) : '—'}</DetailField>
+                <DetailField label="End date">{dates.endDate ? formatDate(dates.endDate) : '—'}</DetailField>
+                <DetailField label="Branch">{branchLabel}</DetailField>
+                <DetailField label="Specialization">{specializationLabel}</DetailField>
+                <DetailField label="Min CGPA">{formatEmployerMinCgpa(internship.minCgpa ?? internship.cgpa)}</DetailField>
+                <DetailField label="Openings">{internship.vacancies ?? '—'}</DetailField>
+                <DetailField label="Posted">{internship.createdAt ? formatDate(internship.createdAt) : '—'}</DetailField>
+              </div>
+              {internship.keywords ? <DetailField label="Skills">{internship.keywords}</DetailField> : null}
+              {eligibilityChecks.length > 0 ? (
+                <DetailField label="Eligibility">
+                  <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+                    {eligibilityChecks.map((row) => (
+                      <li key={row.id} className="text-sm leading-relaxed">
+                        <span className="font-semibold">{row.label}:</span> {row.requirement}
+                      </li>
+                    ))}
+                  </ul>
+                </DetailField>
+              ) : (
+                <DetailField label="Eligibility">Open to all eligible students</DetailField>
+              )}
+              {parsed.notes ? <DetailField label="Notes">{parsed.notes}</DetailField> : null}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="attachments" className="mt-0 outline-none">
+            <div className="max-h-[min(55vh,26rem)] overflow-y-auto pr-1">
+              <PostingAttachments jobId={internship.id} addToast={addToast} />
+            </div>
+          </TabsContent>
+        </Tabs>
 
         <DialogFooter className="gap-2 sm:justify-end">
           {internship.status === 'published' ? (
             <>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
+              <Button type="button" variant="secondary" size="sm"
                 disabled={closingId === internship.id || withdrawingId === internship.id}
-                onClick={() => void onClosePosting(internship)}
-              >
+                onClick={() => void onClosePosting(internship)}>
                 {closingId === internship.id ? 'Closing…' : 'Close posting'}
               </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
+              <Button type="button" variant="ghost" size="sm"
                 disabled={withdrawingId === internship.id || closingId === internship.id}
-                onClick={() => void onWithdrawPosting(internship)}
-              >
+                onClick={() => void onWithdrawPosting(internship)}>
                 {withdrawingId === internship.id ? 'Withdrawing…' : 'Withdraw'}
               </Button>
             </>

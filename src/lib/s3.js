@@ -371,3 +371,31 @@ export async function createEmployerLogoPresign({ userId, fileName, contentType 
 export async function createTenantLogoPresign({ tenantId, fileName, contentType }) {
   return createImagePresign({ keyPrefix: `tenants/${tenantId}/logo`, fileName, contentType });
 }
+
+/**
+ * Upload a project attachment (PDF or image) from the server buffer.
+ * Key: project-attachments/{employerId}/{jobPostingId}/{uuid}-{sanitized_filename}
+ * @param {{ employerId: string, jobPostingId: string, fileName: string, contentType: string, body: Buffer | Uint8Array }} opts
+ * @returns {Promise<{ fileUrl: string, key: string, bucket: string, contentType: string }>}
+ */
+export async function uploadProjectAttachmentBuffer({ employerId, jobPostingId, fileName, contentType, body }) {
+  if (!isS3Configured()) {
+    throw new Error('S3 is not configured (missing AWS env vars).');
+  }
+  const bucket = process.env.S3_BUCKET_NAME;
+  const region = process.env.AWS_REGION;
+  const safe = sanitizeFilename(fileName);
+  const key = `project-attachments/${employerId}/${jobPostingId}/${randomUUID()}-${safe}`;
+  const resolvedType = contentType || 'application/octet-stream';
+  const client = getClient();
+  await client.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ContentType: resolvedType,
+    }),
+  );
+  const fileUrl = buildS3ObjectPublicUrl(bucket, region, key);
+  return { fileUrl, key, bucket, contentType: resolvedType };
+}

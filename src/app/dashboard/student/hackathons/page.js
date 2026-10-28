@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import useSWR from 'swr';
-import { BookOpen, Calendar, IndianRupee, Trophy } from 'lucide-react';
+import { BookOpen, Calendar, IndianRupee, Trophy, Paperclip, FileText, Image as ImageIcon, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import CompanyNameLink from '@/components/CompanyNameLink';
@@ -18,6 +19,47 @@ import {
 } from '@/lib/getApplyBlockReason';
 import { buildStudentApplyContext, programOpportunityFromRow } from '@/lib/studentApplyContext';
 import { useProgramApplicationWithCv } from '@/components/student/StudentCvApply';
+
+function formatFileSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function attachmentIcon(contentType) {
+  if (contentType?.startsWith('image/')) return <ImageIcon className="size-4 shrink-0 text-violet-500" aria-hidden />;
+  return <FileText className="size-4 shrink-0 text-red-500" aria-hidden />;
+}
+
+function HackathonAttachmentsList({ projectId }) {
+  const { data, isLoading, error } = useSWR(
+    projectId ? `/api/student/projects/${projectId}/attachments` : null,
+    fetcher,
+    { revalidateOnFocus: false },
+  );
+  const attachments = Array.isArray(data?.attachments) ? data.attachments : [];
+  if (isLoading) return <p className="text-muted-foreground text-xs">Loading attachments…</p>;
+  if (error) return <p className="text-muted-foreground text-xs">Could not load attachments.</p>;
+  if (!attachments.length) return <p className="text-muted-foreground text-xs">No attachments for this hackathon.</p>;
+  return (
+    <ul className="flex flex-col gap-1.5">
+      {attachments.map((a) => (
+        <li key={a.id} className="bg-muted/40 flex items-center gap-2.5 rounded-lg border px-3 py-2">
+          {attachmentIcon(a.content_type)}
+          <div className="min-w-0 flex-1">
+            <p className="text-foreground m-0 truncate text-sm font-medium">{a.original_filename}</p>
+            <p className="text-muted-foreground m-0 text-xs">{formatFileSize(a.file_size_bytes)}</p>
+          </div>
+          <a href={`/api/s3/view?url=${encodeURIComponent(a.file_url)}`} target="_blank" rel="noopener noreferrer"
+            className="text-primary hover:text-primary/80 shrink-0 text-xs font-medium" aria-label={`Open ${a.original_filename}`}>
+            <ExternalLink className="size-4" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 async function fetcher(url) {
   const res = await fetch(url, { cache: 'no-store', credentials: 'include' });
@@ -42,6 +84,8 @@ export default function StudentHackathonsPage() {
   const globalBlockedReason = globalApplyBlockedReason(canApply, applyBlockedReason);
 
   const { startApply, applyingId, pickerModal } = useProgramApplicationWithCv({ addToast, mutate });
+  const [openAttachments, setOpenAttachments] = useState({});
+  const toggleAttachments = (id) => setOpenAttachments((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const apply = async (jobId, title) => {
     const row = items.find((i) => i.id === jobId);
@@ -176,6 +220,26 @@ export default function StudentHackathonsPage() {
                     ))}
                   </div>
                 ) : null}
+                {/* Attachments toggle */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => toggleAttachments(row.id)}
+                    className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-xs font-medium transition-colors"
+                    aria-expanded={Boolean(openAttachments[row.id])}
+                  >
+                    <Paperclip className="size-3.5" aria-hidden />
+                    Attachments
+                    {openAttachments[row.id]
+                      ? <ChevronUp className="size-3.5" aria-hidden />
+                      : <ChevronDown className="size-3.5" aria-hidden />}
+                  </button>
+                  {openAttachments[row.id] ? (
+                    <div className="mt-2">
+                      <HackathonAttachmentsList projectId={row.id} />
+                    </div>
+                  ) : null}
+                </div>
                 {!row.hasApplied ? (
                   <PostingEligibilitySection
                     opportunity={programOpportunityFromRow(row)}
