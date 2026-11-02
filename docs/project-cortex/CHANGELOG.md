@@ -2,6 +2,11 @@
 
 Changes to this folder, not to the product.
 
+## 2026-11-02
+
+- Logged Super Admin Colleges/Employers name-button outline fix in project-health Implementation Log.
+- Noted omitted Tailwind Preflight and `.admin-entity-name-btn` in `02-architecture/stack-and-environments.md`.
+
 ## 2026-10-22
 
 - `/` opens sign-in on AWS, Vercel, and local. The old Vercel demo landing is saved at `saved-demo-landing/page.js` and is not served.

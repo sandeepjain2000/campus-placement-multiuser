@@ -163,7 +163,7 @@ export default function AdminCollegesPage() {
                 <TableCell className="font-semibold">
                   <button
                     type="button"
-                    className="text-primary font-semibold hover:underline"
+                    className="admin-entity-name-btn"
                     onClick={(e) => {
                       e.stopPropagation();
                       openCollege(c.id);

@@ -8,6 +8,16 @@ Entry format: `YYYY-MM-DD — <slice>`.
 
 ---
 
+## 2026-11-02 — UI fix: Super Admin Colleges/Employers name buttons showed a box outline
+
+- **Where (as a user):** Super Admin → **Platform Directory** → **Colleges** or **Employers**. Address: `/dashboard/admin/colleges` or `/dashboard/admin/employers`.
+- **Symptom:** each college/company name in the directory table sat inside a thin rectangular outline (and looked blue / link-like). Other columns looked normal.
+- **Cause:** those names are native `<button>`s. Tailwind Preflight is omitted (`src/styles/shadcn.css`), and `@layer base` in `globals.css` does not clear UA button borders, so the browser chrome stayed visible. Classes were only `text-primary font-semibold hover:underline`.
+- **Change:** reuse `.admin-entity-name-btn` on both name buttons. Tuned that class to match admin listing name links: primary colour, semibold, underline on hover only, `border`/`background`/`padding` cleared. Handlers, element type, row clicks, View/Edit, and employer Website links unchanged.
+- **Files:** `src/app/globals.css`, `src/app/dashboard/admin/colleges/page.js`, `src/app/dashboard/admin/employers/page.js`.
+- **Checked:** `node --check` on both pages passed. Browser smoke not run — nothing was listening on `localhost:3000`.
+- **Git:** not committed, not pushed.
+
 ## 2026-10-10 — UI fix: student Browse Drives month filter clipped (BUG-009)
 
 - **Where (as a user):** Student → Home → **Opportunities** → **Browse Drives** → month filter ("Any month"). Address: `/dashboard/student/drives`.

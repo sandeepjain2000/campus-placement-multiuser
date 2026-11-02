@@ -329,7 +329,7 @@ export default function AdminEmployersPage() {
                   <div className="flex flex-wrap items-center gap-1">
                     <button
                       type="button"
-                      className="text-primary font-semibold hover:underline"
+                      className="admin-entity-name-btn"
                       onClick={() => openPanel(e.id, 'view')}
                     >
                       {e.name}

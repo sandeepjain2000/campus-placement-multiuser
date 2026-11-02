@@ -2,7 +2,7 @@
 
 Entry point for agents working in `campus-placement-multiuser`. Not a product manual. The product manual is `docs/product/placementhub-functionality.md`.
 
-**Last refresh:** 2026-10-22.
+**Last refresh:** 2026-11-02.
 
 ## What this product is
 

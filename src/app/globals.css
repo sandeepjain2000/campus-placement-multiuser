@@ -1134,25 +1134,29 @@ html:has(.sandbox-env-banner) {
   outline-offset: -2px;
 }
 
+/* Unstyled name control for admin tables (Preflight is off → UA button border shows otherwise).
+   Matches admin listing Links: primary weight + underline on hover only. */
 .admin-entity-name-btn {
   background: none;
   border: none;
   padding: 0;
   font: inherit;
   font-weight: 600;
-  color: var(--primary-700, var(--primary-600));
+  color: var(--primary, var(--primary-600));
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-entity-name-btn:hover {
+  color: var(--primary-700, var(--primary-600));
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.admin-entity-name-btn:hover {
-  color: var(--primary-800, var(--primary-700));
-}
-
-a.admin-entity-name-btn {
+a.admin-entity-name-btn:hover {
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .admin-entity-profile-page {
