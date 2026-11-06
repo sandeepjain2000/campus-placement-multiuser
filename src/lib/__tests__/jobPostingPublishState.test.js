@@ -46,6 +46,59 @@ describe('jobPostingPublishState', () => {
     ).toBe(false);
   });
 
+  it('allows description-only edits when form normalizes CGPA 0→5 and max prize fallback', () => {
+    const existing = {
+      title: 'Inter-College Business Case Competition',
+      job_type: 'hackathon',
+      salary_min: 5000,
+      salary_max: null,
+      min_cgpa: 0,
+      vacancies: 4,
+      skills_required: [],
+    };
+    expect(
+      publishedCoreFieldsChanged(
+        existing,
+        {
+          title: 'Inter-College Business Case Competition',
+          description: 'Updated brief only',
+          jobType: 'hackathon',
+          salaryMin: 5000,
+          salaryMax: 5000,
+          minCgpa: 5,
+          vacancies: '4',
+        },
+        ['General'],
+      ),
+    ).toBe(false);
+  });
+
+  it('still rejects real prize or CGPA changes after publish', () => {
+    const existing = {
+      title: 'Case Competition',
+      job_type: 'hackathon',
+      salary_min: 5000,
+      salary_max: 5000,
+      min_cgpa: 5,
+      vacancies: 4,
+      skills_required: ['General'],
+    };
+    expect(
+      publishedCoreFieldsChanged(
+        existing,
+        { title: 'Case Competition', jobType: 'hackathon', salaryMin: 8000, salaryMax: 8000, minCgpa: 5, vacancies: 4 },
+        ['General'],
+      ),
+    ).toBe(true);
+    expect(
+      publishedCoreFieldsChanged(
+        existing,
+        { title: 'Case Competition', jobType: 'hackathon', salaryMin: 5000, salaryMax: 5000, minCgpa: 7, vacancies: 4 },
+        ['General'],
+      ),
+    ).toBe(true);
+  });
+
   it('runPublishedEmployerPatch falls back when additional_info column is missing', async () => {
     const calls = [];
     const client = {

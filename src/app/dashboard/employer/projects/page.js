@@ -502,22 +502,40 @@ export default function EmployerProjectsPage() {
 
     setEditSaving(true);
     try {
+      // Published patches may only change description. Re-send stored core values so the
+      // API compare does not see form fallbacks (e.g. blank max prize → min) as edits.
+      const patchBody = isPublished
+        ? {
+            id: editProject.id,
+            title: editProject.title || editTitle.trim(),
+            description: editNotes.trim() || '',
+            jobType: editProject.type || editKind,
+            status: 'published',
+            salaryMin: editProject.salaryMin,
+            salaryMax: editProject.salaryMax,
+            minCgpa: editProject.minCgpa ?? editProject.cgpa ?? null,
+            vacancies: editProject.vacancies ?? 1,
+            keywords: editProject.keywords || '',
+            tenantIds,
+          }
+        : {
+            id: editProject.id,
+            title: editTitle.trim(),
+            description: editNotes.trim() || '',
+            jobType: editKind,
+            status: editProject.status || 'draft',
+            salaryMin: sm,
+            salaryMax: sx != null && !Number.isNaN(sx) ? sx : sm,
+            minCgpa: validated.minCgpa,
+            vacancies: editVacancies === '' ? 1 : editVacancies,
+            keywords: editKeywords,
+            tenantIds,
+          };
+
       const res = await fetch('/api/employer/jobs', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: editProject.id,
-          title: editTitle.trim(),
-          description: editNotes.trim() || '',
-          jobType: editKind,
-          status: editProject.status || 'published',
-          salaryMin: sm,
-          salaryMax: sx != null && !Number.isNaN(sx) ? sx : sm,
-          minCgpa: validated.minCgpa,
-          vacancies: editVacancies === '' ? 1 : editVacancies,
-          keywords: editKeywords,
-          tenantIds,
-        }),
+        body: JSON.stringify(patchBody),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {

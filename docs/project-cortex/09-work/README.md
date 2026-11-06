@@ -5,7 +5,8 @@ Each piece of work gets a folder here once it starts. Project health is the catc
 | Folder | What it is |
 |--------|------------|
 | `project-health/` | `Known Gaps.md` and `Implementation Log.md` (UI audit from 2026-10-10, updated as items are fixed) |
-| AWS first-time setup | Plan only, not started. The plan is `07-operations/deployment.md` |
+| `2026-11-02-env-sync-push/` | AWS executed 2026-11-02 (`4ed6263…` + migration `117`, no account backfill). Vercel still pending. See `Implementation Plan.md` + `Implementation Log.md` |
+| AWS first-time setup | Standing ops plan in `07-operations/deployment.md` (server/tables done 2026-10-21; app URL answers) |
 
 ## What a work folder contains
 

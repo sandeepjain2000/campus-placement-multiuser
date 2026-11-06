@@ -6,6 +6,8 @@ Changes to this folder, not to the product.
 
 - Logged Super Admin Colleges/Employers name-button outline fix in project-health Implementation Log.
 - Noted omitted Tailwind Preflight and `.admin-entity-name-btn` in `02-architecture/stack-and-environments.md`.
+- Added work folder `09-work/2026-11-02-env-sync-push/` for env sync of `4ed6263…` (migration `117`, no account backfill).
+- AWS production execute logged there (Part M + Part D). Vercel still not executed.
 
 ## 2026-10-22
 

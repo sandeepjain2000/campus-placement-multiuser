@@ -82,3 +82,10 @@ PlacementHub and InternSafar deploy to different Vercel accounts. A GitHub push 
 Run `deploy.bat` in this folder. It reads `.env.vercel.local` and deploys as `lawcarelegal20-6778`. Do not run `vercel` yourself, and do not keep or read `.vercel\project.json`. InternSafar uses the sibling folder’s `deploy.bat` and the account `placementhubsupport-7197`.
 
 `/` opens the sign-in page on AWS, Vercel, and local. The old Vercel demo landing is saved at `saved-demo-landing/page.js` and is not served.
+
+## Next sync push (2026-11-02)
+
+Plan + log: `09-work/2026-11-02-env-sync-push/`.
+
+- **AWS:** executed 2026-11-02 — commit `4ed6263…`, additive `project_attachments` (`117`), no account backfill. Old app: `~/placementhub-old-20261102-1206`.
+- **Vercel:** not executed in that pass. Still use `deploy.bat` only when the owner asks.

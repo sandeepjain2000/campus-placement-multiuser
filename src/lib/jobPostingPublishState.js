@@ -3,6 +3,7 @@
  * Student listings filter on status = 'published' (not is_visible alone).
  */
 
+import { normalizeEmployerMinCgpa } from '@/lib/employerJobDisplay';
 import {
   resolveBatchYearInput,
   resolveEligibleBranchesInput,
@@ -10,6 +11,18 @@ import {
   resolveInternshipDatesFromRow,
   resolveMaxBacklogsInput,
 } from '@/lib/internshipPostingMeta';
+
+/** Same empty→General default the employer jobs API applies on create/patch. */
+function normalizeSkillsForPublishCompare(skills) {
+  const list = Array.isArray(skills) ? skills.map((s) => String(s).trim()).filter(Boolean) : [];
+  return list.length ? list : ['General'];
+}
+
+function normalizeMoneyForPublishCompare(value) {
+  if (value == null || value === '') return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
 
 /** SQL fragment: job posting row is open for new student discovery. */
 export const JOB_POSTING_STUDENT_LISTED_SQL = "jp.status = 'published'";
@@ -200,27 +213,39 @@ export async function runPublishedEmployerPatch(client, existing, body) {
 export function publishedCoreFieldsChanged(existing, body, skillsRequired) {
   const title = body.title?.trim() ?? existing.title;
   const jobType = body.jobType ?? existing.job_type;
+
+  // Create/edit forms often copy min→max when max is blank; DB may still have null max.
+  const existingSalaryMin = normalizeMoneyForPublishCompare(existing.salary_min);
+  const existingSalaryMaxRaw = normalizeMoneyForPublishCompare(existing.salary_max);
+  const existingSalaryMax =
+    existingSalaryMaxRaw != null ? existingSalaryMaxRaw : existingSalaryMin;
+
   const salaryMin =
     body.salaryMin != null && body.salaryMin !== ''
-      ? Number(body.salaryMin)
-      : existing.salary_min != null
-        ? Number(existing.salary_min)
-        : null;
+      ? normalizeMoneyForPublishCompare(body.salaryMin)
+      : existingSalaryMin;
   const salaryMax =
     body.salaryMax != null && body.salaryMax !== ''
-      ? Number(body.salaryMax)
-      : existing.salary_max != null
-        ? Number(existing.salary_max)
-        : null;
-  const minCgpa =
+      ? normalizeMoneyForPublishCompare(body.salaryMax)
+      : existingSalaryMax;
+
+  // Display/submit path coerces 0 → DEFAULT_EMPLOYER_MIN_CGPA; compare normalized values.
+  const minCgpaRaw =
     body.minCgpa !== undefined && body.minCgpa !== null && body.minCgpa !== ''
       ? body.minCgpa
       : existing.min_cgpa;
+  const minCgpa = normalizeEmployerMinCgpa(minCgpaRaw);
+  const existingMinCgpa = normalizeEmployerMinCgpa(existing.min_cgpa);
+
   const vacancies =
     body.vacancies !== undefined
       ? Math.max(1, parseInt(String(body.vacancies), 10) || 1)
-      : existing.vacancies;
-  const skills = skillsRequired ?? existing.skills_required;
+      : Math.max(1, parseInt(String(existing.vacancies ?? 1), 10) || 1);
+  const existingVacancies = Math.max(1, parseInt(String(existing.vacancies ?? 1), 10) || 1);
+
+  const skills = normalizeSkillsForPublishCompare(skillsRequired ?? existing.skills_required);
+  const existingSkills = normalizeSkillsForPublishCompare(existing.skills_required);
+
   const branches =
     body.eligibleBranches !== undefined
       ? resolveEligibleBranchesInput(body.eligibleBranches)
@@ -242,11 +267,11 @@ export function publishedCoreFieldsChanged(existing, body, skillsRequired) {
   return (
     title !== (existing.title || '').trim() ||
     jobType !== existing.job_type ||
-    salaryMin !== (existing.salary_min != null ? Number(existing.salary_min) : null) ||
-    salaryMax !== (existing.salary_max != null ? Number(existing.salary_max) : null) ||
-    String(minCgpa) !== String(existing.min_cgpa ?? '') ||
-    vacancies !== existing.vacancies ||
-    JSON.stringify(skills || []) !== JSON.stringify(existing.skills_required || []) ||
+    salaryMin !== existingSalaryMin ||
+    salaryMax !== existingSalaryMax ||
+    String(minCgpa ?? '') !== String(existingMinCgpa ?? '') ||
+    vacancies !== existingVacancies ||
+    JSON.stringify(skills) !== JSON.stringify(existingSkills) ||
     JSON.stringify(branches || []) !== JSON.stringify(existing.eligible_branches || []) ||
     String(maxBacklogs ?? '') !== String(existing.max_backlogs ?? '') ||
     String(batchYear ?? '') !== String(existing.batch_year ?? '') ||
