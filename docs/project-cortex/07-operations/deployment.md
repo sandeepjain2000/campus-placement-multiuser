@@ -89,3 +89,10 @@ Plan + log: `09-work/2026-11-02-env-sync-push/`.
 
 - **AWS:** executed 2026-11-02 — commit `4ed6263…`, additive `project_attachments` (`117`), no account backfill. Old app: `~/placementhub-old-20261102-1206`.
 - **Vercel:** not executed in that pass. Still use `deploy.bat` only when the owner asks.
+
+## AWS app push (2026-11-06) — executed
+
+Plan + log: `09-work/2026-11-06-published-desc-push/` (+ workspace `aws deploy/AWS-PUSH-PLAN-2026-11-06-ph.md`).
+
+- **AWS:** executed 2026-11-06 — commit `657ea3e` (published description-only save fix). **No schema / no backfill.** Old app: `~/placementhub-old-20261106-1154`.
+- **Vercel:** not executed in that pass.

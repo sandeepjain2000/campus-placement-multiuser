@@ -28,6 +28,8 @@ Today the running app is Vercel + Supabase. The first AWS setup is planned, not 
 | Locked choices | `05-decisions/README.md` |
 | AWS setup plan (2026-10-19 / updated in place) | `07-operations/deployment.md` |
 | Env sync push 2026-11-02 (AWS done; Vercel pending) | `09-work/2026-11-02-env-sync-push/Implementation Plan.md` |
+| Published desc AWS push 2026-11-06 (AWS done; no schema; Vercel pending) | `09-work/2026-11-06-published-desc-push/Implementation Plan.md` |
+| Security findings verification 2026-11-11 (plan only; no fixes yet) | `09-work/2026-11-11-security-findings-remediation/Implementation Plan.md` |
 | Open UI notes | `09-work/project-health/Known Gaps.md` |
 | How to update Cortex | `06-workflows/Documentation Maintenance.md` |
 | Secrets rule | `AGENTS.md` and `cortex.toml` |
