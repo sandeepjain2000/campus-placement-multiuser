@@ -83,9 +83,10 @@ async function __platform_POST(request) {
         );
         await assertCollegeNameAvailable(client, collegeName);
         const slug = slugify(collegeName) + '-' + Date.now().toString(36);
+        // Stay inactive until Super Admin approves the college admin (after email verify or force-approve).
         const tenantResult = await client.query(
-          `INSERT INTO tenants (name, slug, city, state, email, communication_email)
-           VALUES ($1, $2, $3, $4, $5, $5) RETURNING id, name`,
+          `INSERT INTO tenants (name, slug, city, state, email, communication_email, is_active)
+           VALUES ($1, $2, $3, $4, $5, $5, false) RETURNING id, name`,
           [collegeName, slug, body.city || '', body.state || '', email]
         );
         tenantId = tenantResult.rows[0].id;
@@ -180,16 +181,11 @@ async function __platform_POST(request) {
 
     const userRow = result.user;
 
-    if (result.notify) {
-      await notifyRegistrationSubmitted({
-        role,
-        email,
-        firstName,
-        tenantName: result.notify.tenantName,
-        companyName: result.notify.companyName,
-      });
-    }
+    let verificationEmailSent = false;
+    let verificationEmailError = null;
 
+    // Send the verification link first so it is not delayed behind the
+    // "registration received" / super-admin notify messages.
     try {
       await sendSignupVerificationEmail({
         to: email,
@@ -197,8 +193,24 @@ async function __platform_POST(request) {
         token: verifyToken,
         role,
       });
+      verificationEmailSent = true;
     } catch (mailErr) {
+      verificationEmailError = mailErr?.message || String(mailErr);
       console.error('Verification email failed:', mailErr);
+    }
+
+    if (result.notify) {
+      try {
+        await notifyRegistrationSubmitted({
+          role,
+          email,
+          firstName,
+          tenantName: result.notify.tenantName,
+          companyName: result.notify.companyName,
+        });
+      } catch (notifyErr) {
+        console.error('Registration received notify failed:', notifyErr);
+      }
     }
 
     const pendingPlatform = role === 'college_admin' || role === 'employer';
@@ -206,10 +218,16 @@ async function __platform_POST(request) {
     return NextResponse.json(
       {
         message: pendingPlatform
-          ? 'Check your email to verify your address. After verification, our team can approve your account.'
-          : 'Check your email to verify your address. You can sign in only after you click the verification link.',
+          ? verificationEmailSent
+            ? 'Check your email to verify your address. After verification, our team can approve your account.'
+            : 'Account created, but the verification email could not be sent. Ask a Super Admin to resend verification or approve without email verification.'
+          : verificationEmailSent
+            ? 'Check your email to verify your address. You can sign in only after you click the verification link.'
+            : 'Account created, but the verification email could not be sent. Contact support.',
         pendingPlatformApproval: pendingPlatform,
         requiresEmailVerification: true,
+        verificationEmailSent,
+        ...(verificationEmailError ? { verificationEmailError } : {}),
         nextUrl: getPostRegistrationLoginPath({ pendingPlatformApproval: pendingPlatform }),
         user: { id: userRow.id, email: userRow.email, role: userRow.role },
       },

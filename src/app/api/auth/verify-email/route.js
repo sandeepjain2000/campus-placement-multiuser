@@ -5,6 +5,7 @@ import { query } from '@/lib/db';
 function redirect(request, path) {
   const origin =
     process.env.NEXTAUTH_URL?.replace(/\/$/, '') ||
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}`.replace(/\/$/, '') : '') ||
     new URL(request.url).origin;
   return NextResponse.redirect(new URL(path, origin).toString(), 302);
@@ -18,7 +19,7 @@ async function __platform_GET(request) {
 
   try {
     const found = await query(
-      `SELECT id, role, email_verification_expires_at
+      `SELECT id, role, is_active, email_verification_expires_at
        FROM users
        WHERE email_verification_token = $1`,
       [token.trim()]
@@ -44,7 +45,15 @@ async function __platform_GET(request) {
       [row.id]
     );
 
-    return redirect(request, '/login?verify=success');
+    // College/employer stay inactive until Super Admin approves — do not imply they can sign in yet.
+    const awaitsPlatformApproval =
+      (row.role === 'college_admin' || row.role === 'employer') && !row.is_active;
+    return redirect(
+      request,
+      awaitsPlatformApproval
+        ? '/login?verify=success-pending-platform'
+        : '/login?verify=success',
+    );
   } catch (e) {
     console.error('verify-email', e);
     return redirect(request, '/login?verify=error');

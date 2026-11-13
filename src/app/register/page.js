@@ -33,9 +33,11 @@ import {
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group';
 import { Input } from '@/components/ui/input';
+import { Eye, EyeOff } from 'lucide-react';
 
 function buildRegisterPhone(formData) {
   return buildRegistrationPhoneE164({
@@ -111,6 +113,8 @@ export default function RegisterPage() {
   const [captchaKey, setCaptchaKey] = useState(0);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [captchaChecking, setCaptchaChecking] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [departments, setDepartments] = useState([]);
 
   const captchaReady = Boolean(formData.role);
@@ -705,15 +709,60 @@ export default function RegisterPage() {
               <FieldGroup className="gap-5">
                 <Field>
                   <FieldLabel htmlFor="register-password">Password <span aria-hidden="true">*</span></FieldLabel>
-                  <Input id="register-password" name="password" type="password" placeholder={`Min ${PASSWORD_MIN_LENGTH} characters`} value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })} required minLength={PASSWORD_MIN_LENGTH} />
+                  <InputGroup>
+                    <InputGroupInput
+                      id="register-password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder={`Min ${PASSWORD_MIN_LENGTH} characters`}
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      minLength={PASSWORD_MIN_LENGTH}
+                      autoComplete="new-password"
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => setShowPassword((v) => !v)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        title={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
                   <FieldDescription>{PASSWORD_REQUIREMENTS_HINT}</FieldDescription>
                 </Field>
 
                 <Field>
                   <FieldLabel htmlFor="register-confirm-password">Confirm Password <span aria-hidden="true">*</span></FieldLabel>
-                  <Input id="register-confirm-password" name="confirmPassword" type="password" placeholder="Re-enter password" value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required />
+                  <InputGroup>
+                    <InputGroupInput
+                      id="register-confirm-password"
+                      name="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Re-enter password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      required
+                      autoComplete="new-password"
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => setShowConfirmPassword((v) => !v)}
+                        aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                        title={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                      >
+                        {showConfirmPassword ? <EyeOff /> : <Eye />}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
                 </Field>
 
               <div className="mt-2 flex gap-3">

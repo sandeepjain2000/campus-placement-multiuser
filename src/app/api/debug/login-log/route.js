@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { writePlatformErrorLog } from '@/lib/platformErrorLog';
 import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
+import { isDebugIngestEnabled } from '@/lib/debugIngestEnabled';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,9 +22,14 @@ function stepIndicatesFailure(steps) {
  * Public endpoint — no auth required (called from login page before session exists).
  * Persists login failures and session-guard sign-outs to platform_error_logs only.
  * Successful sign-ins are not logged (avoids polluting the error log UI).
+ * Disabled in production unless DEBUG_INGEST_ENABLED=true (AWS and Vercel alike).
  */
 export async function POST(request) {
   try {
+    if (!isDebugIngestEnabled()) {
+      return NextResponse.json({ ok: false, disabled: true }, { status: 404 });
+    }
+
     let body = {};
     try {
       body = await request.json();

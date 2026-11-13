@@ -18,7 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 import { Separator } from '@/components/ui/separator';
 import {
   consumeLoginPrefillEmail,
@@ -249,6 +249,12 @@ function LoginPageInner() {
     const verify = params.get('verify');
     if (verify === 'success') {
       setRegisteredBanner('Email verified. You can sign in below with your password.');
+      return;
+    }
+    if (verify === 'success-pending-platform') {
+      setRegisteredBanner(
+        'Email verified. Your account is waiting for platform approval — you can sign in after an admin activates it.',
+      );
       return;
     }
     if (verify === 'expired') {
@@ -715,18 +721,17 @@ function LoginPageInner() {
                       }}
                       required
                     />
-                    <InputGroupAddon align="inline-end" className="pr-1.5">
-                      <Button
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
                         type="button"
                         variant="ghost"
-                        size="icon"
+                        size="icon-xs"
                         onClick={() => setShowPassword((v) => !v)}
-                        className="text-muted-foreground rounded-l-none hover:bg-transparent"
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                         title={showPassword ? 'Hide password' : 'Show password'}
                       >
                         {showPassword ? <EyeOff /> : <Eye />}
-                      </Button>
+                      </InputGroupButton>
                     </InputGroupAddon>
                   </InputGroup>
                 </Field>

@@ -7,6 +7,7 @@ import { formatCurrency, formatDate, formatStatus } from '@/lib/utils';
 import { useToast } from '@/components/ToastProvider';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import StudentApplyResumeBanner from '@/components/StudentApplyResumeBanner';
+import StudentBrowsePrerequisitePanel from '@/components/student/StudentBrowsePrerequisitePanel';
 import PostingEligibilitySection from '@/components/student/PostingEligibilitySection';
 import StudentApplyEligibilityControls from '@/components/student/StudentApplyEligibilityControls';
 import PageLoading from '@/components/PageLoading';
@@ -95,6 +96,15 @@ export default function StudentProjectsPage() {
   const currentStudent = buildStudentApplyContext(data);
   const canApply = data?.canApply !== false;
   const globalBlockedReason = globalApplyBlockedReason(canApply, applyBlockedReason);
+  const canBrowseListings = data?.canBrowseListings !== false;
+  const browseGateProps = {
+    canBrowseListings,
+    browseGateTitle: data?.browseGateTitle,
+    browseGateMessage: data?.browseGateMessage,
+    profileComplete: data?.profileComplete !== false,
+    hasResume: data?.hasResume !== false,
+    profileMissingLabels: data?.profileMissingLabels || [],
+  };
 
   const { startApply, applyingId, pickerModal } = useProgramApplicationWithCv({ addToast, mutate });
   const [openAttachments, setOpenAttachments] = useState({});
@@ -123,18 +133,12 @@ export default function StudentProjectsPage() {
             Short projects published for your campus. Apply when you meet the criteria — listings are real DB data only.
           </p>
         </div>
-        {!isLoading && !error && totalCount > 0 ? (
+        {!isLoading && !error && canBrowseListings && totalCount > 0 ? (
           <StatusBadge tone="blue" className="px-3 py-1 text-sm">
             {totalCount} project{totalCount !== 1 ? 's' : ''} available
           </StatusBadge>
         ) : null}
       </div>
-
-      <StudentApplyResumeBanner
-        canApply={canApply}
-        placementLocked={placementLocked}
-        applyBlockedReason={applyBlockedReason}
-      />
 
       {isLoading && <PageLoading message="Loading projects…" inline />}
       {error && (
@@ -154,22 +158,31 @@ export default function StudentProjectsPage() {
         </Alert>
       )}
 
-      {!isLoading && !error && totalCount === 0 && (
-        <Card className="gap-0 py-10">
-          <CardContent className="flex flex-col items-center px-6 text-center">
-            <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
-              <FolderGit2 className="size-7" />
-            </div>
-            <CardTitle className="mb-1 text-lg">No projects available</CardTitle>
-            <CardDescription className="max-w-md text-sm">
-              No published short projects for your campus yet. Employers post these from Projects and select your college.
-              For hackathons, use Browse Hackathons in the Placements menu.
-            </CardDescription>
-          </CardContent>
-        </Card>
-      )}
+      {!isLoading && !error ? (
+        <StudentBrowsePrerequisitePanel {...browseGateProps}>
+          <div className="flex flex-col gap-4">
+            <StudentApplyResumeBanner
+              canApply={canApply}
+              placementLocked={placementLocked}
+              applyBlockedReason={applyBlockedReason}
+            />
 
-      {!isLoading && !error && totalCount > 0 ? (
+            {canBrowseListings && totalCount === 0 ? (
+              <Card className="gap-0 py-10">
+                <CardContent className="flex flex-col items-center px-6 text-center">
+                  <div className="bg-primary/10 text-primary mb-4 flex size-16 items-center justify-center rounded-full">
+                    <FolderGit2 className="size-7" />
+                  </div>
+                  <CardTitle className="mb-1 text-lg">No projects available</CardTitle>
+                  <CardDescription className="max-w-md text-sm">
+                    No published short projects for your campus yet. Employers post these from Projects and select your
+                    college. For hackathons, use Browse Hackathons in the Placements menu.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {canBrowseListings && totalCount > 0 ? (
         <div className="flex flex-col gap-3">
           {items.map((row) => {
             const jobType = typeMeta(row.jobType);
@@ -284,6 +297,9 @@ export default function StudentProjectsPage() {
             );
           })}
         </div>
+            ) : null}
+          </div>
+        </StudentBrowsePrerequisitePanel>
       ) : null}
       {pickerModal}
     </div>

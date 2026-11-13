@@ -74,7 +74,14 @@ export default function AdminPendingRegistrationsPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || 'Update failed');
-      addToast(action === 'approve' ? 'Account approved.' : 'Registration rejected.', 'success');
+      addToast(
+        action === 'approve' || action === 'approve_without_verification'
+          ? action === 'approve_without_verification'
+            ? 'Account approved without email verification.'
+            : 'Account approved.'
+          : 'Registration rejected.',
+        'success',
+      );
       setRejectFor(null);
       setRejectNote('');
       await load();
@@ -200,14 +207,39 @@ export default function AdminPendingRegistrationsPage() {
                   {r.createdAt ? new Date(r.createdAt).toLocaleString() : '—'}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
-                  <div className="inline-flex gap-1">
-                    <StandardTableIconAction
-                      action="approve"
-                      variant="success"
-                      loading={processing === r.id + 'approve'}
-                      disabled={processing === r.id + 'approve'}
-                      onClick={() => act(r.id, 'approve')}
-                    />
+                  <div className="inline-flex flex-wrap items-center gap-1">
+                    {r.emailVerified ? (
+                      <StandardTableIconAction
+                        action="approve"
+                        variant="success"
+                        loading={processing === r.id + 'approve'}
+                        disabled={processing === r.id + 'approve'}
+                        onClick={() => act(r.id, 'approve')}
+                        tooltip="Approve"
+                      />
+                    ) : (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="h-8"
+                        disabled={Boolean(processing)}
+                        onClick={() => {
+                          if (
+                            !window.confirm(
+                              `Approve ${r.email} without email verification? The account will be marked verified and activated.`,
+                            )
+                          ) {
+                            return;
+                          }
+                          void act(r.id, 'approve_without_verification');
+                        }}
+                      >
+                        {processing === r.id + 'approve_without_verification'
+                          ? 'Approving…'
+                          : 'Approve without verify'}
+                      </Button>
+                    )}
                     <StandardTableIconAction
                       action="reject"
                       variant="danger"

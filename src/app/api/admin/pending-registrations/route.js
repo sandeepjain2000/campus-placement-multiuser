@@ -78,8 +78,11 @@ async function __platform_POST(request) {
     const action = body.action;
     const reason = typeof body.reason === 'string' ? body.reason.trim() : '';
 
-    if (!userId || !['approve', 'reject', 'resend_verification'].includes(action)) {
-      return NextResponse.json({ error: 'userId and action (approve|reject|resend_verification) required' }, { status: 400 });
+    if (!userId || !['approve', 'approve_without_verification', 'reject', 'resend_verification'].includes(action)) {
+      return NextResponse.json(
+        { error: 'userId and action (approve|approve_without_verification|reject|resend_verification) required' },
+        { status: 400 },
+      );
     }
 
     const row = await query(
@@ -146,8 +149,28 @@ async function __platform_POST(request) {
     if (action === 'approve') {
       if (!u.email_verified_at) {
         return NextResponse.json(
-          { error: 'This registrant has not verified their email yet. They must click the verification link in their inbox before you can approve.' },
-          { status: 400 }
+          {
+            error:
+              'This registrant has not verified their email yet. Resend the verification email, or use Approve without email verification.',
+          },
+          { status: 400 },
+        );
+      }
+    }
+
+    if (action === 'approve_without_verification') {
+      if (u.email_verified_at) {
+        // Already verified — fall through to normal activate path.
+      } else {
+        await query(
+          `UPDATE users
+           SET email_verified_at = COALESCE(email_verified_at, NOW()),
+               is_verified = true,
+               email_verification_token = NULL,
+               email_verification_expires_at = NULL,
+               updated_at = NOW()
+           WHERE id = $1::uuid`,
+          [userId],
         );
       }
     }
@@ -184,55 +207,80 @@ async function __platform_POST(request) {
       return NextResponse.json({ ok: true });
     }
 
-    await query(
-      `UPDATE users
-       SET is_active = true,
-           registration_rejected_at = NULL,
-           registration_rejection_note = NULL,
-           updated_at = NOW()
-       WHERE id = $1::uuid`,
-      [userId]
-    );
-
-    await notifyRegistrationResolved({
-      email: u.email,
-      firstName: u.first_name,
-      approved: true,
-      role: u.role,
-    });
-
-    if (u.role === 'college_admin' && u.tenant_id) {
-      const t = await query(`SELECT name FROM tenants WHERE id = $1::uuid`, [u.tenant_id]);
-      const s = await query(
-        `SELECT surface_token FROM shard_binding_pairs WHERE ref_scope_id = $1::uuid`,
-        [u.tenant_id]
+    if (action === 'approve' || action === 'approve_without_verification') {
+      await query(
+        `UPDATE users
+         SET is_active = true,
+             registration_rejected_at = NULL,
+             registration_rejection_note = NULL,
+             updated_at = NOW()
+         WHERE id = $1::uuid`,
+        [userId],
       );
-      const collegeName = t.rows[0]?.name || '';
-      const surfaceToken = s.rows[0]?.surface_token;
-      if (surfaceToken) {
-        await notifyCollegeEnrollmentKey({
-          collegeAdminEmail: u.email,
-          firstName: u.first_name,
-          collegeName,
-          surfaceToken,
-        });
+
+      if (u.role === 'college_admin' && u.tenant_id) {
+        await query(
+          `UPDATE tenants
+           SET is_active = true, updated_at = NOW()
+           WHERE id = $1::uuid`,
+          [u.tenant_id],
+        );
       }
+
+      await notifyRegistrationResolved({
+        email: u.email,
+        firstName: u.first_name,
+        approved: true,
+        role: u.role,
+      });
+
+      if (u.role === 'college_admin' && u.tenant_id) {
+        const t = await query(`SELECT name FROM tenants WHERE id = $1::uuid`, [u.tenant_id]);
+        const s = await query(
+          `SELECT surface_token FROM shard_binding_pairs WHERE ref_scope_id = $1::uuid`,
+          [u.tenant_id],
+        );
+        const collegeName = t.rows[0]?.name || '';
+        const surfaceToken = s.rows[0]?.surface_token;
+        if (surfaceToken) {
+          await notifyCollegeEnrollmentKey({
+            collegeAdminEmail: u.email,
+            firstName: u.first_name,
+            collegeName,
+            surfaceToken,
+          });
+        }
+      }
+
+      void writeAuditLog({
+        userId: session.user.id,
+        tenantId: u.tenant_id || null,
+        action:
+          action === 'approve_without_verification'
+            ? 'APPROVE_REGISTRATION_WITHOUT_EMAIL_VERIFICATION'
+            : 'APPROVE_REGISTRATION',
+        entityType: 'users',
+        entityId: userId,
+        newValues: auditNewValues(
+          action === 'approve_without_verification'
+            ? `Approved ${u.email} without email verification`
+            : `Approved ${u.email}`,
+          {
+            email: u.email,
+            role: u.role,
+            skippedEmailVerification: action === 'approve_without_verification',
+          },
+        ),
+        ipAddress: getRequestClientIp(request),
+      });
+
+      return NextResponse.json({
+        ok: true,
+        skippedEmailVerification: action === 'approve_without_verification',
+      });
     }
 
-    void writeAuditLog({
-      userId: session.user.id,
-      tenantId: u.tenant_id || null,
-      action: 'APPROVE_REGISTRATION',
-      entityType: 'users',
-      entityId: userId,
-      newValues: auditNewValues(`Approved ${u.email}`, {
-        email: u.email,
-        role: u.role,
-      }),
-      ipAddress: getRequestClientIp(request),
-    });
-
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ error: 'Unsupported action' }, { status: 400 });
   } catch (e) {
     console.error('POST /api/admin/pending-registrations', e);
     return NextResponse.json({ error: 'Failed to update registration' }, { status: 500 });

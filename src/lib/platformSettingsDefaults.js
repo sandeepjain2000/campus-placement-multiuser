@@ -4,12 +4,13 @@ export const PLATFORM_SETTINGS_DEFAULTS = {
   marketingWebsiteUrl: '',
   supportEmail: 'support.placementhub@placementhub.online',
   supportPhone: '+91 724 907 2620',
-  systemNotificationInboxEmail: 'placementhub@yopmail.com',
-  systemNotificationWebmailUrl: 'https://yopmail.com/wm',
+  /** Prefer a real monitored inbox — not a disposable public mailbox. */
+  systemNotificationInboxEmail: 'support.placementhub@placementhub.online',
+  systemNotificationWebmailUrl: '',
   systemNotificationSenderName: 'placementhub',
   timezone: 'Asia/Kolkata',
   requireEmailVerification: true,
-  enableTwoFactorAuth: false,
+  enableTwoFactorAuth: true,
   sessionTimeoutValue: 24,
   sessionTimeoutUnit: 'hours',
   rememberDeviceValue: 14,
@@ -23,15 +24,17 @@ export const PLATFORM_SETTINGS_DEFAULTS = {
   sessionAdsEnabled: false,
   /**
    * When true, all outbound mail is forced to TEST_ENVIRONMENT_MAIL_RECIPIENTS
-   * (ignores account/registration emails — protects ZeptoMail bounce rate).
+   * (ignores account/registration emails — protects email-provider bounce rate).
+   * Default false so production-like hosts deliver to real recipients unless an admin opts in.
    */
-  testEnvironment: true,
+  testEnvironment: false,
 };
 
 /** Fixed recipients when platform `testEnvironment` is Yes. */
 export const TEST_ENVIRONMENT_MAIL_RECIPIENTS = [
   'placementhub@yopmail.com',
   'sandeepjain200019@gmail.com',
+  'support.placementhub@placementhub.online',
 ];
 
 /** Max CSV upload size in bytes (client-side guard; server enforces separately). */

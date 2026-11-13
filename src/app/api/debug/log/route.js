@@ -1,15 +1,21 @@
 /** @no-platform-error-wrap — client debug ingest; manual try/catch to avoid recursion */
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { isDebugIngestEnabled } from '@/lib/debugIngestEnabled';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * Public endpoint — no auth required (called from browser before/without a session).
  * Accepts a structured debug trace from any client-side module and persists to platform_error_logs.
+ * Disabled in production unless DEBUG_INGEST_ENABLED=true (AWS and Vercel alike).
  */
 export async function POST(request) {
   try {
+    if (!isDebugIngestEnabled()) {
+      return NextResponse.json({ ok: false, disabled: true }, { status: 404 });
+    }
+
     let body = {};
     try { body = await request.json(); } catch {
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });

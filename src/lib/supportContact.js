@@ -27,11 +27,11 @@ export function resolveSupportPhone(platform) {
   return String(PLATFORM_SETTINGS_DEFAULTS.supportPhone || '').trim();
 }
 
-/** Link to read disposable inbox (YOPmail). */
+/** Optional webmail link from platform settings (empty when unset). */
 export function resolveYopmailWebmailUrl(platform) {
   const custom = String(platform?.systemNotificationWebmailUrl || '').trim();
   if (custom) return custom;
-  return 'https://yopmail.com/wm';
+  return String(PLATFORM_SETTINGS_DEFAULTS.systemNotificationWebmailUrl || '').trim();
 }
 
 export function buildPublicSupportConfig(platform) {

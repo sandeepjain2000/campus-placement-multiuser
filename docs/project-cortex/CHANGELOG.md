@@ -2,6 +2,10 @@
 
 Changes to this folder, not to the product.
 
+## 2026-11-13
+
+- Added and executed work folder `09-work/2026-11-13-aws-catchup/` — AWS app catch-up from Vercel working tree. **No schema / no backfill.** Rollback `~/placementhub-old-20261113-1147`.
+
 ## 2026-11-06
 
 - Added and executed work folder `09-work/2026-11-06-published-desc-push/` — AWS app push `657ea3e` (published description-save fix). **No schema / no backfill.** Vercel not executed.

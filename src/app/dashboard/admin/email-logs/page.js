@@ -65,7 +65,7 @@ function EmailLogDetailPanel({ row }) {
           <DetailField label="Context">{row.context || '—'}</DetailField>
           <DetailField label="Subject">{row.subject_truncated || '—'}</DetailField>
           <DetailField label="Message ID" mono>{row.message_id || '—'}</DetailField>
-          <DetailField label="ZeptoMail Request ID" mono>
+          <DetailField label="Provider Request ID" mono>
             {row.zeptomail_request_id || '—'}
           </DetailField>
         </div>
@@ -177,7 +177,7 @@ export default function AdminEmailLogsPage() {
           <div className="flex gap-2">
             <Input
               id="email-log-search"
-              placeholder="Login email, recipient, subject, context, Zepto ID..."
+              placeholder="Login email, recipient, subject, context, Provider Request ID..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => {

@@ -38,7 +38,7 @@ export function VerificationEmail({
       ) : (
         <Text style={{ ...emailStyles.paragraph, color: '#dc2626' }}>
           <strong>Note:</strong> Email verification link could not be built (missing NEXTAUTH_URL /
-          VERCEL_URL). Please contact your administrator.
+          NEXT_PUBLIC_APP_URL / VERCEL_URL). Please contact your administrator.
         </Text>
       )}
     </PlacementHubLayout>

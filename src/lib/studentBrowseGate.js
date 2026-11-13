@@ -4,26 +4,38 @@ import { getStudentApplyGate, STUDENT_RESUME_REQUIRED_APPLY_MESSAGE } from '@/li
 import { SP_ACTIVE_CLAUSE } from '@/lib/studentProfileActive';
 
 export const STUDENT_BROWSE_PROFILE_MESSAGE =
-  'Complete your academic profile (roll number, phone, branch, course, and CGPA) before you can browse jobs, internships, and placement drives.';
+  'Complete your academic profile (roll number, phone, branch, course, and CGPA) before you can browse jobs, internships, projects, hackathons, and placement drives.';
 
 /**
- * @param {{ profileComplete: boolean, hasResume: boolean }} state
+ * @param {{ profileComplete: boolean, hasResume: boolean, profileMissingLabels?: string[] }} state
  */
-export function buildStudentBrowseGateCopy({ profileComplete, hasResume }) {
+export function buildStudentBrowseGateCopy({ profileComplete, hasResume, profileMissingLabels = [] }) {
   const needsProfile = !profileComplete;
   const needsCv = !hasResume;
+  const missing = (Array.isArray(profileMissingLabels) ? profileMissingLabels : []).filter(Boolean);
 
   if (needsProfile && needsCv) {
+    const profileHint =
+      missing.length === 1
+        ? `Add your ${missing[0].toLowerCase()} in Profile and upload your primary CV`
+        : missing.length > 1
+          ? `Complete your profile (add ${missing.join(', ')}) and upload your primary CV`
+          : 'Finish your academic profile and upload your primary CV';
     return {
       browseGateTitle: 'Complete your profile and upload your CV',
-      browseGateMessage:
-        'Campus placements are hidden until your academic profile is complete and your primary CV is on file. Finish both steps below, then return to browse and apply.',
+      browseGateMessage: `${profileHint} before campus listings (including projects and hackathons) can appear.`,
     };
   }
   if (needsProfile) {
+    const browseGateMessage =
+      missing.length === 1
+        ? `Please add your ${missing[0].toLowerCase()} in Profile before you can browse projects, hackathons, and other campus listings.`
+        : missing.length > 1
+          ? `Please complete your profile in Profile — add ${missing.join(', ')} — before you can browse projects, hackathons, and other campus listings.`
+          : STUDENT_BROWSE_PROFILE_MESSAGE;
     return {
       browseGateTitle: 'Complete your profile to browse opportunities',
-      browseGateMessage: STUDENT_BROWSE_PROFILE_MESSAGE,
+      browseGateMessage,
     };
   }
   if (needsCv) {
@@ -81,7 +93,11 @@ export async function getStudentBrowseGate(studentId, tenantId = null) {
   const hasResume = applyGate.hasResume;
   const profileComplete = profileEval.profileComplete;
   const canBrowseListings = profileComplete && hasResume;
-  const copy = buildStudentBrowseGateCopy({ profileComplete, hasResume });
+  const copy = buildStudentBrowseGateCopy({
+    profileComplete,
+    hasResume,
+    profileMissingLabels: profileEval.missingLabels,
+  });
 
   return {
     canBrowseListings,

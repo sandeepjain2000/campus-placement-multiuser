@@ -1,13 +1,6 @@
 import { query } from '@/lib/db';
 import { sendMail } from '@/lib/mailer';
-
-function appOrigin() {
-  const u = process.env.NEXTAUTH_URL;
-  if (u) return u.replace(/\/$/, '');
-  const v = process.env.VERCEL_URL;
-  if (v) return (v.startsWith('http') ? v : `https://${v}`).replace(/\/$/, '');
-  return '';
-}
+import { appOrigin } from '@/lib/email/appOrigin';
 
 /**
  * Inboxes that receive platform-level alerts (e.g. new employer/college registrations).

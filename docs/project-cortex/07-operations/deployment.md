@@ -96,3 +96,11 @@ Plan + log: `09-work/2026-11-06-published-desc-push/` (+ workspace `aws deploy/A
 
 - **AWS:** executed 2026-11-06 — commit `657ea3e` (published description-only save fix). **No schema / no backfill.** Old app: `~/placementhub-old-20261106-1154`.
 - **Vercel:** not executed in that pass.
+
+## AWS catch-up from Vercel (2026-11-13) — executed
+
+Plan + log: `09-work/2026-11-13-aws-catchup/` (+ workspace `aws deploy/push-2026-11-13-ph/`).
+
+- **AWS:** executed 2026-11-13 — app pack of working tree matching Vercel (register/verify/mail, browse-gate messaging, related UI). **No schema / no backfill** (migration tip still `117`). Old app: `~/placementhub-old-20261113-1147`.
+- **Env:** did not copy Vercel `OUTBOUND_EMAIL_OVERRIDE`; AWS `testEnvironment` remains **No**.
+- **Disk note:** EC2 root was tight after swap; safe cache/tmp reclaim left ~3G free. Older `placementhub-old-*` folders still present.

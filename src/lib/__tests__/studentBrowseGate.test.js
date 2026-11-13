@@ -29,4 +29,15 @@ describe('student browse gate', () => {
     const copy = buildStudentBrowseGateCopy({ profileComplete: true, hasResume: false });
     expect(copy.browseGateTitle).toMatch(/Upload your CV/i);
   });
+
+  it('names the missing phone field when that alone blocks browse', () => {
+    const copy = buildStudentBrowseGateCopy({
+      profileComplete: false,
+      hasResume: true,
+      profileMissingLabels: ['Phone number'],
+    });
+    expect(copy.browseGateTitle).toMatch(/Complete your profile/i);
+    expect(copy.browseGateMessage).toMatch(/phone number/i);
+    expect(copy.browseGateMessage).toMatch(/Profile/i);
+  });
 });

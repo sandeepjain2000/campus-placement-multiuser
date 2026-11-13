@@ -87,7 +87,7 @@ export default function StudentBrowsePrerequisitePanel({
       </Alert>
 
       <p className="text-sm italic text-muted-foreground">
-        Listings are hidden until both requirements above are satisfied.
+        Projects, hackathons, and other campus listings stay hidden until the requirements above are satisfied.
       </p>
     </div>
   );

@@ -1,6 +1,21 @@
 # Placement Hub — security findings verification & remediation plan (2026-11-11)
 
-Status: **Plan only — no fixes applied.** Owner must approve before any code or config change.
+Status: **Partial local apply 2026-11-13** — some fixes in the working tree only (not deployed). Owner must approve push/deploy.
+
+**Applied locally 2026-11-13 (this pass):**
+
+- PH-03A — `/api/debug/*` returns 404 in production unless `DEBUG_INGEST_ENABLED=true`
+- PH-03B — safer platform defaults (2FA on, test env off, no YOPmail defaults); neutral email UI copy (no ZeptoMail label on settings/email-logs)
+- PH-04 — nginx snippet only (`nginx-server-tokens.off.snippet.conf`); must be applied on AWS EC2 nginx (not in Next.js)
+
+**Owner deferral (2026-11-13):** do **not** do yet — needs separate clarification/setup later:
+
+- Turn off demo logins in production  
+- Unique passwords per demo account  
+- Rotate exposed / shared seed passwords (including the rotate step under PH-01)
+- PH-01 help corpus / auth-gate (not in this pass)
+
+Those stay documented below but are **out of the next implementation pass**.
 
 Related evidence (workspace):
 
@@ -45,7 +60,7 @@ Zip does **not** contain a clear screenshot of `/api/debug/*` responses or of an
 1. Require an authenticated session (and preferably role) on `POST /api/help/ask` and related help APIs; keep FAQ-only public content if product needs unauthenticated help.
 2. Remove developer/QA sources from the production help corpus: stop importing `EMAIL_DEMO_NOTES`, `DEMO_PASSWORD`, cleanup CLI commands, and demo login lists into `buildHelpKnowledgeChunks` (or gate them behind a non-production sync flag).
 3. Re-sync / rebuild help knowledge DB so production chunks no longer contain secrets.
-4. Rotate the shared demo / Super Admin seed password and any accounts that used it; treat PH-02 the same rotation event.
+4. ~~Rotate the shared demo / Super Admin seed password…~~ **Deferred 2026-11-13** — owner will clarify setup later; do not rotate in the next pass.
 5. Smoke: unauthenticated ask for “admin password” must not return credentials; authenticated non-admin must not get developer corpus.
 
 ---
@@ -62,11 +77,15 @@ Zip does **not** contain a clear screenshot of `/api/debug/*` responses or of an
 
 **Proposed fix (do not implement yet):**
 
+**In a later pass only (deferred 2026-11-13 — needs more setup / owner clarification):**
+
 1. Never ship a real password string in client bundles. Prefill only in local/dev via server-only env, or remove one-click demo login from production entirely.
 2. Default `isDemoLoginsEnabled()` to **off** in production; require an explicit opt-in for demo hosts only.
 3. Use unique strong passwords per seed account; store only in seed scripts / secrets managers, not in `NEXT_PUBLIC_*` or shared client modules.
 4. Remove Super Admin from any public demo picker.
 5. Rotate all accounts that shared the old seed password (coordinate with bounce-mail / core-account rules — do not mail-bomb or touch the 20 AWS core accounts casually; use genuine test accounts for verify).
+
+**Next pass may still consider (only if owner asks):** stopping the help corpus from *quoting* the password (PH-01 corpus purge) without rotating accounts or turning off demo logins.
 
 ---
 
@@ -84,6 +103,8 @@ Zip does **not** contain a clear screenshot of `/api/debug/*` responses or of an
 1. Gate debug routes with a server-only flag (e.g. enabled only when `NODE_ENV !== 'production'` or an explicit `DEBUG_INGEST_ENABLED=true`).
 2. Rate-limit and schema-validate payloads; never accept arbitrary large blobs.
 3. Prefer authenticated or signed ingest if production troubleshooting is still required.
+
+**Where “production” applies:** these are **Next.js app routes** in the PlacementHub codebase. The same `/api/debug/*` handlers run on **every host that runs this app** — today that means **AWS** (`app.placementhub.online`) and **Vercel** (when that project is deployed). Gating them in code is not AWS-only or Vercel-only; each environment picks up the change only after that environment is deployed (`deploy.bat` for Vercel; AWS Path B / app pack for EC2). Local `npm run dev` can keep ingest on for debugging if the gate allows non-production.
 
 ---
 
@@ -126,11 +147,15 @@ Not a standalone vulnerability: returning role/email for the **current** session
 
 ## 3. Priority order when owner says “fix”
 
-1. **PH-01** — strip secrets from help corpus + auth-gate help ask; rotate exposed credentials  
-2. **PH-02** — remove client-bundled password / production demo logins; same rotation  
-3. **PH-03A** — disable public debug ingest in production  
-4. **PH-03B** — harden platform defaults / live settings (2FA policy, inbox, test flag, vendor-neutral copy)  
-5. **PH-04** — confirm nginx header; `server_tokens off` if still present  
+**Deferred until owner clarifies (2026-11-13):** PH-02 demo-login off / unique passwords / credential rotation; PH-01 password rotate step.
+
+**Remaining candidates for a later approved pass:**
+
+1. **PH-01** — strip secrets from help corpus + optional auth-gate on help ask (**no** password rotation in this pass)  
+2. **PH-03A** — disable public debug ingest in production builds (AWS **and** Vercel once each is deployed)  
+3. **PH-03B** — harden platform defaults / live settings (2FA policy, inbox, test flag, vendor-neutral copy)  
+4. **PH-04** — confirm nginx header; `server_tokens off` if still present (AWS proxy)  
+5. **PH-02** — *(deferred)* client password / demo logins / unique passwords / rotate — separate setup later
 
 ## 4. Verification checklist (after future fixes)
 
