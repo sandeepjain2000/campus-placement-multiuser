@@ -65,3 +65,30 @@ export async function syncCollegeAdminUsersActive(client, tenantId, active) {
     [tenantId],
   );
 }
+
+/**
+ * Keep tenants.is_active aligned with college-admin login.
+ * A college must not stay "Active" (or appear on employer campus lists) when
+ * no college_admin can sign in — e.g. email-verified but still awaiting Super Admin approval.
+ *
+ * @param {import('pg').PoolClient | { query: Function } | typeof dbQuery} [client]
+ * @returns {Promise<number>} rows updated
+ */
+export async function healCollegeTenantsWithoutActiveAdmin(client) {
+  const q = getQueryExecutor(client);
+  const result = await q(
+    `UPDATE tenants t
+     SET is_active = false, updated_at = NOW()
+     WHERE t.type = 'college'
+       AND t.is_active = true
+       AND NOT EXISTS (
+         SELECT 1
+         FROM users u
+         WHERE u.tenant_id = t.id
+           AND u.role = 'college_admin'
+           AND u.is_active = true
+       )
+     RETURNING t.id`,
+  );
+  return result?.rowCount || 0;
+}

@@ -85,7 +85,14 @@ async function fetchCollegesDetailed(employerId) {
      LEFT JOIN student_profiles sp ON sp.tenant_id = t.id AND ${SP_ACTIVE_CLAUSE}
      LEFT JOIN employer_approvals ea ON ea.tenant_id = t.id AND ea.employer_id = $1
      LEFT JOIN placement_drives pd ON pd.tenant_id = t.id AND pd.employer_id = $1 ${AND_DRIVE_PD_NOT_DELETED}
-     WHERE t.is_active = true AND t.type = 'college'
+     WHERE t.is_active = true
+       AND t.type = 'college'
+       AND EXISTS (
+         SELECT 1 FROM users u
+         WHERE u.tenant_id = t.id
+           AND u.role = 'college_admin'
+           AND u.is_active = true
+       )
      GROUP BY t.id, t.name, t.slug, t.city, t.state, t.email, t.phone, t.logo_url,
               t.naac_grade, t.nirf_rank, t.accreditation, t.website,
               t.is_central_university, t.is_state_university, t.is_deemed_university,
@@ -120,7 +127,14 @@ async function fetchCollegesSimple(employerId) {
         ea.approved_at
      FROM tenants t
      LEFT JOIN employer_approvals ea ON ea.tenant_id = t.id AND ea.employer_id = $1
-     WHERE t.is_active = true AND t.type = 'college'
+     WHERE t.is_active = true
+       AND t.type = 'college'
+       AND EXISTS (
+         SELECT 1 FROM users u
+         WHERE u.tenant_id = t.id
+           AND u.role = 'college_admin'
+           AND u.is_active = true
+       )
      ORDER BY t.name`,
     [employerId],
   );

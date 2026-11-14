@@ -9,10 +9,18 @@ import { COMMON_SORT_OPTIONS, STATUS_FILTER_OPTIONS, statusActiveFilterFn } from
 import { ExportCsvSplitButton } from '@/components/export/ExportCsvSplitButton';
 import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction';
 import { collegePlacementRate } from '@/lib/adminCollegeProfile';
+import {
+  collegePlatformStatusLabel,
+  collegePlatformStatusTone,
+} from '@/lib/collegePlatformStatus';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+function collegeStatusKey(c) {
+  return c.platformStatus || (c.active ? 'active' : 'inactive');
+}
 
 export default function AdminCollegesPage() {
   const router = useRouter();
@@ -82,7 +90,7 @@ export default function AdminCollegesPage() {
       String(c.students),
       String(c.placed),
       `${collegePlacementRate(c.students, c.placed)}%`,
-      c.active ? 'Active' : 'Inactive',
+      collegePlatformStatusLabel(collegeStatusKey(c)),
     ]);
     return { headers, rows };
   };
@@ -177,7 +185,11 @@ export default function AdminCollegesPage() {
                 <TableCell>{c.students}</TableCell>
                 <TableCell>{c.placed}</TableCell>
                 <TableCell className="font-bold">{collegePlacementRate(c.students, c.placed)}%</TableCell>
-                <TableCell><StatusBadge tone={c.active ? 'green' : 'gray'} showDot>{c.active ? 'Active' : 'Inactive'}</StatusBadge></TableCell>
+                <TableCell>
+                  <StatusBadge tone={collegePlatformStatusTone(collegeStatusKey(c))} showDot>
+                    {collegePlatformStatusLabel(collegeStatusKey(c))}
+                  </StatusBadge>
+                </TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <div className="flex flex-wrap items-center gap-1">
                     <StandardTableIconAction action="view" onClick={() => openCollege(c.id)} />

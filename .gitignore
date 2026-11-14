@@ -108,3 +108,16 @@ qa2/logs/
 
 .vercel
 .env*
+
+# One-off PlacementHub AWS Gmail-alias tools (local/EC2 only — do not ship)
+alias-college-gmail-internsafar-aws-dry-run.bat
+alias-college-gmail-internsafar-aws-apply.bat
+scripts/alias-college-gmail-internsafar.js
+scripts/pull-aws-database-url-oneoff.ps1
+scripts/rewrite-aws-db-host-public.js
+.env.aws.production
+.env.aws.production.example
+
+
+.vercel
+.env*

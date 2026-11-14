@@ -304,7 +304,11 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
                   disabled={togglingActive}
                   onClick={() => toggleCollegeActive(true)}
                 >
-                  {togglingActive ? 'Updating…' : 'Reactivate college'}
+                  {togglingActive
+                    ? 'Updating…'
+                    : detail.pendingAdminApproval
+                      ? 'Approve & activate college'
+                      : 'Reactivate college'}
                 </Button>
               )}
               <Button type="button" onClick={startEdit}>
@@ -332,8 +336,21 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
               {detail.pincode ? ` · ${detail.pincode}` : ''}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.65rem' }}>
-              <StatusBadge tone={detail.active ? 'green' : 'gray'} showDot>
-                {detail.active ? 'Active' : 'Inactive'}
+              <StatusBadge
+                tone={
+                  detail.active
+                    ? 'green'
+                    : detail.pendingAdminApproval || detail.platformStatus === 'pending_approval'
+                      ? 'amber'
+                      : 'gray'
+                }
+                showDot
+              >
+                {detail.active
+                  ? 'Active'
+                  : detail.pendingAdminApproval || detail.platformStatus === 'pending_approval'
+                    ? 'Pending approval'
+                    : 'Inactive'}
               </StatusBadge>
               {detail.naac ? <StatusBadge tone="indigo">NAAC {detail.naac}</StatusBadge> : null}
               {detail.nirfRank != null ? (

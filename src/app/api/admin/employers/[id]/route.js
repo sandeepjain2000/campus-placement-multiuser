@@ -37,7 +37,9 @@ async function loadEmployer(id) {
         u.email AS account_email,
         u.first_name,
         u.last_name,
-        u.is_active AS account_active
+        u.is_active AS account_active,
+        u.email_verified_at,
+        u.registration_rejected_at
       FROM employer_profiles ep
       INNER JOIN users u ON u.id = ep.user_id
       WHERE ep.id = $1::uuid
@@ -48,6 +50,12 @@ async function loadEmployer(id) {
 }
 
 function mapEmployer(row) {
+  const accountActive = Boolean(row.account_active);
+  const pendingApproval =
+    !accountActive &&
+    Boolean(row.email_verified_at) &&
+    !row.registration_rejected_at &&
+    !row.is_blacklisted;
   return {
     id: row.id,
     name: row.company_name,
@@ -65,7 +73,13 @@ function mapEmployer(row) {
     userId: row.user_id,
     accountEmail: row.account_email || '',
     accountName: [row.first_name, row.last_name].filter(Boolean).join(' ') || '',
-    accountActive: Boolean(row.account_active),
+    accountActive,
+    pendingApproval,
+    platformStatus: accountActive
+      ? 'active'
+      : pendingApproval
+        ? 'pending_approval'
+        : 'inactive',
   };
 }
 

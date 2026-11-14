@@ -255,7 +255,11 @@ export default function AdminEmployersPage() {
       e.industry,
       String(e.hires),
       e.verified ? 'Yes' : 'No',
-      e.active !== false ? 'Active' : 'Inactive',
+      e.active !== false
+        ? 'Active'
+        : e.pendingApproval || e.platformStatus === 'pending_approval'
+          ? 'Pending approval'
+          : 'Inactive',
     ]);
     return { headers, rows: rowsList };
   };
@@ -355,7 +359,24 @@ export default function AdminEmployersPage() {
                     <StatusBadge tone="amber" showDot>Pending</StatusBadge>
                   )}
                 </TableCell>
-                <TableCell><StatusBadge tone={e.active === false ? 'gray' : 'green'} showDot>{e.active === false ? 'Inactive' : 'Active'}</StatusBadge></TableCell>
+                <TableCell>
+                  <StatusBadge
+                    tone={
+                      e.active !== false
+                        ? 'green'
+                        : e.pendingApproval || e.platformStatus === 'pending_approval'
+                          ? 'amber'
+                          : 'gray'
+                    }
+                    showDot
+                  >
+                    {e.active !== false
+                      ? 'Active'
+                      : e.pendingApproval || e.platformStatus === 'pending_approval'
+                        ? 'Pending approval'
+                        : 'Inactive'}
+                  </StatusBadge>
+                </TableCell>
                 <TableCell onClick={(ev) => ev.stopPropagation()}>
                   <div className="flex flex-wrap gap-1">
                     <StandardTableIconAction action="view" onClick={() => openPanel(e.id, 'view')} />
@@ -401,7 +422,11 @@ export default function AdminEmployersPage() {
                   disabled={togglingActive || saving}
                   onClick={() => toggleEmployerActive(true)}
                 >
-                  {togglingActive ? 'Updating…' : 'Reactivate account'}
+                  {togglingActive
+                    ? 'Updating…'
+                    : detail.pendingApproval
+                      ? 'Approve & activate account'
+                      : 'Reactivate account'}
                 </Button>
               )}
               <Button
@@ -433,7 +458,13 @@ export default function AdminEmployersPage() {
             <DetailRow label="Total hires">{detail.hires}</DetailRow>
             <DetailRow label="Verified">{detail.verified ? 'Yes' : 'No'}</DetailRow>
             <DetailRow label="Blocked">{detail.blacklisted ? detail.blacklistReason || 'Yes' : 'No'}</DetailRow>
-            <DetailRow label="Account status">{detail.accountActive ? 'Active' : 'Inactive'}</DetailRow>
+            <DetailRow label="Account status">
+              {detail.accountActive
+                ? 'Active'
+                : detail.pendingApproval
+                  ? 'Pending approval'
+                  : 'Inactive'}
+            </DetailRow>
           </div>
         ) : null}
 

@@ -31,7 +31,9 @@ async function __platform_GET(request) {
         ep.total_hires,
         ep.is_verified,
         ep.is_blacklisted,
-        u.is_active AS account_active
+        u.is_active AS account_active,
+        u.email_verified_at,
+        u.registration_rejected_at
       FROM employer_profiles ep
       INNER JOIN users u ON u.id = ep.user_id
       ORDER BY ep.created_at DESC
@@ -41,16 +43,30 @@ async function __platform_GET(request) {
 
     const rows = result?.rows || [];
     return NextResponse.json({
-      employers: rows.map((r) => ({
-        id: r.id,
-        name: r.company_name,
-        website: r.website || null,
-        industry: r.industry || '—',
-        hires: Number(r.total_hires || 0),
-        verified: Boolean(r.is_verified),
-        blacklisted: Boolean(r.is_blacklisted),
-        active: Boolean(r.account_active),
-      })),
+      employers: rows.map((r) => {
+        const accountActive = Boolean(r.account_active);
+        const pendingApproval =
+          !accountActive &&
+          Boolean(r.email_verified_at) &&
+          !r.registration_rejected_at &&
+          !r.is_blacklisted;
+        return {
+          id: r.id,
+          name: r.company_name,
+          website: r.website || null,
+          industry: r.industry || '—',
+          hires: Number(r.total_hires || 0),
+          verified: Boolean(r.is_verified),
+          blacklisted: Boolean(r.is_blacklisted),
+          active: accountActive,
+          platformStatus: accountActive
+            ? 'active'
+            : pendingApproval
+              ? 'pending_approval'
+              : 'inactive',
+          pendingApproval,
+        };
+      }),
       page,
       limit,
     });

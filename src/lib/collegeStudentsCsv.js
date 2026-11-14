@@ -9,7 +9,8 @@ export const CURRENT_SEMESTER = '6';
 /** Joining batch = intake year (YYYY). */
 export const CURRENT_JOINING_BATCH = defaultAdmissionBatchYear();
 export const CURRENT_ADMISSION_YEAR = defaultAdmissionBatchYear();
-export const CURRENT_GRADUATION_YEAR = '2026';
+/** Expected graduation for a typical 4-year programme from the current intake year. */
+export const CURRENT_GRADUATION_YEAR = String(Number(defaultAdmissionBatchYear()) + 4);
 
 /**
  * Columns that may be left blank on import rows.
@@ -179,28 +180,31 @@ export function studentToCsvRow(s) {
 }
 
 export function studentCsvTemplateExampleRow() {
+  // Mid-programme sample: admitted 2024 → graduate 2028 (not same year).
+  // Sections = profile completion count (completed/total of 6). Keep as text "3/6"
+  // so Excel does not auto-convert it to a date (e.g. 03-Jun).
   return [
     CURRENT_ACADEMIC_YEAR,
-    CURRENT_SEMESTER,
-    CURRENT_JOINING_BATCH,
-    CURRENT_ADMISSION_YEAR,
-    CURRENT_GRADUATION_YEAR,
-    'Sample Student',
-    'CS2021001',
-    'student@example.com',
-    'Computer Science',
-    'AI & ML',
-    'Female',
+    '5',
+    '2024',
+    '2024',
+    '2028',
+    'Karthik Iyer',
+    'IT2024049',
+    'student.sample@example.com',
+    'Information Technology',
+    'Software Engineering',
+    'Male',
     'None',
     'General',
-    'Python; React',
-    '8.50',
+    'Python; SQL; React',
+    '8.25',
     'unplaced',
     'none',
     'No',
     '3/6',
-    'https://i.pravatar.cc/64?img=1',
     '',
+    'Sample row — replace with real students before import',
   ];
 }
 
@@ -330,6 +334,19 @@ export function parseStudentRow(cells, idx, line, options = {}) {
     if (!disabilityStatus) return { ok: false, error: `Line ${line}: Disability Status is required` };
     if (!diversityCategory) return { ok: false, error: `Line ${line}: Diversity Category is required` };
     if (!sectionsCell) return { ok: false, error: `Line ${line}: Sections is required` };
+    // Profile completion "completed/total" (e.g. 3/6). Excel often turns 3/6 into a date (03-Jun).
+    if (/^\d{1,2}[-/][A-Za-z]{3}/.test(sectionsCell) || /^[A-Za-z]{3}[-/]\d{1,2}/.test(sectionsCell)) {
+      return {
+        ok: false,
+        error: `Line ${line}: Sections must be profile completion like 3/6 (completed/total of 6 areas), not a date. Excel may have converted 3/6 to "${sectionsCell}" — re-type as text 3/6.`,
+      };
+    }
+    if (!/^\d{1,2}\s*\/\s*\d{1,2}$/.test(sectionsCell)) {
+      return {
+        ok: false,
+        error: `Line ${line}: Sections must look like 3/6 (completed profile sections out of 6)`,
+      };
+    }
   }
 
   const batchReconciled = reconcileBatchFields({

@@ -18,6 +18,8 @@ import { slugify } from '@/lib/utils';
 import { getPasswordValidationError, validateEmail, validatePersonName } from '@/lib/validators';
 import { SP_ACTIVE_ON } from '@/lib/studentProfileActive';
 import { auditNewValues, getRequestClientIp, writeAuditLog } from '@/lib/auditLog';
+import { healCollegeTenantsWithoutActiveAdmin } from '@/lib/adminOrganizationActive';
+import { resolveCollegePlatformStatus } from '@/lib/collegePlatformStatus';
 
 export const dynamic = 'force-dynamic';
 import { withApiHandlers } from '@/lib/platformErrorRoute';
@@ -31,6 +33,13 @@ async function __platform_GET(request) {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'super_admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Align tenant flags before listing so employer campus lists stay consistent too.
+    try {
+      await healCollegeTenantsWithoutActiveAdmin(query);
+    } catch (healErr) {
+      console.warn('healCollegeTenantsWithoutActiveAdmin:', healErr?.message || healErr);
     }
 
     const { searchParams } = new URL(request.url);
@@ -48,7 +57,23 @@ async function __platform_GET(request) {
         t.is_active,
         t.created_at,
         COUNT(sp.id) AS students,
-        SUM(CASE WHEN sp.placement_status = 'placed' THEN 1 ELSE 0 END) AS placed
+        SUM(CASE WHEN sp.placement_status = 'placed' THEN 1 ELSE 0 END) AS placed,
+        EXISTS (
+          SELECT 1 FROM users u
+          WHERE u.tenant_id = t.id AND u.role = 'college_admin'
+        ) AS has_college_admin,
+        EXISTS (
+          SELECT 1 FROM users u
+          WHERE u.tenant_id = t.id AND u.role = 'college_admin' AND u.is_active = true
+        ) AS has_active_college_admin,
+        EXISTS (
+          SELECT 1 FROM users u
+          WHERE u.tenant_id = t.id
+            AND u.role = 'college_admin'
+            AND u.is_active = false
+            AND u.email_verified_at IS NOT NULL
+            AND u.registration_rejected_at IS NULL
+        ) AS has_pending_college_admin
       FROM tenants t
       LEFT JOIN student_profiles sp ON sp.tenant_id = t.id AND ${SP_ACTIVE_ON}
       WHERE t.type = 'college'
@@ -60,16 +85,26 @@ async function __platform_GET(request) {
 
     const rows = result?.rows || [];
     return NextResponse.json({
-      colleges: rows.map((r) => ({
-        id: r.id,
-        name: r.name,
-        slug: r.slug,
-        city: r.city || '—',
-        naac: r.naac_grade || '—',
-        students: Number(r.students || 0),
-        placed: Number(r.placed || 0),
-        active: Boolean(r.is_active),
-      })),
+      colleges: rows.map((r) => {
+        const status = resolveCollegePlatformStatus({
+          tenantActive: Boolean(r.is_active),
+          hasCollegeAdmin: Boolean(r.has_college_admin),
+          hasActiveCollegeAdmin: Boolean(r.has_active_college_admin),
+          hasPendingCollegeAdmin: Boolean(r.has_pending_college_admin),
+        });
+        return {
+          id: r.id,
+          name: r.name,
+          slug: r.slug,
+          city: r.city || '—',
+          naac: r.naac_grade || '—',
+          students: Number(r.students || 0),
+          placed: Number(r.placed || 0),
+          active: status.active,
+          platformStatus: status.platformStatus,
+          pendingAdminApproval: status.pendingAdminApproval,
+        };
+      }),
       page,
       limit,
     });

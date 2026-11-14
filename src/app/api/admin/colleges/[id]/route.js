@@ -13,7 +13,11 @@ import {
   mapInstitutionClassificationsFromRow,
   parseInstitutionClassificationsFromBody,
 } from '@/lib/tenantInstitutionClassifications';
-import { syncCollegeAdminUsersActive } from '@/lib/adminOrganizationActive';
+import {
+  healCollegeTenantsWithoutActiveAdmin,
+  syncCollegeAdminUsersActive,
+} from '@/lib/adminOrganizationActive';
+import { resolveCollegePlatformStatus } from '@/lib/collegePlatformStatus';
 import { auditNewValues, getRequestClientIp, writeAuditLog } from '@/lib/auditLog';
 
 export const dynamic = 'force-dynamic';
@@ -46,13 +50,32 @@ async function loadCollege(id) {
           SELECT json_build_object(
             'email', u.email,
             'firstName', u.first_name,
-            'lastName', u.last_name
+            'lastName', u.last_name,
+            'isActive', u.is_active,
+            'emailVerifiedAt', u.email_verified_at,
+            'registrationRejectedAt', u.registration_rejected_at
           )
           FROM users u
           WHERE u.tenant_id = t.id AND u.role = 'college_admin'
           ORDER BY u.created_at ASC
           LIMIT 1
-        ) AS primary_admin
+        ) AS primary_admin,
+        EXISTS (
+          SELECT 1 FROM users u
+          WHERE u.tenant_id = t.id AND u.role = 'college_admin'
+        ) AS has_college_admin,
+        EXISTS (
+          SELECT 1 FROM users u
+          WHERE u.tenant_id = t.id AND u.role = 'college_admin' AND u.is_active = true
+        ) AS has_active_college_admin,
+        EXISTS (
+          SELECT 1 FROM users u
+          WHERE u.tenant_id = t.id
+            AND u.role = 'college_admin'
+            AND u.is_active = false
+            AND u.email_verified_at IS NOT NULL
+            AND u.registration_rejected_at IS NULL
+        ) AS has_pending_college_admin
       FROM tenants t
       LEFT JOIN student_profiles sp ON sp.tenant_id = t.id AND ${SP_ACTIVE_ON}
       WHERE t.id = $1::uuid AND t.type = 'college'
@@ -64,6 +87,12 @@ async function loadCollege(id) {
 
 function mapCollege(row) {
   const admin = row.primary_admin || {};
+  const status = resolveCollegePlatformStatus({
+    tenantActive: Boolean(row.is_active),
+    hasCollegeAdmin: Boolean(row.has_college_admin),
+    hasActiveCollegeAdmin: Boolean(row.has_active_college_admin),
+    hasPendingCollegeAdmin: Boolean(row.has_pending_college_admin),
+  });
   return {
     id: row.id,
     name: row.name,
@@ -76,7 +105,9 @@ function mapCollege(row) {
     phone: row.phone || '',
     naac: row.naac_grade || '',
     nirfRank: row.nirf_rank != null ? Number(row.nirf_rank) : null,
-    active: Boolean(row.is_active),
+    active: status.active,
+    platformStatus: status.platformStatus,
+    pendingAdminApproval: status.pendingAdminApproval,
     students: Number(row.students || 0),
     placed: Number(row.placed || 0),
     createdAt: row.created_at,
@@ -93,6 +124,12 @@ async function __platform_GET(_request, { params }) {
 
     const { id } = await params;
     if (!isUuid(id)) return NextResponse.json({ error: 'Invalid college id' }, { status: 400 });
+
+    try {
+      await healCollegeTenantsWithoutActiveAdmin(query);
+    } catch (healErr) {
+      console.warn('healCollegeTenantsWithoutActiveAdmin:', healErr?.message || healErr);
+    }
 
     const row = await loadCollege(id);
     if (!row) return NextResponse.json({ error: 'College not found' }, { status: 404 });

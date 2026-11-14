@@ -14,3 +14,9 @@ nvidia_keys
 vercel-import
 logs
 .git
+.env*
+alias-college-gmail-internsafar-aws-dry-run.bat
+alias-college-gmail-internsafar-aws-apply.bat
+scripts/alias-college-gmail-internsafar.js
+scripts/pull-aws-database-url-oneoff.ps1
+scripts/rewrite-aws-db-host-public.js
