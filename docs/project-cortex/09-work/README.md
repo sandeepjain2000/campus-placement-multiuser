@@ -8,6 +8,7 @@ Each piece of work gets a folder here once it starts. Project health is the catc
 | `2026-11-02-env-sync-push/` | AWS executed 2026-11-02 (`4ed6263…` + migration `117`, no account backfill). Vercel still pending. See `Implementation Plan.md` + `Implementation Log.md` |
 | `2026-11-06-published-desc-push/` | AWS executed 2026-11-06 — `657ea3e` published description-save fix. **No schema / no backfill.** Vercel not in this pass. |
 | `2026-11-13-aws-catchup/` | AWS executed 2026-11-13 — catch-up app pack from Vercel working tree. **No schema / no backfill.** See `Implementation Plan.md` + `Implementation Log.md`. |
+| `2026-11-14-active-status-push/` | AWS executed 2026-11-14 — `c988cf2` Active-vs-pending college/employer status + import template. **No schema / no blank-fill** (runtime heal only). |
 | `2026-11-11-security-findings-remediation/` | Candidate security test verification (PH-01…PH-04 + zip screenshots). **Plan only — no fixes yet.** See `Implementation Plan.md`. |
 | AWS first-time setup | Standing ops plan in `07-operations/deployment.md` (server/tables done 2026-10-21; app URL answers) |
 

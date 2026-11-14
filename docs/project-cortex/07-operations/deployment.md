@@ -104,3 +104,12 @@ Plan + log: `09-work/2026-11-13-aws-catchup/` (+ workspace `aws deploy/push-2026
 - **AWS:** executed 2026-11-13 — app pack of working tree matching Vercel (register/verify/mail, browse-gate messaging, related UI). **No schema / no backfill** (migration tip still `117`). Old app: `~/placementhub-old-20261113-1147`.
 - **Env:** did not copy Vercel `OUTBOUND_EMAIL_OVERRIDE`; AWS `testEnvironment` remains **No**.
 - **Disk note:** EC2 root was tight after swap; safe cache/tmp reclaim left ~3G free. Older `placementhub-old-*` folders still present.
+
+## AWS Active-status + import template (2026-11-14) — executed
+
+Plan + log: `09-work/2026-11-14-active-status-push/` (+ workspace `aws deploy/push-2026-11-14-ph/`).
+
+- **AWS:** executed 2026-11-14 — git `c988cf2` (college Active vs inactive-admin heal + Pending approval UI + student import template sample). **No schema / no blank-fill.** Old app: `~/placementhub-old-20261114-1137`.
+- **Data:** runtime heal flipped 6 college tenants off when no active college admin (not a schema backfill).
+- **Vercel:** same product already live from earlier `deploy.bat` the same day.
+- **Disk note:** root ~97% after swap; tar removed; older `placementhub-old-*` still present.
