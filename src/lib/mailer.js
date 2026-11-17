@@ -3,6 +3,7 @@ import { getPlatformSettings } from '@/lib/platformSettings';
 import {
   TEST_ENVIRONMENT_MAIL_RECIPIENTS,
 } from '@/lib/platformSettingsDefaults';
+import { rewriteBounceRiskRecipients } from '@/lib/demoMailSafe';
 import { query } from '@/lib/db';
 import { getSmtpDailyLimitState } from '@/lib/mailDailyLimit';
 import { hasColumn } from '@/lib/migrationReady';
@@ -33,8 +34,10 @@ function createTransport() {
 
 /**
  * Resolve final recipients.
- * Test environment (platform setting) always wins — both safe inboxes, ignore provided To.
- * Else: env OUTBOUND_EMAIL_OVERRIDE → system notification inbox → original.
+ * Test environment (platform setting) always wins — fixed safe inboxes, ignore provided To.
+ * Else: env OUTBOUND_EMAIL_OVERRIDE (if set) → original (after bounce/demo guard).
+ * systemNotificationInboxEmail is NOT a blanket redirect (it is support/contact config only).
+ * Demo / bounce-risk addresses are rewritten earlier via rewriteBounceRiskRecipients.
  * @param {string | string[]} originalTo
  * @param {Awaited<ReturnType<typeof getPlatformSettings>>} platform
  */
@@ -58,8 +61,6 @@ function resolveRecipients(originalTo, platform, { skipRecipientRedirect = false
   }
   const envOverride = process.env.OUTBOUND_EMAIL_OVERRIDE?.trim();
   if (envOverride) return envOverride;
-  const inbox = String(platform?.systemNotificationInboxEmail || '').trim();
-  if (inbox) return inbox;
   return originalTo;
 }
 
@@ -113,7 +114,7 @@ async function resolveCommunicationRouteForAddress(address) {
 
 /**
  * Rewrite each recipient to users.communication_email / tenants.communication_email when the address is known.
- * Unknown addresses are unchanged. Then platform override (OUTBOUND_EMAIL_OVERRIDE / system inbox) still applies.
+ * Unknown addresses are unchanged. Then Test environment / OUTBOUND_EMAIL_OVERRIDE still apply.
  * @param {string | string[]} to
  */
 async function routeThroughCommunicationEmails(to) {
@@ -321,7 +322,7 @@ export {
  * @param {string} [opts.userId] — acting user who triggered the send (stored in `mail_delivery_logs.user_id`)
  * @param {string} [opts.recipientUserId] — intended recipient user when known (survives account deletion via `recipient_login_email`)
  * @param {boolean} [opts.skipCommunicationRouting] — send to `to` as-is (e.g. YOPmail disposable inbox)
- * @param {boolean} [opts.skipRecipientRedirect] — do not apply OUTBOUND_EMAIL_OVERRIDE / system inbox redirect (ignored when Test environment is Yes)
+ * @param {boolean} [opts.skipRecipientRedirect] — do not apply OUTBOUND_EMAIL_OVERRIDE (ignored when Test environment is Yes)
  */
 export async function sendMail(opts) {
   const {
@@ -377,7 +378,6 @@ export async function sendMail(opts) {
   const afterCommunication = skipCommunicationRouting
     ? mailOpts.to
     : await routeThroughCommunicationEmails(mailOpts.to);
-  const afterCommunicationTo = afterCommunication;
   if (String(normalizeTo(afterCommunication)) !== String(normalizeTo(originalTo))) {
     console.info(
       `${logCtx} routed to communication email: before=%s after=%s`,
@@ -386,18 +386,29 @@ export async function sendMail(opts) {
     );
   }
 
-  const routedTo = resolveRecipients(afterCommunication, platform, { skipRecipientRedirect });
+  /** Always protect ZeptoMail: demo logins + known bounce domains never leave as SMTP To. */
+  const afterBounceGuard = rewriteBounceRiskRecipients(afterCommunication);
+  const afterCommunicationTo = afterBounceGuard;
+  if (String(normalizeTo(afterBounceGuard)) !== String(normalizeTo(afterCommunication))) {
+    console.info(
+      `${logCtx} bounce/demo guard: before=%s after=%s`,
+      String(normalizeTo(afterCommunication)),
+      String(normalizeTo(afterBounceGuard)),
+    );
+  }
+
+  const routedTo = resolveRecipients(afterBounceGuard, platform, { skipRecipientRedirect });
   const to = withAlsoDeliverTo(routedTo, alsoDeliverTo);
   const redirected =
-    String(normalizeTo(afterCommunication)) !== String(Array.isArray(routedTo) ? routedTo.join(',') : routedTo);
+    String(normalizeTo(afterBounceGuard)) !== String(Array.isArray(routedTo) ? routedTo.join(',') : routedTo);
   if (redirected) {
     console.info(
       `${logCtx} recipient redirect active: beforePlatformOverride=%s resolvedTo=%s (%s)`,
-      String(normalizeTo(afterCommunication)),
+      String(normalizeTo(afterBounceGuard)),
       String(Array.isArray(routedTo) ? routedTo.join(', ') : routedTo),
       platform?.testEnvironment
         ? 'testEnvironment'
-        : 'OUTBOUND_EMAIL_OVERRIDE or systemNotificationInboxEmail',
+        : 'OUTBOUND_EMAIL_OVERRIDE',
     );
   }
 

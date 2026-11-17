@@ -24,9 +24,11 @@ Do not run forgot-password, student welcome, apply, offer, interview, bulk stude
 
 | PlacementHub account | Delivery address | Result |
 |---|---|---|
-| arjun.verma@iitm.edu | arjun.verma@iitm.edu | Bounce |
-| sneha.rao@nitt.edu | test-notifications@nitt.edu | Bounce |
-| Any new fake inbox, including qa-create-check@placementhub.online and @campus-placement.work | That fake inbox | Bounce |
+| arjun.verma@iitm.edu | arjun.verma@iitm.edu | Bounce if unguarded |
+| sneha.rao@nitt.edu | test-notifications@nitt.edu | Bounce if unguarded |
+| Any new fake inbox, including qa-create-check@placementhub.online and @campus-placement.work | That fake inbox | Bounce if unguarded |
 | The other 18 core accounts | sandeepjain200019@gmail.com | Real inbox |
 
-One send skips that rewrite and uses the address typed on screen: student opportunity email (`skipCommunicationRouting`). Do not type a bounce address there.
+**Code guard (2026-11-17):** `src/lib/demoMailSafe.js` rewrites demo logins and known bounce domains to `sandeepjain200019@gmail.com` even when Test environment is No and `OUTBOUND_EMAIL_OVERRIDE` is unset. Still do not run bounce-causing mail tests on purpose.
+
+One send can skip `communication_email` routing: student opportunity email (`skipCommunicationRouting`). The bounce/demo guard still applies to typed addresses that match the risk list. Do not type a bounce address there.
