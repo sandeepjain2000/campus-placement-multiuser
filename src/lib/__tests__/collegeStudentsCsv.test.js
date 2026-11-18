@@ -51,7 +51,7 @@ describe('collegeStudentsCsv strict import', () => {
     const blank = validateStudentCsvRowNoBlanks(cells, idx, 2);
     expect(blank.ok).toBe(false);
     expect(blank.error).toMatch(/CGPA/i);
-    expect(blank.error).toMatch(/Remarks and Photo URL may be left blank/i);
+    expect(blank.error).toMatch(/Remarks, Photo URL, and Sections may be left blank/i);
   });
 
   it('allows blank Remarks when all other fields are filled', () => {
@@ -76,6 +76,18 @@ describe('collegeStudentsCsv strict import', () => {
     expect(parsed.student.photo).toBeNull();
   });
 
+  it('ignores Sections on import (blank or invalid values are accepted)', () => {
+    const idx = buildHeaderIndex(STUDENT_CSV_HEADERS);
+    for (const sections of ['', '03-Jun', 'not-a-fraction', '6/6']) {
+      const cells = fullRow({ Sections: sections });
+      const blank = validateStudentCsvRowNoBlanks(cells, idx, 2);
+      expect(blank.ok).toBe(true);
+      const parsed = parseStudentRow(cells, idx, 2);
+      expect(parsed.ok).toBe(true);
+      expect(parsed.student.sectionsCell).toBeUndefined();
+    }
+  });
+
   it('rejects blank Department', () => {
     const idx = buildHeaderIndex(STUDENT_CSV_HEADERS);
     const cells = fullRow({ Department: '   ' });
@@ -90,7 +102,8 @@ describe('collegeStudentsCsv strict import', () => {
     expect(lines[0]).toBe(STUDENT_CSV_HEADERS.join(','));
     expect(studentCsvTemplateExampleRow()).toHaveLength(STUDENT_CSV_HEADERS.length);
     expect(lines[1].split(',').length).toBeGreaterThanOrEqual(STUDENT_CSV_HEADERS.length - 2);
-    expect(csv).toContain('Sample Student');
+    expect(csv).toContain('Karthik Iyer');
+    expect(csv).toContain('Sample row');
   });
 });
 

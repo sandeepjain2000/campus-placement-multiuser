@@ -15,9 +15,10 @@ export const CURRENT_GRADUATION_YEAR = String(Number(defaultAdmissionBatchYear()
 /**
  * Columns that may be left blank on import rows.
  * Photo URL is deprecated — profile photos are uploaded in the app (kept for template compat).
+ * Sections is export-only — live profile completion; ignored on import (kept for template compat).
  * Verified may be blank — defaults to No (unverified).
  */
-export const STUDENT_CSV_OPTIONAL_HEADERS = ['Remarks', 'Photo URL'];
+export const STUDENT_CSV_OPTIONAL_HEADERS = ['Remarks', 'Photo URL', 'Sections'];
 
 /** Required header columns whose cells may be blank (parser applies a default). */
 export const STUDENT_CSV_BLANKABLE_HEADERS = ['Verified'];
@@ -42,11 +43,11 @@ export const STUDENT_CSV_REQUIRED_HEADERS = [
   'Job Status',
   'Internship Status',
   'Verified',
-  'Sections',
 ];
 
 export const STUDENT_CSV_HEADERS = [
   ...STUDENT_CSV_REQUIRED_HEADERS,
+  'Sections',
   'Photo URL',
   'Remarks',
 ];
@@ -86,7 +87,7 @@ const BLANKABLE_HEADER_KEYS = new Set(STUDENT_CSV_BLANKABLE_HEADERS.map(normKey)
 
 /**
  * Every required column must have a non-empty cell (except blankable columns like Verified).
- * Remarks and Photo URL may be blank (photos are uploaded in the app).
+ * Remarks, Photo URL, and Sections may be blank (photos/sections are not imported from CSV).
  * @param {string[]} cells
  * @param {Record<string, number>} idx
  * @param {number} line — 1-based row number in the file (for errors)
@@ -105,7 +106,7 @@ export function validateStudentCsvRowNoBlanks(cells, idx, line) {
   if (missing.length) {
     return {
       ok: false,
-      error: `Row ${line}: Missing required value(s): ${missing.join(', ')}. Remarks and Photo URL may be left blank.`,
+      error: `Row ${line}: Missing required value(s): ${missing.join(', ')}. Remarks, Photo URL, and Sections may be left blank.`,
     };
   }
   return { ok: true };
@@ -181,8 +182,7 @@ export function studentToCsvRow(s) {
 
 export function studentCsvTemplateExampleRow() {
   // Mid-programme sample: admitted 2024 → graduate 2028 (not same year).
-  // Sections = profile completion count (completed/total of 6). Keep as text "3/6"
-  // so Excel does not auto-convert it to a date (e.g. 03-Jun).
+  // Sections is export-only on import (ignored). Sample keeps text "3/6" for template shape.
   return [
     CURRENT_ACADEMIC_YEAR,
     '5',
@@ -201,7 +201,7 @@ export function studentCsvTemplateExampleRow() {
     '8.25',
     'unplaced',
     'none',
-    'No',
+    'Yes',
     '3/6',
     '',
     'Sample row — replace with real students before import',
@@ -325,7 +325,8 @@ export function parseStudentRow(cells, idx, line, options = {}) {
   const diversityCategory = g('Diversity Category');
   // Photo URL column is ignored — profile photos are uploaded in the app.
   void g('Photo URL');
-  const sectionsCell = g('Sections');
+  // Sections column is ignored — profile completion is computed from the live profile.
+  void g('Sections');
 
   if (strictNoBlanks) {
     if (!dept) return { ok: false, error: `Line ${line}: Department is required` };
@@ -333,20 +334,6 @@ export function parseStudentRow(cells, idx, line, options = {}) {
     if (!gender) return { ok: false, error: `Line ${line}: Gender is required` };
     if (!disabilityStatus) return { ok: false, error: `Line ${line}: Disability Status is required` };
     if (!diversityCategory) return { ok: false, error: `Line ${line}: Diversity Category is required` };
-    if (!sectionsCell) return { ok: false, error: `Line ${line}: Sections is required` };
-    // Profile completion "completed/total" (e.g. 3/6). Excel often turns 3/6 into a date (03-Jun).
-    if (/^\d{1,2}[-/][A-Za-z]{3}/.test(sectionsCell) || /^[A-Za-z]{3}[-/]\d{1,2}/.test(sectionsCell)) {
-      return {
-        ok: false,
-        error: `Line ${line}: Sections must be profile completion like 3/6 (completed/total of 6 areas), not a date. Excel may have converted 3/6 to "${sectionsCell}" — re-type as text 3/6.`,
-      };
-    }
-    if (!/^\d{1,2}\s*\/\s*\d{1,2}$/.test(sectionsCell)) {
-      return {
-        ok: false,
-        error: `Line ${line}: Sections must look like 3/6 (completed profile sections out of 6)`,
-      };
-    }
   }
 
   const batchReconciled = reconcileBatchFields({
@@ -414,7 +401,6 @@ export function parseStudentRow(cells, idx, line, options = {}) {
       // Photos are uploaded in-app; CSV Photo URL column is ignored (template compat).
       photo: null,
       importRemarks: remarks,
-      sectionsCell,
     },
   };
 }

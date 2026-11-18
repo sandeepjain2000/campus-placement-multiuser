@@ -242,7 +242,8 @@ export default function DesktopCollegeStudents() {
           <p className="mt-1 max-w-xl text-xs text-muted-foreground">
             {readOnly
               ? 'Read-only placement committee view — browse and export student records for your college.'
-              : 'CSV import: fill every column in the template; only Remarks may be left blank.'}
+              : 'CSV import: fill every column in the template; Remarks, Photo URL, and Sections may be left blank (Sections is ignored on import).'}
+
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

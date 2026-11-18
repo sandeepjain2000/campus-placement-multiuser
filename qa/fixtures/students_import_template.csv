@@ -1,2 +1,2 @@
 ﻿Academic Year,Semester,Batch,Admission Year,Graduation Year,Name,Roll,Email,Department,Specialization,Gender,Disability Status,Diversity Category,Skills,CGPA,Job Status,Internship Status,Verified,Sections,Photo URL,Remarks
-2025-26,5,2024,2024,2028,Karthik Iyer,IT2024049,student.sample@example.com,Information Technology,Software Engineering,Male,None,General,Python; SQL; React,8.25,unplaced,none,No,3/6,,Sample row — replace with real students before import
+2025-26,5,2024,2024,2028,Karthik Iyer,IT2024049,student.sample@example.com,Information Technology,Software Engineering,Male,None,General,Python; SQL; React,8.25,unplaced,none,Yes,3/6,,Sample row — replace with real students before import

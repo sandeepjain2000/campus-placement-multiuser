@@ -162,7 +162,6 @@ async function __platform_POST(req) {
             joiningAcademicYear: s.joiningAcademicYear || s.batch || '',
             academicYear: s.academicYear,
             semester: s.semester,
-            sectionsImport: s.sectionsCell,
             ...(s.importRemarks ? { importRemarks: s.importRemarks } : {}),
           });
 
