@@ -118,5 +118,13 @@ Plan + log: `09-work/2026-11-14-active-status-push/` (+ workspace `aws deploy/pu
 
 Plan + log: `09-work/2026-11-18-csv-sections-push/` (+ workspace `aws deploy/push-2026-11-18-ph/`).
 
-- **Vercel + AWS:** executed 2026-11-18 — git `02055bf` (ignore Sections on student CSV import; template Verified sample Yes). **No schema / no blank-fill.** Old app: `~/placementhub-old-20261118-0942`.
+- **Vercel + AWS:** executed 2026-11-18 — git `02055bf` (ignore Sections on student CSV import; template Verified sample Yes). **No schema / no blank-fill.** Old app: `~/placementhub-old-20261118-0942` (later removed before evening push).
 - **InternSafar:** not restarted (PID unchanged).
+
+## AWS titles + create attachments (2026-11-18 evening) — executed
+
+Plan + log: `09-work/2026-11-18-titles-attachments-push/` (+ workspace `aws deploy/push-2026-11-18-ph-titles/`).
+
+- **AWS:** executed 2026-11-18 ~17:48 IST — git `9b4d38d` (truncation title tooltips; project attachments on create). **No schema / no blank-fill.**
+- **Disk:** removed older `~/placementhub-old-20261118-0942` before swap; new rollback `~/placementhub-old-20261118-1218` only.
+- **InternSafar:** not restarted (PID `206368`).
