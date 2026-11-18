@@ -113,3 +113,10 @@ Plan + log: `09-work/2026-11-14-active-status-push/` (+ workspace `aws deploy/pu
 - **Data:** runtime heal flipped 6 college tenants off when no active college admin (not a schema backfill).
 - **Vercel:** same product already live from earlier `deploy.bat` the same day.
 - **Disk note:** root ~97% after swap; tar removed; older `placementhub-old-*` still present.
+
+## AWS CSV Sections ignore + Verified Yes (2026-11-18) — executed
+
+Plan + log: `09-work/2026-11-18-csv-sections-push/` (+ workspace `aws deploy/push-2026-11-18-ph/`).
+
+- **Vercel + AWS:** executed 2026-11-18 — git `02055bf` (ignore Sections on student CSV import; template Verified sample Yes). **No schema / no blank-fill.** Old app: `~/placementhub-old-20261118-0942`.
+- **InternSafar:** not restarted (PID unchanged).

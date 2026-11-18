@@ -269,6 +269,9 @@ export default function EmployerProjectsPage() {
   const [campusSyncSelection, setCampusSyncSelection] = useState({});
   const [campusSyncSubmitting, setCampusSyncSubmitting] = useState(false);
   const [formTab, setFormTab] = useState('basics');
+  /** Local files chosen on create; uploaded after the posting id exists. */
+  const [pendingAttachments, setPendingAttachments] = useState([]);
+  const pendingFileInputRef = useRef(null);
   const [detailProject, setDetailProject] = useState(null);
 
   // Edit form state
@@ -323,6 +326,7 @@ export default function EmployerProjectsPage() {
   const closeForm = useCallback(() => {
     setShowForm(false);
     setFormTab('basics');
+    setPendingAttachments([]);
   }, []);
 
   const openForm = () => {
@@ -335,9 +339,35 @@ export default function EmployerProjectsPage() {
     setMinCgpa('');
     setKeywords('');
     setNotes('');
+    setPendingAttachments([]);
     setFormTab('basics');
     setShowForm(true);
   };
+
+  const handlePendingFileChange = useCallback(
+    (e) => {
+      const file = e.target.files?.[0];
+      if (pendingFileInputRef.current) pendingFileInputRef.current.value = '';
+      if (!file) return;
+      if (!ALLOWED_MIME.includes(file.type)) {
+        addToast('Only PDF and image files (JPEG, PNG, GIF, WebP) are allowed.', 'warning');
+        return;
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        addToast('File exceeds 10 MB limit.', 'warning');
+        return;
+      }
+      if (pendingAttachments.length >= 5) {
+        addToast('Maximum 5 attachments per project.', 'warning');
+        return;
+      }
+      setPendingAttachments((prev) => [
+        ...prev,
+        { id: `${Date.now()}-${file.name}-${file.size}`, file },
+      ]);
+    },
+    [addToast, pendingAttachments.length],
+  );
 
   const stats = useMemo(() => {
     const published = projects.filter((j) => j.status === 'published');
@@ -399,7 +429,38 @@ export default function EmployerProjectsPage() {
         addToast(json.error || 'Could not publish', 'error');
         return;
       }
-      addToast('Project published. You can now add attachments from the details view.', 'success');
+
+      const jobId = json.job?.id;
+      let attached = 0;
+      let attachFailed = 0;
+      if (jobId && pendingAttachments.length) {
+        for (const item of pendingAttachments) {
+          const formData = new FormData();
+          formData.append('file', item.file);
+          try {
+            const up = await fetch(`/api/employer/projects/${jobId}/attachments`, {
+              method: 'POST',
+              body: formData,
+              credentials: 'include',
+            });
+            if (up.ok) attached += 1;
+            else attachFailed += 1;
+          } catch {
+            attachFailed += 1;
+          }
+        }
+      }
+
+      if (attachFailed > 0) {
+        addToast(
+          `Published. ${attached} file(s) attached; ${attachFailed} failed — retry from the Attachments tab.`,
+          'warning',
+        );
+      } else if (attached > 0) {
+        addToast(`Project published with ${attached} attachment(s).`, 'success');
+      } else {
+        addToast('Project published.', 'success');
+      }
       closeForm();
       await mutateJobs();
     } catch {
@@ -417,6 +478,7 @@ export default function EmployerProjectsPage() {
     minCgpa,
     vacancies,
     keywords,
+    pendingAttachments,
     addToast,
     mutateJobs,
     closeForm,
@@ -624,7 +686,11 @@ export default function EmployerProjectsPage() {
               Cancel
             </Button>
             <Button type="button" disabled={submitting} onClick={() => void publishProject()}>
-              {submitting ? 'Publishing…' : 'Publish'}
+              {submitting
+                ? pendingAttachments.length
+                  ? 'Publishing & uploading…'
+                  : 'Publishing…'
+                : 'Publish'}
             </Button>
           </div>
         }
@@ -634,6 +700,7 @@ export default function EmployerProjectsPage() {
             {[
               { id: 'basics', title: 'Basics', sub: 'Type, title, reward' },
               { id: 'details', title: 'Details', sub: 'Campuses, skills, brief' },
+              { id: 'attachments', title: 'Attachments', sub: 'PDF, images' },
             ].map((tab) => (
               <TabsTrigger
                 key={tab.id}
@@ -741,6 +808,67 @@ export default function EmployerProjectsPage() {
                 />
               </Field>
             </FieldGroup>
+          </TabsContent>
+
+          <TabsContent value="attachments" className="mt-2 outline-none">
+            <div className="flex flex-col gap-3">
+              <p className="text-muted-foreground m-0 text-sm">
+                Optional. Files are uploaded right after publish (PDF or image · max 10 MB · up to 5).
+              </p>
+              {pendingAttachments.length === 0 ? (
+                <p className="text-muted-foreground m-0 text-sm">No files selected yet.</p>
+              ) : (
+                <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                  {pendingAttachments.map((item) => (
+                    <li
+                      key={item.id}
+                      className="bg-muted/40 flex items-center gap-3 rounded-lg border px-3 py-2.5"
+                    >
+                      <span className="text-muted-foreground">{attachmentIcon(item.file.type)}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-foreground m-0 truncate text-sm font-medium" title={item.file.name}>
+                          {item.file.name}
+                        </p>
+                        <p className="text-muted-foreground m-0 text-xs">{formatFileSize(item.file.size)}</p>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label={`Remove ${item.file.name}`}
+                        disabled={submitting}
+                        onClick={() =>
+                          setPendingAttachments((prev) => prev.filter((p) => p.id !== item.id))
+                        }
+                        className="text-destructive hover:text-destructive/80 shrink-0 disabled:opacity-50"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {pendingAttachments.length < 5 ? (
+                <div>
+                  <input
+                    ref={pendingFileInputRef}
+                    type="file"
+                    accept=".pdf,image/*"
+                    className="sr-only"
+                    onChange={handlePendingFileChange}
+                    aria-label="Choose attachment for new project"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={submitting}
+                    onClick={() => pendingFileInputRef.current?.click()}
+                  >
+                    <UploadCloud className="size-4" data-icon="inline-start" />
+                    Add PDF or image
+                  </Button>
+                </div>
+              ) : null}
+            </div>
           </TabsContent>
         </Tabs>
       </EmployerListFormLayout>

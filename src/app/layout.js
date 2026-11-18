@@ -4,6 +4,7 @@ import AuthProvider from '@/components/AuthProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ToastProvider } from '@/components/ToastProvider';
 import PreventWheelOnNumberInputs from '@/components/PreventWheelOnNumberInputs';
+import TruncationTitleEnhancer from '@/components/TruncationTitleEnhancer';
 import GuidedRunnerShell from '@/components/guided/GuidedRunnerShell';
 import ClientErrorGuard from '@/components/ClientErrorGuard';
 
@@ -42,6 +43,7 @@ export default async function RootLayout({ children }) {
             <ToastProvider>
               <ClientErrorGuard />
               <PreventWheelOnNumberInputs />
+              <TruncationTitleEnhancer />
               <GuidedRunnerShell />
               {children}
             </ToastProvider>

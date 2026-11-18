@@ -307,12 +307,15 @@ export default function DashboardFullScreenHub({ role, session }) {
                         variant="ghost"
                         size="sm"
                         className="h-auto w-full justify-start gap-2 px-2 py-1.5 font-normal"
-                        render={<Link href={item.href} />}
+                        render={<Link href={item.href} title={item.label} />}
                         nativeButton={false}
                         onClick={() => syncNavSection(section.id)}
+                        title={item.label}
                       >
                         <item.icon aria-hidden="true" data-icon="inline-start" strokeWidth={1.75} />
-                        <span className="min-w-0 flex-1 truncate text-left">{item.label}</span>
+                        <span className="min-w-0 flex-1 truncate text-left" title={item.label}>
+                          {item.label}
+                        </span>
                         {hubSearch.trim() ? (
                           <span className="text-muted-foreground shrink-0 text-xs">
                             ({getDevScreenId(item.href) || '—'})
