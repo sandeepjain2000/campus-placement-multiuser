@@ -45,6 +45,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { isCollegeStaffRole } from '@/lib/collegeAccess';
 import DashboardErrorBoundary from '@/components/DashboardErrorBoundary';
 import AdminFilterSelect from '@/components/AdminFilterSelect';
+import { useMenuHighlight } from '@/components/MenuHighlightProvider';
 
 const settingsFetcher = async (url) => {
   const res = await fetch(url);
@@ -55,6 +56,7 @@ const settingsFetcher = async (url) => {
 
 export default function DashboardLayout({ children }) {
   const { data: session, status, update: updateSession } = useSession();
+  const { getItemStyle: getMenuHighlightStyle } = useMenuHighlight();
   const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -354,13 +356,19 @@ export default function DashboardLayout({ children }) {
 
   const renderSidebarNavItem = (item, activeFn) => {
     const key = getDashboardNavItemKey(item);
+    const highlightStyle = getMenuHighlightStyle(item);
     const icon = (
       <span className="flex size-5 shrink-0 items-center justify-center">
         <item.icon aria-hidden="true" />
       </span>
     );
     const label = (
-      <span className={cn('min-w-0 flex-1 truncate text-left', sidebarCollapsed && 'md:hidden')}>{item.label}</span>
+      <span
+        className={cn('min-w-0 flex-1 truncate text-left', sidebarCollapsed && 'md:hidden')}
+        style={highlightStyle}
+      >
+        {item.label}
+      </span>
     );
 
     if (item.disabled) {

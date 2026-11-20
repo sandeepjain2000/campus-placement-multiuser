@@ -31,6 +31,7 @@ import {
   Lightbulb,
   ClipboardCheck,
   Video,
+  Highlighter,
 } from 'lucide-react';
 
 /** Exact path for each role’s dashboard home (landing + section switcher). */
@@ -591,6 +592,7 @@ export const menuConfig = {
           { label: 'Error logs', href: '/dashboard/admin/error-logs', icon: AlertTriangle },
           { label: 'Email logs', href: '/dashboard/admin/email-logs', icon: Mail },
           { label: 'Audit reports', href: '/dashboard/admin/audit-reports', icon: FileText },
+          { label: 'Menu highlighting', href: '/dashboard/admin/menu-highlight', icon: Highlighter },
           { label: 'Settings', href: '/dashboard/admin/settings', icon: Settings },
         ],
       },

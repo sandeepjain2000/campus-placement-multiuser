@@ -15,9 +15,11 @@ import EntityLogo from '@/components/EntityLogo';
 import BrandMark from '@/components/BrandMark';
 import { useResolvedBrandLogoUrl } from '@/hooks/useResolvedBrandLogoUrl';
 import { Button } from '@/components/ui/button';
+import { useMenuHighlight } from '@/components/MenuHighlightProvider';
 
 export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
   const brandLogoUrl = useResolvedBrandLogoUrl();
+  const { getItemStyle: getMenuHighlightStyle } = useMenuHighlight();
   if (!isOpen) return null;
 
   const role = session?.user?.role;
@@ -98,7 +100,7 @@ export default function MobileHamburgerMenu({ isOpen, onClose, session }) {
                       className="mobile-nav-link"
                     >
                       {Icon ? <Icon size={20} strokeWidth={2} /> : null}
-                      {item.label}
+                      <span style={getMenuHighlightStyle(item)}>{item.label}</span>
                     </Link>
                   );
                 })}

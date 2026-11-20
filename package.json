@@ -79,6 +79,8 @@
     "db:migrate:114": "node scripts/db_exec_sql_file.js db/migrations/114_feature_ideas.sql",
     "db:migrate:115": "node scripts/db_exec_sql_file.js db/migrations/115_mail_delivery_zeptomail_request_id.sql",
     "db:migrate:116": "node scripts/db_exec_sql_file.js db/migrations/116_system_email_template_versions.sql",
+    "db:migrate:118": "node scripts/db_exec_sql_file.js db/migrations/118_menu_highlight_config.sql",
+    "db:migrate:117": "node scripts/db_exec_sql_file.js db/migrations/117_project_attachments.sql",
     "db:seed:marketplace": "npm run db:migrate:108 && npm run db:migrate:109",
     "db:align-student-cvs": "npm run db:migrate:103 && npm run db:migrate:104",
     "db:clear-broken-seed-assets": "npm run db:migrate:110",

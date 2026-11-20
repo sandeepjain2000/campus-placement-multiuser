@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { useMenuHighlight } from '@/components/MenuHighlightProvider';
 
 function getHubPageTitle(session, role, menu) {
   if (role === 'super_admin') return 'Platform Administration';
@@ -89,6 +90,7 @@ function getQuickActions(role, employerHasCampus, isAlumni) {
       { label: 'Users', href: '/dashboard/admin/users' },
       { label: 'Employers', href: '/dashboard/admin/employers' },
       { label: 'Feedback inbox', href: '/dashboard/admin/feedback' },
+      { label: 'Menu highlighting', href: '/dashboard/admin/menu-highlight' },
       { label: 'Platform overview', href: '/dashboard/admin/overview' },
     ];
   }
@@ -110,6 +112,7 @@ function syncNavSection(sectionId) {
  */
 export default function DashboardFullScreenHub({ role, session }) {
   const menu = getDashboardMenu(role, session?.user);
+  const { getItemStyle: getMenuHighlightStyle } = useMenuHighlight();
   const isAlumni = role === 'student' && isAlumniStudent(session?.user);
   const [employerCampus, setEmployerCampus] = useState(null);
   const [employerCampusLoading, setEmployerCampusLoading] = useState(role === 'employer');
@@ -300,7 +303,7 @@ export default function DashboardFullScreenHub({ role, session }) {
                     {item.disabled ? (
                       <span className="text-muted-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm opacity-60">
                         <item.icon aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.75} />
-                        {item.label}
+                        <span style={getMenuHighlightStyle(item)}>{item.label}</span>
                       </span>
                     ) : (
                       <Button
@@ -313,7 +316,11 @@ export default function DashboardFullScreenHub({ role, session }) {
                         title={item.label}
                       >
                         <item.icon aria-hidden="true" data-icon="inline-start" strokeWidth={1.75} />
-                        <span className="min-w-0 flex-1 truncate text-left" title={item.label}>
+                        <span
+                          className="min-w-0 flex-1 truncate text-left"
+                          title={item.label}
+                          style={getMenuHighlightStyle(item)}
+                        >
                           {item.label}
                         </span>
                         {hubSearch.trim() ? (
