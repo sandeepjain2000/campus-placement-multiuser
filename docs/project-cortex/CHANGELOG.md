@@ -2,6 +2,10 @@
 
 Changes to this folder, not to the product.
 
+## 2026-11-24
+
+- Added and executed work folder `09-work/2026-11-24-proxy-login-push/` — GitHub `0189596` Super Admin proxy login + AWS Path B + additive migration **118** (no account blank-fill). Rollback `~/placementhub-old-20261124-0432`. InternSafar PID unchanged.
+
 ## 2026-11-13
 
 - Added and executed work folder `09-work/2026-11-13-aws-catchup/` — AWS app catch-up from Vercel working tree. **No schema / no backfill.** Rollback `~/placementhub-old-20261113-1147`.

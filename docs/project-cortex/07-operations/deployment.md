@@ -128,3 +128,13 @@ Plan + log: `09-work/2026-11-18-titles-attachments-push/` (+ workspace `aws depl
 - **AWS:** executed 2026-11-18 ~17:48 IST — git `9b4d38d` (truncation title tooltips; project attachments on create). **No schema / no blank-fill.**
 - **Disk:** removed older `~/placementhub-old-20261118-0942` before swap; new rollback `~/placementhub-old-20261118-1218` only.
 - **InternSafar:** not restarted (PID `206368`).
+
+## AWS proxy login + menu highlight 118 (2026-11-24) — executed
+
+Plan + log: `09-work/2026-11-24-proxy-login-push/` (+ workspace `aws deploy/push-2026-11-24-ph/` / `AWS-PUSH-PLAN-2026-11-24-ph.md`).
+
+- **GitHub:** `0189596` Super Admin proxy login (pushed to `main` before AWS).
+- **Schema:** additive **118** `menu_highlight_config` (table was missing on AWS). **No account blank-fill.**
+- **AWS:** Path B staging build → rename-swap. Rollback `~/placementhub-old-20261124-0432` (kept prior `20261118-1218`; disk ~55% so prune skipped).
+- **InternSafar:** not restarted (PID `206368` unchanged).
+- **Vercel:** proxy login already live from earlier `deploy.bat`.

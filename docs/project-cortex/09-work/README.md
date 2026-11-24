@@ -11,6 +11,7 @@ Each piece of work gets a folder here once it starts. Project health is the catc
 | `2026-11-14-active-status-push/` | AWS executed 2026-11-14 — `c988cf2` Active-vs-pending college/employer status + import template. **No schema / no blank-fill** (runtime heal only). |
 | `2026-11-18-csv-sections-push/` | AWS + Vercel executed 2026-11-18 — `02055bf` CSV Sections ignore + Verified Yes sample. **No schema.** |
 | `2026-11-18-titles-attachments-push/` | AWS executed 2026-11-18 evening — `9b4d38d` truncation titles + create attachments. Older PH rollback pruned first. **No schema.** |
+| `2026-11-24-proxy-login-push/` | GitHub + AWS executed 2026-11-24 — `0189596` Super Admin proxy login + additive migration **118** (no account blank-fill). |
 | `2026-11-11-security-findings-remediation/` | Candidate security test verification (PH-01…PH-04 + zip screenshots). **Plan only — no fixes yet.** See `Implementation Plan.md`. |
 | AWS first-time setup | Standing ops plan in `07-operations/deployment.md` (server/tables done 2026-10-21; app URL answers) |
 
