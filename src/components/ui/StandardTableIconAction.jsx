@@ -26,6 +26,7 @@ import {
   ClipboardCheck,
   CreditCard,
   RotateCcw,
+  LogIn,
 } from 'lucide-react';
 import { shouldShowFilterCount } from '@/lib/filterBadgeLabel';
 import { Button } from '@/components/ui/button';
@@ -58,6 +59,7 @@ const META = {
   confirm: { label: 'Send confirmation email', Icon: Send },
   restore: { label: 'Restore tie-up', Icon: RotateCcw },
   pocs: { label: 'Manage points of contact', Icon: Users },
+  login: { label: 'Login as', Icon: LogIn },
 };
 
 function mapVariant(variant) {

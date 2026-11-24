@@ -9,6 +9,7 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { cn, getInitials, getRoleDisplayName } from '@/lib/utils';
 import EntityLogo from '@/components/EntityLogo';
 import SessionAdBanner from '@/components/SessionAdBanner';
+import ImpersonationBanner from '@/components/ImpersonationBanner';
 import PageLoading from '@/components/PageLoading';
 import {
   getDashboardMenu,
@@ -724,6 +725,12 @@ export default function DashboardLayout({ children }) {
         </header>
 
         <main id="main-content" className="mx-auto w-full max-w-[1440px] flex-1 bg-background px-4 py-6 sm:px-6">
+          {session.user?.impersonatorId ? (
+            <ImpersonationBanner
+              tenantName={session.user.tenantName}
+              email={session.user.email}
+            />
+          ) : null}
           {!isHub && studentVerifyBanner}
           {!isHub && committeeReadOnlyBanner}
           <DashboardErrorBoundary>

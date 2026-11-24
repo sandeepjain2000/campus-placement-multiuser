@@ -33,4 +33,9 @@ describe('super-admin audit coverage', () => {
     expect(read('src/app/api/admin/pending-registrations/route.js')).toMatch(/APPROVE_REGISTRATION/);
     expect(read('src/app/api/admin/pending-registrations/route.js')).toMatch(/REJECT_REGISTRATION/);
   });
+
+  it('logs impersonation start and end', () => {
+    expect(read('src/app/api/admin/impersonate/route.js')).toMatch(/IMPERSONATION_START/);
+    expect(read('src/app/api/admin/impersonate/stop/route.js')).toMatch(/IMPERSONATION_END/);
+  });
 });

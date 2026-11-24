@@ -15,6 +15,7 @@ import { StandardTableIconAction } from '@/components/ui/StandardTableIconAction
 import AdminRecordModal from '@/components/admin/AdminRecordModal';
 import CompanyNameLink from '@/components/CompanyNameLink';
 import { useToast } from '@/components/ToastProvider';
+import { startAdminImpersonation } from '@/lib/adminImpersonationClient';
 import { validateAdminEmployerForm } from '@/lib/adminEmployerForm';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -58,6 +59,8 @@ function DetailRow({ label, children }) {
 export default function AdminEmployersPage() {
   const { addToast } = useToast();
   const searchParams = useSearchParams();
+  const [proxyBusyId, setProxyBusyId] = useState('');
+  const [proxyError, setProxyError] = useState('');
   const openedFromQuery = useRef(false);
   const [employers, setEmployers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,6 +99,19 @@ export default function AdminEmployersPage() {
   useEffect(() => {
     loadEmployers();
   }, [loadEmployers]);
+
+  const canLoginAsEmployer = (e) => Boolean(e?.id && e?.userId && e?.active !== false);
+
+  const loginAsEmployer = async (employer) => {
+    if (!canLoginAsEmployer(employer)) return;
+    setProxyError('');
+    setProxyBusyId(employer.id);
+    const result = await startAdminImpersonation({ type: 'employer', id: employer.id });
+    if (!result.ok) {
+      setProxyError(result.error || 'Proxy login failed');
+      setProxyBusyId('');
+    }
+  };
 
   const {
     search,
@@ -272,6 +288,7 @@ export default function AdminEmployersPage() {
         <div>
           <h1 className="m-0 text-2xl font-semibold tracking-tight">Manage Employers</h1>
           <p className="text-muted-foreground mt-1 mb-0 text-sm">All registered employers on the platform</p>
+          {proxyError ? <p className="text-destructive mt-1 mb-0 text-sm">{proxyError}</p> : null}
         </div>
         <div className="flex flex-wrap items-start gap-2">
           <Button variant="outline" render={<Link href="/dashboard/admin/pending-registrations" />}>Onboard colleges & employers</Button>
@@ -381,6 +398,17 @@ export default function AdminEmployersPage() {
                   <div className="flex flex-wrap gap-1">
                     <StandardTableIconAction action="view" onClick={() => openPanel(e.id, 'view')} />
                     <StandardTableIconAction action="edit" onClick={() => openPanel(e.id, 'edit')} />
+                    <StandardTableIconAction
+                      action="login"
+                      disabled={!canLoginAsEmployer(e) || proxyBusyId === e.id}
+                      loading={proxyBusyId === e.id}
+                      tooltip={
+                        canLoginAsEmployer(e)
+                          ? 'Login as this employer'
+                          : 'Employer account is not active'
+                      }
+                      onClick={() => void loginAsEmployer(e)}
+                    />
                   </div>
                 </TableCell>
               </TableRow>
@@ -406,6 +434,18 @@ export default function AdminEmployersPage() {
         footer={
           panelMode === 'view' && detail && !panelLoading && !panelError ? (
             <>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={!detail.accountActive || !detail.userId || proxyBusyId === detail.id || togglingActive || saving}
+                onClick={() => void loginAsEmployer({
+                  id: detail.id,
+                  userId: detail.userId,
+                  active: detail.accountActive,
+                })}
+              >
+                {proxyBusyId === detail.id ? 'Logging in…' : 'Login as employer'}
+              </Button>
               {detail.accountActive ? (
                 <Button
                   type="button"

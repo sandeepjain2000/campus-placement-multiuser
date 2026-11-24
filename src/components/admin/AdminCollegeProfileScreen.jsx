@@ -17,6 +17,7 @@ import { useToast } from '@/components/ToastProvider';
 import { formatDate } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { startAdminImpersonation } from '@/lib/adminImpersonationClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
@@ -129,6 +130,8 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
   const [saving, setSaving] = useState(false);
   const [togglingActive, setTogglingActive] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [proxyBusy, setProxyBusy] = useState(false);
+  const [proxyError, setProxyError] = useState('');
 
   const loadCollege = useCallback(async () => {
     if (!collegeId) return;
@@ -157,6 +160,17 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
     const mode = String(searchParams.get('mode') || '').trim().toLowerCase();
     setEditing(mode === 'edit');
   }, [loading, searchParams]);
+
+  const loginAsCollege = async () => {
+    if (!detail?.id || !detail.hasActiveCollegeAdmin) return;
+    setProxyError('');
+    setProxyBusy(true);
+    const result = await startAdminImpersonation({ type: 'college', id: detail.id });
+    if (!result.ok) {
+      setProxyError(result.error || 'Proxy login failed');
+      setProxyBusy(false);
+    }
+  };
 
   const startEdit = () => {
     if (detail) setForm(collegeToForm(detail));
@@ -288,6 +302,19 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
             </>
           ) : (
             <>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={!detail.hasActiveCollegeAdmin || proxyBusy || togglingActive}
+                title={
+                  detail.hasActiveCollegeAdmin
+                    ? 'Login as this college'
+                    : 'No active college admin to log in as'
+                }
+                onClick={() => void loginAsCollege()}
+              >
+                {proxyBusy ? 'Logging in…' : 'Login as college'}
+              </Button>
               {detail.active ? (
                 <Button
                   type="button"
@@ -319,6 +346,9 @@ export default function AdminCollegeProfileScreen({ collegeId }) {
           )}
         </div>
       </div>
+      {proxyError ? (
+        <Alert variant="destructive"><AlertDescription>{proxyError}</AlertDescription></Alert>
+      ) : null}
 
       <Card>
         <CardContent>

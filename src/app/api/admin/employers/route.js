@@ -25,6 +25,7 @@ async function __platform_GET(request) {
     const result = await query(
       `SELECT
         ep.id,
+        ep.user_id,
         ep.company_name,
         ep.website,
         ep.industry,
@@ -52,6 +53,7 @@ async function __platform_GET(request) {
           !r.is_blacklisted;
         return {
           id: r.id,
+          userId: r.user_id || null,
           name: r.company_name,
           website: r.website || null,
           industry: r.industry || '—',

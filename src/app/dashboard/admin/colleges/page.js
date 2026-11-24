@@ -13,6 +13,7 @@ import {
   collegePlatformStatusLabel,
   collegePlatformStatusTone,
 } from '@/lib/collegePlatformStatus';
+import { startAdminImpersonation } from '@/lib/adminImpersonationClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -28,6 +29,8 @@ export default function AdminCollegesPage() {
   const redirectedView = useRef(false);
   const [colleges, setColleges] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [proxyBusyId, setProxyBusyId] = useState('');
+  const [proxyError, setProxyError] = useState('');
   const [listError, setListError] = useState('');
 
   const openCollege = (id, mode = 'view') => {
@@ -49,6 +52,17 @@ export default function AdminCollegesPage() {
       setIsLoading(false);
     }
   }, []);
+
+  const loginAsCollege = async (college) => {
+    if (!college?.id || !college.hasActiveCollegeAdmin) return;
+    setProxyError('');
+    setProxyBusyId(college.id);
+    const result = await startAdminImpersonation({ type: 'college', id: college.id });
+    if (!result.ok) {
+      setProxyError(result.error || 'Proxy login failed');
+      setProxyBusyId('');
+    }
+  };
 
   useEffect(() => {
     loadColleges();
@@ -101,6 +115,7 @@ export default function AdminCollegesPage() {
         <div>
           <h1 className="m-0 text-2xl font-semibold tracking-tight">Manage Colleges</h1>
           <p className="text-muted-foreground mt-1 mb-0 text-sm">All registered colleges on the platform</p>
+          {proxyError ? <p className="text-destructive mt-1 mb-0 text-sm">{proxyError}</p> : null}
         </div>
         <div className="flex flex-wrap gap-2">
           <ExportCsvSplitButton
@@ -194,6 +209,17 @@ export default function AdminCollegesPage() {
                   <div className="flex flex-wrap items-center gap-1">
                     <StandardTableIconAction action="view" onClick={() => openCollege(c.id)} />
                     <StandardTableIconAction action="edit" onClick={() => openCollege(c.id, 'edit')} />
+                    <StandardTableIconAction
+                      action="login"
+                      disabled={!c.hasActiveCollegeAdmin || proxyBusyId === c.id}
+                      loading={proxyBusyId === c.id}
+                      tooltip={
+                        c.hasActiveCollegeAdmin
+                          ? 'Login as this college'
+                          : 'No active college admin to log in as'
+                      }
+                      onClick={() => void loginAsCollege(c)}
+                    />
                   </div>
                 </TableCell>
               </TableRow>

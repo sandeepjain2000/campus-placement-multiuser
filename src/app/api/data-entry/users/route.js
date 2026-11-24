@@ -5,6 +5,8 @@ import { query } from '@/lib/db';
 import { requireDataEntrySession, resolveDataEntryTenantId } from '@/lib/dataEntryAccess';
 import { assertEmailAvailable, formatEmailInUseMessage } from '@/lib/userEmail';
 import { writeAuditLog } from '@/lib/auditLog';
+import { impersonationForbiddenResponse, isImpersonating } from '@/lib/impersonation';
+import { getSessionUserId } from '@/lib/sessionUser';
 
 const ALLOWED_ROLES = new Set(['student', 'college_admin', 'employer']);
 
@@ -111,6 +113,15 @@ async function __platform_PUT(request) {
       return NextResponse.json({ error: 'id, firstName, and valid role are required' }, { status: 400 });
     }
 
+    if (isImpersonating(gate.session)) {
+      const selfId = getSessionUserId(gate.session);
+      if (isActive === false || (selfId && id === selfId)) {
+        return impersonationForbiddenResponse(
+          'Account activation changes are not allowed while logged in as another account.',
+        );
+      }
+    }
+
     const existing = await query(
       `SELECT email, role, first_name, last_name FROM users WHERE id = $1 AND tenant_id = $2`,
       [id, tenantId]
@@ -172,6 +183,12 @@ async function __platform_DELETE(request) {
   try {
     const gate = await requireDataEntrySession();
     if (!gate.ok) return gate.response;
+
+    if (isImpersonating(gate.session)) {
+      return impersonationForbiddenResponse(
+        'Deleting users is not allowed while logged in as another account.',
+      );
+    }
 
     const body = await request.json();
     const tenantId = resolveDataEntryTenantId(gate.session, body?.tenantId);

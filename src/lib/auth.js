@@ -196,6 +196,10 @@ export const authOptions = {
         token.brandLogoUrl = user.brandLogoUrl ?? null;
         token.studentPlacementVerified = user.studentPlacementVerified;
         token.isAlumni = user.isAlumni;
+        // Normal credential sign-in never carries proxy claims.
+        delete token.impersonatorId;
+        delete token.impersonatorEmail;
+        delete token.impersonationStartedAt;
       }
       if (trigger === 'update' && session?.avatar !== undefined) {
         token.avatar = session.avatar;
@@ -236,6 +240,9 @@ export const authOptions = {
         session.user.brandLogoUrl = token.brandLogoUrl ?? null;
         session.user.studentPlacementVerified = token.studentPlacementVerified;
         session.user.isAlumni = token.isAlumni;
+        session.user.impersonatorId = token.impersonatorId || null;
+        session.user.impersonatorEmail = token.impersonatorEmail || null;
+        session.user.impersonationStartedAt = token.impersonationStartedAt || null;
       }
       return session;
     },

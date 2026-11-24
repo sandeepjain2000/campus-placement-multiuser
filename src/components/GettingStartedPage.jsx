@@ -46,6 +46,7 @@ const STEP_ICONS = {
   students: Users,
   colleges: Building2,
   'onboard-orgs': Inbox,
+  'proxy-login': Users,
 };
 
 const ROLE_INTRO = {
@@ -53,7 +54,8 @@ const ROLE_INTRO = {
   studentAlumni: 'Complete your alumni profile and apply to lateral roles published for your campus network.',
   employer: 'Set up your company profile, connect with campuses, and run your first placement activity.',
   college_admin: 'Configure your campus, employers, and student records to go live.',
-  super_admin: 'Review pending sign-ups and platform settings to onboard colleges and employers.',
+  super_admin:
+    'Review pending sign-ups and platform settings to onboard colleges and employers. Use Login as on a college or employer row when you need to work inside their account (for example bulk student upload).',
 };
 
 const ROLE_HOME = {

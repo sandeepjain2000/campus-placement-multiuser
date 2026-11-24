@@ -103,6 +103,7 @@ async function __platform_GET(request) {
           active: status.active,
           platformStatus: status.platformStatus,
           pendingAdminApproval: status.pendingAdminApproval,
+          hasActiveCollegeAdmin: Boolean(r.has_active_college_admin),
         };
       }),
       page,

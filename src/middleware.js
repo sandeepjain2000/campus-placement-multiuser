@@ -217,6 +217,8 @@ export default async function proxy(request) {
   }
 
   // ── /dashboard/* — per-role path enforcement ─────────────────────────────
+  // During Super Admin proxy login, token.role is the tenant role and
+  // token.impersonatorId is the real Super Admin (JWT claims pass through getToken).
   if (pathname.startsWith('/dashboard/')) {
     const token = await getToken({
       req: request,

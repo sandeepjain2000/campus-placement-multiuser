@@ -146,6 +146,12 @@ async function __platform_GET() {
           href: '/dashboard/admin/pending-registrations',
         },
         { id: 'colleges', title: 'Manage college directory', completed: false, href: '/dashboard/admin/colleges' },
+        {
+          id: 'proxy-login',
+          title: 'Login as a college or employer when they need support (e.g. student bulk upload)',
+          completed: false,
+          href: '/dashboard/admin/colleges',
+        },
         { id: 'employers', title: 'Manage employer directory', completed: false, href: '/dashboard/admin/employers' },
         { id: 'settings', title: 'Platform Settings', completed: false, href: '/dashboard/admin/settings' },
       ];

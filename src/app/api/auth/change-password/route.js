@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import bcrypt from 'bcryptjs';
 import { authOptions } from '@/lib/auth';
 import { query } from '@/lib/db';
+import { impersonationForbiddenResponse, isImpersonating } from '@/lib/impersonation';
 import { getPasswordValidationError } from '@/lib/validators';
 
 async function __platform_POST(req) {
@@ -11,6 +12,12 @@ async function __platform_POST(req) {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (isImpersonating(session)) {
+      return impersonationForbiddenResponse(
+        'Password cannot be changed while logged in as another account.',
+      );
     }
 
     const userId = session.user.id || session.user.sub;

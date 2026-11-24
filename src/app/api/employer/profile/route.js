@@ -7,6 +7,7 @@ import { isBrowserLoadableAssetUrl } from '@/lib/clientAssetUrl';
 import { pickBrowserAssetUrl } from '@/lib/resolveBrandLogoUrl';
 import { respondPlatformError , withApiHandlers } from '@/lib/platformErrorRoute';
 import { PLATFORM_ERROR_CONTEXT } from '@/lib/platformErrorContext';
+import { impersonationForbiddenResponse, isImpersonating } from '@/lib/impersonation';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -183,6 +184,11 @@ async function __platform_PATCH(request) {
 
     const hasCommunicationEmailPatch = Object.prototype.hasOwnProperty.call(body || {}, 'communicationEmail');
     if (hasCommunicationEmailPatch) {
+      if (isImpersonating(session)) {
+        return impersonationForbiddenResponse(
+          'Account email cannot be changed while logged in as another account.',
+        );
+      }
       const commRaw = String(body.communicationEmail ?? '').trim().toLowerCase();
       if (commRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(commRaw)) {
         return NextResponse.json({ error: 'Communication email must be a valid address' }, { status: 400 });

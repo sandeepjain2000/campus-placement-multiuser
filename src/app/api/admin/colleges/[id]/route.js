@@ -108,6 +108,7 @@ function mapCollege(row) {
     active: status.active,
     platformStatus: status.platformStatus,
     pendingAdminApproval: status.pendingAdminApproval,
+    hasActiveCollegeAdmin: Boolean(row.has_active_college_admin),
     students: Number(row.students || 0),
     placed: Number(row.placed || 0),
     createdAt: row.created_at,
