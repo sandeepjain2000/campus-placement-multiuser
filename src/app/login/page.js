@@ -759,6 +759,19 @@ function LoginPageInner() {
               </FieldGroup>
             </form>
 
+            <div className="text-muted-foreground text-center text-sm">
+              Employers and colleges:{' '}
+              <Link
+                href="/register"
+                className="font-medium text-[var(--text-link)] hover:underline"
+              >
+                Register
+              </Link>
+              <div className="mt-1 text-xs">
+                Students are added by their college — use the login email from your welcome message.
+              </div>
+            </div>
+
             <div className="hidden-on-mobile flex flex-col gap-2">
               <div className="flex items-center gap-4">
                 <Separator className="flex-1" />
@@ -797,16 +810,6 @@ function LoginPageInner() {
           <MessageCircleQuestion size={14} className="mr-1 inline align-middle" aria-hidden />
           FAQ search: use the <strong>Help</strong> button at the bottom-right.
         </p>
-
-        <div className="text-muted-foreground text-center text-sm">
-          Employers and colleges:{' '}
-          <Link href="/register" className="text-foreground font-medium hover:underline">
-            Register
-          </Link>
-          <div className="mt-1 text-xs">
-            Students are added by their college — use the login email from your welcome message.
-          </div>
-        </div>
 
         <div className="text-muted-foreground mt-4 text-center font-mono text-xs">
           Build: 13 Jun 2026, 02:37 AM (v1.0.11-debug)

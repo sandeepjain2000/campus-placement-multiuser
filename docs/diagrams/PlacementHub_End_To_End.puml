@@ -1,0 +1,54 @@
+@startuml PlacementHub_End_To_End
+title PlacementHub — End to End
+skinparam shadowing false
+skinparam RoundCorner 8
+skinparam ActivityFontSize 13
+skinparam ActivityDiamondFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowThickness 1.2
+
+|Setup|
+start
+:Super Admin creates college;
+:College / Employer / Student register;
+:Email verify;
+:Login;
+
+|College gates|
+:College verifies students (and CVs if required);
+:College reviews employer partnership;
+
+|Employer|
+:Employer requests campus partnership;
+if (Partnership approved?) then (yes)
+else (no)
+  stop
+endif
+
+|Publish|
+:Employer posts Job / Internship\nor Placement Drive;
+if (College approves listing / drive?) then (yes)
+else (no)
+  stop
+endif
+
+|Apply|
+:Student browses open roles;
+:Student applies with CV;
+
+|Hiring|
+:Employer shortlists / rejects / selects;
+:Interviews (optional);
+:Offer sent;
+
+|Close|
+:Student accepts or declines;
+stop
+
+legend right
+  Same campus path for **placement drive**
+  and **internship** — college approve
+  before students can see / apply.
+endlegend
+
+@enduml

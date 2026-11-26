@@ -570,6 +570,7 @@ export const menuConfig = {
         items: [
           { label: 'Colleges', href: '/dashboard/admin/colleges', icon: Building },
           { label: 'Employers', href: '/dashboard/admin/employers', icon: Building2 },
+          { label: 'Students', href: '/dashboard/admin/students', icon: GraduationCap },
           { label: 'Placement listings', href: '/dashboard/admin/placement-listings', icon: Briefcase },
           { label: 'Marketplace', href: '/dashboard/admin/marketplace', icon: Store },
           { label: 'Users', href: '/dashboard/admin/users', icon: Users },

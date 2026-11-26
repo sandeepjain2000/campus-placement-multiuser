@@ -25,6 +25,7 @@ async function __platform_GET(request) {
 
     const result = await query(
       `SELECT sp.id, sp.user_id, sp.department, sp.cgpa, sp.placement_status, sp.batch_year, sp.graduation_year, sp.is_verified,
+              sp.created_at,
               u.email, u.first_name, u.last_name
        FROM student_profiles sp
        LEFT JOIN users u ON u.id = sp.user_id

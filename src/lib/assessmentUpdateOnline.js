@@ -161,6 +161,9 @@ export async function fetchAssessmentUpdateOnlineRows(employerId, kind, context)
       campus_name: '',
       fcfs_blocked: fcfsBlocked,
       fcfs_blocked_by: fcfsBlockedBy,
+      // Prefer assessment upload time so Newest/Oldest can order saved results; null if never assessed.
+      createdAt: assessment?.upload_created_at || assessment?.created_at || null,
+      upload_created_at: assessment?.upload_created_at || null,
     });
   }
 

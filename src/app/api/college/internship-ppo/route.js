@@ -26,6 +26,7 @@ async function __platform_GET() {
     const res = await query(
       `SELECT pa.id AS program_application_id,
               pa.status AS application_status,
+              pa.applied_at,
               sp.roll_number,
               sp.branch,
               sp.department,
@@ -79,6 +80,7 @@ async function __platform_GET() {
       return {
         programApplicationId: String(row.program_application_id),
         applicationStatus: row.application_status,
+        appliedAt: row.applied_at || row.confirmed_at || null,
         studentName: `${first} ${last}`.trim() || 'Student',
         rollNumber: row.roll_number || '',
         branch: row.branch || row.department || '—',

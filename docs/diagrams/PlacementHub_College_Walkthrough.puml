@@ -1,0 +1,91 @@
+@startuml PlacementHub_College_Walkthrough
+title PlacementHub — College walkthrough (internships & drives)
+skinparam shadowing false
+skinparam RoundCorner 10
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowThickness 1.2
+skinparam MaxMessageSize 200
+
+legend left
+  Format: **Page** — what to do
+  Minimal path for campus **internships** and **placement drives**.
+  Employer / Student columns show only what your college needs to know when to act.
+  Students are added by the college (master list); PlacementHub emails their login.
+  Hard gates: email verify, eligibility at apply, FCFS / placement lock.
+endlegend
+
+|College (TPO)|
+start
+:1. **Register** (college signup)\n— Institute details + admin email;
+:2. **Email verify** (hard gate)\n— Open link from inbox;
+note right
+  New college accounts cannot log in
+  until email is verified.
+end note
+:3. **Wait for platform activation**\n— Pending until PlacementHub activates\nyour college (contact support if stuck);
+note right
+  Students cannot be onboarded usefully
+  until your campus is activated.
+end note
+:4. **Students** → **Add Student** or **Import CSV**\n— Create the master student list;
+note right
+  PlacementHub emails each student
+  a login address + temporary password.
+end note
+
+|Employer|
+:5. Employer requests a\n**Campus Partnership** with your college;
+
+|College (TPO)|
+:6. **Employer Partnership Requests**\n— Approve (or reject) the employer;
+
+|Employer|
+:7. Creates a **Placement Drive**\nor **Internship** for your campus;
+note right
+  Drive = requested until you approve.
+  Internship = pending visibility
+  until you approve.
+end note
+
+|College (TPO)|
+:8. **Placement Drives** (Unapproved)\nor **Internships**\n— Approve listing / drive;
+:9. **Students**\n— Verify profile (and CV if required);
+
+|Student|
+:10. **Sign in** (from welcome email);
+:11. **My Profile** + **Documents** + **My CVs**\n— Complete and upload;
+:12. **Browse Drives** / **Browse Internships**\n— Open a live opportunity;
+:13. **Apply** with CV\n— Confirm under **My Drives** / **My Internships**;
+note right
+  Hard gate: eligibility
+  (CGPA / batch / deadline / CV,
+  and eligibility groups if set)
+  must pass or apply is blocked.
+end note
+
+|Employer|
+:14. Reviews **Applications**;
+:15. **Assessment Uploads (CSV)** or\n**Assessment Update Online**\n— Shortlist / Reject / Select;
+note right
+  Hard gate: after **Select**,
+  FCFS may block the student
+  from other openings on that track.
+end note
+:16. **Interview Scheduling** (optional);
+:17. **Offers** (or Offer Templates /\nbulk generate)\n— Send formal offer;
+
+|Student|
+:18. **Notifications / Alerts** / **My Interviews**\n— Attend if scheduled;
+:19. **My Offers**\n— Accept or decline;
+note right
+  Accepting a placement offer
+  can also lock further applies
+  (your FCFS / offer rules).
+end note
+
+|College (TPO)|
+:20. **Applications / Offers / Reports**\n— Monitor season;
+stop
+
+@enduml

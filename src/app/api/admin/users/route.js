@@ -18,7 +18,7 @@ async function __platform_GET() {
     }
 
     const result = await query(
-      `SELECT id, first_name, last_name, email, role, is_active
+      `SELECT id, first_name, last_name, email, role, is_active, created_at
        FROM users
        ORDER BY created_at DESC`
     );
@@ -30,6 +30,7 @@ async function __platform_GET() {
         email: r.email,
         role: r.role,
         active: Boolean(r.is_active),
+        createdAt: r.created_at || null,
       })),
     });
   } catch (error) {

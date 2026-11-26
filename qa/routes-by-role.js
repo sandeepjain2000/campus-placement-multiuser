@@ -133,6 +133,7 @@ const superAdminRoutes = dedupe([
   { label: "My data export", href: "/dashboard/my-exports" },
   { label: "Colleges", href: "/dashboard/admin/colleges" },
   { label: "Employers", href: "/dashboard/admin/employers" },
+  { label: "Students", href: "/dashboard/admin/students" },
   { label: "Placement listings", href: "/dashboard/admin/placement-listings" },
   { label: "Users", href: "/dashboard/admin/users" },
   { label: "Archived students", href: "/dashboard/admin/archived-students" },

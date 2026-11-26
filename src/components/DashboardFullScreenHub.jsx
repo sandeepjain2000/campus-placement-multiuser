@@ -86,9 +86,10 @@ function getQuickActions(role, employerHasCampus, isAlumni) {
     return [
       { label: 'Onboard colleges & employers', href: '/dashboard/admin/pending-registrations' },
       { label: 'Colleges', href: '/dashboard/admin/colleges' },
+      { label: 'Employers', href: '/dashboard/admin/employers' },
+      { label: 'Students', href: '/dashboard/admin/students' },
       { label: 'Marketplace', href: '/dashboard/admin/marketplace' },
       { label: 'Users', href: '/dashboard/admin/users' },
-      { label: 'Employers', href: '/dashboard/admin/employers' },
       { label: 'Feedback inbox', href: '/dashboard/admin/feedback' },
       { label: 'Menu highlighting', href: '/dashboard/admin/menu-highlight' },
       { label: 'Platform overview', href: '/dashboard/admin/overview' },

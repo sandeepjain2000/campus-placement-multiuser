@@ -32,6 +32,7 @@ async function __platform_GET(request) {
         ep.total_hires,
         ep.is_verified,
         ep.is_blacklisted,
+        ep.created_at,
         u.is_active AS account_active,
         u.email_verified_at,
         u.registration_rejected_at
@@ -67,6 +68,7 @@ async function __platform_GET(request) {
               ? 'pending_approval'
               : 'inactive',
           pendingApproval,
+          createdAt: r.created_at || null,
         };
       }),
       page,

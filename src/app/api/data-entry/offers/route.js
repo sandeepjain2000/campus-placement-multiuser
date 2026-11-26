@@ -33,6 +33,7 @@ async function __platform_GET(request) {
     const sql = (latestOnly) => {
       const clause = latestOnly ? 'AND o.is_latest = 1' : '';
       return `SELECT o.id, o.student_id, o.drive_id, o.employer_id, o.job_title, o.location, o.salary, o.status, o.joining_date,
+              o.created_at,
               u.first_name, u.last_name, u.email, d.title AS drive_title, e.company_name
        FROM offers o
        LEFT JOIN student_profiles sp ON sp.id = o.student_id

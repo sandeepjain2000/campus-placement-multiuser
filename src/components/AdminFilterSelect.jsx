@@ -32,6 +32,9 @@ export default function AdminFilterSelect({
         ? String(value)
         : allValue;
 
+  const selectedLabel =
+    items.find((item) => String(item.value) === String(selectValue))?.label || ariaLabel || '';
+
   return (
     <Select
       items={items}
@@ -42,12 +45,22 @@ export default function AdminFilterSelect({
         onValueChange(emptyMapsToAll && next === allValue ? '' : next);
       }}
     >
-      <SelectTrigger id={id} className={cn(className)} aria-label={ariaLabel} disabled={disabled}>
+      <SelectTrigger
+        id={id}
+        className={cn('w-[11.5rem] max-w-[11.5rem]', className)}
+        aria-label={ariaLabel}
+        title={selectedLabel}
+        disabled={disabled}
+      >
         <SelectValue />
       </SelectTrigger>
-      <SelectContent className="p-1">
+      <SelectContent
+        alignItemWithTrigger={false}
+        align="start"
+        className="w-auto min-w-(--anchor-width) max-w-[min(24rem,calc(100vw-2rem))] p-1"
+      >
         {items.map((item) => (
-          <SelectItem key={item.value} value={String(item.value)}>
+          <SelectItem key={item.value} value={String(item.value)} title={item.label}>
             {item.label}
           </SelectItem>
         ))}

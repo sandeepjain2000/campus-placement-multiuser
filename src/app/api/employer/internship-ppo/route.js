@@ -85,6 +85,7 @@ async function loadInternRows(employerId) {
     return {
       programApplicationId: String(row.program_application_id),
       applicationStatus: row.application_status,
+      appliedAt: row.applied_at || null,
       studentName: `${first} ${last}`.trim() || 'Student',
       rollNumber: row.roll_number || '',
       systemId: formatStudentSystemId(row.short_code, row.roll_number),

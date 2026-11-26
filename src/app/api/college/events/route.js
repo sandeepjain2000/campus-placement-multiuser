@@ -34,7 +34,7 @@ async function __platform_GET() {
 
     const [calendarRes, drivesRes] = await Promise.all([
       query(
-        `SELECT id, title, event_type, start_date, end_date, is_blocking, description${sourceSelect}
+        `SELECT id, title, event_type, start_date, end_date, is_blocking, description, created_at${sourceSelect}
          FROM college_calendar
          WHERE tenant_id = $1::uuid
          ORDER BY start_date DESC, created_at DESC

@@ -74,12 +74,23 @@ export default function DataTableToolbar({
                 if (value != null) onFilterChange(value);
               }}
             >
-              <SelectTrigger className="min-w-[140px]" aria-label={filterLabel}>
+              <SelectTrigger
+                className="w-[11.5rem] max-w-[11.5rem]"
+                aria-label={filterLabel}
+                title={
+                  filterItems.find((opt) => opt.value === String(filter || filterItems[0]?.value))
+                    ?.label || filterLabel
+                }
+              >
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="p-1">
+              <SelectContent
+                alignItemWithTrigger={false}
+                align="start"
+                className="w-auto min-w-(--anchor-width) max-w-[min(24rem,calc(100vw-2rem))] p-1"
+              >
                 {filterItems.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
+                  <SelectItem key={opt.value} value={opt.value} title={opt.label}>
                     {opt.label}
                   </SelectItem>
                 ))}
